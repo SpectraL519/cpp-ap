@@ -1,0 +1,6 @@
+# editor files
+.vscode/
+
+# build files
+*.exe
+test/build/*
