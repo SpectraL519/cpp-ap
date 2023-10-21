@@ -150,7 +150,7 @@ InsertNewlineAtEOF:               true
 InsertTrailingCommas:             None
 KeepEmptyLinesAtEOF:              false
 KeepEmptyLinesAtTheStartOfBlocks: false
-MaxEmptyLinesToKeep:              2
+MaxEmptyLinesToKeep:              3
 
 SpaceAfterCStyleCast:              false
 SpaceAfterLogicalNot:              false
