@@ -150,7 +150,7 @@ InsertNewlineAtEOF:               true
 InsertTrailingCommas:             None
 KeepEmptyLinesAtEOF:              false
 KeepEmptyLinesAtTheStartOfBlocks: false
-MaxEmptyLinesToKeep:              2
+MaxEmptyLinesToKeep:              3
 
 SpaceAfterCStyleCast:              false
 SpaceAfterLogicalNot:              false
@@ -175,7 +175,7 @@ SpaceBeforeRangeBasedForLoopColon: true
 SpaceBeforeSquareBrackets:         false
 SpaceInEmptyBlock:                 false
 SpaceInEmptyParentheses:           false
-SpacesBeforeTrailingComments:      2
+SpacesBeforeTrailingComments:      1
 SpacesInAngles:                    Never
 SpacesInContainerLiterals:         false
 SpacesInLineCommentPrefix:
