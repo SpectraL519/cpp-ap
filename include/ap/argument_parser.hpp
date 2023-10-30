@@ -35,6 +35,31 @@ public:
     virtual ~argument_interface() = default;
 };
 
+
+template <readable T>
+class positional_argument : public argument_interface<T> {
+public:
+    using value_type = std::remove_reference_t<T>;
+
+    positional_argument() = default;
+    ~positional_argument() = default;
+
+    [[nodiscard]] argument_interface& help(const std::string&) override;
+    [[nodiscard]] argument_interface& required(bool) override;
+    [[nodiscard]] argument_interface& default_value(const value_type&) override;
+
+    [[nodiscard]] bool is_positional() const override;
+    [[nodiscard]] bool is_optional() const override;
+
+    [[nodiscard]] bool has_value() const override;
+    [[nodiscard]] const value_type& value() const override;
+
+    [[nodiscard]] const std::string& name() const override;
+    [[nodiscard]] const std::string& help() const override;
+    [[nodiscard]] bool required() const override;
+    [[nodiscard]] const value_type& default_value() const override;
+};
+
 } // namespace detail
 
 } // namespace ap
