@@ -1,11 +1,11 @@
 #define AP_TESTING
 
-#include <string_view>
+#include "../doctest.h"
+#include "../testing_friend_definitions.hpp"
 
 #include <ap/argument_parser.hpp>
 
-#include "../doctest.h"
-#include "../testing_friend_definitions.hpp"
+#include <string_view>
 
 using namespace ap::detail;
 
@@ -180,7 +180,8 @@ TEST_CASE("help(string_view) should set help message and return the argument") {
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("default_value(string_view) should set help message and return the argument") {
+TEST_CASE("default_value(string_view) should set help message and return the "
+          "argument") {
     auto argument = default_positional_argument();
 
     test_value_type default_value{};
