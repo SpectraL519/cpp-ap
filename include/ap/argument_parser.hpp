@@ -156,4 +156,41 @@ private:
 
 } // namespace detail
 
+
+
+class argument_parser {
+public:
+    argument_parser() = default;
+
+    argument_parser(const argument_parser&) = delete;
+    argument_parser(argument_parser&&) = delete;
+    argument_parser& operator= (const argument_parser&) = delete;
+
+    ~argument_parser() = default;
+
+    argument_parser& program_name(const std::string_view name) {
+        this->_program_name = name;
+        return *this;
+    }
+
+    argument_parser& program_description(const std::string_view description) {
+        this->_program_description = description;
+        return *this;
+    }
+
+    friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
+        if (parser._program_name)
+            os << parser._program_name.value() << std::endl;
+
+        if (parser._program_description)
+            os << parser._program_description.value() << std::endl;
+
+        return os;
+    }
+
+private:
+    std::optional<std::string_view> _program_name;
+    std::optional<std::string_view> _program_description;
+};
+
 } // namespace ap
