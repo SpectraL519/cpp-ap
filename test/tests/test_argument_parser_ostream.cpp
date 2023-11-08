@@ -33,9 +33,7 @@ TEST_CASE("operator<< should push correct data to the output stream") {
         std::string name = "test program name";
         std::string description = "test program description";
 
-        parser
-            .program_name(name)
-            .program_description(description);
+        parser.program_name(name).program_description(description);
 
         expected_ss << name << std::endl << description << std::endl;
     }

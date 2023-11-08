@@ -164,7 +164,7 @@ public:
 
     argument_parser(const argument_parser&) = delete;
     argument_parser(argument_parser&&) = delete;
-    argument_parser& operator=(const argument_parser&) = delete;
+    argument_parser& operator= (const argument_parser&) = delete;
 
     ~argument_parser() = default;
 
@@ -178,7 +178,7 @@ public:
         return *this;
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) {
+    friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
             os << parser._program_name.value() << std::endl;
 
