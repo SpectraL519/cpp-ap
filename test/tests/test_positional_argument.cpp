@@ -180,7 +180,7 @@ TEST_CASE("help(string_view) should set help message and return the argument") {
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("default_value(string_view) should set help message and return the "
+TEST_CASE("default_value(value_type) should set help message and return the "
           "argument") {
     auto argument = default_positional_argument();
 

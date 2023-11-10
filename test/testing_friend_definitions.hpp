@@ -62,6 +62,16 @@ positional_argument<T>& testing_set_value(
     return argument.value(value);
 }
 
+template <readable T>
+using optional_arg_value_type = typename optional_argument<T>::value_type;
+
+template <readable T>
+optional_argument<T>& testing_set_value(
+    optional_argument<T>& argument, const optional_arg_value_type<T>& value
+) {
+    return argument.value(value);
+}
+
 } // namespace ap::detail
 
 #endif
