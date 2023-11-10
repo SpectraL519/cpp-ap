@@ -35,6 +35,11 @@ const std::string_view testing_get_name(const argument_interface<T>& argument) {
 }
 
 template <readable T>
+const std::optional<std::string_view> testing_get_short_name(const argument_interface<T>& argument) {
+    return argument.short_name();
+}
+
+template <readable T>
 bool testing_is_required(const argument_interface<T>& argument) {
     return argument.required();
 }
