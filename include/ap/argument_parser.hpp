@@ -167,16 +167,16 @@ public:
 
     optional_argument() = delete;
 
-    optional_argument(std::string_view long_name)
-        : _long_name(long_name) {}
+    optional_argument(std::string_view name)
+        : _name(name) {}
 
-    optional_argument(std::string_view long_name, std::string_view short_name)
-        : _long_name(long_name), _short_name(short_name) {} 
+    optional_argument(std::string_view name, std::string_view short_name)
+        : _name(name), _short_name(short_name) {} 
 
     ~optional_argument() = default;
 
     bool operator==(const optional_argument& other) const {
-        return this->_long_name == other._long_name;
+        return this->_name == other._name;
     }
 
     inline optional_argument& help(std::string_view help_msg) override {
@@ -217,7 +217,7 @@ private:
     }
 
     [[nodiscard]] const std::string_view name() const {
-        return this->_long_name;
+        return this->_name;
     }
 
     [[nodiscard]] const std::optional<std::string_view> short_name() const {
@@ -237,7 +237,7 @@ private:
     }
 
     const bool _optional = true;
-    const std::string_view _long_name;
+    const std::string_view _name;
     const std::optional<std::string_view> _short_name;
 
     std::optional<value_type> _value;

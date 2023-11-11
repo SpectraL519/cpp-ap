@@ -30,14 +30,16 @@ optional_argument<test_value_type> default_optional_argument_both_names() {
 
 
 
-TEST_CASE("optional argument with only long name should be optional and not positional") {
+TEST_CASE("optional argument with only long name should be optional and not "
+          "positional") {
     const auto argument = default_optional_argument_long_name();
 
     REQUIRE(testing_is_optional(argument));
     REQUIRE_FALSE(testing_is_positional(argument));
 }
 
-TEST_CASE("optional argument with both long and short name should be optional and not positional") {
+TEST_CASE("optional argument with both long and short name should be optional "
+          "and not positional") {
     const auto argument = default_optional_argument_both_names();
 
     REQUIRE(testing_is_optional(argument));
@@ -50,7 +52,8 @@ TEST_CASE("has_value() should return false by default for long name") {
     REQUIRE_FALSE(testing_has_value(argument));
 }
 
-TEST_CASE("has_value() should return false by default for both long nad short names") {
+TEST_CASE("has_value() should return false by default for both long nad short "
+          "names") {
     const auto argument = default_optional_argument_both_names();
 
     REQUIRE_FALSE(testing_has_value(argument));
@@ -65,7 +68,8 @@ TEST_CASE("has_value() should return true is value is set for long name") {
     REQUIRE(testing_has_value(argument));
 }
 
-TEST_CASE("has_value() should return true is value is set for both long and short names") {
+TEST_CASE("has_value() should return true is value is set for both long and "
+          "short names") {
     auto argument = default_optional_argument_both_names();
 
     test_value_type value{};
@@ -74,21 +78,24 @@ TEST_CASE("has_value() should return true is value is set for both long and shor
     REQUIRE(testing_has_value(argument));
 }
 
-TEST_CASE("value() should throw if argument's value has not been set for long name") {
+TEST_CASE("value() should throw if argument's value has not been set for long "
+          "name") {
     auto argument = default_optional_argument_long_name();
 
     REQUIRE_FALSE(testing_has_value(argument));
     REQUIRE_THROWS_AS(testing_get_value(argument), std::bad_optional_access);
 }
 
-TEST_CASE("value() should throw if argument's value has not been set for both long and short names") {
+TEST_CASE("value() should throw if argument's value has not been set for both "
+          "long and short names") {
     auto argument = default_optional_argument_both_names();
 
     REQUIRE_FALSE(testing_has_value(argument));
     REQUIRE_THROWS_AS(testing_get_value(argument), std::bad_optional_access);
 }
 
-TEST_CASE("value() should return the argument's value if it has been set for long name") {
+TEST_CASE("value() should return the argument's value if it has been set for "
+          "long name") {
     auto argument = default_optional_argument_long_name();
 
     test_value_type value{};
@@ -98,7 +105,8 @@ TEST_CASE("value() should return the argument's value if it has been set for lon
     REQUIRE_EQ(testing_get_value(argument), value);
 }
 
-TEST_CASE("value() should return the argument's value if it has been set for both long and short names") {
+TEST_CASE("value() should return the argument's value if it has been set for "
+          "both long and short names") {
     auto argument = default_optional_argument_both_names();
 
     test_value_type value{};
@@ -108,13 +116,16 @@ TEST_CASE("value() should return the argument's value if it has been set for bot
     REQUIRE_EQ(testing_get_value(argument), value);
 }
 
-TEST_CASE("name() should return value passed to the optional argument constructor for long name") {
+TEST_CASE("name() should return value passed to the optional argument "
+          "constructor for long name") {
     const auto argument = default_optional_argument_long_name();
 
     REQUIRE_EQ(testing_get_name(argument), long_name);
 }
 
-TEST_CASE("name() should return value passed to the optional argument constructor for both long and short names") {
+TEST_CASE("name() and short_name() should return value passed to the optional "
+          "argument "
+          "constructor for both long and short names") {
     const auto argument = default_optional_argument_both_names();
 
     REQUIRE_EQ(testing_get_name(argument), long_name);
@@ -127,7 +138,8 @@ TEST_CASE("required() should return false by default for long name") {
     REQUIRE_FALSE(testing_is_required(argument));
 }
 
-TEST_CASE("required() should return false by default for both long and short names") {
+TEST_CASE("required() should return false by default for both long and short "
+          "names") {
     auto argument = default_optional_argument_both_names();
 
     REQUIRE_FALSE(testing_is_required(argument));
@@ -151,7 +163,8 @@ TEST_CASE("required() should return the value it has been set to for long name")
     REQUIRE_EQ(testing_is_required(argument), required);
 }
 
-TEST_CASE("required() should return the value it has been set to for both long and short names") {
+TEST_CASE("required() should return the value it has been set to for both long "
+          "and short names") {
     auto argument = default_optional_argument_both_names();
     bool required;
 
@@ -175,7 +188,8 @@ TEST_CASE("help() should return nullopt by default for long name") {
     REQUIRE_FALSE(testing_get_help(argument));
 }
 
-TEST_CASE("help() should return nullopt by default for both long and short names") {
+TEST_CASE("help() should return nullopt by default for both long and short "
+          "names") {
     const auto argument = default_optional_argument_both_names();
 
     REQUIRE_FALSE(testing_get_help(argument));
@@ -193,7 +207,8 @@ TEST_CASE("help() should return message if one has been provided for long name")
     REQUIRE_EQ(returned_help_msg, help_msg);
 }
 
-TEST_CASE("help() should return message if one has been provided for both long and short names") {
+TEST_CASE("help() should return message if one has been provided for both long "
+          "and short names") {
     auto argument = default_optional_argument_both_names();
 
     constexpr std::string_view help_msg = "test help msg";
@@ -210,13 +225,15 @@ TEST_CASE("defaul_value() should return nullopt by default for long name") {
 
     REQUIRE_FALSE(testing_get_default_value(argument));
 }
-TEST_CASE("defaul_value() should return nullopt by default for both long nad short names") {
+TEST_CASE("defaul_value() should return nullopt by default for both long nad "
+          "short names") {
     const auto argument = default_optional_argument_both_names();
 
     REQUIRE_FALSE(testing_get_default_value(argument));
 }
 
-TEST_CASE("defaul_value() should return value if one has been provided for long name") {
+TEST_CASE("defaul_value() should return value if one has been provided for "
+          "long name") {
     auto argument = default_optional_argument_long_name();
 
     test_value_type default_value{};
@@ -228,7 +245,8 @@ TEST_CASE("defaul_value() should return value if one has been provided for long 
     REQUIRE_EQ(returned_default_value, default_value);
 }
 
-TEST_CASE("defaul_value() should return value if one has been provided for both long and short names") {
+TEST_CASE("defaul_value() should return value if one has been provided for "
+          "both long and short names") {
     auto argument = default_optional_argument_both_names();
 
     test_value_type default_value{};
@@ -240,9 +258,10 @@ TEST_CASE("defaul_value() should return value if one has been provided for both 
     REQUIRE_EQ(returned_default_value, default_value);
 }
 
-//testing for setter functions for optional argument
+// testing for setter functions for optional argument
 
-TEST_CASE("value(const value_type&) should set value and return the argument instance for long name") {
+TEST_CASE("value(const value_type&) should set value and return the argument "
+          "instance for long name") {
     auto argument = default_optional_argument_long_name();
 
     test_value_type value{};
@@ -254,7 +273,8 @@ TEST_CASE("value(const value_type&) should set value and return the argument ins
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("value(const value_type&) should set value and return the argument instance for both long and short names") {
+TEST_CASE("value(const value_type&) should set value and return the argument "
+          "instance for both long and short names") {
     auto argument = default_optional_argument_both_names();
 
     test_value_type value{};
@@ -266,7 +286,8 @@ TEST_CASE("value(const value_type&) should set value and return the argument ins
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("required(bool) should set required attribute and return the argument for long name") {
+TEST_CASE("required(bool) should set required attribute and return the "
+          "argument for long name") {
     auto argument = default_optional_argument_long_name();
     bool required;
 
@@ -285,7 +306,8 @@ TEST_CASE("required(bool) should set required attribute and return the argument 
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("required(bool) should set required attribute and return the argument for both long and short name") {
+TEST_CASE("required(bool) should set required attribute and return the "
+          "argument for both long and short name") {
     auto argument = default_optional_argument_both_names();
     bool required;
 
@@ -304,7 +326,8 @@ TEST_CASE("required(bool) should set required attribute and return the argument 
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("help(string_view) should set help message and return the argument for long name") {
+TEST_CASE("help(string_view) should set help message and return the argument "
+          "for long name") {
     auto argument = default_optional_argument_long_name();
 
     constexpr std::string_view help_msg = "test help msg";
@@ -318,7 +341,8 @@ TEST_CASE("help(string_view) should set help message and return the argument for
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("help(string_view) should set help message and return the argument for both long and short names") {
+TEST_CASE("help(string_view) should set help message and return the argument "
+          "for both long and short names") {
     auto argument = default_optional_argument_both_names();
 
     constexpr std::string_view help_msg = "test help msg";
@@ -332,7 +356,8 @@ TEST_CASE("help(string_view) should set help message and return the argument for
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("default_value(value_type) should set default value and return the argument for long name") {
+TEST_CASE("default_value(value_type) should set default value and return the "
+          "argument for long name") {
     auto argument = default_optional_argument_long_name();
 
     test_value_type default_value{};
@@ -346,7 +371,8 @@ TEST_CASE("default_value(value_type) should set default value and return the arg
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("default_value(value_type) should set default value and return the argument for both long and short names") {
+TEST_CASE("default_value(value_type) should set default value and return the "
+          "argument for both long and short names") {
     auto argument = default_optional_argument_both_names();
 
     test_value_type default_value{};
