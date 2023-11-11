@@ -35,7 +35,7 @@ const std::string_view testing_get_name(const argument_interface<T>& argument) {
 }
 
 template <readable T>
-const std::optional<std::string_view> testing_get_short_name(const argument_interface<T>& argument) {
+const std::optional<std::string_view> testing_get_short_name(const optional_argument<T>& argument) {
     return argument.short_name();
 }
 

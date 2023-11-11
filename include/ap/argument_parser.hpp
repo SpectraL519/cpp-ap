@@ -36,7 +36,7 @@ protected:
     virtual const value_type& value() const = 0;
 
     virtual const std::string_view name() const = 0;
-    virtual const std::optional<std::string_view> short_name() const = 0;
+    // virtual const std::optional<std::string_view> short_name() const = 0;
     virtual bool required() const = 0;
     virtual const std::optional<std::string_view>& help() const = 0;
     virtual const std::optional<value_type>& default_value() const = 0;
@@ -58,10 +58,6 @@ protected:
     template <readable U>
     friend inline const std::string_view
         testing_get_name(const argument_interface<U>&);
-
-    template <readable U>
-    friend inline const std::optional<std::string_view>
-        testing_get_short_name(const argument_interface<U>&);
 
     template <readable U>
     friend inline bool testing_is_required(const argument_interface<U>&);
@@ -179,6 +175,10 @@ public:
         return this->_name == other._name;
     }
 
+    [[nodiscard]] const std::optional<std::string_view> short_name() const {
+        return this->_short_name;
+    }
+
     inline optional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
@@ -220,10 +220,6 @@ private:
         return this->_name;
     }
 
-    [[nodiscard]] const std::optional<std::string_view> short_name() const {
-        return this->_short_name;
-    }
-
     [[nodiscard]] bool required() const override { 
         return this->_required; 
     }
@@ -250,6 +246,10 @@ private:
     template <readable U>
     friend inline optional_argument<U>&
         testing_set_value(optional_argument<U>&, const typename optional_argument<U>::value_type&);
+
+    template <readable U>
+    friend inline const std::optional<std::string_view>
+        testing_get_short_name(const argument_interface<U>&);
 #endif
 };
 
