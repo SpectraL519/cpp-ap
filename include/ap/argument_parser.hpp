@@ -154,8 +154,105 @@ private:
 #endif
 };
 
-} // namespace detail
 
+template <readable T>
+class optional_argument : public argument_interface<T> {
+public:
+    using value_type = typename argument_interface<T>::value_type;
+
+    optional_argument() = delete;
+
+    optional_argument(std::string_view name)
+        : _name(name) {}
+
+    optional_argument(std::string_view name, std::string_view short_name)
+        : _name(name), _short_name(short_name) {} 
+
+    ~optional_argument() = default;
+
+    bool operator==(const optional_argument& other) const {
+        return this->_name == other._name;
+    }
+
+    inline optional_argument& help(std::string_view help_msg) override {
+        this->_help_msg = help_msg;
+        return *this;
+    }
+
+    inline optional_argument& required(bool required) override {
+        this->_required = required;
+        return *this;
+    }
+
+    inline optional_argument& default_value(const value_type& default_value) override {
+        this->_default_value = default_value;
+        return *this;
+    }
+
+private:
+    inline optional_argument& value(const value_type& value) override {
+        this->_value = value;
+        return *this;
+    }
+
+    [[nodiscard]] inline bool is_positional() const override {
+        return not this->_optional;
+    }
+
+    [[nodiscard]] inline bool is_optional() const override {
+        return this->_optional;
+    }
+
+    [[nodiscard]] bool has_value() const override {
+        return this->_value.has_value();
+    }
+
+    [[nodiscard]] const value_type& value() const override {
+        return this->_value.value();
+    }
+
+    [[nodiscard]] const std::string_view name() const override {
+        return this->_name;
+    }
+
+    [[nodiscard]] const std::optional<std::string_view> short_name() const {
+        return this->_short_name;
+    }
+
+    [[nodiscard]] bool required() const override { 
+        return this->_required; 
+    }
+
+    [[nodiscard]] const std::optional<std::string_view>& help() const override {
+        return this->_help_msg;
+    }
+
+    [[nodiscard]] const std::optional<value_type>& default_value() const override {
+        return this->_default_value;
+    }
+
+    const bool _optional = true;
+    const std::string_view _name;
+    const std::optional<std::string_view> _short_name;
+
+    std::optional<value_type> _value;
+
+    bool _required = false;
+    std::optional<std::string_view> _help_msg;
+    std::optional<value_type> _default_value;
+
+#ifdef AP_TESTING
+    template <readable U>
+    friend inline optional_argument<U>&
+        testing_set_value(optional_argument<U>&, const typename optional_argument<U>::value_type&);
+
+    template <readable U>
+    friend inline const std::optional<std::string_view>
+        testing_get_short_name(const argument_interface<U>&);
+#endif
+};
+
+} // namespace detail
 
 
 class argument_parser {
