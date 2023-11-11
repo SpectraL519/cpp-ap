@@ -35,6 +35,11 @@ const std::string_view testing_get_name(const argument_interface<T>& argument) {
 }
 
 template <readable T>
+const std::optional<std::string_view> testing_get_short_name(const optional_argument<T>& argument) {
+    return argument.short_name();
+}
+
+template <readable T>
 bool testing_is_required(const argument_interface<T>& argument) {
     return argument.required();
 }
@@ -58,6 +63,16 @@ using positional_arg_value_type = typename positional_argument<T>::value_type;
 template <readable T>
 positional_argument<T>& testing_set_value(
     positional_argument<T>& argument, const positional_arg_value_type<T>& value
+) {
+    return argument.value(value);
+}
+
+template <readable T>
+using optional_arg_value_type = typename optional_argument<T>::value_type;
+
+template <readable T>
+optional_argument<T>& testing_set_value(
+    optional_argument<T>& argument, const optional_arg_value_type<T>& value
 ) {
     return argument.value(value);
 }
