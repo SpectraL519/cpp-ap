@@ -56,13 +56,13 @@ TEST_CASE("has_value() should return true is value is set") {
     REQUIRE(testing_argument_has_value(argument));
 }
 
-TEST_CASE("value() should return default any object if argument's value has not been set") {
+TEST_CASE("value() should return default any object if argument's value has "
+          "not been set") {
     auto argument = default_optional_argument_long_name();
 
     REQUIRE_FALSE(testing_argument_has_value(argument));
     REQUIRE_THROWS_AS(
-        std::any_cast<test_value_type>(testing_argument_get_value(argument)),
-        std::bad_any_cast
+        std::any_cast<test_value_type>(testing_argument_get_value(argument)), std::bad_any_cast
     );
 }
 

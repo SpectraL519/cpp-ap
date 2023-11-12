@@ -15,7 +15,7 @@ Argument Parser for C++20
 ## DEV NOTES
 
 1. Requirements:
-   * G++ >= G++-11
+   * g++ >= g++-11
    * clang-format-17 ([ubuntu download tutorial](https://ubuntuhandbook.org/index.php/2023/09/how-to-install-clang-17-or-16-in-ubuntu-22-04-20-04/amp/?fbclid=IwAR1ZfJpoiitjwn8aMlKVWpFdkYmUqtaQwraJBju09v1gtc0jQANTgVeCuMY))
 
 <br />

@@ -35,19 +35,18 @@ const std::optional<std::string_view>&
     return argument.help();
 }
 
-const std::any& testing_argument_get_default_value(const argument_interface& argument) {
+const std::any&
+    testing_argument_get_default_value(const argument_interface& argument) {
     return argument.default_value();
 }
 
-positional_argument& testing_argument_set_value(
-    positional_argument& argument, const std::any& value
-) {
+positional_argument&
+    testing_argument_set_value(positional_argument& argument, const std::any& value) {
     return argument.value(value);
 }
 
-optional_argument& testing_argument_set_value(
-    optional_argument& argument, const std::any& value
-) {
+optional_argument&
+    testing_argument_set_value(optional_argument& argument, const std::any& value) {
     return argument.value(value);
 }
 

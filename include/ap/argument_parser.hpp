@@ -1,9 +1,9 @@
 #pragma once
 
+#include <any>
 #include <iostream>
 #include <optional>
 #include <string_view>
-#include <any>
 
 
 namespace ap {
@@ -21,24 +21,24 @@ struct argument_name {
 
     argument_name(const argument_name&) = default;
     argument_name(argument_name&&) = default;
-    argument_name& operator=(const argument_name&) = default;
+    argument_name& operator= (const argument_name&) = default;
 
     explicit argument_name(const std::string_view name) : name(name) {}
     explicit argument_name(const std::string_view name, const std::string_view short_name)
-        : name(name), short_name(short_name)
-    {}
+        : name(name), short_name(short_name) {}
 
     ~argument_name() = default;
 
-    inline bool operator==(const argument_name& other) const {
+    inline bool operator== (const argument_name& other) const {
         return this->name == other.name;
     }
 
-    inline bool operator==(const std::string_view name) const {
-        return name == this->name or (this->short_name and name == this->short_name.value());
+    inline bool operator== (const std::string_view name) const {
+        return name == this->name or
+               (this->short_name and name == this->short_name.value());
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const argument_name& arg_name) {
+    friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
         os << "[" << arg_name.name;
         if (arg_name.short_name)
             os << "," << arg_name.short_name.value();
@@ -79,8 +79,10 @@ protected:
     friend inline bool testing_argument_is_positional(const argument_interface&);
     friend inline bool testing_argument_is_optional(const argument_interface&);
     friend inline bool testing_argument_has_value(const argument_interface&);
-    friend inline const std::any& testing_argument_get_value(const argument_interface&);
-    friend inline const argument_name& testing_argument_get_name(const argument_interface&);
+    friend inline const std::any&
+        testing_argument_get_value(const argument_interface&);
+    friend inline const argument_name&
+        testing_argument_get_name(const argument_interface&);
     friend inline bool testing_argument_is_required(const argument_interface&);
     friend inline const std::optional<std::string_view>&
         testing_argument_get_help(const argument_interface&);
@@ -146,7 +148,9 @@ private:
         return this->_name;
     }
 
-    [[nodiscard]] inline bool required() const override { return this->_required; }
+    [[nodiscard]] inline bool required() const override {
+        return this->_required;
+    }
 
     [[nodiscard]] inline const std::optional<std::string_view>& help() const override {
         return this->_help_msg;
@@ -176,15 +180,14 @@ class optional_argument : public argument_interface {
 public:
     optional_argument() = delete;
 
-    optional_argument(std::string_view name)
-        : _name(name) {}
+    optional_argument(std::string_view name) : _name(name) {}
 
     optional_argument(std::string_view name, std::string_view short_name)
         : _name(name, short_name) {}
 
     ~optional_argument() = default;
 
-    inline bool operator==(const optional_argument& other) const {
+    inline bool operator== (const optional_argument& other) const {
         return this->_name == other._name;
     }
 

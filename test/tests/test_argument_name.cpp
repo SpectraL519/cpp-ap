@@ -47,21 +47,24 @@ TEST_CASE("argument_name members should be correctly initialized") {
     REQUIRE_EQ(arg_name.short_name.value(), short_name);
 }
 
-TEST_CASE("argument_name::operator==(argument_name) should return true if long names are equal") {
+TEST_CASE("argument_name::operator==(argument_name) should return true if long "
+          "names are equal") {
     const auto arg_name_a = default_argument_name_long_name();
     const auto arg_name_b = default_argument_name_both_names();
 
     REQUIRE(arg_name_a == arg_name_b);
 }
 
-TEST_CASE("argument_name::operator==(argument_name) should return false if long names are not equal") {
+TEST_CASE("argument_name::operator==(argument_name) should return false if "
+          "long names are not equal") {
     const auto arg_name_a = default_argument_name_long_name();
     const auto arg_name_b = argument_name(other_name, other_short_name);
 
     REQUIRE_FALSE(arg_name_a == arg_name_b);
 }
 
-TEST_CASE("argument_name::operator==(string_view) should return true if at least one name matches") {
+TEST_CASE("argument_name::operator==(string_view) should return true if at "
+          "least one name matches") {
     SUBCASE("argument_name with long name only") {
         const auto arg_name = default_argument_name_long_name();
 
@@ -76,7 +79,8 @@ TEST_CASE("argument_name::operator==(string_view) should return true if at least
     }
 }
 
-TEST_CASE("argument_name::operator==(string_view) should return false if no name matches") {
+TEST_CASE("argument_name::operator==(string_view) should return false if no "
+          "name matches") {
     SUBCASE("argument_name with long name only") {
         const auto arg_name = default_argument_name_long_name();
 
@@ -92,7 +96,8 @@ TEST_CASE("argument_name::operator==(string_view) should return false if no name
     }
 }
 
-TEST_CASE("argument_name should be correctly constructed from another argument_name object") {
+TEST_CASE("argument_name should be correctly constructed from another "
+          "argument_name object") {
     SUBCASE("with long name only") {
         const auto arg_name = default_argument_name_long_name();
 
