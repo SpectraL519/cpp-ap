@@ -9,6 +9,8 @@
 using namespace ap;
 
 
+TEST_SUITE("test_argument_parser_ostream") {
+
 TEST_CASE("operator<< should push correct data to the output stream") {
     argument_parser parser;
 
@@ -35,9 +37,9 @@ TEST_CASE("operator<< should push correct data to the output stream") {
         expected_ss << test_name << std::endl << test_description << std::endl;
     }
 
-    CAPTURE(expected_ss);
-
     ss << parser;
 
     REQUIRE_EQ(ss.str(), expected_ss.str());
+}
+
 }

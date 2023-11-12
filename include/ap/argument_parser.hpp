@@ -16,6 +16,41 @@ concept readable =
 
 
 
+struct argument_name {
+    argument_name() = delete;
+    argument_name(const argument_name&) = delete;
+    argument_name(argument_name&&) = delete;
+    argument_name& operator=(const argument_name&) = delete;
+
+    explicit argument_name(const std::string_view name) : name(name) {}
+    explicit argument_name(const std::string_view name, const std::string_view short_name)
+        : name(name), short_name(short_name)
+    {}
+
+    ~argument_name() = default;
+
+    inline bool operator==(const argument_name& other) const {
+        return this->name == other.name;
+    }
+
+    inline bool operator==(const std::string_view name) const {
+        return name == this->name or (this->short_name and name == this->short_name.value());
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const argument_name& arg_name) {
+        os << "[" << arg_name.name;
+        if (arg_name.short_name)
+            os << "," << arg_name.short_name.value();
+        os << "]";
+        return os;
+    }
+
+    const std::string_view name;
+    const std::optional<std::string_view> short_name;
+};
+
+
+
 class argument_interface {
 public:
     virtual argument_interface& help(std::string_view) = 0;
@@ -40,16 +75,16 @@ protected:
     virtual const std::any& default_value() const = 0;
 
 #ifdef AP_TESTING
-    friend inline bool testing_is_positional(const argument_interface&);
-    friend inline bool testing_is_optional(const argument_interface&);
-    friend inline bool testing_has_value(const argument_interface&);
-    friend inline const std::any& testing_get_value(const argument_interface&);
-    friend inline const std::string_view testing_get_name(const argument_interface&);
-    friend inline bool testing_is_required(const argument_interface&);
+    friend inline bool testing_argument_is_positional(const argument_interface&);
+    friend inline bool testing_argument_is_optional(const argument_interface&);
+    friend inline bool testing_argument_has_value(const argument_interface&);
+    friend inline const std::any& testing_argument_get_value(const argument_interface&);
+    friend inline const std::string_view testing_argument_get_name(const argument_interface&);
+    friend inline bool testing_argument_is_required(const argument_interface&);
     friend inline const std::optional<std::string_view>&
-        testing_get_help(const argument_interface&);
+        testing_argument_get_help(const argument_interface&);
     friend inline const std::any&
-        testing_get_default_value(const argument_interface&);
+        testing_argument_get_default_value(const argument_interface&);
 #endif
 };
 
@@ -128,7 +163,7 @@ private:
 
 #ifdef AP_TESTING
     friend inline positional_argument&
-        testing_set_value(positional_argument&, const std::any&);
+        testing_argument_set_value(positional_argument&, const std::any&);
 #endif
 };
 
@@ -218,9 +253,9 @@ private:
 
 #ifdef AP_TESTING
     friend inline optional_argument&
-        testing_set_value(optional_argument&, const std::any&);
+        testing_argument_set_value(optional_argument&, const std::any&);
     friend inline const std::optional<std::string_view>
-        testing_get_short_name(const optional_argument&);
+        testing_optional_argument_get_short_name(const optional_argument&);
 #endif
 };
 
