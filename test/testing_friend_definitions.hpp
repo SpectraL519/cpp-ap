@@ -22,7 +22,7 @@ const std::any& testing_argument_get_value(const argument_interface& argument) {
     return argument.value();
 }
 
-const std::string_view testing_argument_get_name(const argument_interface& argument) {
+const argument_name& testing_argument_get_name(const argument_interface& argument) {
     return argument.name();
 }
 
@@ -49,10 +49,6 @@ optional_argument& testing_argument_set_value(
     optional_argument& argument, const std::any& value
 ) {
     return argument.value(value);
-}
-
-const std::optional<std::string_view> testing_optional_argument_get_short_name(const optional_argument& argument) {
-    return argument.short_name();
 }
 
 } // namespace ap::detail

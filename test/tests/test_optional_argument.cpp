@@ -80,7 +80,10 @@ TEST_CASE("name() should return value passed to the optional argument "
           "constructor for long name") {
     const auto argument = default_optional_argument_long_name();
 
-    REQUIRE_EQ(testing_argument_get_name(argument), long_name);
+    const auto name = testing_argument_get_name(argument);
+
+    REQUIRE_EQ(name, long_name);
+    REQUIRE_NE(name, short_name);
 }
 
 TEST_CASE("name() and short_name() should return value passed to the optional "
@@ -88,8 +91,10 @@ TEST_CASE("name() and short_name() should return value passed to the optional "
           "constructor for both long and short names") {
     const auto argument = default_optional_argument_both_names();
 
-    REQUIRE_EQ(testing_argument_get_name(argument), long_name);
-    REQUIRE_EQ(testing_optional_argument_get_short_name(argument), short_name);
+    const auto name = testing_argument_get_name(argument);
+
+    REQUIRE_EQ(name, long_name);
+    REQUIRE_EQ(name, short_name);
 }
 
 TEST_CASE("required() should return false by default") {

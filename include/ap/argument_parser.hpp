@@ -18,9 +18,10 @@ concept readable =
 
 struct argument_name {
     argument_name() = delete;
-    argument_name(const argument_name&) = delete;
-    argument_name(argument_name&&) = delete;
-    argument_name& operator=(const argument_name&) = delete;
+
+    argument_name(const argument_name&) = default;
+    argument_name(argument_name&&) = default;
+    argument_name& operator=(const argument_name&) = default;
 
     explicit argument_name(const std::string_view name) : name(name) {}
     explicit argument_name(const std::string_view name, const std::string_view short_name)
@@ -69,7 +70,7 @@ protected:
 
     virtual const std::any& value() const = 0;
 
-    virtual const std::string_view name() const = 0;
+    virtual const argument_name& name() const = 0;
     virtual bool required() const = 0;
     virtual const std::optional<std::string_view>& help() const = 0;
     virtual const std::any& default_value() const = 0;
@@ -79,7 +80,7 @@ protected:
     friend inline bool testing_argument_is_optional(const argument_interface&);
     friend inline bool testing_argument_has_value(const argument_interface&);
     friend inline const std::any& testing_argument_get_value(const argument_interface&);
-    friend inline const std::string_view testing_argument_get_name(const argument_interface&);
+    friend inline const argument_name& testing_argument_get_name(const argument_interface&);
     friend inline bool testing_argument_is_required(const argument_interface&);
     friend inline const std::optional<std::string_view>&
         testing_argument_get_help(const argument_interface&);
@@ -93,7 +94,10 @@ class positional_argument : public argument_interface {
 public:
     positional_argument() = delete;
 
-    explicit positional_argument(std::string_view name) : _name(name) {}
+    positional_argument(const std::string_view name) : _name(name) {}
+
+    positional_argument(const std::string_view name, const std::string_view short_name)
+        : _name(name, short_name) {}
 
     ~positional_argument() = default;
 
@@ -138,7 +142,7 @@ private:
         return this->_value;
     }
 
-    [[nodiscard]] inline const std::string_view name() const override {
+    [[nodiscard]] inline const argument_name& name() const override {
         return this->_name;
     }
 
@@ -153,7 +157,7 @@ private:
     }
 
     const bool _optional = false;
-    const std::string_view _name;
+    const argument_name _name;
 
     std::any _value;
 
@@ -176,7 +180,7 @@ public:
         : _name(name) {}
 
     optional_argument(std::string_view name, std::string_view short_name)
-        : _name(name), _short_name(short_name) {}
+        : _name(name, short_name) {}
 
     ~optional_argument() = default;
 
@@ -221,12 +225,8 @@ private:
         return this->_value;
     }
 
-    [[nodiscard]] inline const std::string_view name() const override {
+    [[nodiscard]] inline const argument_name& name() const override {
         return this->_name;
-    }
-
-    [[nodiscard]] inline const std::optional<std::string_view> short_name() const {
-        return this->_short_name;
     }
 
     [[nodiscard]] inline bool required() const override {
@@ -242,8 +242,7 @@ private:
     }
 
     const bool _optional = true;
-    const std::string_view _name;
-    const std::optional<std::string_view> _short_name;
+    const argument_name _name;
 
     std::any _value;
 
@@ -254,8 +253,6 @@ private:
 #ifdef AP_TESTING
     friend inline optional_argument&
         testing_argument_set_value(optional_argument&, const std::any&);
-    friend inline const std::optional<std::string_view>
-        testing_optional_argument_get_short_name(const optional_argument&);
 #endif
 };
 
