@@ -19,11 +19,11 @@ constexpr std::string_view long_name = "test";
 constexpr std::string_view short_name = "t";
 
 
-positional_argument default_optional_argument_long_name() {
+positional_argument default_positional_argument_long_name() {
     return positional_argument(long_name);
 }
 
-positional_argument default_optional_argument_both_names() {
+positional_argument default_positional_argument_both_names() {
     return positional_argument(long_name, short_name);
 }
 
@@ -34,20 +34,20 @@ positional_argument default_optional_argument_both_names() {
 TEST_SUITE_BEGIN("test_positional_argument");
 
 TEST_CASE("positonal argument should be positional and not optional") {
-    const auto argument = default_optional_argument_long_name();
+    const auto argument = default_positional_argument_long_name();
 
     REQUIRE(testing_argument_is_positional(argument));
     REQUIRE_FALSE(testing_argument_is_optional(argument));
 }
 
 TEST_CASE("has_value() should return false by default") {
-    const auto argument = default_optional_argument_long_name();
+    const auto argument = default_positional_argument_long_name();
 
     REQUIRE_FALSE(testing_argument_has_value(argument));
 }
 
 TEST_CASE("has_value() should return true is value is set") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     test_value_type value{};
     testing_argument_set_value(argument, value);
@@ -57,7 +57,7 @@ TEST_CASE("has_value() should return true is value is set") {
 
 TEST_CASE("value() should return default any object if argument's value has "
           "not been set") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     REQUIRE_FALSE(testing_argument_has_value(argument));
     REQUIRE_THROWS_AS(
@@ -66,7 +66,7 @@ TEST_CASE("value() should return default any object if argument's value has "
 }
 
 TEST_CASE("value() should return the argument's value if it has been set") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     test_value_type value{};
     testing_argument_set_value(argument, value);
@@ -77,7 +77,7 @@ TEST_CASE("value() should return the argument's value if it has been set") {
 
 TEST_CASE("name() should return value passed to the optional argument "
           "constructor for long name") {
-    const auto argument = default_optional_argument_long_name();
+    const auto argument = default_positional_argument_long_name();
 
     const auto name = testing_argument_get_name(argument);
 
@@ -88,7 +88,7 @@ TEST_CASE("name() should return value passed to the optional argument "
 TEST_CASE("name() and short_name() should return value passed to the optional "
           "argument "
           "constructor for both long and short names") {
-    const auto argument = default_optional_argument_both_names();
+    const auto argument = default_positional_argument_both_names();
 
     const auto name = testing_argument_get_name(argument);
 
@@ -98,13 +98,13 @@ TEST_CASE("name() and short_name() should return value passed to the optional "
 
 
 TEST_CASE("required() should return true by default") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     REQUIRE(testing_argument_is_required(argument));
 }
 
 TEST_CASE("required() should return the value it has been set to") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
     bool required;
 
     SUBCASE("set to true") {
@@ -122,13 +122,13 @@ TEST_CASE("required() should return the value it has been set to") {
 }
 
 TEST_CASE("help() should return nullopt by default") {
-    const auto argument = default_optional_argument_long_name();
+    const auto argument = default_positional_argument_long_name();
 
     REQUIRE_FALSE(testing_argument_get_help(argument));
 }
 
 TEST_CASE("help() should return message if one has been provided") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     constexpr std::string_view help_msg = "test help msg";
     argument.help(help_msg);
@@ -140,7 +140,7 @@ TEST_CASE("help() should return message if one has been provided") {
 }
 
 TEST_CASE("defaul_value() should return nullopt by default") {
-    const auto argument = default_optional_argument_long_name();
+    const auto argument = default_positional_argument_long_name();
 
     const auto& arg_default_value = testing_argument_get_default_value(argument);
 
@@ -148,7 +148,7 @@ TEST_CASE("defaul_value() should return nullopt by default") {
 }
 
 TEST_CASE("defaul_value() should return value if one has been provided") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     test_value_type default_value{};
     argument.default_value(default_value);
@@ -164,7 +164,7 @@ TEST_CASE("defaul_value() should return value if one has been provided") {
 
 TEST_CASE("value(const any&) should set value and return the argument "
           "instance") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     test_value_type value{};
 
@@ -179,7 +179,7 @@ TEST_CASE("value(const any&) should set value and return the argument "
 }
 
 TEST_CASE("required(bool) should set required attribute and return the argument") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
     bool required;
 
     SUBCASE("set to true") {
@@ -198,7 +198,7 @@ TEST_CASE("required(bool) should set required attribute and return the argument"
 }
 
 TEST_CASE("help(string_view) should set help message and return the argument") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     constexpr std::string_view help_msg = "test help msg";
 
@@ -213,7 +213,7 @@ TEST_CASE("help(string_view) should set help message and return the argument") {
 
 TEST_CASE("default_value(const any&) should set help message and return the "
           "argument") {
-    auto argument = default_optional_argument_long_name();
+    auto argument = default_positional_argument_long_name();
 
     test_value_type default_value{};
 
