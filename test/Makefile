@@ -1,3 +1,5 @@
+DIR_MAKEFILE := ./make
+
 ifndef SYSTEM
     ifeq ($(OS), Windows_NT)
         SYSTEM := windows
@@ -16,7 +18,7 @@ endif
 ifeq ($(SYSTEM), unknown)
     $(info This program does not support your operating system.)
 else
-    MAKEFILE := make/system_$(SYSTEM).mk
+    MAKEFILE := $(DIR_MAKEFILE)/system_$(SYSTEM).mk
     $(info Including: $(MAKEFILE))
     include $(MAKEFILE)
 endif
