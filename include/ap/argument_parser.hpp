@@ -97,7 +97,7 @@ public:
 
     ~positional_argument() = default;
 
-    bool operator== (const positional_argument& other) const {
+    inline bool operator== (const positional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -130,25 +130,25 @@ private:
         return this->_optional;
     }
 
-    [[nodiscard]] bool has_value() const override {
+    [[nodiscard]] inline bool has_value() const override {
         return this->_value.has_value();
     }
 
-    [[nodiscard]] const std::any& value() const override {
+    [[nodiscard]] inline const std::any& value() const override {
         return this->_value;
     }
 
-    [[nodiscard]] const std::string_view name() const override {
+    [[nodiscard]] inline const std::string_view name() const override {
         return this->_name;
     }
 
-    [[nodiscard]] bool required() const override { return this->_required; }
+    [[nodiscard]] inline bool required() const override { return this->_required; }
 
-    [[nodiscard]] const std::optional<std::string_view>& help() const override {
+    [[nodiscard]] inline const std::optional<std::string_view>& help() const override {
         return this->_help_msg;
     }
 
-    [[nodiscard]] const std::any& default_value() const override {
+    [[nodiscard]] inline const std::any& default_value() const override {
         return this->_default_value;
     }
 
@@ -180,7 +180,7 @@ public:
 
     ~optional_argument() = default;
 
-    bool operator==(const optional_argument& other) const {
+    inline bool operator==(const optional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -213,31 +213,31 @@ private:
         return this->_optional;
     }
 
-    [[nodiscard]] bool has_value() const override {
+    [[nodiscard]] inline bool has_value() const override {
         return this->_value.has_value();
     }
 
-    [[nodiscard]] const std::any& value() const override {
+    [[nodiscard]] inline const std::any& value() const override {
         return this->_value;
     }
 
-    [[nodiscard]] const std::string_view name() const override {
+    [[nodiscard]] inline const std::string_view name() const override {
         return this->_name;
     }
 
-    [[nodiscard]] const std::optional<std::string_view> short_name() const {
+    [[nodiscard]] inline const std::optional<std::string_view> short_name() const {
         return this->_short_name;
     }
 
-    [[nodiscard]] bool required() const override {
+    [[nodiscard]] inline bool required() const override {
         return this->_required;
     }
 
-    [[nodiscard]] const std::optional<std::string_view>& help() const override {
+    [[nodiscard]] inline const std::optional<std::string_view>& help() const override {
         return this->_help_msg;
     }
 
-    [[nodiscard]] const std::any& default_value() const override {
+    [[nodiscard]] inline const std::any& default_value() const override {
         return this->_default_value;
     }
 
@@ -272,12 +272,12 @@ public:
 
     ~argument_parser() = default;
 
-    argument_parser& program_name(const std::string_view name) {
+    inline argument_parser& program_name(const std::string_view name) {
         this->_program_name = name;
         return *this;
     }
 
-    argument_parser& program_description(const std::string_view description) {
+    inline argument_parser& program_description(const std::string_view description) {
         this->_program_description = description;
         return *this;
     }
