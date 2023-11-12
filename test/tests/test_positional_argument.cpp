@@ -17,8 +17,8 @@ using test_value_type = int;
 constexpr std::string_view argument_name = "test name";
 
 
-positional_argument<test_value_type> default_positional_argument() {
-    return positional_argument<test_value_type>(argument_name);
+positional_argument default_positional_argument() {
+    return positional_argument(argument_name);
 }
 
 } // namespace
@@ -47,11 +47,14 @@ TEST_CASE("has_value() should return true is value is set") {
     REQUIRE(testing_has_value(argument));
 }
 
-TEST_CASE("value() should throw if argument's value has not been set") {
+TEST_CASE("value() should return default any object if argument's value has not been set") {
     auto argument = default_positional_argument();
 
     REQUIRE_FALSE(testing_has_value(argument));
-    REQUIRE_THROWS_AS(testing_get_value(argument), std::bad_optional_access);
+    REQUIRE_THROWS_AS(
+        std::any_cast<test_value_type>(testing_get_value(argument)),
+        std::bad_any_cast
+    );
 }
 
 TEST_CASE("value() should return the argument's value if it has been set") {
@@ -61,7 +64,7 @@ TEST_CASE("value() should return the argument's value if it has been set") {
     testing_set_value(argument, value);
 
     REQUIRE(testing_has_value(argument));
-    REQUIRE_EQ(testing_get_value(argument), value);
+    REQUIRE_EQ(std::any_cast<test_value_type>(testing_get_value(argument)), value);
 }
 
 TEST_CASE("name() should return value passed to the positonal argument "
@@ -116,7 +119,9 @@ TEST_CASE("help() should return message if one has been provided") {
 TEST_CASE("defaul_value() should return nullopt by default") {
     const auto argument = default_positional_argument();
 
-    REQUIRE_FALSE(testing_get_default_value(argument));
+    const auto& arg_default_value = testing_get_default_value(argument);
+
+    REQUIRE_FALSE(arg_default_value.has_value());
 }
 
 TEST_CASE("defaul_value() should return value if one has been provided") {
@@ -125,16 +130,16 @@ TEST_CASE("defaul_value() should return value if one has been provided") {
     test_value_type default_value{};
     argument.default_value(default_value);
 
-    const auto returned_default_value = testing_get_default_value(argument);
+    const auto& arg_default_value = testing_get_default_value(argument);
 
-    REQUIRE(returned_default_value);
-    REQUIRE_EQ(returned_default_value, default_value);
+    REQUIRE(arg_default_value.has_value());
+    REQUIRE_EQ(std::any_cast<test_value_type>(arg_default_value), default_value);
 }
 
 
 // positional_argument class' setter functions
 
-TEST_CASE("value(const value_type&) should set value and return the argument "
+TEST_CASE("value(const any&) should set value and return the argument "
           "instance") {
     auto argument = default_positional_argument();
 
@@ -143,7 +148,10 @@ TEST_CASE("value(const value_type&) should set value and return the argument "
     const auto returned_argument = testing_set_value(argument, value);
 
     REQUIRE(testing_has_value(argument));
-    REQUIRE_EQ(testing_get_value(argument), value);
+
+    const auto& arg_value = testing_get_value(argument);
+
+    REQUIRE_EQ(std::any_cast<test_value_type>(arg_value), value);
     REQUIRE_EQ(returned_argument, argument);
 }
 
@@ -180,7 +188,7 @@ TEST_CASE("help(string_view) should set help message and return the argument") {
     REQUIRE_EQ(returned_argument, argument);
 }
 
-TEST_CASE("default_value(value_type) should set help message and return the "
+TEST_CASE("default_value(const any&) should set help message and return the "
           "argument") {
     auto argument = default_positional_argument();
 
@@ -188,9 +196,8 @@ TEST_CASE("default_value(value_type) should set help message and return the "
 
     const auto returned_argument = argument.default_value(default_value);
 
-    const auto returned_default_value = testing_get_default_value(argument);
+    const auto& arg_default_value = testing_get_default_value(argument);
 
-    REQUIRE(returned_default_value);
-    REQUIRE_EQ(returned_default_value, default_value);
-    REQUIRE_EQ(returned_argument, argument);
+    REQUIRE(arg_default_value.has_value());
+    REQUIRE_EQ(std::any_cast<test_value_type>(arg_default_value), default_value);
 }

@@ -18,12 +18,12 @@ constexpr std::string_view long_name = "test";
 constexpr std::string_view short_name = "t";
 
 
-optional_argument<test_value_type> default_optional_argument_long_name() {
-    return optional_argument<test_value_type>(long_name);
+optional_argument default_optional_argument_long_name() {
+    return optional_argument(long_name);
 }
 
-optional_argument<test_value_type> default_optional_argument_both_names() {
-    return optional_argument<test_value_type>(long_name, short_name);
+optional_argument default_optional_argument_both_names() {
+    return optional_argument(long_name, short_name);
 }
 
 } // namespace
@@ -53,11 +53,14 @@ TEST_CASE("has_value() should return true is value is set") {
     REQUIRE(testing_has_value(argument));
 }
 
-TEST_CASE("value() should throw if argument's value has not been set") {
+TEST_CASE("value() should return default any object if argument's value has not been set") {
     auto argument = default_optional_argument_long_name();
 
     REQUIRE_FALSE(testing_has_value(argument));
-    REQUIRE_THROWS_AS(testing_get_value(argument), std::bad_optional_access);
+    REQUIRE_THROWS_AS(
+        std::any_cast<test_value_type>(testing_get_value(argument)),
+        std::bad_any_cast
+    );
 }
 
 TEST_CASE("value() should return the argument's value if it has been set") {
@@ -67,7 +70,7 @@ TEST_CASE("value() should return the argument's value if it has been set") {
     testing_set_value(argument, value);
 
     REQUIRE(testing_has_value(argument));
-    REQUIRE_EQ(testing_get_value(argument), value);
+    REQUIRE_EQ(std::any_cast<test_value_type>(testing_get_value(argument)), value);
 }
 
 TEST_CASE("name() should return value passed to the optional argument "
@@ -131,7 +134,7 @@ TEST_CASE("help() should return message if one has been provided") {
 TEST_CASE("defaul_value() should return nullopt by default") {
     const auto argument = default_optional_argument_long_name();
 
-    REQUIRE_FALSE(testing_get_default_value(argument));
+    REQUIRE_FALSE(testing_get_default_value(argument).has_value());
 }
 
 TEST_CASE("defaul_value() should return value if one has been provided") {
@@ -142,8 +145,8 @@ TEST_CASE("defaul_value() should return value if one has been provided") {
 
     const auto returned_default_value = testing_get_default_value(argument);
 
-    REQUIRE(returned_default_value);
-    REQUIRE_EQ(returned_default_value, default_value);
+    REQUIRE(returned_default_value.has_value());
+    REQUIRE_EQ(std::any_cast<test_value_type>(returned_default_value), default_value);
 }
 
 // testing for setter functions for optional argument
@@ -157,7 +160,7 @@ TEST_CASE("value(const value_type&) should set value and return the argument "
     const auto returned_argument = testing_set_value(argument, value);
 
     REQUIRE(testing_has_value(argument));
-    REQUIRE_EQ(testing_get_value(argument), value);
+    REQUIRE_EQ(std::any_cast<test_value_type>(testing_get_value(argument)), value);
     REQUIRE_EQ(returned_argument, argument);
 }
 
@@ -205,7 +208,7 @@ TEST_CASE("default_value(value_type) should set default value and return the "
 
     const auto returned_default_value = testing_get_default_value(argument);
 
-    REQUIRE(returned_default_value);
-    REQUIRE_EQ(returned_default_value, default_value);
+    REQUIRE(returned_default_value.has_value());
+    REQUIRE_EQ(std::any_cast<test_value_type>(returned_default_value), default_value);
     REQUIRE_EQ(returned_argument, argument);
 }

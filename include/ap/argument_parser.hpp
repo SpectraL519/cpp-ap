@@ -3,6 +3,7 @@
 #include <iostream>
 #include <optional>
 #include <string_view>
+#include <any>
 
 
 namespace ap {
@@ -15,68 +16,46 @@ concept readable =
 
 
 
-template <readable T>
 class argument_interface {
 public:
-    using value_type = std::remove_reference_t<T>;
-
     virtual argument_interface& help(std::string_view) = 0;
     virtual argument_interface& required(bool) = 0;
-    virtual argument_interface& default_value(const value_type&) = 0;
+    virtual argument_interface& default_value(const std::any&) = 0;
 
     virtual ~argument_interface() = default;
 
 protected:
-    virtual argument_interface& value(const value_type&) = 0;
+    virtual argument_interface& value(const std::any&) = 0;
 
     virtual bool is_positional() const = 0;
     virtual bool is_optional() const = 0;
 
     virtual bool has_value() const = 0;
-    virtual const value_type& value() const = 0;
+
+    virtual const std::any& value() const = 0;
 
     virtual const std::string_view name() const = 0;
     virtual bool required() const = 0;
     virtual const std::optional<std::string_view>& help() const = 0;
-    virtual const std::optional<value_type>& default_value() const = 0;
+    virtual const std::any& default_value() const = 0;
 
 #ifdef AP_TESTING
-    template <readable U>
-    friend inline bool testing_is_positional(const argument_interface<U>&);
-
-    template <readable U>
-    friend inline bool testing_is_optional(const argument_interface<U>&);
-
-    template <readable U>
-    friend inline bool testing_has_value(const argument_interface<U>&);
-
-    template <readable U>
-    friend inline const typename argument_interface<U>::value_type&
-        testing_get_value(const argument_interface<U>&);
-
-    template <readable U>
-    friend inline const std::string_view
-        testing_get_name(const argument_interface<U>&);
-
-    template <readable U>
-    friend inline bool testing_is_required(const argument_interface<U>&);
-
-    template <readable U>
+    friend inline bool testing_is_positional(const argument_interface&);
+    friend inline bool testing_is_optional(const argument_interface&);
+    friend inline bool testing_has_value(const argument_interface&);
+    friend inline const std::any& testing_get_value(const argument_interface&);
+    friend inline const std::string_view testing_get_name(const argument_interface&);
+    friend inline bool testing_is_required(const argument_interface&);
     friend inline const std::optional<std::string_view>&
-        testing_get_help(const argument_interface<U>&);
-
-    template <readable U>
-    friend inline const std::optional<typename argument_interface<U>::value_type>&
-        testing_get_default_value(const argument_interface<U>&);
+        testing_get_help(const argument_interface&);
+    friend inline const std::any&
+        testing_get_default_value(const argument_interface&);
 #endif
 };
 
 
-template <readable T>
-class positional_argument : public argument_interface<T> {
+class positional_argument : public argument_interface {
 public:
-    using value_type = typename argument_interface<T>::value_type;
-
     positional_argument() = delete;
 
     explicit positional_argument(std::string_view name) : _name(name) {}
@@ -97,13 +76,13 @@ public:
         return *this;
     }
 
-    inline positional_argument& default_value(const value_type& default_value) override {
+    inline positional_argument& default_value(const std::any& default_value) override {
         this->_default_value = default_value;
         return *this;
     }
 
 private:
-    inline positional_argument& value(const value_type& value) override {
+    inline positional_argument& value(const std::any& value) override {
         this->_value = value;
         return *this;
     }
@@ -120,8 +99,8 @@ private:
         return this->_value.has_value();
     }
 
-    [[nodiscard]] const value_type& value() const override {
-        return this->_value.value();
+    [[nodiscard]] const std::any& value() const override {
+        return this->_value;
     }
 
     [[nodiscard]] const std::string_view name() const override {
@@ -134,39 +113,35 @@ private:
         return this->_help_msg;
     }
 
-    [[nodiscard]] const std::optional<value_type>& default_value() const override {
+    [[nodiscard]] const std::any& default_value() const override {
         return this->_default_value;
     }
 
     const bool _optional = false;
     const std::string_view _name;
 
-    std::optional<value_type> _value;
+    std::any _value;
 
     bool _required = true;
     std::optional<std::string_view> _help_msg;
-    std::optional<value_type> _default_value;
+    std::any _default_value;
 
 #ifdef AP_TESTING
-    template <readable U>
-    friend inline positional_argument<U>&
-        testing_set_value(positional_argument<U>&, const typename positional_argument<U>::value_type&);
+    friend inline positional_argument&
+        testing_set_value(positional_argument&, const std::any&);
 #endif
 };
 
 
-template <readable T>
-class optional_argument : public argument_interface<T> {
+class optional_argument : public argument_interface {
 public:
-    using value_type = typename argument_interface<T>::value_type;
-
     optional_argument() = delete;
 
     optional_argument(std::string_view name)
         : _name(name) {}
 
     optional_argument(std::string_view name, std::string_view short_name)
-        : _name(name), _short_name(short_name) {} 
+        : _name(name), _short_name(short_name) {}
 
     ~optional_argument() = default;
 
@@ -184,13 +159,13 @@ public:
         return *this;
     }
 
-    inline optional_argument& default_value(const value_type& default_value) override {
+    inline optional_argument& default_value(const std::any& default_value) override {
         this->_default_value = default_value;
         return *this;
     }
 
 private:
-    inline optional_argument& value(const value_type& value) override {
+    inline optional_argument& value(const std::any& value) override {
         this->_value = value;
         return *this;
     }
@@ -207,8 +182,8 @@ private:
         return this->_value.has_value();
     }
 
-    [[nodiscard]] const value_type& value() const override {
-        return this->_value.value();
+    [[nodiscard]] const std::any& value() const override {
+        return this->_value;
     }
 
     [[nodiscard]] const std::string_view name() const override {
@@ -219,15 +194,15 @@ private:
         return this->_short_name;
     }
 
-    [[nodiscard]] bool required() const override { 
-        return this->_required; 
+    [[nodiscard]] bool required() const override {
+        return this->_required;
     }
 
     [[nodiscard]] const std::optional<std::string_view>& help() const override {
         return this->_help_msg;
     }
 
-    [[nodiscard]] const std::optional<value_type>& default_value() const override {
+    [[nodiscard]] const std::any& default_value() const override {
         return this->_default_value;
     }
 
@@ -235,20 +210,17 @@ private:
     const std::string_view _name;
     const std::optional<std::string_view> _short_name;
 
-    std::optional<value_type> _value;
+    std::any _value;
 
     bool _required = false;
     std::optional<std::string_view> _help_msg;
-    std::optional<value_type> _default_value;
+    std::any _default_value;
 
 #ifdef AP_TESTING
-    template <readable U>
-    friend inline optional_argument<U>&
-        testing_set_value(optional_argument<U>&, const typename optional_argument<U>::value_type&);
-
-    template <readable U>
+    friend inline optional_argument&
+        testing_set_value(optional_argument&, const std::any&);
     friend inline const std::optional<std::string_view>
-        testing_get_short_name(const argument_interface<U>&);
+        testing_get_short_name(const optional_argument&);
 #endif
 };
 
