@@ -1,0 +1,175 @@
+\doxysection{doctest\+::String Class Reference}
+\hypertarget{classdoctest_1_1String}{}\label{classdoctest_1_1String}\index{doctest::String@{doctest::String}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{classdoctest_1_1String_a955471ce254dca78b33f8167bad6b0f0}{size\+\_\+type}} = DOCTEST\+\_\+\+CONFIG\+\_\+\+STRING\+\_\+\+SIZE\+\_\+\+TYPE
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classdoctest_1_1String_abb4449cbc613cd973ae774c704fca5dd}\label{classdoctest_1_1String_abb4449cbc613cd973ae774c704fca5dd} 
+{\bfseries String} (const char \texorpdfstring{$\ast$}{*}in)
+\item 
+\Hypertarget{classdoctest_1_1String_a0ce0a3e6a00b63b0a219a988fc42cec3}\label{classdoctest_1_1String_a0ce0a3e6a00b63b0a219a988fc42cec3} 
+{\bfseries String} (const char \texorpdfstring{$\ast$}{*}in, size\+\_\+type in\+\_\+size)
+\item 
+\Hypertarget{classdoctest_1_1String_ac6e38dd40b68e19ef6898a13f60d2a07}\label{classdoctest_1_1String_ac6e38dd40b68e19ef6898a13f60d2a07} 
+{\bfseries String} (\mbox{\hyperlink{classstd_1_1basic__istream}{std\+::istream}} \&in, size\+\_\+type in\+\_\+size)
+\item 
+\Hypertarget{classdoctest_1_1String_a27ca7976da20bdebbf225fa496c38ad1}\label{classdoctest_1_1String_a27ca7976da20bdebbf225fa496c38ad1} 
+{\bfseries String} (const \mbox{\hyperlink{classdoctest_1_1String}{String}} \&other)
+\item 
+\Hypertarget{classdoctest_1_1String_a43d58193ddd859ffc1dbd8ea4d263103}\label{classdoctest_1_1String_a43d58193ddd859ffc1dbd8ea4d263103} 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} \& {\bfseries operator=} (const \mbox{\hyperlink{classdoctest_1_1String}{String}} \&other)
+\item 
+\Hypertarget{classdoctest_1_1String_a3025142a313b3d9bacb6bfd32c1bc36f}\label{classdoctest_1_1String_a3025142a313b3d9bacb6bfd32c1bc36f} 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} \& {\bfseries operator+=} (const \mbox{\hyperlink{classdoctest_1_1String}{String}} \&other)
+\item 
+\Hypertarget{classdoctest_1_1String_a2a0aa72649d92cb8da5b89b98bcff752}\label{classdoctest_1_1String_a2a0aa72649d92cb8da5b89b98bcff752} 
+{\bfseries String} (\mbox{\hyperlink{classdoctest_1_1String}{String}} \&\&other) noexcept
+\item 
+\Hypertarget{classdoctest_1_1String_afc06e2f0bc08246c54d12cb5c2ece4ed}\label{classdoctest_1_1String_afc06e2f0bc08246c54d12cb5c2ece4ed} 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} \& {\bfseries operator=} (\mbox{\hyperlink{classdoctest_1_1String}{String}} \&\&other) noexcept
+\item 
+\Hypertarget{classdoctest_1_1String_a15633c5d68057a07bccdadadd6acae05}\label{classdoctest_1_1String_a15633c5d68057a07bccdadadd6acae05} 
+char {\bfseries operator\mbox{[}$\,$\mbox{]}} (size\+\_\+type i) const
+\item 
+\Hypertarget{classdoctest_1_1String_a538ea195bcaba01af86d3492ca32ec5a}\label{classdoctest_1_1String_a538ea195bcaba01af86d3492ca32ec5a} 
+char \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (size\+\_\+type i)
+\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classdoctest_1_1String_a59fcdcf1abd7d66572158049c1b4a8c0}{c\+\_\+str}} () const
+\item 
+char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classdoctest_1_1String_a4a59b9aa0980d93e15a4cf459dab7f7e}{c\+\_\+str}} ()
+\item 
+\Hypertarget{classdoctest_1_1String_acc9888303b7330a8dc78d3d79eadcf7c}\label{classdoctest_1_1String_acc9888303b7330a8dc78d3d79eadcf7c} 
+size\+\_\+type {\bfseries size} () const
+\item 
+\Hypertarget{classdoctest_1_1String_a1592b42fc76438d5a87a94654a828ced}\label{classdoctest_1_1String_a1592b42fc76438d5a87a94654a828ced} 
+size\+\_\+type {\bfseries capacity} () const
+\item 
+\Hypertarget{classdoctest_1_1String_a6fd53b95d33900d8a38a3a33c43c928e}\label{classdoctest_1_1String_a6fd53b95d33900d8a38a3a33c43c928e} 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} {\bfseries substr} (size\+\_\+type pos, size\+\_\+type cnt=npos) \&\&
+\item 
+\Hypertarget{classdoctest_1_1String_ace5bc90d48d52944412addef185de9a6}\label{classdoctest_1_1String_ace5bc90d48d52944412addef185de9a6} 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} {\bfseries substr} (size\+\_\+type pos, size\+\_\+type cnt=npos) const \&
+\item 
+\Hypertarget{classdoctest_1_1String_aa7b27b07ca5bf081b3ec25a3224a7a05}\label{classdoctest_1_1String_aa7b27b07ca5bf081b3ec25a3224a7a05} 
+size\+\_\+type {\bfseries find} (char ch, size\+\_\+type pos=0) const
+\item 
+\Hypertarget{classdoctest_1_1String_a6e22f4f3820de5ffdf82e0acc6646759}\label{classdoctest_1_1String_a6e22f4f3820de5ffdf82e0acc6646759} 
+size\+\_\+type {\bfseries rfind} (char ch, size\+\_\+type pos=npos) const
+\item 
+\Hypertarget{classdoctest_1_1String_aef87d1f106d32d8c31af87335b44164d}\label{classdoctest_1_1String_aef87d1f106d32d8c31af87335b44164d} 
+int {\bfseries compare} (const char \texorpdfstring{$\ast$}{*}other, bool no\+\_\+case=false) const
+\item 
+\Hypertarget{classdoctest_1_1String_adb57becb56e054d981e7c2b967a7e359}\label{classdoctest_1_1String_adb57becb56e054d981e7c2b967a7e359} 
+int {\bfseries compare} (const \mbox{\hyperlink{classdoctest_1_1String}{String}} \&other, bool no\+\_\+case=false) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static DOCTEST\+\_\+\+CONSTEXPR size\+\_\+type \mbox{\hyperlink{classdoctest_1_1String_a29d41bba3eb99eb895aaf8227da09f3e}{npos}} = static\+\_\+cast$<$size\+\_\+type$>$(-\/1)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classdoctest_1_1String_a782c199b9e7c3bdf94579410c8a82fc3}\label{classdoctest_1_1String_a782c199b9e7c3bdf94579410c8a82fc3} 
+DOCTEST\+\_\+\+INTERFACE \mbox{\hyperlink{classstd_1_1basic__ostream}{std\+::ostream}} \& {\bfseries operator$<$$<$} (\mbox{\hyperlink{classstd_1_1basic__ostream}{std\+::ostream}} \&s, const \mbox{\hyperlink{classdoctest_1_1String}{String}} \&in)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l00587}{587}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{classdoctest_1_1String_a955471ce254dca78b33f8167bad6b0f0}\label{classdoctest_1_1String_a955471ce254dca78b33f8167bad6b0f0} 
+\index{doctest::String@{doctest::String}!size\_type@{size\_type}}
+\index{size\_type@{size\_type}!doctest::String@{doctest::String}}
+\doxysubsubsection{\texorpdfstring{size\_type}{size\_type}}
+{\footnotesize\ttfamily using doctest\+::\+String\+::size\+\_\+type = DOCTEST\+\_\+\+CONFIG\+\_\+\+STRING\+\_\+\+SIZE\+\_\+\+TYPE}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l00590}{590}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classdoctest_1_1String_a4a59b9aa0980d93e15a4cf459dab7f7e}\label{classdoctest_1_1String_a4a59b9aa0980d93e15a4cf459dab7f7e} 
+\index{doctest::String@{doctest::String}!c\_str@{c\_str}}
+\index{c\_str@{c\_str}!doctest::String@{doctest::String}}
+\doxysubsubsection{\texorpdfstring{c\_str()}{c\_str()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily char \texorpdfstring{$\ast$}{*} doctest\+::\+String\+::c\+\_\+str (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l00643}{643}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00644\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (isOnStack())\ \{}
+\DoxyCodeLine{00645\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(buf);}
+\DoxyCodeLine{00646\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00647\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ data.ptr;}
+\DoxyCodeLine{00648\ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{classdoctest_1_1String_a59fcdcf1abd7d66572158049c1b4a8c0}\label{classdoctest_1_1String_a59fcdcf1abd7d66572158049c1b4a8c0} 
+\index{doctest::String@{doctest::String}!c\_str@{c\_str}}
+\index{c\_str@{c\_str}!doctest::String@{doctest::String}}
+\doxysubsubsection{\texorpdfstring{c\_str()}{c\_str()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily const char \texorpdfstring{$\ast$}{*} doctest\+::\+String\+::c\+\_\+str (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l00642}{642}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00642\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{const\_cast<}String*\textcolor{keyword}{>}(\textcolor{keyword}{this})-\/>c\_str();\ \}\ \textcolor{comment}{//\ NOLINT}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classdoctest_1_1String_a7e031ced488588936a540eba26facf67}\label{classdoctest_1_1String_a7e031ced488588936a540eba26facf67} 
+\index{doctest::String@{doctest::String}!buf@{buf}}
+\index{buf@{buf}!doctest::String@{doctest::String}}
+\doxysubsubsection{\texorpdfstring{buf}{buf}}
+{\footnotesize\ttfamily char doctest\+::\+String\+::buf\mbox{[}len\mbox{]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l00605}{605}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+\Hypertarget{classdoctest_1_1String_a5c77ed634a1b81aea739a73fb01d986a}\label{classdoctest_1_1String_a5c77ed634a1b81aea739a73fb01d986a} 
+\index{doctest::String@{doctest::String}!data@{data}}
+\index{data@{data}!doctest::String@{doctest::String}}
+\doxysubsubsection{\texorpdfstring{data}{data}}
+{\footnotesize\ttfamily view doctest\+::\+String\+::data}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l00606}{606}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+\Hypertarget{classdoctest_1_1String_a29d41bba3eb99eb895aaf8227da09f3e}\label{classdoctest_1_1String_a29d41bba3eb99eb895aaf8227da09f3e} 
+\index{doctest::String@{doctest::String}!npos@{npos}}
+\index{npos@{npos}!doctest::String@{doctest::String}}
+\doxysubsubsection{\texorpdfstring{npos}{npos}}
+{\footnotesize\ttfamily DOCTEST\+\_\+\+CONSTEXPR size\+\_\+type doctest\+::\+String\+::npos = static\+\_\+cast$<$size\+\_\+type$>$(-\/1)\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l00619}{619}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+test/doctest.\+h\end{DoxyCompactItemize}

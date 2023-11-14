@@ -36,3 +36,27 @@ Argument Parser for C++20
         ```
         > ./test -ts="<test-suite-name>"
         ```
+
+## Documentation
+
+The documentation for this project is generated using Doxygen. Follow the steps below to generate and view the documentation.
+
+### Prerequisites
+
+1. **Doxygen Installation**: Make sure you have Doxygen installed on your system. If not, you can download it from [here](https:## Documentation
+
+The documentation for this project is generated using Doxygen. Follow the steps below to generate and view the documentation.
+
+### Prerequisites
+
+1. **Doxygen Installation**: Make sure you have Doxygen installed on your system. If not, you can download it from [here](https://www.doxygen.nl/download.html).
+
+### Generating Documentation
+
+1. Open a terminal in the root directory of the project.
+
+2. Run the following command to generate the documentation:
+
+   ```bash
+   doxygen Doxyfile
+   ```

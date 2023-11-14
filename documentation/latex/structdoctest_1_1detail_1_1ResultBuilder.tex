@@ -1,0 +1,131 @@
+\doxysection{doctest\+::detail\+::Result\+Builder Struct Reference}
+\hypertarget{structdoctest_1_1detail_1_1ResultBuilder}{}\label{structdoctest_1_1detail_1_1ResultBuilder}\index{doctest::detail::ResultBuilder@{doctest::detail::ResultBuilder}}
+Inheritance diagram for doctest\+::detail\+::Result\+Builder\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structdoctest_1_1detail_1_1ResultBuilder}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_a135e00690002d376f3d050700a635680}\label{structdoctest_1_1detail_1_1ResultBuilder_a135e00690002d376f3d050700a635680} 
+{\bfseries Result\+Builder} (assert\+Type\+::\+Enum at, const char \texorpdfstring{$\ast$}{*}file, int line, const char \texorpdfstring{$\ast$}{*}expr, const char \texorpdfstring{$\ast$}{*}exception\+\_\+type="{}"{}, const \mbox{\hyperlink{classdoctest_1_1String}{String}} \&exception\+\_\+string="{}"{})
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_ab55660e3aaa5d8fccbe19360f65bb1f3}\label{structdoctest_1_1detail_1_1ResultBuilder_ab55660e3aaa5d8fccbe19360f65bb1f3} 
+{\bfseries Result\+Builder} (assert\+Type\+::\+Enum at, const char \texorpdfstring{$\ast$}{*}file, int line, const char \texorpdfstring{$\ast$}{*}expr, const char \texorpdfstring{$\ast$}{*}exception\+\_\+type, const \mbox{\hyperlink{classdoctest_1_1Contains}{Contains}} \&exception\+\_\+string)
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_a86c0ca727fead43263de4a7e9a59ad23}\label{structdoctest_1_1detail_1_1ResultBuilder_a86c0ca727fead43263de4a7e9a59ad23} 
+void {\bfseries set\+Result} (const \mbox{\hyperlink{structdoctest_1_1detail_1_1Result}{Result}} \&res)
+\item 
+{\footnotesize template$<$int comparison, typename L , typename R $>$ }\\DOCTEST\+\_\+\+NOINLINE bool \mbox{\hyperlink{structdoctest_1_1detail_1_1ResultBuilder_aa920a0617a26939d7adcd1ba2dec0e85}{binary\+\_\+assert}} (const DOCTEST\+\_\+\+REF\+\_\+\+WRAP(L) lhs, const DOCTEST\+\_\+\+REF\+\_\+\+WRAP(R) rhs)
+\item 
+{\footnotesize template$<$typename L $>$ }\\DOCTEST\+\_\+\+NOINLINE bool \mbox{\hyperlink{structdoctest_1_1detail_1_1ResultBuilder_a63a2a19638f4a761c70abd5563e2d23a}{unary\+\_\+assert}} (const DOCTEST\+\_\+\+REF\+\_\+\+WRAP(L) val)
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_a5eece6aa3b1a2cb366cf5a0cc6c854a3}\label{structdoctest_1_1detail_1_1ResultBuilder_a5eece6aa3b1a2cb366cf5a0cc6c854a3} 
+void {\bfseries translate\+Exception} ()
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_a2af75dd1d8db8d3aa949d78025854085}\label{structdoctest_1_1detail_1_1ResultBuilder_a2af75dd1d8db8d3aa949d78025854085} 
+bool {\bfseries log} ()
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_a03686f862471728c2980d72e02980213}\label{structdoctest_1_1detail_1_1ResultBuilder_a03686f862471728c2980d72e02980213} 
+void {\bfseries react} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{structdoctest_1_1AssertData}{doctest\+::\+Assert\+Data}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Assert\+Data} (assert\+Type\+::\+Enum at, const char \texorpdfstring{$\ast$}{*}file, int line, const char \texorpdfstring{$\ast$}{*}expr, const char \texorpdfstring{$\ast$}{*}exception\+\_\+type, const \mbox{\hyperlink{classdoctest_1_1AssertData_1_1StringContains}{String\+Contains}} \&exception\+\_\+string)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{structdoctest_1_1AssertData}{doctest\+::\+Assert\+Data}}}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{structdoctest_1_1TestCaseData}{Test\+Case\+Data}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdoctest_1_1AssertData_ab26ee6e05feaefc982c4f5481458cbda}{m\+\_\+test\+\_\+case}}
+\item 
+assert\+Type\+::\+Enum \mbox{\hyperlink{structdoctest_1_1AssertData_a0b3b2866b13ba048c0beea51bd798749}{m\+\_\+at}}
+\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdoctest_1_1AssertData_ac22c9ed0d8c6edec58c4b26a0a00e714}{m\+\_\+file}}
+\item 
+int \mbox{\hyperlink{structdoctest_1_1AssertData_a1142f5fb5d171964b7677a9d23f81548}{m\+\_\+line}}
+\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdoctest_1_1AssertData_af8fe9e24ffba3f575c7384a85f96297a}{m\+\_\+expr}}
+\item 
+bool \mbox{\hyperlink{structdoctest_1_1AssertData_ac9ddaf3e6532fdadba3c1f74eb931d4a}{m\+\_\+failed}}
+\item 
+bool \mbox{\hyperlink{structdoctest_1_1AssertData_a3e9d4c7eeff7c4fe310b0597bf7027b8}{m\+\_\+threw}}
+\item 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} \mbox{\hyperlink{structdoctest_1_1AssertData_a1fdbef933ef26c0bc174f9ec716924cd}{m\+\_\+exception}}
+\item 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} \mbox{\hyperlink{structdoctest_1_1AssertData_a1c6b5804b7dd4d8ba70126cb598f30bd}{m\+\_\+decomp}}
+\item 
+bool \mbox{\hyperlink{structdoctest_1_1AssertData_ace744d365532d299052c8a80a63f7079}{m\+\_\+threw\+\_\+as}}
+\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdoctest_1_1AssertData_a1c476dc606780aefdb7db2d7ca146199}{m\+\_\+exception\+\_\+type}}
+\item 
+class DOCTEST\+\_\+\+INTERFACE \mbox{\hyperlink{classdoctest_1_1AssertData_1_1StringContains}{doctest\+::\+Assert\+Data\+::\+String\+Contains}} {\bfseries m\+\_\+exception\+\_\+string}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01681}{1681}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_aa920a0617a26939d7adcd1ba2dec0e85}\label{structdoctest_1_1detail_1_1ResultBuilder_aa920a0617a26939d7adcd1ba2dec0e85} 
+\index{doctest::detail::ResultBuilder@{doctest::detail::ResultBuilder}!binary\_assert@{binary\_assert}}
+\index{binary\_assert@{binary\_assert}!doctest::detail::ResultBuilder@{doctest::detail::ResultBuilder}}
+\doxysubsubsection{\texorpdfstring{binary\_assert()}{binary\_assert()}}
+{\footnotesize\ttfamily template$<$int comparison, typename L , typename R $>$ \\
+DOCTEST\+\_\+\+NOINLINE bool doctest\+::detail\+::\+Result\+Builder\+::binary\+\_\+assert (\begin{DoxyParamCaption}\item[{const DOCTEST\+\_\+\+REF\+\_\+\+WRAP(L)}]{lhs,  }\item[{const DOCTEST\+\_\+\+REF\+\_\+\+WRAP(R)}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01692}{1692}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01693\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01694\ \ \ \ \ \ \ \ \ \ \ \ \ m\_failed\ =\ !RelationalComparator<comparison,\ L,\ R>()(lhs,\ rhs);}
+\DoxyCodeLine{01695\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_failed\ ||\ getContextOptions()-\/>success)\ \{}
+\DoxyCodeLine{01696\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_decomp\ =\ stringifyBinaryExpr(lhs,\ \textcolor{stringliteral}{"{},\ "{}},\ rhs);}
+\DoxyCodeLine{01697\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01698\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ !m\_failed;}
+\DoxyCodeLine{01699\ \ \ \ \ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{structdoctest_1_1detail_1_1ResultBuilder_a63a2a19638f4a761c70abd5563e2d23a}\label{structdoctest_1_1detail_1_1ResultBuilder_a63a2a19638f4a761c70abd5563e2d23a} 
+\index{doctest::detail::ResultBuilder@{doctest::detail::ResultBuilder}!unary\_assert@{unary\_assert}}
+\index{unary\_assert@{unary\_assert}!doctest::detail::ResultBuilder@{doctest::detail::ResultBuilder}}
+\doxysubsubsection{\texorpdfstring{unary\_assert()}{unary\_assert()}}
+{\footnotesize\ttfamily template$<$typename L $>$ \\
+DOCTEST\+\_\+\+NOINLINE bool doctest\+::detail\+::\+Result\+Builder\+::unary\+\_\+assert (\begin{DoxyParamCaption}\item[{const DOCTEST\+\_\+\+REF\+\_\+\+WRAP(L)}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+OCLINT bitwise operator in conditional
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01702}{1702}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01702\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01703\ \ \ \ \ \ \ \ \ \ \ \ \ m\_failed\ =\ !val;}
+\DoxyCodeLine{01704\ }
+\DoxyCodeLine{01705\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_at\ \&\ assertType::is\_false)\ \{\ }
+\DoxyCodeLine{01706\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_failed\ =\ !m\_failed;}
+\DoxyCodeLine{01707\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01708\ }
+\DoxyCodeLine{01709\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_failed\ ||\ getContextOptions()-\/>success)\ \{}
+\DoxyCodeLine{01710\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_decomp\ =\ (DOCTEST\_STRINGIFY(val));}
+\DoxyCodeLine{01711\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01712\ }
+\DoxyCodeLine{01713\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ !m\_failed;}
+\DoxyCodeLine{01714\ \ \ \ \ \ \ \ \ \}}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+test/doctest.\+h\end{DoxyCompactItemize}

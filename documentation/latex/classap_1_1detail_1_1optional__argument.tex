@@ -1,0 +1,155 @@
+\doxysection{ap\+::detail\+::optional\+\_\+argument Class Reference}
+\hypertarget{classap_1_1detail_1_1optional__argument}{}\label{classap_1_1detail_1_1optional__argument}\index{ap::detail::optional\_argument@{ap::detail::optional\_argument}}
+Inheritance diagram for ap\+::detail\+::optional\+\_\+argument\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classap_1_1detail_1_1optional__argument}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classap_1_1detail_1_1optional__argument_a4a7a4d002201600015fe124ed0f1d956}{optional\+\_\+argument}} (std\+::string\+\_\+view name)
+\item 
+\mbox{\hyperlink{classap_1_1detail_1_1optional__argument_a349b3ef17e87460c76e3f499cbdadb6b}{optional\+\_\+argument}} (std\+::string\+\_\+view name, std\+::string\+\_\+view short\+\_\+name)
+\item 
+bool \mbox{\hyperlink{classap_1_1detail_1_1optional__argument_a110e296813fffdc7285e14a3850072b2}{operator==}} (const \mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \&other) const
+\item 
+\mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \& \mbox{\hyperlink{classap_1_1detail_1_1optional__argument_aaf1ffef56b7556504ad06d1fafe26b60}{help}} (std\+::string\+\_\+view help\+\_\+msg) override
+\item 
+\mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \& \mbox{\hyperlink{classap_1_1detail_1_1optional__argument_abb602585512c0bf687d878de5b99a0ba}{required}} (bool required) override
+\item 
+\mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \& \mbox{\hyperlink{classap_1_1detail_1_1optional__argument_aadb0307179b1e831562307371ab42858}{default\+\_\+value}} (const std\+::any \&default\+\_\+value) override
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00179}{179}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classap_1_1detail_1_1optional__argument_a4a7a4d002201600015fe124ed0f1d956}\label{classap_1_1detail_1_1optional__argument_a4a7a4d002201600015fe124ed0f1d956} 
+\index{ap::detail::optional\_argument@{ap::detail::optional\_argument}!optional\_argument@{optional\_argument}}
+\index{optional\_argument@{optional\_argument}!ap::detail::optional\_argument@{ap::detail::optional\_argument}}
+\doxysubsubsection{\texorpdfstring{optional\_argument()}{optional\_argument()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily ap\+::detail\+::optional\+\_\+argument\+::optional\+\_\+argument (\begin{DoxyParamCaption}\item[{std\+::string\+\_\+view}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00183}{183}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00183\ :\ \_name(name)\ \{\}}
+
+\end{DoxyCode}
+\Hypertarget{classap_1_1detail_1_1optional__argument_a349b3ef17e87460c76e3f499cbdadb6b}\label{classap_1_1detail_1_1optional__argument_a349b3ef17e87460c76e3f499cbdadb6b} 
+\index{ap::detail::optional\_argument@{ap::detail::optional\_argument}!optional\_argument@{optional\_argument}}
+\index{optional\_argument@{optional\_argument}!ap::detail::optional\_argument@{ap::detail::optional\_argument}}
+\doxysubsubsection{\texorpdfstring{optional\_argument()}{optional\_argument()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily ap\+::detail\+::optional\+\_\+argument\+::optional\+\_\+argument (\begin{DoxyParamCaption}\item[{std\+::string\+\_\+view}]{name,  }\item[{std\+::string\+\_\+view}]{short\+\_\+name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00185}{185}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ :\ \_name(name,\ short\_name)\ \{\}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classap_1_1detail_1_1optional__argument_aadb0307179b1e831562307371ab42858}\label{classap_1_1detail_1_1optional__argument_aadb0307179b1e831562307371ab42858} 
+\index{ap::detail::optional\_argument@{ap::detail::optional\_argument}!default\_value@{default\_value}}
+\index{default\_value@{default\_value}!ap::detail::optional\_argument@{ap::detail::optional\_argument}}
+\doxysubsubsection{\texorpdfstring{default\_value()}{default\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \& ap\+::detail\+::optional\+\_\+argument\+::default\+\_\+value (\begin{DoxyParamCaption}\item[{const std\+::any \&}]{default\+\_\+value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classap_1_1detail_1_1argument__interface}{ap\+::detail\+::argument\+\_\+interface}}.
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00204}{204}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ this-\/>\_default\_value\ =\ default\_value;}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00207\ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{classap_1_1detail_1_1optional__argument_aaf1ffef56b7556504ad06d1fafe26b60}\label{classap_1_1detail_1_1optional__argument_aaf1ffef56b7556504ad06d1fafe26b60} 
+\index{ap::detail::optional\_argument@{ap::detail::optional\_argument}!help@{help}}
+\index{help@{help}!ap::detail::optional\_argument@{ap::detail::optional\_argument}}
+\doxysubsubsection{\texorpdfstring{help()}{help()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \& ap\+::detail\+::optional\+\_\+argument\+::help (\begin{DoxyParamCaption}\item[{std\+::string\+\_\+view}]{help\+\_\+msg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classap_1_1detail_1_1argument__interface}{ap\+::detail\+::argument\+\_\+interface}}.
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00194}{194}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ this-\/>\_help\_msg\ =\ help\_msg;}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00197\ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{classap_1_1detail_1_1optional__argument_a110e296813fffdc7285e14a3850072b2}\label{classap_1_1detail_1_1optional__argument_a110e296813fffdc7285e14a3850072b2} 
+\index{ap::detail::optional\_argument@{ap::detail::optional\_argument}!operator==@{operator==}}
+\index{operator==@{operator==}!ap::detail::optional\_argument@{ap::detail::optional\_argument}}
+\doxysubsubsection{\texorpdfstring{operator==()}{operator==()}}
+{\footnotesize\ttfamily bool ap\+::detail\+::optional\+\_\+argument\+::operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \&}]{other }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00190}{190}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>\_name\ ==\ other.\_name;}
+\DoxyCodeLine{00192\ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{classap_1_1detail_1_1optional__argument_abb602585512c0bf687d878de5b99a0ba}\label{classap_1_1detail_1_1optional__argument_abb602585512c0bf687d878de5b99a0ba} 
+\index{ap::detail::optional\_argument@{ap::detail::optional\_argument}!required@{required}}
+\index{required@{required}!ap::detail::optional\_argument@{ap::detail::optional\_argument}}
+\doxysubsubsection{\texorpdfstring{required()}{required()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classap_1_1detail_1_1optional__argument}{optional\+\_\+argument}} \& ap\+::detail\+::optional\+\_\+argument\+::required (\begin{DoxyParamCaption}\item[{bool}]{required }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classap_1_1detail_1_1argument__interface}{ap\+::detail\+::argument\+\_\+interface}}.
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00199}{199}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ this-\/>\_required\ =\ required;}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00202\ \ \ \ \ \}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/ap/argument\+\_\+parser.\+hpp\end{DoxyCompactItemize}

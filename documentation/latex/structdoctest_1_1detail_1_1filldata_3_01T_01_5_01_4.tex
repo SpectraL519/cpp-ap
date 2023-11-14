@@ -1,0 +1,51 @@
+\doxysection{doctest\+::detail\+::filldata\texorpdfstring{$<$}{<} T \texorpdfstring{$\ast$}{*} \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structdoctest_1_1detail_1_1filldata_3_01T_01_5_01_4}{}\label{structdoctest_1_1detail_1_1filldata_3_01T_01_5_01_4}\index{doctest::detail::filldata$<$ T \texorpdfstring{$\ast$}{*} $>$@{doctest::detail::filldata$<$ T \texorpdfstring{$\ast$}{*} $>$}}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{structdoctest_1_1detail_1_1filldata_3_01T_01_5_01_4_a1d84a050e15d9380ccc4f04288cab504}{fill}} (\mbox{\hyperlink{classstd_1_1basic__ostream}{std\+::ostream}} \texorpdfstring{$\ast$}{*}stream, const T \texorpdfstring{$\ast$}{*}in)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+struct doctest\+::detail\+::filldata$<$ T \texorpdfstring{$\ast$}{*} $>$}
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01192}{1192}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structdoctest_1_1detail_1_1filldata_3_01T_01_5_01_4_a1d84a050e15d9380ccc4f04288cab504}\label{structdoctest_1_1detail_1_1filldata_3_01T_01_5_01_4_a1d84a050e15d9380ccc4f04288cab504} 
+\index{doctest::detail::filldata$<$ T \texorpdfstring{$\ast$}{*} $>$@{doctest::detail::filldata$<$ T \texorpdfstring{$\ast$}{*} $>$}!fill@{fill}}
+\index{fill@{fill}!doctest::detail::filldata$<$ T \texorpdfstring{$\ast$}{*} $>$@{doctest::detail::filldata$<$ T \texorpdfstring{$\ast$}{*} $>$}}
+\doxysubsubsection{\texorpdfstring{fill()}{fill()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static void \mbox{\hyperlink{structdoctest_1_1detail_1_1filldata}{doctest\+::detail\+::filldata}}$<$ T \texorpdfstring{$\ast$}{*} $>$\+::fill (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classstd_1_1basic__ostream}{std\+::ostream}} \texorpdfstring{$\ast$}{*}}]{stream,  }\item[{const T \texorpdfstring{$\ast$}{*}}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01194}{1194}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01195\ DOCTEST\_MSVC\_SUPPRESS\_WARNING\_POP}
+\DoxyCodeLine{01196\ DOCTEST\_CLANG\_SUPPRESS\_WARNING\_WITH\_PUSH(\textcolor{stringliteral}{"{}-\/Wmicrosoft-\/cast"{}})}
+\DoxyCodeLine{01197\ \ \ \ \ \ \ \ \ \ \ \ \ filldata<const\ \textcolor{keywordtype}{void}*>::fill(stream,}
+\DoxyCodeLine{01198\ \textcolor{preprocessor}{\#if\ DOCTEST\_GCC\ ==\ 0\ ||\ DOCTEST\_GCC\ >=\ DOCTEST\_COMPILER(4,\ 9,\ 0)}}
+\DoxyCodeLine{01199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(in)}
+\DoxyCodeLine{01200\ \#\textcolor{keywordflow}{else}}
+\DoxyCodeLine{01201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *\textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{void}*\ const*\textcolor{keyword}{>}(\&in)}
+\DoxyCodeLine{01202\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01203\ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{01204\ DOCTEST\_CLANG\_SUPPRESS\_WARNING\_POP}
+\DoxyCodeLine{01205\ \ \ \ \ \ \ \ \ \}}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+test/doctest.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,145 @@
+\doxysection{doctest\+::detail\+::Message\+Builder Struct Reference}
+\hypertarget{structdoctest_1_1detail_1_1MessageBuilder}{}\label{structdoctest_1_1detail_1_1MessageBuilder}\index{doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}}
+Inheritance diagram for doctest\+::detail\+::Message\+Builder\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structdoctest_1_1detail_1_1MessageBuilder}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a93cb6f180968d38cb0f18b08ec6c9000}\label{structdoctest_1_1detail_1_1MessageBuilder_a93cb6f180968d38cb0f18b08ec6c9000} 
+{\bfseries Message\+Builder} (const char \texorpdfstring{$\ast$}{*}file, int line, assert\+Type\+::\+Enum severity)
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_ae40185a1fbaf07becd0bd077806f0358}\label{structdoctest_1_1detail_1_1MessageBuilder_ae40185a1fbaf07becd0bd077806f0358} 
+{\bfseries Message\+Builder} (const \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \&)=delete
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a1b5690556dd0fc3ac24c998f49b96147}\label{structdoctest_1_1detail_1_1MessageBuilder_a1b5690556dd0fc3ac24c998f49b96147} 
+{\bfseries Message\+Builder} (\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \&\&)=delete
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_afd668c2a039c6de8f206f161322dcfca}\label{structdoctest_1_1detail_1_1MessageBuilder_afd668c2a039c6de8f206f161322dcfca} 
+\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& {\bfseries operator=} (const \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \&)=delete
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a28d29afede0741477c1dd553b83ab606}\label{structdoctest_1_1detail_1_1MessageBuilder_a28d29afede0741477c1dd553b83ab606} 
+\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& {\bfseries operator=} (\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \&\&)=delete
+\item 
+{\footnotesize template$<$typename T $>$ }\\\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder_a2c88e23f836089f12a7496d2b48e6f0e}{operator,}} (const T \&in)
+\item 
+{\footnotesize template$<$typename T $>$ }\\DOCTEST\+\_\+\+MSVC\+\_\+\+SUPPRESS\+\_\+\+WARNING\+\_\+\+POP \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder_a3e8e23dc8604e7b1a68c0fdfeec9df12}{operator$<$$<$}} (const T \&in)
+\item 
+{\footnotesize template$<$typename T $>$ }\\\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder_ab14a0fc7fc77c722d9b66d78a926d63b}{operator\texorpdfstring{$\ast$}{*}}} (const T \&in)
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a9bcc5d56e1764a7e07efebca55e43cce}\label{structdoctest_1_1detail_1_1MessageBuilder_a9bcc5d56e1764a7e07efebca55e43cce} 
+bool {\bfseries log} ()
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a3a65c5e39a0c04ae8e2a7c34997a2e4d}\label{structdoctest_1_1detail_1_1MessageBuilder_a3a65c5e39a0c04ae8e2a7c34997a2e4d} 
+void {\bfseries react} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classstd_1_1basic__ostream}{std\+::ostream}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder_a5319d522ba62c91e59ffa7f6982756e5}{m\+\_\+stream}}
+\item 
+bool \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder_ab99f0292c65f7a4311a6ecd94f313bf3}{logged}} = false
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{structdoctest_1_1MessageData}{doctest\+::\+Message\+Data}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classdoctest_1_1String}{String}} \mbox{\hyperlink{structdoctest_1_1MessageData_a0ef5cfd7a399ee475d6357b6dcddfe53}{m\+\_\+string}}
+\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdoctest_1_1MessageData_acd1e6a5c4f03ed6e098cdab5956a3e17}{m\+\_\+file}}
+\item 
+int \mbox{\hyperlink{structdoctest_1_1MessageData_a7c1cf03250a68db5befbba63b3824d93}{m\+\_\+line}}
+\item 
+assert\+Type\+::\+Enum \mbox{\hyperlink{structdoctest_1_1MessageData_a24e0a3f475609ce8e02cecc4cb0d3b48}{m\+\_\+severity}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01869}{1869}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_ab14a0fc7fc77c722d9b66d78a926d63b}\label{structdoctest_1_1detail_1_1MessageBuilder_ab14a0fc7fc77c722d9b66d78a926d63b} 
+\index{doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}!operator\texorpdfstring{$\ast$}{*}@{operator\texorpdfstring{$\ast$}{*}}}
+\index{operator\texorpdfstring{$\ast$}{*}@{operator\texorpdfstring{$\ast$}{*}}!doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}}
+\doxysubsubsection{\texorpdfstring{operator\texorpdfstring{$\ast$}{*}()}{operator*()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& doctest\+::detail\+::\+Message\+Builder\+::operator\texorpdfstring{$\ast$}{*} (\begin{DoxyParamCaption}\item[{const T \&}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01902}{1902}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01902\ \{\ \textcolor{keywordflow}{return}\ this-\/>operator,(in);\ \}}
+
+\end{DoxyCode}
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a2c88e23f836089f12a7496d2b48e6f0e}\label{structdoctest_1_1detail_1_1MessageBuilder_a2c88e23f836089f12a7496d2b48e6f0e} 
+\index{doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}!operator,@{operator,}}
+\index{operator,@{operator,}!doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}}
+\doxysubsubsection{\texorpdfstring{operator,()}{operator,()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& doctest\+::detail\+::\+Message\+Builder\+::operator, (\begin{DoxyParamCaption}\item[{const T \&}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01887}{1887}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01887\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01888\ \ \ \ \ \ \ \ \ \ \ \ \ *m\_stream\ <<\ (DOCTEST\_STRINGIFY(in));}
+\DoxyCodeLine{01889\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{01890\ \ \ \ \ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a3e8e23dc8604e7b1a68c0fdfeec9df12}\label{structdoctest_1_1detail_1_1MessageBuilder_a3e8e23dc8604e7b1a68c0fdfeec9df12} 
+\index{doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+DOCTEST\+\_\+\+MSVC\+\_\+\+SUPPRESS\+\_\+\+WARNING\+\_\+\+POP \mbox{\hyperlink{structdoctest_1_1detail_1_1MessageBuilder}{Message\+Builder}} \& doctest\+::detail\+::\+Message\+Builder\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{const T \&}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01895}{1895}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01895\ \{\ \textcolor{keywordflow}{return}\ this-\/>operator,(in);\ \}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_ab99f0292c65f7a4311a6ecd94f313bf3}\label{structdoctest_1_1detail_1_1MessageBuilder_ab99f0292c65f7a4311a6ecd94f313bf3} 
+\index{doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}!logged@{logged}}
+\index{logged@{logged}!doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}}
+\doxysubsubsection{\texorpdfstring{logged}{logged}}
+{\footnotesize\ttfamily bool doctest\+::detail\+::\+Message\+Builder\+::logged = false}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01872}{1872}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+\Hypertarget{structdoctest_1_1detail_1_1MessageBuilder_a5319d522ba62c91e59ffa7f6982756e5}\label{structdoctest_1_1detail_1_1MessageBuilder_a5319d522ba62c91e59ffa7f6982756e5} 
+\index{doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}!m\_stream@{m\_stream}}
+\index{m\_stream@{m\_stream}!doctest::detail::MessageBuilder@{doctest::detail::MessageBuilder}}
+\doxysubsubsection{\texorpdfstring{m\_stream}{m\_stream}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classstd_1_1basic__ostream}{std\+::ostream}}\texorpdfstring{$\ast$}{*} doctest\+::detail\+::\+Message\+Builder\+::m\+\_\+stream}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01871}{1871}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+test/doctest.\+h\end{DoxyCompactItemize}

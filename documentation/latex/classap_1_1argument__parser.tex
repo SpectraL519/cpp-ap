@@ -1,0 +1,100 @@
+\doxysection{ap\+::argument\+\_\+parser Class Reference}
+\hypertarget{classap_1_1argument__parser}{}\label{classap_1_1argument__parser}\index{ap::argument\_parser@{ap::argument\_parser}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classap_1_1argument__parser_a3c08f3d1cd9dbd713971195f8ee16a9f}\label{classap_1_1argument__parser_a3c08f3d1cd9dbd713971195f8ee16a9f} 
+{\bfseries argument\+\_\+parser} (const \mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \&)=delete
+\item 
+\Hypertarget{classap_1_1argument__parser_a732a69d4c3bc4f01c167a87b5c3d9d5a}\label{classap_1_1argument__parser_a732a69d4c3bc4f01c167a87b5c3d9d5a} 
+{\bfseries argument\+\_\+parser} (\mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \&\&)=delete
+\item 
+\Hypertarget{classap_1_1argument__parser_a795979d7d8e88c678b7d5c992af0d769}\label{classap_1_1argument__parser_a795979d7d8e88c678b7d5c992af0d769} 
+\mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \& {\bfseries operator=} (const \mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \&)=delete
+\item 
+\mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \& \mbox{\hyperlink{classap_1_1argument__parser_a2ef6ef81139f67a68946ea7134707585}{program\+\_\+name}} (const std\+::string\+\_\+view name)
+\item 
+\mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \& \mbox{\hyperlink{classap_1_1argument__parser_a9260f6103bc761c43d8f0f72732329ee}{program\+\_\+description}} (const std\+::string\+\_\+view description)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \mbox{\hyperlink{classap_1_1argument__parser_a2b857e8200b0ff36ea0d05553722eeb1}{operator$<$$<$}} (std\+::ostream \&os, const \mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \&parser)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00265}{265}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classap_1_1argument__parser_a9260f6103bc761c43d8f0f72732329ee}\label{classap_1_1argument__parser_a9260f6103bc761c43d8f0f72732329ee} 
+\index{ap::argument\_parser@{ap::argument\_parser}!program\_description@{program\_description}}
+\index{program\_description@{program\_description}!ap::argument\_parser@{ap::argument\_parser}}
+\doxysubsubsection{\texorpdfstring{program\_description()}{program\_description()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \& ap\+::argument\+\_\+parser\+::program\+\_\+description (\begin{DoxyParamCaption}\item[{const std\+::string\+\_\+view}]{description }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00280}{280}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ this-\/>\_program\_description\ =\ description;}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00283\ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{classap_1_1argument__parser_a2ef6ef81139f67a68946ea7134707585}\label{classap_1_1argument__parser_a2ef6ef81139f67a68946ea7134707585} 
+\index{ap::argument\_parser@{ap::argument\_parser}!program\_name@{program\_name}}
+\index{program\_name@{program\_name}!ap::argument\_parser@{ap::argument\_parser}}
+\doxysubsubsection{\texorpdfstring{program\_name()}{program\_name()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \& ap\+::argument\+\_\+parser\+::program\+\_\+name (\begin{DoxyParamCaption}\item[{const std\+::string\+\_\+view}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00275}{275}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ this-\/>\_program\_name\ =\ name;}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00278\ \ \ \ \ \}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Friends And Related Symbol Documentation}
+\Hypertarget{classap_1_1argument__parser_a2b857e8200b0ff36ea0d05553722eeb1}\label{classap_1_1argument__parser_a2b857e8200b0ff36ea0d05553722eeb1} 
+\index{ap::argument\_parser@{ap::argument\_parser}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!ap::argument\_parser@{ap::argument\_parser}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily std\+::ostream \& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \mbox{\hyperlink{classap_1_1argument__parser}{argument\+\_\+parser}} \&}]{parser }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Definition at line \mbox{\hyperlink{argument__parser_8hpp_source_l00285}{285}} of file \mbox{\hyperlink{argument__parser_8hpp_source}{argument\+\_\+parser.\+hpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (parser.\_program\_name)}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ os\ <<\ parser.\_program\_name.value()\ <<\ std::endl;}
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (parser.\_program\_description)}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ os\ <<\ parser.\_program\_description.value()\ <<\ std::endl;}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ os;}
+\DoxyCodeLine{00293\ \ \ \ \ \}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/ap/argument\+\_\+parser.\+hpp\end{DoxyCompactItemize}

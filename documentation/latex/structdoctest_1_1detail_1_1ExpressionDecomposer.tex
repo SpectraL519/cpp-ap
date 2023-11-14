@@ -1,0 +1,81 @@
+\doxysection{doctest\+::detail\+::Expression\+Decomposer Struct Reference}
+\hypertarget{structdoctest_1_1detail_1_1ExpressionDecomposer}{}\label{structdoctest_1_1detail_1_1ExpressionDecomposer}\index{doctest::detail::ExpressionDecomposer@{doctest::detail::ExpressionDecomposer}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structdoctest_1_1detail_1_1ExpressionDecomposer_a6bf2c46ebf0dc68106be801a90776e65}\label{structdoctest_1_1detail_1_1ExpressionDecomposer_a6bf2c46ebf0dc68106be801a90776e65} 
+{\bfseries Expression\+Decomposer} (assert\+Type\+::\+Enum at)
+\item 
+{\footnotesize template$<$typename L $>$ }\\\mbox{\hyperlink{structdoctest_1_1detail_1_1Expression__lhs}{Expression\+\_\+lhs}}$<$ L $>$ \mbox{\hyperlink{structdoctest_1_1detail_1_1ExpressionDecomposer_a12ecf2b1fce2471b4c60faffd4aad075}{operator$<$$<$}} (L \&\&operand)
+\item 
+{\footnotesize template$<$typename L , typename \mbox{\hyperlink{structdoctest_1_1detail_1_1types_1_1enable__if}{types\+::enable\+\_\+if}}$<$!\mbox{\hyperlink{structdoctest_1_1detail_1_1types_1_1is__rvalue__reference}{doctest\+::detail\+::types\+::is\+\_\+rvalue\+\_\+reference}}$<$ L $>$\+::value, void $>$\+::type \texorpdfstring{$\ast$}{*}  = nullptr$>$ }\\\mbox{\hyperlink{structdoctest_1_1detail_1_1Expression__lhs}{Expression\+\_\+lhs}}$<$ const L \& $>$ \mbox{\hyperlink{structdoctest_1_1detail_1_1ExpressionDecomposer_aa857085c7464071de5c158299858e4ff}{operator$<$$<$}} (const L \&operand)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+assert\+Type\+::\+Enum \mbox{\hyperlink{structdoctest_1_1detail_1_1ExpressionDecomposer_a1a71b19bd41d2cbd1c8b4006412870c4}{m\+\_\+at}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01570}{1570}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structdoctest_1_1detail_1_1ExpressionDecomposer_aa857085c7464071de5c158299858e4ff}\label{structdoctest_1_1detail_1_1ExpressionDecomposer_aa857085c7464071de5c158299858e4ff} 
+\index{doctest::detail::ExpressionDecomposer@{doctest::detail::ExpressionDecomposer}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!doctest::detail::ExpressionDecomposer@{doctest::detail::ExpressionDecomposer}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename L , typename \mbox{\hyperlink{structdoctest_1_1detail_1_1types_1_1enable__if}{types\+::enable\+\_\+if}}$<$!\mbox{\hyperlink{structdoctest_1_1detail_1_1types_1_1is__rvalue__reference}{doctest\+::detail\+::types\+::is\+\_\+rvalue\+\_\+reference}}$<$ L $>$\+::value, void $>$\+::type \texorpdfstring{$\ast$}{*}  = nullptr$>$ \\
+\mbox{\hyperlink{structdoctest_1_1detail_1_1Expression__lhs}{Expression\+\_\+lhs}}$<$ const L \& $>$ doctest\+::detail\+::\+Expression\+Decomposer\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{const L \&}]{operand }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01574}{1574}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01586\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01587\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Expression\_lhs<const\ L\&>(operand,\ m\_at);}
+\DoxyCodeLine{01588\ \ \ \ \ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{structdoctest_1_1detail_1_1ExpressionDecomposer_a12ecf2b1fce2471b4c60faffd4aad075}\label{structdoctest_1_1detail_1_1ExpressionDecomposer_a12ecf2b1fce2471b4c60faffd4aad075} 
+\index{doctest::detail::ExpressionDecomposer@{doctest::detail::ExpressionDecomposer}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!doctest::detail::ExpressionDecomposer@{doctest::detail::ExpressionDecomposer}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename L $>$ \\
+\mbox{\hyperlink{structdoctest_1_1detail_1_1Expression__lhs}{Expression\+\_\+lhs}}$<$ L $>$ doctest\+::detail\+::\+Expression\+Decomposer\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{L \&\&}]{operand }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01574}{1574}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01581\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01582\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Expression\_lhs<L>(\textcolor{keyword}{static\_cast<}L\&\&\textcolor{keyword}{>}(operand),\ m\_at);}
+\DoxyCodeLine{01583\ \ \ \ \ \ \ \ \ \}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structdoctest_1_1detail_1_1ExpressionDecomposer_a1a71b19bd41d2cbd1c8b4006412870c4}\label{structdoctest_1_1detail_1_1ExpressionDecomposer_a1a71b19bd41d2cbd1c8b4006412870c4} 
+\index{doctest::detail::ExpressionDecomposer@{doctest::detail::ExpressionDecomposer}!m\_at@{m\_at}}
+\index{m\_at@{m\_at}!doctest::detail::ExpressionDecomposer@{doctest::detail::ExpressionDecomposer}}
+\doxysubsubsection{\texorpdfstring{m\_at}{m\_at}}
+{\footnotesize\ttfamily assert\+Type\+::\+Enum doctest\+::detail\+::\+Expression\+Decomposer\+::m\+\_\+at}
+
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01572}{1572}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+test/doctest.\+h\end{DoxyCompactItemize}

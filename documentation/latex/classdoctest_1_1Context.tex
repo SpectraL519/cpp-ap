@@ -1,0 +1,65 @@
+\doxysection{doctest\+::Context Class Reference}
+\hypertarget{classdoctest_1_1Context}{}\label{classdoctest_1_1Context}\index{doctest::Context@{doctest::Context}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classdoctest_1_1Context_a881bc2d0fe207d672e1debe830768a98}\label{classdoctest_1_1Context_a881bc2d0fe207d672e1debe830768a98} 
+{\bfseries Context} (int argc=0, const char \texorpdfstring{$\ast$}{*}const \texorpdfstring{$\ast$}{*}argv=nullptr)
+\item 
+\Hypertarget{classdoctest_1_1Context_a1d40d57d7b4bee1c8e6e2ebe7eafbb3a}\label{classdoctest_1_1Context_a1d40d57d7b4bee1c8e6e2ebe7eafbb3a} 
+{\bfseries Context} (const \mbox{\hyperlink{classdoctest_1_1Context}{Context}} \&)=delete
+\item 
+\Hypertarget{classdoctest_1_1Context_a1feb0418d15238aa805f0c1e16f5197e}\label{classdoctest_1_1Context_a1feb0418d15238aa805f0c1e16f5197e} 
+{\bfseries Context} (\mbox{\hyperlink{classdoctest_1_1Context}{Context}} \&\&)=delete
+\item 
+\Hypertarget{classdoctest_1_1Context_a97f0e90e59fa2b3219446b4c93cca78e}\label{classdoctest_1_1Context_a97f0e90e59fa2b3219446b4c93cca78e} 
+\mbox{\hyperlink{classdoctest_1_1Context}{Context}} \& {\bfseries operator=} (const \mbox{\hyperlink{classdoctest_1_1Context}{Context}} \&)=delete
+\item 
+\Hypertarget{classdoctest_1_1Context_a20e129f3877bbf913ef546e19cffbc32}\label{classdoctest_1_1Context_a20e129f3877bbf913ef546e19cffbc32} 
+\mbox{\hyperlink{classdoctest_1_1Context}{Context}} \& {\bfseries operator=} (\mbox{\hyperlink{classdoctest_1_1Context}{Context}} \&\&)=delete
+\item 
+\Hypertarget{classdoctest_1_1Context_ad55229220bf9ca74e6e0c6323bf672e1}\label{classdoctest_1_1Context_ad55229220bf9ca74e6e0c6323bf672e1} 
+void {\bfseries apply\+Command\+Line} (int argc, const char \texorpdfstring{$\ast$}{*}const \texorpdfstring{$\ast$}{*}argv)
+\item 
+\Hypertarget{classdoctest_1_1Context_a60ad57a46c19db2b142468c3acac448a}\label{classdoctest_1_1Context_a60ad57a46c19db2b142468c3acac448a} 
+void {\bfseries add\+Filter} (const char \texorpdfstring{$\ast$}{*}filter, const char \texorpdfstring{$\ast$}{*}value)
+\item 
+\Hypertarget{classdoctest_1_1Context_aaa878723e89310d5aa3f516bc7ab3165}\label{classdoctest_1_1Context_aaa878723e89310d5aa3f516bc7ab3165} 
+void {\bfseries clear\+Filters} ()
+\item 
+\Hypertarget{classdoctest_1_1Context_a7f7735caa75c60cdf8c8d86a75ce1d81}\label{classdoctest_1_1Context_a7f7735caa75c60cdf8c8d86a75ce1d81} 
+void {\bfseries set\+Option} (const char \texorpdfstring{$\ast$}{*}option, bool value)
+\item 
+\Hypertarget{classdoctest_1_1Context_a95e7a0230c5897f0eae36718f51d2f05}\label{classdoctest_1_1Context_a95e7a0230c5897f0eae36718f51d2f05} 
+void {\bfseries set\+Option} (const char \texorpdfstring{$\ast$}{*}option, int value)
+\item 
+\Hypertarget{classdoctest_1_1Context_a4352ffc196c4ba56045270e45baa2754}\label{classdoctest_1_1Context_a4352ffc196c4ba56045270e45baa2754} 
+void {\bfseries set\+Option} (const char \texorpdfstring{$\ast$}{*}option, const char \texorpdfstring{$\ast$}{*}value)
+\item 
+\Hypertarget{classdoctest_1_1Context_a219b10301380b81c84c0824a6876d9aa}\label{classdoctest_1_1Context_a219b10301380b81c84c0824a6876d9aa} 
+bool {\bfseries should\+Exit} ()
+\item 
+\Hypertarget{classdoctest_1_1Context_ae85cecc7689f009e23cba383484773b2}\label{classdoctest_1_1Context_ae85cecc7689f009e23cba383484773b2} 
+void {\bfseries set\+As\+Default\+For\+Asserts\+Out\+Of\+Test\+Cases} ()
+\item 
+\Hypertarget{classdoctest_1_1Context_a669dd0a596a611eeb0decdb78b661a90}\label{classdoctest_1_1Context_a669dd0a596a611eeb0decdb78b661a90} 
+void {\bfseries set\+Assert\+Handler} (detail\+::assert\+\_\+handler ah)
+\item 
+\Hypertarget{classdoctest_1_1Context_a503e7ebcc794a3cc67fa2e77873cafaa}\label{classdoctest_1_1Context_a503e7ebcc794a3cc67fa2e77873cafaa} 
+void {\bfseries set\+Cout} (\mbox{\hyperlink{classstd_1_1basic__ostream}{std\+::ostream}} \texorpdfstring{$\ast$}{*}out)
+\item 
+\Hypertarget{classdoctest_1_1Context_a8059b137ef41cbe6c5d8160806a3cc63}\label{classdoctest_1_1Context_a8059b137ef41cbe6c5d8160806a3cc63} 
+int {\bfseries run} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{doctest_8h_source_l01964}{1964}} of file \mbox{\hyperlink{doctest_8h_source}{doctest.\+h}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+test/doctest.\+h\end{DoxyCompactItemize}
