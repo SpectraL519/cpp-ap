@@ -1,18 +1,31 @@
 #pragma once
 
 #include <any>
+#include <concepts>
 #include <iostream>
+#include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string_view>
+#include <type_traits>
+#include <vector>
 
 
 namespace ap {
+
+class argument_parser;
 
 namespace detail {
 
 template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
+
+template <typename T, typename... ValidTypes>
+struct is_valid_type : std::disjunction<std::is_same<T, ValidTypes>...> {};
+
+template <typename T, typename... ValidTypes>
+inline constexpr bool is_valid_type_v = is_valid_type<T, ValidTypes...>::value;
 
 
 
@@ -38,6 +51,12 @@ struct argument_name {
                (this->short_name and name == this->short_name.value());
     }
 
+    [[nodiscard]] inline std::string str() const {
+        return this->short_name
+               ? "[" + std::string(this->name) + "]"
+               : "[" + std::string(this->name) + "," + std::string(this->short_name.value()) + "]";
+    }
+
     friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
         os << "[" << arg_name.name;
         if (arg_name.short_name)
@@ -59,6 +78,8 @@ public:
     virtual argument_interface& default_value(const std::any&) = 0;
 
     virtual ~argument_interface() = default;
+
+    friend class argument_parser;
 
 protected:
     virtual argument_interface& value(const std::any&) = 0;
@@ -121,6 +142,8 @@ public:
         this->_default_value = default_value;
         return *this;
     }
+
+    friend class argument_parser;
 
 private:
     inline positional_argument& value(const std::any& value) override {
@@ -206,6 +229,8 @@ public:
         return *this;
     }
 
+    friend class argument_parser;
+
 private:
     inline optional_argument& value(const std::any& value) override {
         this->_value = value;
@@ -262,6 +287,36 @@ private:
 } // namespace detail
 
 
+
+struct positional {
+    using type = detail::positional_argument;
+};
+
+struct optional {
+    using type = detail::optional_argument;
+};
+
+namespace detail {
+
+template <typename A>
+concept valid_argument_specifier = is_valid_type_v<A, positional, optional>;
+
+template <valid_argument_specifier A>
+using argument_specifier_t = typename A::type;
+
+template <std::derived_from<argument_interface> A>
+inline constexpr bool is_positional() {
+    return std::is_same_v<A, positional_argument>;
+}
+
+template <std::derived_from<argument_interface> A>
+inline constexpr bool is_optional() {
+    return std::is_same_v<A, optional_argument>;
+}
+
+} // namespace detail
+
+
 class argument_parser {
 public:
     argument_parser() = default;
@@ -282,6 +337,27 @@ public:
         return *this;
     }
 
+    template <detail::valid_argument_specifier A>
+    detail::argument_specifier_t<A>& add_argument(const std::string_view name) {
+        this->_check_arg_name_present(name);
+
+        if constexpr (detail::is_positional<detail::argument_specifier_t<A>>) {
+            return this->_positional_args.emplace_back(name);
+        }
+        return this->_optional_args.emplace_back(name);
+    }
+
+    template <detail::valid_argument_specifier A>
+    detail::argument_specifier_t<A>& add_argument(const std::string_view name, const std::string_view short_name) {
+        this->_check_arg_name_present(name);
+        this->_check_arg_name_present(short_name);
+
+        if constexpr (detail::is_positional<detail::argument_specifier_t<A>>) {
+            return this->_positional_args.emplace_back(name, short_name);
+        }
+        return this->_optional_args.emplace_back(name, short_name);
+    }
+
     friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
             os << parser._program_name.value() << std::endl;
@@ -293,8 +369,24 @@ public:
     }
 
 private:
+    void _check_arg_name_present(const std::string_view& name) {
+        static const auto name_eq_predicate = [&name](const argument_interface& arg) {
+            return name == arg->_name;
+        }
+
+        if (std::find_if(
+                this->_positional_args.begin(),
+                this->_positional_args.end(),
+                name_eq_predicate
+            ) != this->_positional_args.end()
+        ) throw(std::invalid_argument("Argument name [" + name + "] invalid!\n\tName already used in argument"))
+    }
+
     std::optional<std::string_view> _program_name;
     std::optional<std::string_view> _program_description;
+
+    std::vector<detail::positional_argument> _positional_args;
+    std::vector<detail::optional_argument> _optional_args;
 };
 
 } // namespace ap
