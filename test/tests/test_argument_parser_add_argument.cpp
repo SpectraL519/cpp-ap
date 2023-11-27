@@ -49,4 +49,25 @@ TEST_CASE("add_argument should return the correct argument type based on "
     }
 }
 
+TEST_CASE("add_argument should throw only when adding an argument with "
+          "previously used name") {
+    ap::argument_parser ap;
+
+    ap.add_argument<ap::positional>(name, short_name);
+
+    SUBCASE("adding argument with a unique name") {
+        REQUIRE_NOTHROW(ap.add_argument<ap::positional>(other_name, other_short_name));
+    }
+
+    SUBCASE("adding argument with a previously used long name") {
+        REQUIRE_THROWS_AS(ap.add_argument<ap::positional>(name), std::invalid_argument);
+    }
+
+    SUBCASE("adding argument with a previously used short name") {
+        REQUIRE_THROWS_AS(
+            ap.add_argument<ap::positional>(other_name, short_name), std::invalid_argument
+        );
+    }
+}
+
 TEST_SUITE_END();

@@ -59,6 +59,7 @@ struct argument_name {
     }
 
     friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
+        // TODO: use str()
         os << "[" << arg_name.name;
         if (arg_name.short_name)
             os << "," << arg_name.short_name.value();
@@ -339,25 +340,26 @@ public:
     }
 
 private:
-    void _check_arg_name_present(const std::string_view& name) const {
-        static const auto name_eq_predicate =
-            [this, &name](const detail::argument_interface& arg) {
-                return name == arg.name();
-            };
+    void _check_arg_name_present(const std::string_view name) const {
+        const auto name_eq_predicate = [name](const detail::argument_interface& arg) {
+            return name == arg.name();
+        };
 
         if (std::find_if(
                 this->_positional_args.begin(), this->_positional_args.end(), name_eq_predicate
-            ) != this->_positional_args.end())
+            ) != this->_positional_args.end()) {
             throw std::invalid_argument(
-                "Argument name [" + std::string(name) + "] invalid!\n\tName already used in another argument"
+                "Argument name [" + std::string(name) + "] invalid! Name already used in another argument"
             );
+        }
 
         if (std::find_if(
                 this->_optional_args.begin(), this->_optional_args.end(), name_eq_predicate
-            ) != this->_optional_args.end())
+            ) != this->_optional_args.end()) {
             throw std::invalid_argument(
-                "Argument name [" + std::string(name) + "] invalid!\n\tName already used in another argument"
+                "Argument name [" + std::string(name) + "] invalid! Name already used in another argument"
             );
+        }
     }
 
     std::optional<std::string_view> _program_name;
@@ -368,21 +370,21 @@ private:
 };
 
 template <>
-detail::argument_type<positional>&
+inline detail::argument_type<positional>&
     argument_parser::add_argument<positional>(const std::string_view name) {
     this->_check_arg_name_present(name);
     return this->_positional_args.emplace_back(name);
 }
 
 template <>
-detail::argument_type<optional>&
+inline detail::argument_type<optional>&
     argument_parser::add_argument<optional>(const std::string_view name) {
     this->_check_arg_name_present(name);
     return this->_optional_args.emplace_back(name);
 }
 
 template <>
-detail::argument_type<positional>& argument_parser::add_argument<positional>(
+inline detail::argument_type<positional>& argument_parser::add_argument<positional>(
     const std::string_view name, const std::string_view short_name
 ) {
     this->_check_arg_name_present(name);
@@ -391,7 +393,7 @@ detail::argument_type<positional>& argument_parser::add_argument<positional>(
 }
 
 template <>
-detail::argument_type<optional>& argument_parser::add_argument<optional>(
+inline detail::argument_type<optional>& argument_parser::add_argument<optional>(
     const std::string_view name, const std::string_view short_name
 ) {
     this->_check_arg_name_present(name);
