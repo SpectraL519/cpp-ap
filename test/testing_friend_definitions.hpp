@@ -6,14 +6,6 @@
 
 namespace ap::detail {
 
-bool testing_argument_is_positional(const argument_interface& argument) {
-    return argument.is_positional();
-}
-
-bool testing_argument_is_optional(const argument_interface& argument) {
-    return argument.is_optional();
-}
-
 bool testing_argument_has_value(const argument_interface& argument) {
     return argument.has_value();
 }
