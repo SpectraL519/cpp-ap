@@ -92,10 +92,10 @@ public:
     friend class ::ap::argument_parser;
 
 protected:
+    virtual bool is_optional() const = 0;
+
     virtual argument_interface& value(const std::any&) = 0;
-
     virtual bool has_value() const = 0;
-
     virtual const std::any& value() const = 0;
 
     virtual const argument_name& name() const = 0;
@@ -104,6 +104,7 @@ protected:
     virtual const std::any& default_value() const = 0;
 
 #ifdef AP_TESTING
+    friend inline bool testing_argument_is_optional(const argument_interface&);
     friend inline bool testing_argument_has_value(const argument_interface&);
     friend inline const std::any&
         testing_argument_get_value(const argument_interface&);
@@ -118,10 +119,10 @@ protected:
 };
 
 
-// template <readable T>
+template <readable T>
 class positional_argument : public argument_interface {
 public:
-    // using value_type = T;
+    using value_type = T;
 
     positional_argument() = delete;
 
@@ -147,6 +148,9 @@ public:
     }
 
     inline positional_argument& default_value(const std::any& default_value) override {
+        if (not holds_type<value_type>(default_value))
+            throw std::invalid_argument("[default_value] TODO: msg");
+
         this->_default_value = default_value;
         return *this;
     }
@@ -154,7 +158,14 @@ public:
     friend class ::ap::argument_parser;
 
 private:
+    [[nodiscard]] bool is_optional() const {
+        return false;
+    }
+
     inline positional_argument& value(const std::any& value) override {
+        if (not holds_type<value_type>(value))
+            throw std::invalid_argument("[value] TODO: msg");
+
         this->_value = value;
         return *this;
     }
@@ -192,15 +203,18 @@ private:
     std::optional<std::string_view> _help_msg;
     std::any _default_value;
 
-#ifdef AP_TESTING
-    friend inline positional_argument&
-        testing_argument_set_value(positional_argument&, const std::any&);
-#endif
+// #ifdef AP_TESTING
+//     friend inline positional_argument&
+//         testing_argument_set_value(positional_argument&, const std::any&);
+// #endif
 };
 
 
+template <readable T>
 class optional_argument : public argument_interface {
 public:
+    using value_type = T;
+
     optional_argument() = delete;
 
     optional_argument(std::string_view name) : _name(name) {}
@@ -225,6 +239,9 @@ public:
     }
 
     inline optional_argument& default_value(const std::any& default_value) override {
+        if (not holds_type<value_type>(default_value))
+            throw std::invalid_argument("[default_value] TODO: msg");
+
         this->_default_value = default_value;
         return *this;
     }
@@ -232,7 +249,14 @@ public:
     friend class ::ap::argument_parser;
 
 private:
+    [[nodiscard]] bool is_optional() const {
+        return true;
+    }
+
     inline optional_argument& value(const std::any& value) override {
+        if (not holds_type<value_type>(value))
+            throw std::invalid_argument("[value] TODO: msg");
+
         this->_value = value;
         return *this;
     }
@@ -270,47 +294,29 @@ private:
     std::optional<std::string_view> _help_msg;
     std::any _default_value;
 
-#ifdef AP_TESTING
-    friend inline optional_argument&
-        testing_argument_set_value(optional_argument&, const std::any&);
-#endif
+// #ifdef AP_TESTING
+//     friend inline optional_argument&
+//         testing_argument_set_value(optional_argument&, const std::any&);
+// #endif
 };
 
-} // namespace detail
-
-
-
-struct positional {
-    using type = detail::positional_argument;
-};
-
-struct optional {
-    using type = detail::optional_argument;
-};
-
-namespace detail {
-
-template <typename A>
-concept valid_argument_specifier = is_valid_type_v<A, positional, optional>;
-
-template <valid_argument_specifier A>
-using argument_type = typename A::type;
 
 template <typename A>
 concept derived_from_argument_interface =
     std::derived_from<std::remove_cvref_t<A>, argument_interface>;
 
-template <derived_from_argument_interface A>
+template <derived_from_argument_interface A, readable T>
 inline constexpr bool is_positional() {
-    return std::is_same_v<std::remove_cvref_t<A>, positional_argument>;
+    return std::is_same_v<std::remove_cvref_t<A>, positional_argument<T>>;
 }
 
-template <derived_from_argument_interface A>
+template <derived_from_argument_interface A, readable T>
 inline constexpr bool is_optional() {
-    return std::is_same_v<std::remove_cvref_t<A>, optional_argument>;
+    return std::is_same_v<std::remove_cvref_t<A>, optional_argument<T>>;
 }
 
 } // namespace detail
+
 
 
 class argument_parser {
@@ -333,12 +339,39 @@ public:
         return *this;
     }
 
-    template <detail::valid_argument_specifier A>
-    detail::argument_type<A>& add_argument(const std::string_view name);
+    template <detail::readable T = std::string>
+    detail::argument_interface& add_positional_argument(const std::string_view name) {
+        this->_check_arg_name_present(name);
+        this->_positional_args.push_back(std::make_unique<detail::positional_argument<T>>(name));
+        return *this->_positional_args.back();
+    }
 
-    template <detail::valid_argument_specifier A>
-    detail::argument_type<A>&
-        add_argument(const std::string_view name, const std::string_view short_name);
+    template <detail::readable T = std::string>
+    detail::argument_interface& add_positional_argument(
+        const std::string_view name, const std::string_view short_name
+    ) {
+        this->_check_arg_name_present(name);
+        this->_check_arg_name_present(short_name);
+        this->_positional_args.push_back(std::make_unique<detail::positional_argument<T>>(name, short_name));
+        return *this->_positional_args.back();
+    }
+
+    template <detail::readable T = std::string>
+    detail::argument_interface& add_optional_argument(const std::string_view name) {
+        this->_check_arg_name_present(name);
+        this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name));
+        return *this->_optional_args.back();
+    }
+
+    template <detail::readable T = std::string>
+    detail::argument_interface& add_optional_argument(
+        const std::string_view name, const std::string_view short_name
+    ) {
+        this->_check_arg_name_present(name);
+        this->_check_arg_name_present(short_name);
+        this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name, short_name));
+        return *this->_optional_args.back();
+    }
 
     friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
@@ -352,64 +385,28 @@ public:
 
 private:
     void _check_arg_name_present(const std::string_view name) const {
-        const auto name_eq_predicate = [name](const detail::argument_interface& arg) {
-            return name == arg.name();
+        const auto name_eq_predicate = [name](const std::unique_ptr<detail::argument_interface>& arg) {
+            return name == arg->name();
         };
 
         if (std::find_if(
                 this->_positional_args.begin(), this->_positional_args.end(), name_eq_predicate
             ) != this->_positional_args.end()) {
-            throw std::invalid_argument(
-                "Argument name [" + std::string(name) + "] invalid! Name already used in another argument"
-            );
+            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: msg");
         }
 
         if (std::find_if(
                 this->_optional_args.begin(), this->_optional_args.end(), name_eq_predicate
             ) != this->_optional_args.end()) {
-            throw std::invalid_argument(
-                "Argument name [" + std::string(name) + "] invalid! Name already used in another argument"
-            );
+            throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: msg");
         }
     }
 
     std::optional<std::string_view> _program_name;
     std::optional<std::string_view> _program_description;
 
-    std::vector<detail::positional_argument> _positional_args;
-    std::vector<detail::optional_argument> _optional_args;
+    std::vector<std::unique_ptr<detail::argument_interface>> _positional_args;
+    std::vector<std::unique_ptr<detail::argument_interface>> _optional_args;
 };
-
-template <>
-inline detail::argument_type<positional>&
-    argument_parser::add_argument<positional>(const std::string_view name) {
-    this->_check_arg_name_present(name);
-    return this->_positional_args.emplace_back(name);
-}
-
-template <>
-inline detail::argument_type<optional>&
-    argument_parser::add_argument<optional>(const std::string_view name) {
-    this->_check_arg_name_present(name);
-    return this->_optional_args.emplace_back(name);
-}
-
-template <>
-inline detail::argument_type<positional>& argument_parser::add_argument<positional>(
-    const std::string_view name, const std::string_view short_name
-) {
-    this->_check_arg_name_present(name);
-    this->_check_arg_name_present(short_name);
-    return this->_positional_args.emplace_back(name, short_name);
-}
-
-template <>
-inline detail::argument_type<optional>& argument_parser::add_argument<optional>(
-    const std::string_view name, const std::string_view short_name
-) {
-    this->_check_arg_name_present(name);
-    this->_check_arg_name_present(short_name);
-    return this->_optional_args.emplace_back(name, short_name);
-}
 
 } // namespace ap

@@ -28,7 +28,7 @@ TEST_SUITE("test_holds_type") {
 
     TEST_CASE("holds_type should return true only when std::any object holds value of given type") {
         constexpr correct_type test_value{};
-        std::any any = static_cast<correct_type>(test_value);
+        std::any any = test_value;
 
         REQUIRE(holds_type<correct_type>(any));
         REQUIRE_FALSE(holds_type<invalid_type>(any));
