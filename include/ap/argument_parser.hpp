@@ -29,6 +29,12 @@ template <typename T, typename... ValidTypes>
 inline constexpr bool is_valid_type_v = is_valid_type<T, ValidTypes...>::value;
 
 
+template <readable T>
+bool holds_type(const std::any& any) {
+    return any.type() == typeid(T);
+}
+
+
 
 struct argument_name {
     argument_name() = delete;
@@ -75,6 +81,8 @@ struct argument_name {
 
 class argument_interface {
 public:
+    using value_type = void;
+
     virtual argument_interface& help(std::string_view) = 0;
     virtual argument_interface& required(bool) = 0;
     virtual argument_interface& default_value(const std::any&) = 0;
@@ -110,8 +118,11 @@ protected:
 };
 
 
+// template <readable T>
 class positional_argument : public argument_interface {
 public:
+    // using value_type = T;
+
     positional_argument() = delete;
 
     positional_argument(const std::string_view name) : _name(name) {}
