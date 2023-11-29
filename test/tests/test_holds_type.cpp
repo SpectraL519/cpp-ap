@@ -1,9 +1,9 @@
 #define AP_TESTING
 
 #include "../doctest.h"
-#include "../testing_friend_definitions.hpp"
 
 #include <ap/argument_parser.hpp>
+#include <testing_friend_definitions.hpp>
 
 using namespace ap::detail;
 

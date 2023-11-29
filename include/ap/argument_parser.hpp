@@ -12,6 +12,15 @@
 #include <vector>
 
 
+#ifdef AP_TESTING
+
+namespace ap_testing {
+struct argument_parser_test_fixture;
+} // namespace ap_testing
+
+#endif
+
+
 namespace ap {
 
 class argument_parser;
@@ -384,6 +393,10 @@ public:
         return *this->_optional_args.back();
     }
 
+    // void parse_args(int argc, char* argv[]) {
+    //     // TODO
+    // }
+
     friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
             os << parser._program_name.value() << std::endl;
@@ -399,6 +412,10 @@ public:
 
         return os;
     }
+
+#ifdef AP_TESTING
+    friend struct ::ap_testing::argument_parser_test_fixture;
+#endif
 
 private:
     void _check_arg_name_present(const std::string_view name) const {
@@ -419,11 +436,33 @@ private:
         }
     }
 
+    using input_args_list = std::vector<std::string_view>;
+
+    [[nodiscard]] input_args_list _process_input(int argc, char* argv[]) const {
+        input_args_list args;
+        args.reserve(argc - 1);
+
+        if (argc < 2)
+            return args;
+
+        for (int i = 1; i < argc; i++)
+            args.emplace_back(argv[i]);
+
+        return args;
+    }
+
+    // void _parse_args_impl(const input_args_list& args) {
+    //     for (const auto& argument : this->_positional_args) {
+    //         // TODO
+    //     }
+    // }
+
     std::optional<std::string_view> _program_name;
     std::optional<std::string_view> _program_description;
 
-    std::vector<std::unique_ptr<detail::argument_interface>> _positional_args;
-    std::vector<std::unique_ptr<detail::argument_interface>> _optional_args;
+    using argument_list_type = std::vector<std::unique_ptr<detail::argument_interface>>;
+    argument_list_type _positional_args;
+    argument_list_type _optional_args;
 };
 
 } // namespace ap

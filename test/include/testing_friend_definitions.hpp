@@ -1,8 +1,9 @@
 #pragma once
 
+#ifdef AP_TESTING
+
 #include <ap/argument_parser.hpp>
 
-#ifdef AP_TESTING
 
 namespace ap::detail {
 
