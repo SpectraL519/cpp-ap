@@ -90,6 +90,14 @@ public:
     virtual ~argument_interface() = default;
 
     friend class ::ap::argument_parser;
+    friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
+        os << argument.name() << " : ";
+
+        const auto& argument_help_msg = argument.help();
+        os << (argument_help_msg ? argument_help_msg.value() : "[ostream(argument)] TODO: msg");
+
+        return os;
+    }
 
 protected:
     virtual bool is_optional() const = 0;
@@ -103,6 +111,7 @@ protected:
     virtual const std::optional<std::string_view>& help() const = 0;
     virtual const std::any& default_value() const = 0;
 
+// TODO PWRS5PZ-24: replace with a friend testing fixuture class
 #ifdef AP_TESTING
     friend inline bool testing_argument_is_optional(const argument_interface&);
     friend inline bool testing_argument_has_value(const argument_interface&);
@@ -203,6 +212,7 @@ private:
     std::optional<std::string_view> _help_msg;
     std::any _default_value;
 
+// TODO PWRS5PZ-24: replace with a friend testing fixuture class
 // #ifdef AP_TESTING
 //     friend inline positional_argument&
 //         testing_argument_set_value(positional_argument&, const std::any&);
@@ -294,6 +304,7 @@ private:
     std::optional<std::string_view> _help_msg;
     std::any _default_value;
 
+// TODO PWRS5PZ-24: replace with a friend testing fixuture class
 // #ifdef AP_TESTING
 //     friend inline optional_argument&
 //         testing_argument_set_value(optional_argument&, const std::any&);
@@ -379,6 +390,12 @@ public:
 
         if (parser._program_description)
             os << parser._program_description.value() << std::endl;
+
+        for (const auto& argument : parser._positional_args)
+            os << "\t" << *argument << std::endl;
+
+        for (const auto& argument : parser._optional_args)
+            os << "\t" << *argument << std::endl;
 
         return os;
     }
