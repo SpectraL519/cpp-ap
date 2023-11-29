@@ -439,11 +439,11 @@ private:
     using input_args_list = std::vector<std::string_view>;
 
     [[nodiscard]] input_args_list _process_input(int argc, char* argv[]) const {
+        if (argc < 2)
+            return input_args_list{};
+
         input_args_list args;
         args.reserve(argc - 1);
-
-        if (argc < 2)
-            return args;
 
         for (int i = 1; i < argc; i++)
             args.emplace_back(argv[i]);
