@@ -103,22 +103,10 @@ TEST_CASE("required() should return true by default") {
     REQUIRE(testing_argument_is_required(argument));
 }
 
-TEST_CASE("required() should return the value it has been set to") {
+TEST_CASE("required() should return true") {
     auto argument = default_positional_argument_long_name();
-    bool required;
 
-    SUBCASE("set to true") {
-        required = true;
-    }
-    SUBCASE("set to false") {
-        required = false;
-    }
-
-    CAPTURE(required);
-
-    argument.required(required);
-
-    REQUIRE_EQ(testing_argument_is_required(argument), required);
+    REQUIRE_EQ(testing_argument_is_required(argument), true);
 }
 
 TEST_CASE("help() should return nullopt by default") {
@@ -147,16 +135,12 @@ TEST_CASE("defaul_value() should return nullopt by default") {
     REQUIRE_FALSE(arg_default_value.has_value());
 }
 
-TEST_CASE("defaul_value() should return value if one has been provided") {
+TEST_CASE("defaul_value() should return empty std::any object") {
     auto argument = default_positional_argument_long_name();
-
-    test_value_type default_value{};
-    argument.default_value(default_value);
 
     const auto& arg_default_value = testing_argument_get_default_value(argument);
 
-    REQUIRE(arg_default_value.has_value());
-    REQUIRE_EQ(std::any_cast<test_value_type>(arg_default_value), default_value);
+    REQUIRE_FALSE(arg_default_value.has_value());
 }
 
 
@@ -178,51 +162,18 @@ TEST_CASE("defaul_value() should return value if one has been provided") {
 //     REQUIRE_EQ(returned_argument, argument);
 // }
 
-TEST_CASE("required(bool) should set required attribute and return the argument") {
-    auto argument = default_positional_argument_long_name();
-    bool required;
-
-    SUBCASE("set to true") {
-        required = true;
-    }
-    SUBCASE("set to false") {
-        required = false;
-    }
-
-    CAPTURE(required);
-
-    const auto returned_argument = argument.required(required);
-
-    REQUIRE_EQ(testing_argument_is_required(argument), required);
-    REQUIRE_EQ(returned_argument, argument);
-}
-
 TEST_CASE("help(string_view) should set help message and return the argument") {
     auto argument = default_positional_argument_long_name();
 
     constexpr std::string_view help_msg = "test help msg";
 
-    const auto returned_argument = argument.help(help_msg);
+    const auto& returned_argument = argument.help(help_msg);
 
     const auto returned_help_msg = testing_argument_get_help(argument);
 
     REQUIRE(returned_help_msg);
     REQUIRE_EQ(returned_help_msg, help_msg);
     REQUIRE_EQ(returned_argument, argument);
-}
-
-TEST_CASE("default_value(const any&) should set help message and return the "
-          "argument") {
-    auto argument = default_positional_argument_long_name();
-
-    test_value_type default_value{};
-
-    const auto returned_argument = argument.default_value(default_value);
-
-    const auto& arg_default_value = testing_argument_get_default_value(argument);
-
-    REQUIRE(arg_default_value.has_value());
-    REQUIRE_EQ(std::any_cast<test_value_type>(arg_default_value), default_value);
 }
 
 TEST_SUITE_END();

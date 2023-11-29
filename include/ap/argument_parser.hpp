@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string_view>
 #include <type_traits>
@@ -92,9 +93,7 @@ class argument_interface {
 public:
     using value_type = void;
 
-    virtual argument_interface& help(std::string_view) = 0;
-    virtual argument_interface& required(bool) = 0;
-    virtual argument_interface& default_value(const std::any&) = 0;
+    virtual argument_interface& help(const std::string_view) = 0;
 
     virtual ~argument_interface() = default;
 
@@ -111,7 +110,7 @@ public:
 protected:
     virtual bool is_optional() const = 0;
 
-    virtual argument_interface& value(const std::any&) = 0;
+    virtual argument_interface& value(const std::string&) = 0;
     virtual bool has_value() const = 0;
     virtual const std::any& value() const = 0;
 
@@ -155,21 +154,8 @@ public:
         return this->_name == other._name;
     }
 
-    inline positional_argument& help(std::string_view help_msg) override {
+    inline positional_argument& help(const std::string_view help_msg) override {
         this->_help_msg = help_msg;
-        return *this;
-    }
-
-    inline positional_argument& required(bool required) override {
-        this->_required = required;
-        return *this;
-    }
-
-    inline positional_argument& default_value(const std::any& default_value) override {
-        if (not holds_type<value_type>(default_value))
-            throw std::invalid_argument("[default_value] TODO: msg");
-
-        this->_default_value = default_value;
         return *this;
     }
 
@@ -180,8 +166,13 @@ private:
         return false;
     }
 
-    inline positional_argument& value(const std::any& value) override {
-        if (not holds_type<value_type>(value))
+    // TODO: add tests for value throwing in test_positional_argument
+    positional_argument& value(const std::string& str_value) override {
+        this->_ss.clear();
+        this->_ss.str(str_value);
+
+        value_type value;
+        if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
         this->_value = value;
@@ -217,9 +208,11 @@ private:
 
     std::any _value;
 
-    bool _required = true;
+    const bool _required = true;
     std::optional<std::string_view> _help_msg;
-    std::any _default_value;
+    const std::any _default_value;
+
+    std::stringstream _ss;
 
 // TODO PWRS5PZ-24: replace with a friend testing fixuture class
 // #ifdef AP_TESTING
@@ -247,18 +240,23 @@ public:
         return this->_name == other._name;
     }
 
-    inline optional_argument& help(std::string_view help_msg) override {
+    inline optional_argument& help(const std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
     }
 
-    inline optional_argument& required(bool required) override {
+    inline optional_argument& required(bool required) {
         this->_required = required;
         return *this;
     }
 
-    inline optional_argument& default_value(const std::any& default_value) override {
-        if (not holds_type<value_type>(default_value))
+    // TODO: add tests for default_value throwing in test_optional_argument
+    optional_argument& default_value(const std::string& str_default_value) {
+        this->_ss.clear();
+        this->_ss.str(str_default_value);
+
+        value_type default_value;
+        if (not (this->_ss >> default_value))
             throw std::invalid_argument("[default_value] TODO: msg");
 
         this->_default_value = default_value;
@@ -272,14 +270,18 @@ private:
         return true;
     }
 
-    inline optional_argument& value(const std::any& value) override {
-        if (not holds_type<value_type>(value))
+    // TODO: add tests for value throwing in test_optional_argument
+    optional_argument& value(const std::string& str_value) override {
+        this->_ss.clear();
+        this->_ss.str(str_value);
+
+        value_type value;
+        if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
         this->_value = value;
         return *this;
     }
-
     [[nodiscard]] inline bool has_value() const override {
         return this->_value.has_value();
     }
@@ -312,6 +314,8 @@ private:
     bool _required = false;
     std::optional<std::string_view> _help_msg;
     std::any _default_value;
+
+    std::stringstream _ss;
 
 // TODO PWRS5PZ-24: replace with a friend testing fixuture class
 // #ifdef AP_TESTING
@@ -362,6 +366,7 @@ public:
     template <detail::readable T = std::string>
     detail::argument_interface& add_positional_argument(const std::string_view name) {
         this->_check_arg_name_present(name);
+
         this->_positional_args.push_back(std::make_unique<detail::positional_argument<T>>(name));
         return *this->_positional_args.back();
     }
@@ -418,6 +423,12 @@ public:
 #endif
 
 private:
+    using input_argument_list = std::vector<std::string>;
+    using input_argument_list_iterator = typename input_argument_list::const_iterator;
+
+    using argument_list_type = std::vector<std::unique_ptr<detail::argument_interface>>;
+    using argument_list_iterator = typename argument_list_type::iterator;
+
     void _check_arg_name_present(const std::string_view name) const {
         const auto name_eq_predicate = [name](const std::unique_ptr<detail::argument_interface>& arg) {
             return name == arg->name();
@@ -436,33 +447,52 @@ private:
         }
     }
 
-    using input_args_list = std::vector<std::string_view>;
-
-    [[nodiscard]] input_args_list _process_input(int argc, char* argv[]) const {
+    [[nodiscard]] input_argument_list _process_input(int argc, char* argv[]) const {
         if (argc < 2)
-            return input_args_list{};
+            return input_argument_list{};
 
-        input_args_list args;
+        input_argument_list args;
         args.reserve(argc - 1);
 
-        for (int i = 1; i < argc; i++)
-            args.emplace_back(argv[i]);
+        for (int i = 1; i < argc; i++) {
+            std::string arg = argv[i];
+            while (arg.length() > 1 && arg.front() == this->_flag_prefix_char)
+                arg.erase(0, 1);
+
+            args.emplace_back(arg);
+        }
 
         return args;
     }
 
-    // void _parse_args_impl(const input_args_list& args) {
-    //     for (const auto& argument : this->_positional_args) {
-    //         // TODO
-    //     }
-    // }
+    void _parse_args_impl(const input_argument_list& args) {
+        input_argument_list_iterator args_it = args.begin();
+
+        for (const auto& pos_arg : this->_positional_args) {
+            if (args_it == args.end())
+                throw std::runtime_error("[_parse_args_impl] TODO: msg");
+
+            pos_arg->value(*args_it++);
+        }
+
+        if (args_it == args.end())
+            return;
+
+        for (const auto& opt_arg : this->_optional_args) {
+            if (args_it == args.end())
+                return;
+
+
+        }
+    }
 
     std::optional<std::string_view> _program_name;
     std::optional<std::string_view> _program_description;
 
-    using argument_list_type = std::vector<std::unique_ptr<detail::argument_interface>>;
     argument_list_type _positional_args;
     argument_list_type _optional_args;
+
+    static constexpr char _flag_prefix_char = '-';
 };
 
 } // namespace ap

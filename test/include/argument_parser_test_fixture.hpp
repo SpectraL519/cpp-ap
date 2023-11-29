@@ -9,7 +9,7 @@ namespace ap_testing {
 struct argument_parser_test_fixture {
     argument_parser_test_fixture() = default;
 
-    using input_args_list = ap::argument_parser::input_args_list;
+    using input_argument_list = ap::argument_parser::input_argument_list;
     using argument_list_type = ap::argument_parser::argument_list_type;
 
     const std::optional<std::string_view>& get_program_name() const {
@@ -20,7 +20,7 @@ struct argument_parser_test_fixture {
         return sut._program_description;
     }
 
-    input_args_list _process_input(int argc, char* argv[]) const {
+    input_argument_list _process_input(int argc, char* argv[]) const {
         return sut._process_input(argc, argv);
     }
 

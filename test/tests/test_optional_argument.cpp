@@ -149,7 +149,7 @@ TEST_CASE("defaul_value() should return value if one has been provided") {
     auto argument = default_optional_argument_long_name();
 
     test_value_type default_value{};
-    argument.default_value(default_value);
+    argument.default_value(std::to_string(default_value));
 
     const auto returned_default_value = testing_argument_get_default_value(argument);
 
@@ -186,7 +186,7 @@ TEST_CASE("required(bool) should set required attribute and return the "
 
     CAPTURE(required);
 
-    const auto returned_argument = argument.required(required);
+    const auto& returned_argument = argument.required(required);
 
     REQUIRE_EQ(testing_argument_is_required(argument), required);
     REQUIRE_EQ(returned_argument, argument);
@@ -197,7 +197,7 @@ TEST_CASE("help(string_view) should set help message and return the argument") {
 
     constexpr std::string_view help_msg = "test help msg";
 
-    const auto returned_argument = argument.help(help_msg);
+    const auto& returned_argument = argument.help(help_msg);
 
     const auto returned_help_msg = testing_argument_get_help(argument);
 
@@ -212,7 +212,7 @@ TEST_CASE("default_value(value_type) should set default value and return the "
 
     test_value_type default_value{};
 
-    const auto returned_argument = argument.default_value(default_value);
+    const auto& returned_argument = argument.default_value(std::to_string(default_value));
 
     const auto returned_default_value = testing_argument_get_default_value(argument);
 
