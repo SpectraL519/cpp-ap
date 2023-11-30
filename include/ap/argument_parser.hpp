@@ -179,12 +179,14 @@ private:
         return *this;
     }
 
+    // TODO: add test cases checking has_value() with default_value set
     [[nodiscard]] inline bool has_value() const override {
-        return this->_value.has_value();
+        return this->_value.has_value() or this->_default_value.has_value();
     }
 
+    // TODO: add test cases checking value() with default_value set
     [[nodiscard]] inline const std::any& value() const override {
-        return this->_value;
+        return this->_value.has_value() ? this->_value : this->_default_value;
     }
 
     [[nodiscard]] inline const argument_name& name() const override {
@@ -423,14 +425,15 @@ public:
 #endif
 
 private:
-    using input_argument_list = std::vector<std::string>;
-    using input_argument_list_iterator = typename input_argument_list::const_iterator;
+    using cmd_argument_list = std::vector<std::string>;
+    using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
 
-    using argument_list_type = std::vector<std::unique_ptr<detail::argument_interface>>;
+    using argument_ptr_type = std::unique_ptr<detail::argument_interface>;
+    using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator = typename argument_list_type::iterator;
 
     void _check_arg_name_present(const std::string_view name) const {
-        const auto name_eq_predicate = [name](const std::unique_ptr<detail::argument_interface>& arg) {
+        const auto name_eq_predicate = [name](const argument_ptr_type& arg) {
             return name == arg->name();
         };
 
@@ -447,11 +450,11 @@ private:
         }
     }
 
-    [[nodiscard]] input_argument_list _process_input(int argc, char* argv[]) const {
+    [[nodiscard]] cmd_argument_list _process_input(int argc, char* argv[]) const {
         if (argc < 2)
-            return input_argument_list{};
+            return cmd_argument_list{};
 
-        input_argument_list args;
+        cmd_argument_list args;
         args.reserve(argc - 1);
 
         for (int i = 1; i < argc; i++) {
@@ -465,24 +468,35 @@ private:
         return args;
     }
 
-    void _parse_args_impl(const input_argument_list& args) {
-        input_argument_list_iterator args_it = args.begin();
+    void _parse_args_impl(const cmd_argument_list& cmd_args) {
+        cmd_argument_list_iterator cmd_it = cmd_args.begin();
 
         for (const auto& pos_arg : this->_positional_args) {
-            if (args_it == args.end())
-                throw std::runtime_error("[_parse_args_impl] TODO: msg");
+            if (cmd_it == cmd_args.end())
+                throw std::runtime_error("[_parse_args_impl#1] TODO: msg (not enough values)");
 
-            pos_arg->value(*args_it++);
+            pos_arg->value(*cmd_it++);
         }
 
-        if (args_it == args.end())
-            return;
+        while (cmd_it != cmd_args.end()) {
+            const auto name_eq_predicate = [&cmd_arg = *cmd_it](const argument_ptr_type& arg) {
+                return cmd_arg == arg->name();
+            };
 
-        for (const auto& opt_arg : this->_optional_args) {
-            if (args_it == args.end())
-                return;
+            auto opt_arg_it = std::find_if(
+                this->_optional_args.begin(),
+                this->_optional_args.end(),
+                name_eq_predicate
+            );
 
+            if (opt_arg_it == this->_optional_args.end())
+                throw std::runtime_error("[_parse_args_impl#2] TODO: msg (opt_arg not found)");
 
+            cmd_it++;
+            if (cmd_it == cmd_args.end())
+                throw std::runtime_error("[_parse_args_impl#3] TODO: msg (can't read opt_arg's value)");
+
+            opt_arg_it->get()->value(*cmd_it);
         }
     }
 
