@@ -36,8 +36,8 @@ TEST_SUITE_BEGIN("test_positional_argument");
 TEST_CASE("positonal argument should be positional and not optional") {
     const auto argument = default_positional_argument_long_name();
 
-    REQUIRE(testing_argument_is_positional(argument));
-    REQUIRE_FALSE(testing_argument_is_optional(argument));
+    REQUIRE(is_positional<decltype(argument)>());
+    REQUIRE_FALSE(is_optional<decltype(argument)>());
 }
 
 TEST_CASE("has_value() should return false by default") {

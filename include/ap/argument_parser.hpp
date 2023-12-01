@@ -5,16 +5,24 @@
 
 #pragma once
 
+#include <algorithm>
 #include <any>
+#include <concepts>
 #include <iostream>
+#include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string_view>
+#include <type_traits>
+#include <vector>
 
 /**
  * @namespace ap
  * @brief Namespace for the argument parser library. 
  */
 namespace ap {
+
+class argument_parser;
 
 namespace detail {
 
@@ -25,6 +33,12 @@ namespace detail {
 template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
+
+template <typename T, typename... ValidTypes>
+struct is_valid_type : std::disjunction<std::is_same<T, ValidTypes>...> {};
+
+template <typename T, typename... ValidTypes>
+inline constexpr bool is_valid_type_v = is_valid_type<T, ValidTypes...>::value;
 
 
 
@@ -75,12 +89,25 @@ struct argument_name {
     }
 
     /**
+     * @brief Returns a string representation of the argument name.
+     * @details If a short name is present, the format is "[primary_name, short_name]"; 
+     *          otherwise, it is "[primary_name]".
+     * @return A string representation of the argument name.
+     */
+    [[nodiscard]] inline std::string str() const {
+        return this->short_name ? "[" + std::string(this->name) + "]"
+                                : "[" + std::string(this->name) + "," +
+                                      std::string(this->short_name.value()) + "]";
+    }
+
+    /**
      * @brief Stream insertion operator for argument names.
      * @param os The output stream.
      * @param arg_name The argument name to be inserted into the stream.
      * @return The modified output stream.
      */
     friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
+        // TODO: use str()
         os << "[" << arg_name.name;
         if (arg_name.short_name)
             os << "," << arg_name.short_name.value();
@@ -125,6 +152,8 @@ public:
 
     /// @brief Argument interface destructor.
     virtual ~argument_interface() = default;
+
+    friend class ::ap::argument_parser;
 
 protected:
     /**
@@ -183,8 +212,6 @@ protected:
     virtual const std::any& default_value() const = 0;
 
 #ifdef AP_TESTING
-    friend inline bool testing_argument_is_positional(const argument_interface&);
-    friend inline bool testing_argument_is_optional(const argument_interface&);
     friend inline bool testing_argument_has_value(const argument_interface&);
     friend inline const std::any&
         testing_argument_get_value(const argument_interface&);
@@ -258,6 +285,8 @@ public:
         this->_default_value = default_value;
         return *this;
     }
+
+    friend class ::ap::argument_parser;
 
 private:
     /**
@@ -389,6 +418,8 @@ public:
         return *this;
     }
 
+    friend class ::ap::argument_parser;
+
 private:
     /**
      * @brief Sets the value for the optional argument.
@@ -457,7 +488,70 @@ private:
 
 
 /**
- * @brief Main class for argument parsing.
+ * @brief Represents a specifier for a positional argument.
+ * @details Provides a convenient way to specify a positional argument in the argument parser.
+ */
+struct positional {
+    using type = detail::positional_argument;
+};
+
+/**
+ * @brief Represents a specifier for an optional argument.
+ * @details Provides a convenient way to specify an optional argument in the argument parser.
+ */
+struct optional {
+    using type = detail::optional_argument;
+};
+
+namespace detail {
+
+/**
+ * @brief Concept checking whether the argument specifier is valid.
+ * @tparam A Type to be checked.
+ */
+template <typename A>
+concept valid_argument_specifier = is_valid_type_v<A, positional, optional>;
+
+/**
+ * @brief Specifies the type associated with a valid argument specifier.
+ * @tparam A Valid argument specifier type.
+ */
+template <valid_argument_specifier A>
+using argument_type = typename A::type;
+
+/**
+ * @brief Concept checking whether a type is derived from argument_interface.
+ * @tparam A Type to be checked.
+ */
+template <typename A>
+concept derived_from_argument_interface =
+    std::derived_from<std::remove_cvref_t<A>, argument_interface>;
+
+/**
+ * @brief Determines if the argument type is positional.
+ * @tparam A Type to be checked.
+ * @return True if the type is positional, false otherwise.
+ */
+template <derived_from_argument_interface A>
+inline constexpr bool is_positional() {
+    return std::is_same_v<std::remove_cvref_t<A>, positional_argument>;
+}
+
+/**
+ * @brief Determines if the argument type is optional.
+ * @tparam A Type to be checked.
+ * @return True if the type is optional, false otherwise.
+ */
+template <derived_from_argument_interface A>
+inline constexpr bool is_optional() {
+    return std::is_same_v<std::remove_cvref_t<A>, optional_argument>;
+}
+
+} // namespace detail
+
+/**
+ * @brief Represents an argument parser.
+ * @details Parses command-line arguments based on the specified arguments.
  */
 class argument_parser {
 public:
@@ -478,8 +572,8 @@ public:
     ~argument_parser() = default;
 
     /**
-     * @brief Sets the program name for the parser.
-     * @param name The program name.
+     * @brief Sets the program name for the argument parser.
+     * @param name Program name.
      * @return Reference to the argument_parser.
      */
     inline argument_parser& program_name(const std::string_view name) {
@@ -488,8 +582,8 @@ public:
     }
 
     /**
-     * @brief Sets the program description for the parser.
-     * @param description The program description.
+     * @brief Sets the program description for the argument parser.
+     * @param description Program description.
      * @return Reference to the argument_parser.
      */
     inline argument_parser& program_description(const std::string_view description) {
@@ -498,24 +592,104 @@ public:
     }
 
     /**
-     * @brief Overloaded output stream operator for argument_parser.
-     * @param os Output stream.
-     * @param parser Argument parser to be output.
-     * @return The modified output stream.
+     * @brief Adds a positional or optional argument to the parser based on the specifier.
+     * @tparam A Valid argument specifier type (positional or optional).
+     * @param name The primary name of the argument.
+     * @return Reference to the added argument.
      */
-    friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
-        if (parser._program_name)
-            os << parser._program_name.value() << std::endl;
+    template <detail::valid_argument_specifier A>
+    detail::argument_type<A>& add_argument(const std::string_view name);
 
-        if (parser._program_description)
-            os << parser._program_description.value() << std::endl;
+    /**
+     * @brief Adds a positional or optional argument to the parser based on the specifier.
+     * @tparam A Valid argument specifier type (positional or optional).
+     * @param name The primary name of the argument.
+     * @param short_name The short name of the argument (optional).
+     * @return Reference to the added argument.
+     */
+    template <detail::valid_argument_specifier A>
+    detail::argument_type<A>&
+        add_argument(const std::string_view name, const std::string_view short_name);
 
-        return os;
-    }
+    /**
+     * @brief Output stream operator to print the program name and description.
+     * @param os Output stream.
+     * @param parser Argument parser to be printed.
+     * @return Reference to the output stream.
+     */
+    friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser);
 
 private:
-    std::optional<std::string_view> _program_name;         ///< Optional program name.
-    std::optional<std::string_view> _program_description;  ///< Optional program description.
+    /**
+     * @brief Checks if the argument name is already present in the parser.
+     * @param name The argument name to be checked.
+     * @throws std::invalid_argument if the name is already used in another argument.
+     */
+    void _check_arg_name_present(const std::string_view name) const;
+
+    std::optional<std::string_view> _program_name;           ///< Optional program name.
+    std::optional<std::string_view> _program_description;    ///< Optional program description.
+
+    std::vector<detail::positional_argument> _positional_args;    ///< Vector of positional arguments.
+    std::vector<detail::optional_argument> _optional_args;        ///< Vector of optional arguments.
 };
+
+/**
+ * @brief Adds a positional argument to the parser based on the specifier.
+ * @tparam A Valid argument specifier type (positional).
+ * @param name The primary name of the argument.
+ * @return Reference to the added argument.
+ */
+template <>
+inline detail::argument_type<positional>&
+    argument_parser::add_argument<positional>(const std::string_view name) {
+    this->_check_arg_name_present(name);
+    return this->_positional_args.emplace_back(name);
+}
+
+/**
+ * @brief Adds an optional argument to the parser based on the specifier.
+ * @tparam A Valid argument specifier type (optional).
+ * @param name The primary name of the argument.
+ * @return Reference to the added argument.
+ */
+template <>
+inline detail::argument_type<optional>&
+    argument_parser::add_argument<optional>(const std::string_view name) {
+    this->_check_arg_name_present(name);
+    return this->_optional_args.emplace_back(name);
+}
+
+/**
+ * @brief Adds a positional argument to the parser based on the specifier.
+ * @tparam A Valid argument specifier type (positional).
+ * @param name The primary name of the argument.
+ * @param short_name The short name of the argument (optional).
+ * @return Reference to the added argument.
+ */
+template <>
+inline detail::argument_type<positional>& argument_parser::add_argument<positional>(
+    const std::string_view name, const std::string_view short_name
+) {
+    this->_check_arg_name_present(name);
+    this->_check_arg_name_present(short_name);
+    return this->_positional_args.emplace_back(name, short_name);
+}
+
+/**
+ * @brief Adds an optional argument to the parser based on the specifier.
+ * @tparam A Valid argument specifier type (optional).
+ * @param name The primary name of the argument.
+ * @param short_name The short name of the argument (optional).
+ * @return Reference to the added argument.
+ */
+template <>
+inline detail::argument_type<optional>& argument_parser::add_argument<optional>(
+    const std::string_view name, const std::string_view short_name
+) {
+    this->_check_arg_name_present(name);
+    this->_check_arg_name_present(short_name);
+    return this->_optional_args.emplace_back(name, short_name);
+}
 
 } // namespace ap
