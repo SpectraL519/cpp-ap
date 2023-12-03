@@ -53,8 +53,8 @@ struct argument_name {
     argument_name(argument_name&&) = default;
     argument_name& operator= (const argument_name&) = default;
 
-    explicit argument_name(const std::string_view name) : name(name) {}
-    explicit argument_name(const std::string_view name, const std::string_view short_name)
+    explicit argument_name(std::string_view name) : name(name) {}
+    explicit argument_name(std::string_view name, std::string_view short_name)
         : name(name), short_name(short_name) {}
 
     ~argument_name() = default;
@@ -63,7 +63,7 @@ struct argument_name {
         return this->name == other.name;
     }
 
-    inline bool operator== (const std::string_view name) const {
+    inline bool operator== (std::string_view name) const {
         return name == this->name or
                (this->short_name and name == this->short_name.value());
     }
@@ -83,8 +83,8 @@ struct argument_name {
         return os;
     }
 
-    const std::string_view name;
-    const std::optional<std::string_view> short_name;
+    const std::string name;
+    const std::optional<std::string> short_name;
 };
 
 
@@ -93,7 +93,7 @@ class argument_interface {
 public:
     using value_type = void;
 
-    virtual argument_interface& help(const std::string_view) = 0;
+    virtual argument_interface& help(std::string_view) = 0;
 
     virtual ~argument_interface() = default;
 
@@ -143,9 +143,9 @@ public:
 
     positional_argument() = delete;
 
-    positional_argument(const std::string_view name) : _name(name) {}
+    positional_argument(std::string_view name) : _name(name) {}
 
-    positional_argument(const std::string_view name, const std::string_view short_name)
+    positional_argument(std::string_view name, std::string_view short_name)
         : _name(name, short_name) {}
 
     ~positional_argument() = default;
@@ -154,7 +154,7 @@ public:
         return this->_name == other._name;
     }
 
-    inline positional_argument& help(const std::string_view help_msg) override {
+    inline positional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
     }
@@ -242,7 +242,7 @@ public:
         return this->_name == other._name;
     }
 
-    inline optional_argument& help(const std::string_view help_msg) override {
+    inline optional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
     }
@@ -355,28 +355,29 @@ public:
 
     ~argument_parser() = default;
 
-    inline argument_parser& program_name(const std::string_view name) {
+    inline argument_parser& program_name(std::string_view name) {
         this->_program_name = name;
         return *this;
     }
 
-    inline argument_parser& program_description(const std::string_view description) {
+    inline argument_parser& program_description(std::string_view description) {
         this->_program_description = description;
         return *this;
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface& add_positional_argument(const std::string_view name) {
+    detail::argument_interface& add_positional_argument(std::string_view name) {
+        // TODO: check forbidden characters
         this->_check_arg_name_present(name);
-
         this->_positional_args.push_back(std::make_unique<detail::positional_argument<T>>(name));
         return *this->_positional_args.back();
     }
 
     template <detail::readable T = std::string>
     detail::argument_interface& add_positional_argument(
-        const std::string_view name, const std::string_view short_name
+        std::string_view name, std::string_view short_name
     ) {
+        // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
         this->_positional_args.push_back(std::make_unique<detail::positional_argument<T>>(name, short_name));
@@ -384,7 +385,8 @@ public:
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface& add_optional_argument(const std::string_view name) {
+    detail::argument_interface& add_optional_argument(std::string_view name) {
+        // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name));
         return *this->_optional_args.back();
@@ -392,8 +394,9 @@ public:
 
     template <detail::readable T = std::string>
     detail::argument_interface& add_optional_argument(
-        const std::string_view name, const std::string_view short_name
+        std::string_view name, std::string_view short_name
     ) {
+        // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
         this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name, short_name));
@@ -432,7 +435,7 @@ private:
     using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator = typename argument_list_type::iterator;
 
-    void _check_arg_name_present(const std::string_view name) const {
+    void _check_arg_name_present(std::string_view name) const {
         const auto name_eq_predicate = [name](const argument_ptr_type& arg) {
             return name == arg->name();
         };
@@ -459,8 +462,14 @@ private:
 
         for (int i = 1; i < argc; i++) {
             std::string arg = argv[i];
-            while (arg.length() > 1 && arg.front() == this->_flag_prefix_char)
-                arg.erase(0, 1);
+
+            if (arg.length() > this->_flag_prefix_length and arg.starts_with(this->_flag_prefix)) {
+                // TODO: check whether the value is a number
+                arg.erase(0, this->_flag_prefix_length);
+            }
+            else if (arg.length() > this->_flag_prefix_char_length and arg.front() == this->_flag_prefix_char) {
+                arg.erase(0, this->_flag_prefix_char_length);
+            }
 
             args.emplace_back(arg);
         }
@@ -506,7 +515,11 @@ private:
     argument_list_type _positional_args;
     argument_list_type _optional_args;
 
+    // TODO: make it modifiable
     static constexpr char _flag_prefix_char = '-';
+    static constexpr uint8_t _flag_prefix_char_length = 1;
+    static constexpr std::string _flag_prefix = "--";
+    static constexpr uint8_t _flag_prefix_length = 2;
 };
 
 } // namespace ap

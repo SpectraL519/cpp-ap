@@ -82,8 +82,6 @@ struct argument_parser_test_fixture {
     }
 
     void add_arguments(ap::argument_parser& parser, int argc, int argc_split) {
-        // ! error when using prepare_arg_name
-
         for (int i = 1; i < argc_split; i++) {
             const auto arg_name = prepare_arg_name(i);
             parser.add_positional_argument(arg_name.name, arg_name.short_name.value());
