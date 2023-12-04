@@ -1,5 +1,6 @@
 # Structure
 INCLUDE_DIR := ../include
+TEST_INCLUDE_DIR := ./include
 TEST_DIR := .
 TEST_SRC_DIR := tests
 TEST_BUILD_DIR := build
@@ -15,7 +16,7 @@ endif
 CXX := g++
 CXX_STD := -std=c++2a
 CXX_FLAGS += $(CXX_STD) -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
-COMPILE_ARGS := -I $(INCLUDE_DIR) $(CXX_FLAGS)
+COMPILE_ARGS := -I $(INCLUDE_DIR) -I $(TEST_INCLUDE_DIR) $(CXX_FLAGS)
 
 # Test source & object files
 TEST_SOURCES := $(wildcard $(TEST_SRC_DIR)/*.cpp)

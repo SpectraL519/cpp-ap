@@ -77,8 +77,8 @@ BreakConstructorInitializers:         BeforeColon
 BreakInheritanceList:                 BeforeColon
 BreakStringLiterals:                  true
 
-BinPackArguments:                 true
-BinPackParameters:                true
+BinPackArguments:                 false
+BinPackParameters:                false
 ExperimentalAutoDetectBinPacking: false
 
 BitFieldColonSpacing: Both
@@ -153,7 +153,7 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep:              3
 
 SpaceAfterCStyleCast:              false
-SpaceAfterLogicalNot:              false
+SpaceAfterLogicalNot:              true
 SpaceAfterTemplateKeyword:         true
 SpaceAroundPointerQualifiers:      Default
 SpaceBeforeAssignmentOperators:    true
