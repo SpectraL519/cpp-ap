@@ -10,7 +10,8 @@ int main(int argc, char* argv[]) {
                                                      "exponent");
 
     parser.add_positional_argument<double>("base");
-    parser.add_positional_argument<double>("exponent");
+    parser.add_optional_argument<double>("exponent", "e")
+        .default_value(static_cast<double>(1));
 
     try {
         parser.parse_args(argc, argv);

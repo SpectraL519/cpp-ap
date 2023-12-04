@@ -150,7 +150,7 @@ TEST_CASE("defaul_value() should return value if one has been provided") {
     auto argument = default_optional_argument_long_name();
 
     test_value_type default_value{};
-    argument.default_value(std::to_string(default_value));
+    argument.default_value(default_value);
 
     const auto returned_default_value = testing_argument_get_default_value(argument);
 
@@ -215,8 +215,7 @@ TEST_CASE("default_value(value_type) should set default value and return the "
 
     test_value_type default_value{};
 
-    const auto& returned_argument =
-        argument.default_value(std::to_string(default_value));
+    const auto& returned_argument = argument.default_value(default_value);
 
     const auto returned_default_value = testing_argument_get_default_value(argument);
 

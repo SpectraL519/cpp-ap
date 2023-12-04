@@ -89,7 +89,7 @@ public:
 
     virtual argument_interface& help(std::string_view) = 0;
     virtual argument_interface& required(bool) = 0;
-    virtual argument_interface& default_value(const std::string&) = 0;
+    virtual argument_interface& default_value(const std::any&) = 0;
 
     virtual ~argument_interface() = default;
 
@@ -161,7 +161,7 @@ public:
         return *this;
     }
 
-    positional_argument& default_value(const std::string&) override {
+    positional_argument& default_value(const std::any&) override {
         // TODO: log a warning + add warning tests
         return *this;
     }
@@ -177,7 +177,7 @@ private:
         this->_ss.str(str_value);
 
         value_type value;
-        if (not(this->_ss >> value))
+        if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
         this->_value = value;
@@ -191,7 +191,7 @@ private:
 
     // TODO: add test cases checking value() with default_value set
     [[nodiscard]] inline const std::any& value() const override {
-        return this->_value.has_value() ? this->_value : this->_default_value;
+        return this->_value;
     }
 
     [[nodiscard]] inline const argument_name& name() const override {
@@ -259,15 +259,14 @@ public:
     }
 
     // TODO: add tests for default_value throwing in test_optional_argument
-    optional_argument& default_value(const std::string& str_default_value) {
-        this->_ss.clear();
-        this->_ss.str(str_default_value);
-
-        value_type default_value;
-        if (not(this->_ss >> default_value))
+    optional_argument& default_value(const std::any& default_value) {
+        try {
+            this->_default_value = std::any_cast<value_type>(default_value);
+        }
+        catch (const std::bad_any_cast& err) {
             throw std::invalid_argument("[default_value] TODO: msg");
+        }
 
-        this->_default_value = default_value;
         return *this;
     }
 
@@ -282,7 +281,7 @@ private:
         this->_ss.str(str_value);
 
         value_type value;
-        if (not(this->_ss >> value))
+        if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
         this->_value = value;
@@ -293,7 +292,7 @@ private:
     }
 
     [[nodiscard]] inline const std::any& value() const override {
-        return this->_value;
+        return this->_value.has_value() ? this->_value : this->_default_value;
     }
 
     [[nodiscard]] inline const argument_name& name() const override {
