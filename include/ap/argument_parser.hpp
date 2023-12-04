@@ -408,7 +408,7 @@ public:
     detail::argument_interface& add_optional_argument(
         std::string_view name, std::string_view short_name
     ) {
-        // TODO: check forbidden characters
+        // TODO: check forbidden/allowed characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
         this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name, short_name));
@@ -418,6 +418,29 @@ public:
     void parse_args(int argc, char* argv[]) {
         this->_parse_args_impl(this->_process_input(argc, argv));
         this->_check_required_args();
+    }
+
+    bool has_value(std::string_view arg_name) const {
+        const auto arg_opt = this->_get_argument(arg_name);
+        return arg_opt ? arg_opt.value().get().has_value() : false;
+    }
+
+    template <typename T>
+    T value(std::string_view arg_name) const {
+        const auto arg_opt = this->_get_argument(arg_name);
+
+        if (not arg_opt)
+            throw std::invalid_argument("[value#1] TODO: msg (no arg found)");
+
+        const auto argument = arg_opt.value().get();
+
+        try {
+            T value{std::any_cast<T>(argument.value())};
+            return value;
+        }
+        catch (const std::bad_any_cast& err) {
+            throw std::invalid_argument("[value#2] TODO: msg (bad cast)");
+        }
     }
 
     friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
@@ -445,22 +468,27 @@ private:
     using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
 
     using argument_ptr_type = std::unique_ptr<detail::argument_interface>;
+    using argument_opt_type = std::optional<std::reference_wrapper<detail::argument_interface>>;
     using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator = typename argument_list_type::iterator;
 
-    void _check_arg_name_present(std::string_view name) const {
-        const auto name_eq_predicate = [name](const argument_ptr_type& arg) {
+    auto _name_eq_predicate(std::string_view name) const {
+        return [name](const argument_ptr_type& arg) {
             return name == arg->name();
         };
+    }
+
+    void _check_arg_name_present(std::string_view name) const {
+        const auto predicate = this->_name_eq_predicate(name);
 
         if (std::find_if(
-                this->_positional_args.begin(), this->_positional_args.end(), name_eq_predicate
+                this->_positional_args.begin(), this->_positional_args.end(), predicate
             ) != this->_positional_args.end()) {
             throw std::invalid_argument("[_check_arg_name_present(n)] TODO: msg");
         }
 
         if (std::find_if(
-                this->_optional_args.begin(), this->_optional_args.end(), name_eq_predicate
+                this->_optional_args.begin(), this->_optional_args.end(), predicate
             ) != this->_optional_args.end()) {
             throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: msg");
         }
@@ -509,14 +537,10 @@ private:
         }
 
         while (cmd_it != cmd_args.end()) {
-            const auto name_eq_predicate = [&cmd_arg_name = *cmd_it](const argument_ptr_type& arg) {
-                return cmd_arg_name == arg->name();
-            };
-
             auto opt_arg_it = std::find_if(
                 this->_optional_args.begin(),
                 this->_optional_args.end(),
-                name_eq_predicate
+                this->_name_eq_predicate(*cmd_it)
             );
 
             if (opt_arg_it == this->_optional_args.end())
@@ -533,6 +557,28 @@ private:
         for (const auto& arg : this->_optional_args)
             if (arg->required() and not arg->has_value())
                 throw std::runtime_error("[_check_required_args] TODO: msg (optional)");
+    }
+
+    argument_opt_type _get_argument(std::string_view name) const {
+        const auto predicate = this->_name_eq_predicate(name);
+
+        if (auto pos_arg_it = std::find_if(
+            this->_positional_args.begin(),
+            this->_positional_args.end(),
+            predicate
+        ); pos_arg_it != this->_positional_args.end()) {
+            return std::ref(**pos_arg_it);
+        }
+
+        if (auto opt_arg_it = std::find_if(
+            this->_optional_args.begin(),
+            this->_optional_args.end(),
+            predicate
+        ); opt_arg_it != this->_optional_args.end()) {
+            return std::ref(**opt_arg_it);
+        }
+
+        return std::nullopt;
     }
 
     std::optional<std::string_view> _program_name;

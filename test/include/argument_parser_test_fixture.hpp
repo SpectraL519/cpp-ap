@@ -13,6 +13,7 @@ struct argument_parser_test_fixture {
 
     using cmd_argument_list = ap::argument_parser::cmd_argument_list;
     using argument_list_type = ap::argument_parser::argument_list_type;
+    using argument_opt_type = ap::argument_parser::argument_opt_type;
 
 
     // test utility functions
@@ -109,20 +110,24 @@ struct argument_parser_test_fixture {
 
 
     // argument_parser private function accessors
-    const std::optional<std::string_view>& get_program_name() const {
+    const std::optional<std::string_view>& sut_program_name() const {
         return sut._program_name;
     }
 
-    const std::optional<std::string_view>& get_program_description() const {
+    const std::optional<std::string_view>& sut_program_description() const {
         return sut._program_description;
     }
 
-    cmd_argument_list _process_input(int argc, char* argv[]) const {
+    cmd_argument_list sut_process_input(int argc, char* argv[]) const {
         return sut._process_input(argc, argv);
     }
 
-    void _parse_args_impl(const cmd_argument_list& cmd_args) {
+    void sut_parse_args_impl(const cmd_argument_list& cmd_args) {
         sut._parse_args_impl(cmd_args);
+    }
+
+    argument_opt_type sut_get_argument(std::string_view arg_name) const {
+        return sut._get_argument(arg_name);
     }
 
     ap::argument_parser sut;
