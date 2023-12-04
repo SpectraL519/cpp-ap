@@ -72,7 +72,8 @@ TEST_CASE("value() should return default any object if argument's value has "
 //     testing_argument_set_value(argument, value);
 
 //     REQUIRE(testing_argument_has_value(argument));
-//     REQUIRE_EQ(std::any_cast<test_value_type>(testing_argument_get_value(argument)), value);
+//     REQUIRE_EQ(std::any_cast<test_value_type>(testing_argument_get_value(argument)),
+//     value);
 // }
 
 TEST_CASE("name() should return value passed to the optional argument "
@@ -152,7 +153,8 @@ TEST_CASE("defaul_value() should return empty std::any object") {
 
 //     test_value_type value{};
 
-//     const auto returned_argument = testing_argument_set_value(argument, value);
+//     const auto returned_argument = testing_argument_set_value(argument,
+//     value);
 
 //     REQUIRE(testing_argument_has_value(argument));
 

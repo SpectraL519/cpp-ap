@@ -76,8 +76,7 @@ struct argument_parser_test_fixture {
 
     ap::detail::argument_name prepare_arg_name(std::size_t i) const {
         return ap::detail::argument_name(
-            "test_arg_" + std::to_string(i),
-            "ta_" + std::to_string(i)
+            "test_arg_" + std::to_string(i), "ta_" + std::to_string(i)
         );
     }
 
@@ -93,7 +92,8 @@ struct argument_parser_test_fixture {
         }
     }
 
-    cmd_argument_list prepare_cmd_arg_list(std::size_t num_args, std::size_t args_split) const {
+    cmd_argument_list
+        prepare_cmd_arg_list(std::size_t num_args, std::size_t args_split) const {
         cmd_argument_list cmd_args;
         cmd_args.reserve(get_args_length(num_args, args_split));
 

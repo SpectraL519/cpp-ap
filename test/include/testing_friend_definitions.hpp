@@ -38,13 +38,13 @@ const std::any&
 }
 
 // positional_argument&
-//     testing_argument_set_value(positional_argument& argument, const std::any& value) {
-//     return argument.value(value);
+//     testing_argument_set_value(positional_argument& argument, const std::any&
+//     value) { return argument.value(value);
 // }
 
 // optional_argument&
-//     testing_argument_set_value(optional_argument& argument, const std::any& value) {
-//     return argument.value(value);
+//     testing_argument_set_value(optional_argument& argument, const std::any&
+//     value) { return argument.value(value);
 // }
 
 } // namespace ap::detail

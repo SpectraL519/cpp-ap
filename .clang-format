@@ -77,8 +77,8 @@ BreakConstructorInitializers:         BeforeColon
 BreakInheritanceList:                 BeforeColon
 BreakStringLiterals:                  true
 
-BinPackArguments:                 true
-BinPackParameters:                true
+BinPackArguments:                 false
+BinPackParameters:                false
 ExperimentalAutoDetectBinPacking: false
 
 BitFieldColonSpacing: Both

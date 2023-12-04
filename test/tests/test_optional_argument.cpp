@@ -73,7 +73,8 @@ TEST_CASE("value() should return default any object if argument's value has "
 //     testing_argument_set_value(argument, value);
 
 //     REQUIRE(testing_argument_has_value(argument));
-//     REQUIRE_EQ(std::any_cast<test_value_type>(testing_argument_get_value(argument)), value);
+//     REQUIRE_EQ(std::any_cast<test_value_type>(testing_argument_get_value(argument)),
+//     value);
 // }
 
 TEST_CASE("name() should return value passed to the optional argument "
@@ -159,17 +160,19 @@ TEST_CASE("defaul_value() should return value if one has been provided") {
 
 // testing for setter functions for optional argument
 
-// TEST_CASE("value(const value_type&) should set value and return the argument "
+// TEST_CASE("value(const value_type&) should set value and return the argument
+// "
 //           "instance") {
 //     auto argument = default_optional_argument_long_name();
 
 //     test_value_type value{};
 
-//     const auto returned_argument = testing_argument_set_value(argument, value);
+//     const auto returned_argument = testing_argument_set_value(argument,
+//     value);
 
 //     REQUIRE(testing_argument_has_value(argument));
-//     REQUIRE_EQ(std::any_cast<test_value_type>(testing_argument_get_value(argument)), value);
-//     REQUIRE_EQ(returned_argument, argument);
+//     REQUIRE_EQ(std::any_cast<test_value_type>(testing_argument_get_value(argument)),
+//     value); REQUIRE_EQ(returned_argument, argument);
 // }
 
 TEST_CASE("required(bool) should set required attribute and return the "
@@ -212,7 +215,8 @@ TEST_CASE("default_value(value_type) should set default value and return the "
 
     test_value_type default_value{};
 
-    const auto& returned_argument = argument.default_value(std::to_string(default_value));
+    const auto& returned_argument =
+        argument.default_value(std::to_string(default_value));
 
     const auto returned_default_value = testing_argument_get_default_value(argument);
 

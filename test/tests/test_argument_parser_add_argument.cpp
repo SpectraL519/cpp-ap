@@ -23,7 +23,8 @@ constexpr std::string_view other_short_name = "o";
 
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
-TEST_CASE("add_positional_argument should return a positional argument reference") {
+TEST_CASE("add_positional_argument should return a positional argument "
+          "reference") {
     ap::argument_parser ap;
 
     SUBCASE("with just the long name") {
@@ -49,7 +50,8 @@ TEST_CASE("add_optional_argument should return a positional argument reference")
     }
 }
 
-TEST_CASE("add_positional_argument should throw only when adding an argument with "
+TEST_CASE("add_positional_argument should throw only when adding an argument "
+          "with "
           "previously used name") {
     ap::argument_parser ap;
 
@@ -70,7 +72,8 @@ TEST_CASE("add_positional_argument should throw only when adding an argument wit
     }
 }
 
-TEST_CASE("add_optional_argument should throw only when adding an argument with "
+TEST_CASE("add_optional_argument should throw only when adding an argument "
+          "with "
           "previously used name") {
     ap::argument_parser ap;
 

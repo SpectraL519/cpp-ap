@@ -39,12 +39,6 @@ template <typename T, typename... ValidTypes>
 inline constexpr bool is_valid_type_v = is_valid_type<T, ValidTypes...>::value;
 
 
-template <readable T>
-bool holds_type(const std::any& any) {
-    return any.type() == typeid(T);
-}
-
-
 
 struct argument_name {
     argument_name() = delete;
@@ -100,7 +94,8 @@ public:
     virtual ~argument_interface() = default;
 
     friend class ::ap::argument_parser;
-    friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
+    friend std::ostream&
+        operator<< (std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
 
         const auto& argument_help_msg = argument.help();
@@ -174,9 +169,7 @@ public:
     friend class ::ap::argument_parser;
 
 private:
-    [[nodiscard]] bool is_optional() const {
-        return false;
-    }
+    [[nodiscard]] bool is_optional() const { return false; }
 
     // TODO: add tests for value throwing in test_positional_argument
     positional_argument& value(const std::string& str_value) override {
@@ -184,7 +177,7 @@ private:
         this->_ss.str(str_value);
 
         value_type value;
-        if (not (this->_ss >> value))
+        if (not(this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
         this->_value = value;
@@ -228,11 +221,12 @@ private:
 
     std::stringstream _ss;
 
-// TODO PWRS5PZ-24: replace with a friend testing fixuture class
-// #ifdef AP_TESTING
-//     friend inline positional_argument&
-//         testing_argument_set_value(positional_argument&, const std::any&);
-// #endif
+    // TODO PWRS5PZ-24: replace with a friend testing fixuture class
+    // #ifdef AP_TESTING
+    //     friend inline positional_argument&
+    //         testing_argument_set_value(positional_argument&, const
+    //         std::any&);
+    // #endif
 };
 
 
@@ -270,7 +264,7 @@ public:
         this->_ss.str(str_default_value);
 
         value_type default_value;
-        if (not (this->_ss >> default_value))
+        if (not(this->_ss >> default_value))
             throw std::invalid_argument("[default_value] TODO: msg");
 
         this->_default_value = default_value;
@@ -280,9 +274,7 @@ public:
     friend class ::ap::argument_parser;
 
 private:
-    [[nodiscard]] bool is_optional() const {
-        return true;
-    }
+    [[nodiscard]] bool is_optional() const { return true; }
 
     // TODO: add tests for value throwing in test_optional_argument
     optional_argument& value(const std::string& str_value) override {
@@ -290,7 +282,7 @@ private:
         this->_ss.str(str_value);
 
         value_type value;
-        if (not (this->_ss >> value))
+        if (not(this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
         this->_value = value;
@@ -331,27 +323,12 @@ private:
 
     std::stringstream _ss;
 
-// TODO PWRS5PZ-24: replace with a friend testing fixuture class
-// #ifdef AP_TESTING
-//     friend inline optional_argument&
-//         testing_argument_set_value(optional_argument&, const std::any&);
-// #endif
+    // TODO PWRS5PZ-24: replace with a friend testing fixuture class
+    // #ifdef AP_TESTING
+    //     friend inline optional_argument&
+    //         testing_argument_set_value(optional_argument&, const std::any&);
+    // #endif
 };
-
-
-template <typename A>
-concept derived_from_argument_interface =
-    std::derived_from<std::remove_cvref_t<A>, argument_interface>;
-
-template <derived_from_argument_interface A, readable T>
-inline constexpr bool is_positional() {
-    return std::is_same_v<std::remove_cvref_t<A>, positional_argument<T>>;
-}
-
-template <derived_from_argument_interface A, readable T>
-inline constexpr bool is_optional() {
-    return std::is_same_v<std::remove_cvref_t<A>, optional_argument<T>>;
-}
 
 } // namespace detail
 
@@ -381,18 +358,21 @@ public:
     detail::argument_interface& add_positional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
-        this->_positional_args.push_back(std::make_unique<detail::positional_argument<T>>(name));
+        this->_positional_args.push_back(
+            std::make_unique<detail::positional_argument<T>>(name)
+        );
         return *this->_positional_args.back();
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface& add_positional_argument(
-        std::string_view name, std::string_view short_name
-    ) {
+    detail::argument_interface&
+        add_positional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
-        this->_positional_args.push_back(std::make_unique<detail::positional_argument<T>>(name, short_name));
+        this->_positional_args.push_back(
+            std::make_unique<detail::positional_argument<T>>(name, short_name)
+        );
         return *this->_positional_args.back();
     }
 
@@ -400,18 +380,21 @@ public:
     detail::argument_interface& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
-        this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name));
+        this->_optional_args.push_back(
+            std::make_unique<detail::optional_argument<T>>(name)
+        );
         return *this->_optional_args.back();
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface& add_optional_argument(
-        std::string_view name, std::string_view short_name
-    ) {
+    detail::argument_interface&
+        add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden/allowed characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
-        this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name, short_name));
+        this->_optional_args.push_back(
+            std::make_unique<detail::optional_argument<T>>(name, short_name)
+        );
         return *this->_optional_args.back();
     }
 
@@ -433,7 +416,7 @@ public:
             throw std::invalid_argument("[value#1] TODO: msg (no arg found)");
 
         try {
-            T value{std::any_cast<T>(arg_opt.value().get().value())};
+            T value{ std::any_cast<T>(arg_opt.value().get().value()) };
             return value;
         }
         catch (const std::bad_any_cast& err) {
@@ -466,7 +449,8 @@ private:
     using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
 
     using argument_ptr_type = std::unique_ptr<detail::argument_interface>;
-    using argument_opt_type = std::optional<std::reference_wrapper<detail::argument_interface>>;
+    using argument_opt_type =
+        std::optional<std::reference_wrapper<detail::argument_interface>>;
     using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator = typename argument_list_type::iterator;
 
@@ -488,7 +472,8 @@ private:
         if (std::find_if(
                 this->_optional_args.begin(), this->_optional_args.end(), predicate
             ) != this->_optional_args.end()) {
-            throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: msg");
+            throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: "
+                                        "msg");
         }
     }
 
@@ -510,7 +495,8 @@ private:
         for (int i = 1; i < argc; i++) {
             std::string arg = argv[i];
 
-            if (arg.length() > this->_flag_prefix_length and arg.starts_with(this->_flag_prefix)) {
+            if (arg.length() > this->_flag_prefix_length and
+                arg.starts_with(this->_flag_prefix)) {
                 arg.erase(0, this->_flag_prefix_length);
             }
             else if (arg.length() > this->_flag_prefix_char_length and arg.front() == this->_flag_prefix_char) {
@@ -528,7 +514,8 @@ private:
 
         for (const auto& pos_arg : this->_positional_args) {
             if (cmd_it == cmd_args.end())
-                throw std::runtime_error("[_parse_args_impl#1] TODO: msg (not enough values)");
+                throw std::runtime_error("[_parse_args_impl#1] TODO: msg (not "
+                                         "enough values)");
 
             // TODO: add argument name parsing for positional args
             pos_arg->value(*cmd_it++);
@@ -542,10 +529,12 @@ private:
             );
 
             if (opt_arg_it == this->_optional_args.end())
-                throw std::runtime_error("[_parse_args_impl#2] TODO: msg (opt_arg not found)");
+                throw std::runtime_error("[_parse_args_impl#2] TODO: msg "
+                                         "(opt_arg not found)");
 
             if (++cmd_it == cmd_args.end())
-                throw std::runtime_error("[_parse_args_impl#3] TODO: msg (can't read opt_arg's value)");
+                throw std::runtime_error("[_parse_args_impl#3] TODO: msg "
+                                         "(can't read opt_arg's value)");
 
             opt_arg_it->get()->value(*cmd_it++);
         }
@@ -554,25 +543,24 @@ private:
     void _check_required_args() const {
         for (const auto& arg : this->_optional_args)
             if (arg->required() and not arg->has_value())
-                throw std::runtime_error("[_check_required_args] TODO: msg (optional)");
+                throw std::runtime_error("[_check_required_args] TODO: msg "
+                                         "(optional)");
     }
 
     argument_opt_type _get_argument(std::string_view name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
         if (auto pos_arg_it = std::find_if(
-            this->_positional_args.begin(),
-            this->_positional_args.end(),
-            predicate
-        ); pos_arg_it != this->_positional_args.end()) {
+                this->_positional_args.begin(), this->_positional_args.end(), predicate
+            );
+            pos_arg_it != this->_positional_args.end()) {
             return std::ref(**pos_arg_it);
         }
 
         if (auto opt_arg_it = std::find_if(
-            this->_optional_args.begin(),
-            this->_optional_args.end(),
-            predicate
-        ); opt_arg_it != this->_optional_args.end()) {
+                this->_optional_args.begin(), this->_optional_args.end(), predicate
+            );
+            opt_arg_it != this->_optional_args.end()) {
             return std::ref(**opt_arg_it);
         }
 
