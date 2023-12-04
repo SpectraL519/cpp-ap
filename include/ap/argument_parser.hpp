@@ -454,6 +454,14 @@ private:
     }
 
     [[nodiscard]] cmd_argument_list _process_input(int argc, char* argv[]) const {
+        /*
+        TODO:
+        * assignment character detection
+        * quotes detection
+        * negative number detection
+        * split into smaller functions
+        */
+
         if (argc < 2)
             return cmd_argument_list{};
 
@@ -464,7 +472,6 @@ private:
             std::string arg = argv[i];
 
             if (arg.length() > this->_flag_prefix_length and arg.starts_with(this->_flag_prefix)) {
-                // TODO: check whether the value is a number
                 arg.erase(0, this->_flag_prefix_length);
             }
             else if (arg.length() > this->_flag_prefix_char_length and arg.front() == this->_flag_prefix_char) {
@@ -484,12 +491,13 @@ private:
             if (cmd_it == cmd_args.end())
                 throw std::runtime_error("[_parse_args_impl#1] TODO: msg (not enough values)");
 
+            // TODO: add argument name parsing for positional args
             pos_arg->value(*cmd_it++);
         }
 
         while (cmd_it != cmd_args.end()) {
-            const auto name_eq_predicate = [&cmd_arg = *cmd_it](const argument_ptr_type& arg) {
-                return cmd_arg == arg->name();
+            const auto name_eq_predicate = [&cmd_arg_name = *cmd_it](const argument_ptr_type& arg) {
+                return cmd_arg_name == arg->name();
             };
 
             auto opt_arg_it = std::find_if(
@@ -501,11 +509,10 @@ private:
             if (opt_arg_it == this->_optional_args.end())
                 throw std::runtime_error("[_parse_args_impl#2] TODO: msg (opt_arg not found)");
 
-            cmd_it++;
-            if (cmd_it == cmd_args.end())
+            if (++cmd_it == cmd_args.end())
                 throw std::runtime_error("[_parse_args_impl#3] TODO: msg (can't read opt_arg's value)");
 
-            opt_arg_it->get()->value(*cmd_it);
+            opt_arg_it->get()->value(*cmd_it++);
         }
     }
 
