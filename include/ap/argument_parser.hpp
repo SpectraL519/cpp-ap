@@ -94,6 +94,8 @@ public:
     using value_type = void;
 
     virtual argument_interface& help(std::string_view) = 0;
+    virtual argument_interface& required(bool) = 0;
+    virtual argument_interface& default_value(const std::string&) = 0;
 
     virtual ~argument_interface() = default;
 
@@ -156,6 +158,16 @@ public:
 
     inline positional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
+        return *this;
+    }
+
+    inline positional_argument& required(bool) override {
+        // TODO: log a warning + add warning tests
+        return *this;
+    }
+
+    positional_argument& default_value(const std::string&) override {
+        // TODO: log a warning + add warning tests
         return *this;
     }
 
@@ -403,9 +415,10 @@ public:
         return *this->_optional_args.back();
     }
 
-    // void parse_args(int argc, char* argv[]) {
-    //     // TODO
-    // }
+    void parse_args(int argc, char* argv[]) {
+        this->_parse_args_impl(this->_process_input(argc, argv));
+        this->_check_required_args();
+    }
 
     friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
@@ -514,6 +527,12 @@ private:
 
             opt_arg_it->get()->value(*cmd_it++);
         }
+    }
+
+    void _check_required_args() const {
+        for (const auto& arg : this->_optional_args)
+            if (arg->required() and not arg->has_value())
+                throw std::runtime_error("[_check_required_args] TODO: msg (optional)");
     }
 
     std::optional<std::string_view> _program_name;

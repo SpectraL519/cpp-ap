@@ -24,46 +24,49 @@ namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
-TEST_SUITE("_process_input") {
-    TEST_CASE_FIXTURE(
-        argument_parser_test_fixture,
-        "_process_input should return an empty vector for no command-line arguments"
-    ) {
-        const auto argc = get_argc(default_num_args, default_num_args);
-        auto argv = prepare_argv(default_num_args, default_num_args);
+TEST_SUITE_BEGIN("_process_input");
 
-        const auto args = _process_input(argc, argv);
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "_process_input should return an empty vector for no command-line arguments"
+) {
+    const auto argc = get_argc(default_num_args, default_num_args);
+    auto argv = prepare_argv(default_num_args, default_num_args);
 
-        REQUIRE(args.empty());
+    const auto args = _process_input(argc, argv);
 
-        free_argv(argc, argv);
-    }
+    REQUIRE(args.empty());
 
-    TEST_CASE_FIXTURE(
-        argument_parser_test_fixture,
-        "_process_input should return a vector of correct arguments"
-    ) {
-        const auto argc = get_argc(non_default_num_args, non_default_args_split);
-        auto argv = prepare_argv(non_default_num_args, non_default_args_split);
-
-        const auto args = _process_input(argc, argv);
-
-        REQUIRE_EQ(args.size(), get_args_length(non_default_num_args, non_default_args_split));
-
-        for (std::size_t i = 0; i < non_default_args_split; i++) { // positional args
-            REQUIRE_EQ(args.at(i), prepare_arg_value(i));
-        }
-
-        std::size_t opt_arg_i = non_default_args_split;
-        for (std::size_t i = non_default_args_split; i < args.size(); i += 2) { // optional args
-            REQUIRE_EQ(args.at(i), prepare_arg_name(opt_arg_i));
-            REQUIRE_EQ(args.at(i + 1), prepare_arg_value(opt_arg_i));
-            opt_arg_i++;
-        }
-
-        free_argv(argc, argv);
-    }
+    free_argv(argc, argv);
 }
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "_process_input should return a vector of correct arguments"
+) {
+    const auto argc = get_argc(non_default_num_args, non_default_args_split);
+    auto argv = prepare_argv(non_default_num_args, non_default_args_split);
+
+    const auto args = _process_input(argc, argv);
+
+    REQUIRE_EQ(args.size(), get_args_length(non_default_num_args, non_default_args_split));
+
+    for (std::size_t i = 0; i < non_default_args_split; i++) { // positional args
+        REQUIRE_EQ(args.at(i), prepare_arg_value(i));
+    }
+
+    std::size_t opt_arg_i = non_default_args_split;
+    for (std::size_t i = non_default_args_split; i < args.size(); i += 2) { // optional args
+        REQUIRE_EQ(args.at(i), prepare_arg_name(opt_arg_i));
+        REQUIRE_EQ(args.at(i + 1), prepare_arg_value(opt_arg_i));
+        opt_arg_i++;
+    }
+
+    free_argv(argc, argv);
+}
+
+TEST_SUITE_END(); // _process_input
+
 
 TEST_SUITE_BEGIN("_parse_args_impl");
 
@@ -81,12 +84,36 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should throw when there is less input arguments than there are added positional arguments"
+    "_parse_args_impl should throw when there is less input arguments than there are positional arguments"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto num_positional_values = non_default_num_args / 4;
     const auto cmd_args = prepare_cmd_arg_list(num_positional_values, num_positional_values);
+
+    REQUIRE_THROWS_AS(_parse_args_impl(cmd_args), std::runtime_error);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "_parse_args_impl should throw when there is less input positional argument values than there are positional arguments"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
+    cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split - 1));
+
+    REQUIRE_THROWS_AS(_parse_args_impl(cmd_args), std::runtime_error);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "_parse_args_impl should throw when there is no value specified for an optional argument present in the input list"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
+    cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split + 1));
 
     REQUIRE_THROWS_AS(_parse_args_impl(cmd_args), std::runtime_error);
 }
@@ -103,6 +130,66 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END(); // _parse_args_impl
+
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "parse_args should throw when there is no value specified for a required optional argument"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    const auto required_arg_name = prepare_arg_name(non_default_num_args);
+    sut.add_optional_argument(
+        required_arg_name.name,
+        required_arg_name.short_name.value()
+    ).required(true);
+
+    const auto argc = get_argc(non_default_num_args, non_default_args_split);
+    auto argv = prepare_argv(non_default_num_args, non_default_args_split);
+
+    REQUIRE_THROWS_AS(sut.parse_args(argc, argv), std::runtime_error);
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "parse_args should not throw if input and numer of positional argument values are correct and all required optional arguments have values"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    const auto required_arg_name = prepare_arg_name(non_default_num_args);
+    sut.add_optional_argument(
+        required_arg_name.name,
+        required_arg_name.short_name.value()
+    ).required(true);
+
+    int argc;
+    char** argv;
+
+    SUBCASE("all arguments have values") {
+        std::size_t correct_num_args = non_default_num_args + 1;
+        argc = get_argc(correct_num_args, non_default_args_split);
+        argv = prepare_argv(correct_num_args, non_default_args_split);
+    }
+    SUBCASE("only the necessary arguments have values") {
+        std::size_t correct_num_args = non_default_args_split + 1;
+        argc = get_argc(correct_num_args, non_default_args_split);
+        argv = prepare_argv(correct_num_args, non_default_args_split);
+
+        const auto arg_i = non_default_num_args;
+        std::strcpy(argv[argc - 2], prepare_arg_flag(arg_i).c_str());
+        std::strcpy(argv[argc - 1], prepare_arg_value(arg_i).c_str());
+    }
+
+    CAPTURE(argc);
+    CAPTURE(argv);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+    free_argv(argc, argv);
+}
+
 TEST_SUITE_END(); // test_argument_parser_parse_args
 
 } // namespace ap_testing
