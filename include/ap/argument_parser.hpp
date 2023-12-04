@@ -425,21 +425,19 @@ public:
         return arg_opt ? arg_opt.value().get().has_value() : false;
     }
 
-    template <typename T>
+    template <std::copy_constructible T = std::string>
     T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
 
         if (not arg_opt)
             throw std::invalid_argument("[value#1] TODO: msg (no arg found)");
 
-        const auto argument = arg_opt.value().get();
-
         try {
-            T value{std::any_cast<T>(argument.value())};
+            T value{std::any_cast<T>(arg_opt.value().get().value())};
             return value;
         }
         catch (const std::bad_any_cast& err) {
-            throw std::invalid_argument("[value#2] TODO: msg (bad cast)");
+            throw std::invalid_argument("[value#2] TODO: msg (invalid type)");
         }
     }
 
