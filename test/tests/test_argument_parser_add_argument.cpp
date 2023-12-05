@@ -7,8 +7,8 @@
 
 #include <iostream>
 
-using namespace ap_testing;
 using namespace ap::detail;
+
 
 namespace {
 
@@ -19,6 +19,9 @@ constexpr std::string_view other_name = "other";
 constexpr std::string_view other_short_name = "o";
 
 } // namespace
+
+
+namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
@@ -87,3 +90,5 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END();
+
+} // namespace ap_testing

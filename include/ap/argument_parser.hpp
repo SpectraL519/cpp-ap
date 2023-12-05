@@ -526,8 +526,8 @@ private:
         return std::nullopt;
     }
 
-    std::optional<std::string_view> _program_name;
-    std::optional<std::string_view> _program_description;
+    std::optional<std::string> _program_name;
+    std::optional<std::string> _program_description;
 
     argument_list_type _positional_args;
     argument_list_type _optional_args;

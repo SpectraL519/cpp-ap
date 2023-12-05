@@ -110,11 +110,11 @@ struct argument_parser_test_fixture {
     }
 
     // argument_parser private function accessors
-    const std::optional<std::string_view>& sut_program_name() const {
+    const std::optional<std::string>& sut_get_program_name() const {
         return sut._program_name;
     }
 
-    const std::optional<std::string_view>& sut_program_description() const {
+    const std::optional<std::string>& sut_get_program_description() const {
         return sut._program_description;
     }
 

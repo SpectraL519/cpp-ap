@@ -9,6 +9,7 @@
 
 using namespace ap::detail;
 
+
 namespace {
 
 constexpr std::string_view name = "test";
@@ -26,6 +27,9 @@ argument_name default_argument_name_both_names() {
 }
 
 } // namespace
+
+
+namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_name");
 
@@ -45,8 +49,7 @@ TEST_CASE("argument_name members should be correctly initialized") {
 }
 
 TEST_CASE("argument_name::operator==(argument_name) should return true if "
-          "long "
-          "names are equal") {
+          "long names are equal") {
     const auto arg_name_a = default_argument_name_long_name();
     const auto arg_name_b = default_argument_name_both_names();
 
@@ -152,3 +155,5 @@ TEST_CASE("operator<< should push correct data to the output stream") {
 }
 
 TEST_SUITE_END();
+
+} // namespace ap_testing
