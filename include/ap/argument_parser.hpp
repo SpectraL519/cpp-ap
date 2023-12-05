@@ -16,6 +16,7 @@
 #ifdef AP_TESTING
 
 namespace ap_testing {
+struct argument_test_fixture;
 struct argument_parser_test_fixture;
 } // namespace ap_testing
 
@@ -87,7 +88,6 @@ public:
 
     virtual ~argument_interface() = default;
 
-    friend class ::ap::argument_parser;
     friend std::ostream&
         operator<< (std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
@@ -98,6 +98,12 @@ public:
         return os;
     }
 
+    friend class ::ap::argument_parser;
+
+#ifdef AP_TESTING
+    friend struct ::ap_testing::argument_test_fixture;
+#endif
+
 protected:
     virtual bool is_optional() const = 0;
 
@@ -106,24 +112,9 @@ protected:
     virtual const std::any& value() const = 0;
 
     virtual const argument_name& name() const = 0;
-    virtual bool required() const = 0;
+    virtual bool is_required() const = 0;
     virtual const std::optional<std::string_view>& help() const = 0;
     virtual const std::any& default_value() const = 0;
-
-// TODO PWRS5PZ-24: replace with a friend testing fixuture class
-#ifdef AP_TESTING
-    friend inline bool testing_argument_is_optional(const argument_interface&);
-    friend inline bool testing_argument_has_value(const argument_interface&);
-    friend inline const std::any&
-        testing_argument_get_value(const argument_interface&);
-    friend inline const argument_name&
-        testing_argument_get_name(const argument_interface&);
-    friend inline bool testing_argument_is_required(const argument_interface&);
-    friend inline const std::optional<std::string_view>&
-        testing_argument_get_help(const argument_interface&);
-    friend inline const std::any&
-        testing_argument_get_default_value(const argument_interface&);
-#endif
 };
 
 
@@ -192,7 +183,7 @@ private:
         return this->_name;
     }
 
-    [[nodiscard]] inline bool required() const override {
+    [[nodiscard]] inline bool is_required() const override {
         return this->_required;
     }
 
@@ -214,13 +205,6 @@ private:
     const std::any _default_value;
 
     std::stringstream _ss;
-
-    // TODO PWRS5PZ-24: replace with a friend testing fixuture class
-    // #ifdef AP_TESTING
-    //     friend inline positional_argument&
-    //         testing_argument_set_value(positional_argument&, const
-    //         std::any&);
-    // #endif
 };
 
 
@@ -293,7 +277,7 @@ private:
         return this->_name;
     }
 
-    [[nodiscard]] inline bool required() const override {
+    [[nodiscard]] inline bool is_required() const override {
         return this->_required;
     }
 
@@ -315,12 +299,6 @@ private:
     std::any _default_value;
 
     std::stringstream _ss;
-
-    // TODO PWRS5PZ-24: replace with a friend testing fixuture class
-    // #ifdef AP_TESTING
-    //     friend inline optional_argument&
-    //         testing_argument_set_value(optional_argument&, const std::any&);
-    // #endif
 };
 
 } // namespace detail
@@ -535,7 +513,7 @@ private:
 
     void _check_required_args() const {
         for (const auto& arg : this->_optional_args)
-            if (arg->required() and not arg->has_value())
+            if (arg->is_required() and not arg->has_value())
                 throw std::runtime_error("[_check_required_args] TODO: msg "
                                          "(optional)");
     }

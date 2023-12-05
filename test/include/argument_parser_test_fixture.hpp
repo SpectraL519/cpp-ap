@@ -10,6 +10,7 @@ namespace ap_testing {
 
 struct argument_parser_test_fixture {
     argument_parser_test_fixture() = default;
+    ~argument_parser_test_fixture() = default;
 
     using cmd_argument_list = ap::argument_parser::cmd_argument_list;
     using argument_list_type = ap::argument_parser::argument_list_type;
