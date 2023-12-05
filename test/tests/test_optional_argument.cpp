@@ -38,7 +38,7 @@ TEST_SUITE_BEGIN("test_optional_argument");
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "optional argument should be optional and not positional"
+    "is_optional() should return true"
 ) {
     const auto sut = prepare_argument(long_name);
 
@@ -65,6 +65,9 @@ TEST_CASE_FIXTURE(
 
     REQUIRE(sut_has_value(sut));
 }
+
+// TODO: default value tests
+// TODO: test invalid type
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
@@ -162,20 +165,22 @@ TEST_CASE_FIXTURE(
     constexpr std::string_view help_msg = "test help msg";
     sut->help(help_msg);
 
-    const auto returned_help_msg = sut_get_help(sut);
+    const auto stored_help_msg = sut_get_help(sut);
 
-    REQUIRE(returned_help_msg);
-    REQUIRE_EQ(returned_help_msg, help_msg);
+    REQUIRE(stored_help_msg);
+    REQUIRE_EQ(stored_help_msg, help_msg);
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "defaul_value() should return nullopt by default"
+    "defaul_value() should return null any instance by default"
 ) {
     const auto sut = prepare_argument(long_name);
 
     REQUIRE_FALSE(sut_get_default_value(sut).has_value());
 }
+
+// TODO: test invalid type
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
@@ -186,75 +191,10 @@ TEST_CASE_FIXTURE(
     test_value_type default_value{};
     sut->default_value(default_value);
 
-    const auto returned_default_value = sut_get_default_value(sut);
+    const auto stored_default_value = sut_get_default_value(sut);
 
-    REQUIRE(returned_default_value.has_value());
-    REQUIRE_EQ(std::any_cast<test_value_type>(returned_default_value), default_value);
-}
-
-TEST_CASE_FIXTURE(
-    argument_test_fixture,
-    "value(const value_type&) should set value and return the argument instance"
-) {
-    auto sut = prepare_argument(long_name);
-
-    test_value_type value{};
-    sut_set_value(sut, std::to_string(value));
-
-    REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value);
-}
-
-TEST_CASE_FIXTURE(
-    argument_test_fixture,
-    "required(bool) should set required attribute and return the argument"
-) {
-    auto sut = prepare_argument(long_name);
-    bool required;
-
-    SUBCASE("set to true") {
-        required = true;
-    }
-    SUBCASE("set to false") {
-        required = false;
-    }
-
-    CAPTURE(required);
-    sut->required(required);
-
-    REQUIRE_EQ(sut_is_required(sut), required);
-}
-
-TEST_CASE_FIXTURE(
-    argument_test_fixture,
-    "help(string_view) should set help message and return the argument"
-) {
-    auto sut = prepare_argument(long_name);
-
-    constexpr std::string_view help_msg = "test help msg";
-
-    sut->help(help_msg);
-
-    const auto returned_help_msg = sut_get_help(sut);
-
-    REQUIRE(returned_help_msg);
-    REQUIRE_EQ(returned_help_msg.value(), help_msg);
-}
-
-TEST_CASE_FIXTURE(
-    argument_test_fixture,
-    "default_value(value_type) should set default value and return the argument"
-) {
-    auto sut = prepare_argument(long_name);
-
-    test_value_type default_value{};
-
-    sut->default_value(default_value);
-
-    const auto returned_default_value = sut_get_default_value(sut);
-
-    REQUIRE(returned_default_value.has_value());
-    REQUIRE_EQ(std::any_cast<test_value_type>(returned_default_value), default_value);
+    REQUIRE(stored_default_value.has_value());
+    REQUIRE_EQ(std::any_cast<test_value_type>(stored_default_value), default_value);
 }
 
 TEST_SUITE_END();
