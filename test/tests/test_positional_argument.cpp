@@ -119,7 +119,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "required() should return true by default"
+    "is_required() should return true by default"
 ) {
     auto sut = prepare_argument(long_name);
 
@@ -128,22 +128,13 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "required() should return true regardles of the requried(bool) function usage"
+    "is_required() should return true regardles of the requried(bool) function usage"
 ) {
     auto sut = prepare_argument(long_name);
-    bool required;
 
-    SUBCASE("set to true") {
-        required = true;
-    }
-    SUBCASE("set to false") {
-        required = false;
-    }
+    sut->required();
 
-    CAPTURE(required);
-    sut->required(required);
-
-    REQUIRE_EQ(sut_is_required(sut), true);
+    REQUIRE(sut_is_required(sut));
 }
 
 TEST_CASE_FIXTURE(

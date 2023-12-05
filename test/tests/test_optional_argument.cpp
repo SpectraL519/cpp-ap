@@ -112,7 +112,7 @@ TEST_CASE_FIXTURE(
 ) {
     const auto sut = prepare_argument(long_name, short_name);
 
-    const auto name = sut_get_name(sut);;
+    const auto name = sut_get_name(sut);
 
     REQUIRE_EQ(name, long_name);
     REQUIRE_EQ(name, short_name);
@@ -120,7 +120,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "required() should return false by default"
+    "is_required() should return false by default"
 ) {
     auto sut = prepare_argument(long_name);
 
@@ -129,22 +129,13 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "required() should return the value it has been set to"
+    "is_required() should return true is argument is set to be required"
 ) {
     auto sut = prepare_argument(long_name);
-    bool required;
 
-    SUBCASE("set to true") {
-        required = true;
-    }
-    SUBCASE("set to false") {
-        required = false;
-    }
+    sut->required();
 
-    CAPTURE(required);
-    sut->required(required);
-
-    REQUIRE_EQ(sut_is_required(sut), required);
+    REQUIRE(sut_is_required(sut));
 }
 
 TEST_CASE_FIXTURE(

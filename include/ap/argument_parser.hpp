@@ -83,7 +83,7 @@ public:
     using value_type = void;
 
     virtual argument_interface& help(std::string_view) = 0;
-    virtual argument_interface& required(bool) = 0;
+    virtual argument_interface& required() = 0;
     virtual argument_interface& default_value(const std::any&) = 0;
 
     virtual bool is_optional() const = 0;
@@ -141,7 +141,7 @@ public:
         return *this;
     }
 
-    inline positional_argument& required(bool) override {
+    inline positional_argument& required() override {
         // TODO: log a warning + add warning tests
         return *this;
     }
@@ -231,8 +231,8 @@ public:
         return *this;
     }
 
-    inline optional_argument& required(bool required) {
-        this->_required = required;
+    inline optional_argument& required() {
+        this->_required = true;
         return *this;
     }
 
@@ -545,10 +545,10 @@ private:
     argument_list_type _optional_args;
 
     // TODO: make it modifiable
-    static constexpr char _flag_prefix_char = '-';
     static constexpr uint8_t _flag_prefix_char_length = 1;
-    static constexpr std::string _flag_prefix = "--";
     static constexpr uint8_t _flag_prefix_length = 2;
+    static constexpr char _flag_prefix_char = '-';
+    const std::string _flag_prefix = "--";
 };
 
 } // namespace ap

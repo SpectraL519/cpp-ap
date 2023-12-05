@@ -19,7 +19,7 @@ constexpr std::size_t default_num_args = 0;
 constexpr std::size_t non_default_num_args = 10;
 constexpr std::size_t non_default_args_split = non_default_num_args / 2;
 
-constexpr std::string invalid_arg_name = "invalid_arg";
+const std::string invalid_arg_name = "invalid_arg";
 
 } // namespace
 
@@ -158,9 +158,8 @@ TEST_CASE_FIXTURE(
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
@@ -181,9 +180,8 @@ TEST_CASE_FIXTURE(
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     int argc;
     char** argv;
@@ -280,9 +278,8 @@ TEST_CASE_FIXTURE(
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto num_args = non_default_num_args + 1;
 
@@ -374,9 +371,8 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value should throw if the given
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto num_args = non_default_num_args + 1;
 
@@ -446,9 +442,8 @@ TEST_CASE_FIXTURE(
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto num_args = non_default_num_args + 1;
 
