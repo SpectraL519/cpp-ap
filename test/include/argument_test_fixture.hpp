@@ -17,11 +17,6 @@ struct argument_test_fixture {
 
     using argument_ptr_type = std::unique_ptr<argument_interface>;
 
-
-    bool sut_is_optional(const argument_ptr_type& sut) const {
-        return sut->is_optional();
-    }
-
     argument_interface& sut_set_value(
         const argument_ptr_type& sut, const std::string& str_value
     ) const {

@@ -86,6 +86,8 @@ public:
     virtual argument_interface& required(bool) = 0;
     virtual argument_interface& default_value(const std::any&) = 0;
 
+    virtual bool is_optional() const = 0;
+
     virtual ~argument_interface() = default;
 
     friend std::ostream&
@@ -105,8 +107,6 @@ public:
 #endif
 
 protected:
-    virtual bool is_optional() const = 0;
-
     virtual argument_interface& value(const std::string&) = 0;
     virtual bool has_value() const = 0;
     virtual const std::any& value() const = 0;
@@ -151,11 +151,11 @@ public:
         return *this;
     }
 
+    [[nodiscard]] bool is_optional() const { return this->_optional; }
+
     friend class ::ap::argument_parser;
 
 private:
-    [[nodiscard]] bool is_optional() const { return false; }
-
     // TODO: add tests for value throwing in test_positional_argument
     positional_argument& value(const std::string& str_value) override {
         this->_ss.clear();
@@ -236,6 +236,8 @@ public:
         return *this;
     }
 
+    [[nodiscard]] bool is_optional() const { return this->_optional; }
+
     // TODO: add tests for default_value throwing in test_optional_argument
     optional_argument& default_value(const std::any& default_value) {
         try {
@@ -251,8 +253,6 @@ public:
     friend class ::ap::argument_parser;
 
 private:
-    [[nodiscard]] bool is_optional() const { return true; }
-
     // TODO: add tests for value throwing in test_optional_argument
     optional_argument& value(const std::string& str_value) override {
         this->_ss.clear();
