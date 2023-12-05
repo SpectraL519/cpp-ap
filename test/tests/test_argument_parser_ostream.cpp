@@ -8,7 +8,6 @@
 
 using namespace ap;
 
-
 // TODO PWRS5PZ-24: replace with explicit field testing using a test fixture
 TEST_SUITE("test_argument_parser_ostream") {
     TEST_CASE("operator<< should push correct data to the output stream") {

@@ -12,7 +12,6 @@
 #include <type_traits>
 #include <vector>
 
-
 #ifdef AP_TESTING
 
 namespace ap_testing {
@@ -21,7 +20,6 @@ struct argument_parser_test_fixture;
 } // namespace ap_testing
 
 #endif
-
 
 namespace ap {
 
@@ -32,8 +30,6 @@ namespace detail {
 template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
-
-
 
 struct argument_name {
     argument_name() = delete;
@@ -53,14 +49,15 @@ struct argument_name {
     }
 
     inline bool operator== (std::string_view name) const {
-        return name == this->name or
-               (this->short_name and name == this->short_name.value());
+        return name == this->name
+            or (this->short_name and name == this->short_name.value());
     }
 
     [[nodiscard]] inline std::string str() const {
-        return this->short_name ? "[" + std::string(this->name) + "]"
-                                : "[" + std::string(this->name) + "," +
-                                      std::string(this->short_name.value()) + "]";
+        return this->short_name
+                 ? "[" + std::string(this->name) + "]"
+                 : "[" + std::string(this->name) + ","
+                       + std::string(this->short_name.value()) + "]";
     }
 
     friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
@@ -76,8 +73,6 @@ struct argument_name {
     const std::optional<std::string> short_name;
 };
 
-
-
 class argument_interface {
 public:
     using value_type = void;
@@ -91,7 +86,7 @@ public:
     virtual ~argument_interface() = default;
 
     friend std::ostream&
-        operator<< (std::ostream& os, const argument_interface& argument) {
+    operator<< (std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
 
         const auto& argument_help_msg = argument.help();
@@ -116,7 +111,6 @@ protected:
     virtual const std::optional<std::string_view>& help() const = 0;
     virtual const std::any& default_value() const = 0;
 };
-
 
 template <readable T>
 class positional_argument : public argument_interface {
@@ -206,7 +200,6 @@ private:
 
     std::stringstream _ss;
 };
-
 
 template <readable T>
 class optional_argument : public argument_interface {
@@ -303,8 +296,6 @@ private:
 
 } // namespace detail
 
-
-
 class argument_parser {
 public:
     argument_parser() = default;
@@ -337,7 +328,7 @@ public:
 
     template <detail::readable T = std::string>
     detail::argument_interface&
-        add_positional_argument(std::string_view name, std::string_view short_name) {
+    add_positional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
@@ -351,15 +342,13 @@ public:
     detail::argument_interface& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
-        this->_optional_args.push_back(
-            std::make_unique<detail::optional_argument<T>>(name)
-        );
+        this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name));
         return *this->_optional_args.back();
     }
 
     template <detail::readable T = std::string>
     detail::argument_interface&
-        add_optional_argument(std::string_view name, std::string_view short_name) {
+    add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden/allowed characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
@@ -434,15 +423,14 @@ private:
     void _check_arg_name_present(std::string_view name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
-        if (std::find_if(
-                this->_positional_args.begin(), this->_positional_args.end(), predicate
-            ) != this->_positional_args.end()) {
-            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: msg");
+        if (std::find_if(this->_positional_args.begin(), this->_positional_args.end(), predicate)
+            != this->_positional_args.end()) {
+            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: "
+                                        "msg");
         }
 
-        if (std::find_if(
-                this->_optional_args.begin(), this->_optional_args.end(), predicate
-            ) != this->_optional_args.end()) {
+        if (std::find_if(this->_optional_args.begin(), this->_optional_args.end(), predicate)
+            != this->_optional_args.end()) {
             throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: "
                                         "msg");
         }
@@ -466,8 +454,8 @@ private:
         for (int i = 1; i < argc; i++) {
             std::string arg = argv[i];
 
-            if (arg.length() > this->_flag_prefix_length and
-                arg.starts_with(this->_flag_prefix)) {
+            if (arg.length() > this->_flag_prefix_length
+                and arg.starts_with(this->_flag_prefix)) {
                 arg.erase(0, this->_flag_prefix_length);
             }
             else if (arg.length() > this->_flag_prefix_char_length and arg.front() == this->_flag_prefix_char) {

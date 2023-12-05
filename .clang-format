@@ -45,21 +45,20 @@ AlignConsecutiveShortCaseStatements:
   AcrossComments:   true
   AlignCaseColons:  false
 AlignEscapedNewlines: Left
-AlignOperands:        Align
+AlignOperands:        AlignAfterOperator
 AlignTrailingComments:
   Kind:           Always
   OverEmptyLines: 0
 
 AllowAllArgumentsOnNextLine:               true
 AllowAllParametersOfDeclarationOnNextLine: true
-# AllowBreakBeforeNoexceptSpecifier:         OnlyWithParen
-AllowShortBlocksOnASingleLine:       Empty
-AllowShortCaseLabelsOnASingleLine:   false
-AllowShortEnumsOnASingleLine:        true
-AllowShortFunctionsOnASingleLine:    Inline
-AllowShortIfStatementsOnASingleLine: Never
-AllowShortLambdasOnASingleLine:      Inline
-AllowShortLoopsOnASingleLine:        false
+AllowShortBlocksOnASingleLine:             Empty
+AllowShortCaseLabelsOnASingleLine:         false
+AllowShortEnumsOnASingleLine:              true
+AllowShortFunctionsOnASingleLine:          Inline
+AllowShortIfStatementsOnASingleLine:       Never
+AllowShortLambdasOnASingleLine:            Inline
+AllowShortLoopsOnASingleLine:              false
 
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType:           None
@@ -68,7 +67,7 @@ AlwaysBreakTemplateDeclarations:      Yes
 BreakAfterAttributes:                 Leave
 BreakAfterJavaFieldAnnotations:       true
 BreakArrays:                          false
-BreakBeforeBinaryOperators:           None
+BreakBeforeBinaryOperators:           NonAssignment
 BreakBeforeBraces:                    Custom
 BreakBeforeConceptDeclarations:       Always
 BreakBeforeInlineASMColon:            OnlyMultiline
@@ -116,8 +115,6 @@ IncludeCategories:
     Priority: 4
 SortIncludes:          CaseSensitive
 SortUsingDeclarations: LexicographicNumeric
-# IncludeIsMainRegex: ''
-# IncludeIsMainSourceRegex: ''
 
 CompactNamespaces:    false
 FixNamespaceComments: true
@@ -135,7 +132,7 @@ SeparateDefinitionBlocks:          Leave
 IndentCaseBlocks: true
 IndentCaseLabels: true
 
-IndentWrappedFunctionNames: true
+IndentWrappedFunctionNames: false
 LambdaBodyIndentation:      Signature
 
 IndentRequiresClause:          false
@@ -184,35 +181,21 @@ SpacesInLineCommentPrefix:
 SpacesInParens:         Never
 SpacesInSquareBrackets: false
 
-# TODO: figure out better penalty params
 PenaltyBreakAssignment:               0
 PenaltyBreakBeforeFirstCallParameter: 0
-PenaltyBreakComment:                  2
+PenaltyBreakComment:                  100
 PenaltyBreakFirstLessLess:            0
 PenaltyBreakOpenParenthesis:          0
-PenaltyBreakString:                   2
+PenaltyBreakString:                   100
 PenaltyBreakTemplateDeclaration:      0
 PenaltyExcessCharacter:               2
 PenaltyReturnTypeOnItsOwnLine:        2
-PenaltyIndentedWhitespace:            0
+PenaltyIndentedWhitespace:            5
 
 PointerAlignment:        Left
 DerivePointerAlignment:  false
 ReferenceAlignment:      Pointer
 QualifierAlignment:      Left
-# or
-# QualifierAlignmentStyle: Custom
-# and
-# QualifierOrder: [
-#     'friend',
-#     'inline',
-#     'static',
-#     'constexpr',
-#     'const',
-#     'volatile',
-#     'type'
-# ]
-
 
 # Other
 IntegerLiteralSeparator:
@@ -225,22 +208,7 @@ IntegerLiteralSeparator:
 
 Cpp11BracedListStyle: false
 
-ReflowComments: true
-# CommentPragmas:  '^ IWYU pragma:'
-
-# TypeNames:
-
-# AttributeMacros:
-#   - __capability
-# ForEachMacros: ['RANGES_FOR', 'FOREACH']
-# IfMacros: ['IF']
-# MacroBlockBegin: ''
-# MacroBlockEnd: ''
-# Macros:
-# NamespaceMacros:
-# StatementMacros:
-# TypenameMacros:
-# WhitespaceSensitiveMacros:
+ReflowComments: false
 
 IndentExternBlock:          Indent
 IndentGotoLabels:           true

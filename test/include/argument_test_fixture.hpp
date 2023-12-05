@@ -17,9 +17,8 @@ struct argument_test_fixture {
 
     using argument_ptr_type = std::unique_ptr<argument_interface>;
 
-    argument_interface& sut_set_value(
-        const argument_ptr_type& sut, const std::string& str_value
-    ) const {
+    argument_interface&
+    sut_set_value(const argument_ptr_type& sut, const std::string& str_value) const {
         return sut->value(str_value);
     }
 
@@ -39,7 +38,8 @@ struct argument_test_fixture {
         return sut->is_required();
     }
 
-    const std::optional<std::string_view>& sut_get_help(const argument_ptr_type& sut) const {
+    const std::optional<std::string_view>&
+    sut_get_help(const argument_ptr_type& sut) const {
         return sut->help();
     }
 

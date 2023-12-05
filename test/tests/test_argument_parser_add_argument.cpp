@@ -10,7 +10,6 @@
 using namespace ap_testing;
 using namespace ap::detail;
 
-
 namespace {
 
 constexpr std::string_view name = "test";
@@ -21,13 +20,9 @@ constexpr std::string_view other_short_name = "o";
 
 } // namespace
 
-
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
-TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
-    "add_positional_argument should return a positional argument reference"
-) {
+TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_positional_argument should return a positional argument reference") {
     SUBCASE("with just the long name") {
         const auto& argument = sut.add_positional_argument(name);
         REQUIRE_FALSE(argument.is_optional());
@@ -38,10 +33,7 @@ TEST_CASE_FIXTURE(
     }
 }
 
-TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
-    "add_optional_argument should return a positional argument reference"
-) {
+TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_optional_argument should return a positional argument reference") {
     SUBCASE("with just the long name") {
         const auto& argument = sut.add_optional_argument(name);
         REQUIRE(argument.is_optional());
@@ -54,7 +46,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "add_positional_argument should throw only when adding an argument with previously used name"
+    "add_positional_argument should throw only when adding an "
+    "argument with previously used name"
 ) {
     sut.add_positional_argument(name, short_name);
 
@@ -75,7 +68,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "add_optional_argument should throw only when adding an argument with previously used name"
+    "add_optional_argument should throw only when adding an "
+    "argument with previously used name"
 ) {
     sut.add_optional_argument(name, short_name);
 
@@ -88,9 +82,7 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("adding argument with a previously used short name") {
-        REQUIRE_THROWS_AS(
-            sut.add_optional_argument(other_name, short_name), std::invalid_argument
-        );
+        REQUIRE_THROWS_AS(sut.add_optional_argument(other_name, short_name), std::invalid_argument);
     }
 }
 
