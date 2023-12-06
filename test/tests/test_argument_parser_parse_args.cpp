@@ -10,7 +10,6 @@
 
 using namespace ap::detail;
 
-
 namespace {
 
 constexpr std::string_view test_program_name = "test program name";
@@ -19,13 +18,11 @@ constexpr std::size_t default_num_args = 0;
 constexpr std::size_t non_default_num_args = 10;
 constexpr std::size_t non_default_args_split = non_default_num_args / 2;
 
-constexpr std::string invalid_arg_name = "invalid_arg";
+const std::string invalid_arg_name = "invalid_arg";
 
 } // namespace
 
-
 namespace ap_testing {
-
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
@@ -54,8 +51,7 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "_process_input should return a 
 
     REQUIRE_EQ(args.size(), get_args_length(non_default_num_args, non_default_args_split));
 
-    for (std::size_t i = 0; i < non_default_args_split; i++) { // positional
-                                                               // args
+    for (std::size_t i = 0; i < non_default_args_split; i++) { // positional args
         REQUIRE_EQ(args.at(i), prepare_arg_value(i));
     }
 
@@ -70,7 +66,6 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "_process_input should return a 
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::_process_input
-
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::_parse_args_impl");
 
@@ -110,8 +105,7 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
-    auto cmd_args =
-        prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
+    auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
     cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split - 1));
 
     REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
@@ -125,8 +119,7 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
-    auto cmd_args =
-        prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
+    auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
     cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split + 1));
 
     REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
@@ -147,7 +140,6 @@ TEST_CASE_FIXTURE(
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::_parse_args_impl
 
-
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
     "parse_args should throw when there is no "
@@ -158,9 +150,8 @@ TEST_CASE_FIXTURE(
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
@@ -181,9 +172,8 @@ TEST_CASE_FIXTURE(
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     int argc;
     char** argv;
@@ -210,7 +200,6 @@ TEST_CASE_FIXTURE(
 
     free_argv(argc, argv);
 }
-
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::_get_argument");
 
@@ -239,7 +228,6 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::has_value
-
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::has_value");
 
@@ -280,9 +268,8 @@ TEST_CASE_FIXTURE(
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto num_args = non_default_num_args + 1;
 
@@ -338,7 +325,6 @@ TEST_CASE_FIXTURE(
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::has_value
 
-
 TEST_SUITE_BEGIN("value");
 
 TEST_CASE_FIXTURE(
@@ -374,9 +360,8 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value should throw if the given
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto num_args = non_default_num_args + 1;
 
@@ -446,9 +431,8 @@ TEST_CASE_FIXTURE(
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
     sut.add_optional_argument(
-           required_arg_name.name, required_arg_name.short_name.value()
-    )
-        .required(true);
+        required_arg_name.name, required_arg_name.short_name.value()
+    ).required();
 
     const auto num_args = non_default_num_args + 1;
 
