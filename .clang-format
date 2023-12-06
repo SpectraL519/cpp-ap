@@ -189,7 +189,7 @@ PenaltyBreakOpenParenthesis:          0
 PenaltyBreakString:                   100
 PenaltyBreakTemplateDeclaration:      0
 PenaltyExcessCharacter:               2
-PenaltyReturnTypeOnItsOwnLine:        2
+PenaltyReturnTypeOnItsOwnLine:        100
 PenaltyIndentedWhitespace:            5
 
 PointerAlignment:        Left

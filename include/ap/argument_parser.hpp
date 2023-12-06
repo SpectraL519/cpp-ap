@@ -85,8 +85,7 @@ public:
 
     virtual ~argument_interface() = default;
 
-    friend std::ostream&
-    operator<< (std::ostream& os, const argument_interface& argument) {
+    friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
 
         const auto& argument_help_msg = argument.help();

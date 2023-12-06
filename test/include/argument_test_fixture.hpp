@@ -38,8 +38,7 @@ struct argument_test_fixture {
         return sut->is_required();
     }
 
-    const std::optional<std::string_view>&
-    sut_get_help(const argument_ptr_type& sut) const {
+    const std::optional<std::string_view>& sut_get_help(const argument_ptr_type& sut) const {
         return sut->help();
     }
 

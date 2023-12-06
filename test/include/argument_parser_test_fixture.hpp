@@ -80,8 +80,7 @@ struct argument_parser_test_fixture {
         );
     }
 
-    void
-    add_arguments(ap::argument_parser& parser, std::size_t num_args, std::size_t args_split) const {
+    void add_arguments(ap::argument_parser& parser, std::size_t num_args, std::size_t args_split) const {
         for (std::size_t i = 0; i < args_split; i++) { // positional args
             const auto arg_name = prepare_arg_name(i);
             parser.add_positional_argument(arg_name.name, arg_name.short_name.value());
@@ -93,8 +92,7 @@ struct argument_parser_test_fixture {
         }
     }
 
-    cmd_argument_list
-    prepare_cmd_arg_list(std::size_t num_args, std::size_t args_split) const {
+    cmd_argument_list prepare_cmd_arg_list(std::size_t num_args, std::size_t args_split) const {
         cmd_argument_list cmd_args;
         cmd_args.reserve(get_args_length(num_args, args_split));
 
