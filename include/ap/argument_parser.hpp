@@ -12,15 +12,14 @@
 #include <type_traits>
 #include <vector>
 
-
 #ifdef AP_TESTING
 
 namespace ap_testing {
+struct argument_test_fixture;
 struct argument_parser_test_fixture;
 } // namespace ap_testing
 
 #endif
-
 
 namespace ap {
 
@@ -31,8 +30,6 @@ namespace detail {
 template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
-
-
 
 struct argument_name {
     argument_name() = delete;
@@ -52,14 +49,15 @@ struct argument_name {
     }
 
     inline bool operator== (std::string_view name) const {
-        return name == this->name or
-               (this->short_name and name == this->short_name.value());
+        return name == this->name
+            or (this->short_name and name == this->short_name.value());
     }
 
     [[nodiscard]] inline std::string str() const {
-        return this->short_name ? "[" + std::string(this->name) + "]"
-                                : "[" + std::string(this->name) + "," +
-                                      std::string(this->short_name.value()) + "]";
+        return this->short_name
+                 ? "[" + std::string(this->name) + "]"
+                 : "[" + std::string(this->name) + ","
+                       + std::string(this->short_name.value()) + "]";
     }
 
     friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
@@ -75,21 +73,19 @@ struct argument_name {
     const std::optional<std::string> short_name;
 };
 
-
-
 class argument_interface {
 public:
     using value_type = void;
 
     virtual argument_interface& help(std::string_view) = 0;
-    virtual argument_interface& required(bool) = 0;
+    virtual argument_interface& required() = 0;
     virtual argument_interface& default_value(const std::any&) = 0;
+
+    virtual bool is_optional() const = 0;
 
     virtual ~argument_interface() = default;
 
-    friend class ::ap::argument_parser;
-    friend std::ostream&
-        operator<< (std::ostream& os, const argument_interface& argument) {
+    friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
 
         const auto& argument_help_msg = argument.help();
@@ -98,34 +94,22 @@ public:
         return os;
     }
 
-protected:
-    virtual bool is_optional() const = 0;
+    friend class ::ap::argument_parser;
 
+#ifdef AP_TESTING
+    friend struct ::ap_testing::argument_test_fixture;
+#endif
+
+protected:
     virtual argument_interface& value(const std::string&) = 0;
     virtual bool has_value() const = 0;
     virtual const std::any& value() const = 0;
 
     virtual const argument_name& name() const = 0;
-    virtual bool required() const = 0;
+    virtual bool is_required() const = 0;
     virtual const std::optional<std::string_view>& help() const = 0;
     virtual const std::any& default_value() const = 0;
-
-// TODO PWRS5PZ-24: replace with a friend testing fixuture class
-#ifdef AP_TESTING
-    friend inline bool testing_argument_is_optional(const argument_interface&);
-    friend inline bool testing_argument_has_value(const argument_interface&);
-    friend inline const std::any&
-        testing_argument_get_value(const argument_interface&);
-    friend inline const argument_name&
-        testing_argument_get_name(const argument_interface&);
-    friend inline bool testing_argument_is_required(const argument_interface&);
-    friend inline const std::optional<std::string_view>&
-        testing_argument_get_help(const argument_interface&);
-    friend inline const std::any&
-        testing_argument_get_default_value(const argument_interface&);
-#endif
 };
-
 
 template <readable T>
 class positional_argument : public argument_interface {
@@ -150,7 +134,7 @@ public:
         return *this;
     }
 
-    inline positional_argument& required(bool) override {
+    inline positional_argument& required() override {
         // TODO: log a warning + add warning tests
         return *this;
     }
@@ -160,11 +144,11 @@ public:
         return *this;
     }
 
+    [[nodiscard]] bool is_optional() const { return this->_optional; }
+
     friend class ::ap::argument_parser;
 
 private:
-    [[nodiscard]] bool is_optional() const { return false; }
-
     // TODO: add tests for value throwing in test_positional_argument
     positional_argument& value(const std::string& str_value) override {
         this->_ss.clear();
@@ -192,7 +176,7 @@ private:
         return this->_name;
     }
 
-    [[nodiscard]] inline bool required() const override {
+    [[nodiscard]] inline bool is_required() const override {
         return this->_required;
     }
 
@@ -214,15 +198,7 @@ private:
     const std::any _default_value;
 
     std::stringstream _ss;
-
-    // TODO PWRS5PZ-24: replace with a friend testing fixuture class
-    // #ifdef AP_TESTING
-    //     friend inline positional_argument&
-    //         testing_argument_set_value(positional_argument&, const
-    //         std::any&);
-    // #endif
 };
-
 
 template <readable T>
 class optional_argument : public argument_interface {
@@ -247,10 +223,12 @@ public:
         return *this;
     }
 
-    inline optional_argument& required(bool required) {
-        this->_required = required;
+    inline optional_argument& required() {
+        this->_required = true;
         return *this;
     }
+
+    [[nodiscard]] bool is_optional() const { return this->_optional; }
 
     // TODO: add tests for default_value throwing in test_optional_argument
     optional_argument& default_value(const std::any& default_value) {
@@ -267,8 +245,6 @@ public:
     friend class ::ap::argument_parser;
 
 private:
-    [[nodiscard]] bool is_optional() const { return true; }
-
     // TODO: add tests for value throwing in test_optional_argument
     optional_argument& value(const std::string& str_value) override {
         this->_ss.clear();
@@ -293,7 +269,7 @@ private:
         return this->_name;
     }
 
-    [[nodiscard]] inline bool required() const override {
+    [[nodiscard]] inline bool is_required() const override {
         return this->_required;
     }
 
@@ -315,17 +291,9 @@ private:
     std::any _default_value;
 
     std::stringstream _ss;
-
-    // TODO PWRS5PZ-24: replace with a friend testing fixuture class
-    // #ifdef AP_TESTING
-    //     friend inline optional_argument&
-    //         testing_argument_set_value(optional_argument&, const std::any&);
-    // #endif
 };
 
 } // namespace detail
-
-
 
 class argument_parser {
 public:
@@ -359,7 +327,7 @@ public:
 
     template <detail::readable T = std::string>
     detail::argument_interface&
-        add_positional_argument(std::string_view name, std::string_view short_name) {
+    add_positional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
@@ -373,15 +341,13 @@ public:
     detail::argument_interface& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
-        this->_optional_args.push_back(
-            std::make_unique<detail::optional_argument<T>>(name)
-        );
+        this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name));
         return *this->_optional_args.back();
     }
 
     template <detail::readable T = std::string>
     detail::argument_interface&
-        add_optional_argument(std::string_view name, std::string_view short_name) {
+    add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden/allowed characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
@@ -456,15 +422,14 @@ private:
     void _check_arg_name_present(std::string_view name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
-        if (std::find_if(
-                this->_positional_args.begin(), this->_positional_args.end(), predicate
-            ) != this->_positional_args.end()) {
-            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: msg");
+        if (std::find_if(this->_positional_args.begin(), this->_positional_args.end(), predicate)
+            != this->_positional_args.end()) {
+            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: "
+                                        "msg");
         }
 
-        if (std::find_if(
-                this->_optional_args.begin(), this->_optional_args.end(), predicate
-            ) != this->_optional_args.end()) {
+        if (std::find_if(this->_optional_args.begin(), this->_optional_args.end(), predicate)
+            != this->_optional_args.end()) {
             throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: "
                                         "msg");
         }
@@ -488,8 +453,8 @@ private:
         for (int i = 1; i < argc; i++) {
             std::string arg = argv[i];
 
-            if (arg.length() > this->_flag_prefix_length and
-                arg.starts_with(this->_flag_prefix)) {
+            if (arg.length() > this->_flag_prefix_length
+                and arg.starts_with(this->_flag_prefix)) {
                 arg.erase(0, this->_flag_prefix_length);
             }
             else if (arg.length() > this->_flag_prefix_char_length and arg.front() == this->_flag_prefix_char) {
@@ -535,7 +500,7 @@ private:
 
     void _check_required_args() const {
         for (const auto& arg : this->_optional_args)
-            if (arg->required() and not arg->has_value())
+            if (arg->is_required() and not arg->has_value())
                 throw std::runtime_error("[_check_required_args] TODO: msg "
                                          "(optional)");
     }
@@ -560,17 +525,17 @@ private:
         return std::nullopt;
     }
 
-    std::optional<std::string_view> _program_name;
-    std::optional<std::string_view> _program_description;
+    std::optional<std::string> _program_name;
+    std::optional<std::string> _program_description;
 
     argument_list_type _positional_args;
     argument_list_type _optional_args;
 
     // TODO: make it modifiable
-    static constexpr char _flag_prefix_char = '-';
     static constexpr uint8_t _flag_prefix_char_length = 1;
-    static constexpr std::string _flag_prefix = "--";
     static constexpr uint8_t _flag_prefix_length = 2;
+    static constexpr char _flag_prefix_char = '-';
+    const std::string _flag_prefix = "--";
 };
 
 } // namespace ap
