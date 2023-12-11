@@ -5,12 +5,15 @@
 
 int main(int argc, char* argv[]) {
     ap::argument_parser parser;
-    parser.program_name("power").program_description(
-        "calculates the value of expression: base ^ exponent"
-    );
+    parser
+        .program_name("power")
+        .program_description(
+            "calculates the value of expression: base ^ exponent");
 
     parser.add_positional_argument<double>("base");
-    parser.add_optional_argument<double>("exponent", "e").default_value(static_cast<double>(1));
+    parser
+        .add_optional_argument<double>("exponent", "e")
+        .default_value(static_cast<double>(1));
 
     try {
         parser.parse_args(argc, argv);
