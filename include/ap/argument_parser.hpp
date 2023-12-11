@@ -16,6 +16,7 @@
 
 namespace ap_testing {
 struct positional_argument_test_fixture;
+struct optional_argument_test_fixture;
 struct argument_parser_test_fixture;
 } // namespace ap_testing
 
@@ -223,6 +224,10 @@ public:
 
     friend class ::ap::argument_parser;
 
+#ifdef AP_TESTING
+    friend struct ::ap_testing::optional_argument_test_fixture;
+#endif
+
 private:
     // TODO: add tests for value throwing in test_optional_argument
     optional_argument& value(const std::string& str_value) override {
@@ -237,7 +242,7 @@ private:
         return *this;
     }
     [[nodiscard]] inline bool has_value() const override {
-        return this->_value.has_value();
+        return this->_value.has_value() or this->_default_value.has_value();
     }
 
     [[nodiscard]] inline const std::any& value() const override {
@@ -254,10 +259,6 @@ private:
 
     [[nodiscard]] inline const std::optional<std::string_view>& help() const override {
         return this->_help_msg;
-    }
-
-    [[nodiscard]] inline const std::any& default_value() const {
-        return this->_default_value;
     }
 
     const bool _optional = true;
