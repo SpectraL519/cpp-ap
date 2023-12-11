@@ -15,7 +15,7 @@
 #ifdef AP_TESTING
 
 namespace ap_testing {
-struct argument_test_fixture;
+struct positional_argument_test_fixture;
 struct argument_parser_test_fixture;
 } // namespace ap_testing
 
@@ -78,8 +78,6 @@ public:
     using value_type = void;
 
     virtual argument_interface& help(std::string_view) = 0;
-    virtual argument_interface& required() = 0;
-    virtual argument_interface& default_value(const std::any&) = 0;
 
     virtual bool is_optional() const = 0;
 
@@ -96,10 +94,6 @@ public:
 
     friend class ::ap::argument_parser;
 
-#ifdef AP_TESTING
-    friend struct ::ap_testing::argument_test_fixture;
-#endif
-
 protected:
     virtual argument_interface& value(const std::string&) = 0;
     virtual bool has_value() const = 0;
@@ -108,7 +102,6 @@ protected:
     virtual const argument_name& name() const = 0;
     virtual bool is_required() const = 0;
     virtual const std::optional<std::string_view>& help() const = 0;
-    virtual const std::any& default_value() const = 0;
 };
 
 template <readable T>
@@ -134,22 +127,15 @@ public:
         return *this;
     }
 
-    inline positional_argument& required() override {
-        // TODO: log a warning + add warning tests
-        return *this;
-    }
-
-    positional_argument& default_value(const std::any&) override {
-        // TODO: log a warning + add warning tests
-        return *this;
-    }
-
     [[nodiscard]] bool is_optional() const { return this->_optional; }
 
     friend class ::ap::argument_parser;
 
+#ifdef AP_TESTING
+    friend struct ::ap_testing::positional_argument_test_fixture;
+#endif
+
 private:
-    // TODO: add tests for value throwing in test_positional_argument
     positional_argument& value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
@@ -162,12 +148,10 @@ private:
         return *this;
     }
 
-    // TODO: add test cases checking has_value() with default_value set
     [[nodiscard]] inline bool has_value() const override {
-        return this->_value.has_value() or this->_default_value.has_value();
+        return this->_value.has_value();
     }
 
-    // TODO: add test cases checking value() with default_value set
     [[nodiscard]] inline const std::any& value() const override {
         return this->_value;
     }
@@ -184,10 +168,6 @@ private:
         return this->_help_msg;
     }
 
-    [[nodiscard]] inline const std::any& default_value() const override {
-        return this->_default_value;
-    }
-
     const bool _optional = false;
     const argument_name _name;
 
@@ -195,7 +175,6 @@ private:
 
     const bool _required = true;
     std::optional<std::string_view> _help_msg;
-    const std::any _default_value;
 
     std::stringstream _ss;
 };
@@ -228,8 +207,6 @@ public:
         return *this;
     }
 
-    [[nodiscard]] bool is_optional() const { return this->_optional; }
-
     // TODO: add tests for default_value throwing in test_optional_argument
     optional_argument& default_value(const std::any& default_value) {
         try {
@@ -241,6 +218,8 @@ public:
 
         return *this;
     }
+
+    [[nodiscard]] bool is_optional() const { return this->_optional; }
 
     friend class ::ap::argument_parser;
 
@@ -277,7 +256,7 @@ private:
         return this->_help_msg;
     }
 
-    [[nodiscard]] inline const std::any& default_value() const override {
+    [[nodiscard]] inline const std::any& default_value() const {
         return this->_default_value;
     }
 
@@ -316,17 +295,17 @@ public:
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface& add_positional_argument(std::string_view name) {
+    detail::positional_argument<T>& add_positional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_positional_args.push_back(
             std::make_unique<detail::positional_argument<T>>(name)
         );
-        return *this->_positional_args.back();
+        return static_cast<detail::positional_argument<T>&>(*this->_positional_args.back());
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface&
+    detail::positional_argument<T>&
     add_positional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
@@ -334,19 +313,19 @@ public:
         this->_positional_args.push_back(
             std::make_unique<detail::positional_argument<T>>(name, short_name)
         );
-        return *this->_positional_args.back();
+        return static_cast<detail::positional_argument<T>&>(*this->_positional_args.back());
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface& add_optional_argument(std::string_view name) {
+    detail::optional_argument<T>& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name));
-        return *this->_optional_args.back();
+        return static_cast<detail::optional_argument<T>&>(*this->_optional_args.back());
     }
 
     template <detail::readable T = std::string>
-    detail::argument_interface&
+    detail::optional_argument<T>&
     add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden/allowed characters
         this->_check_arg_name_present(name);
@@ -354,7 +333,7 @@ public:
         this->_optional_args.push_back(
             std::make_unique<detail::optional_argument<T>>(name, short_name)
         );
-        return *this->_optional_args.back();
+        return static_cast<detail::optional_argument<T>&>(*this->_optional_args.back());
     }
 
     void parse_args(int argc, char* argv[]) {
