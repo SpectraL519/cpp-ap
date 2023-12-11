@@ -25,13 +25,11 @@ const std::string invalid_arg_name = "invalid_arg";
 namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
-
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::_process_input");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_process_input should return an empty "
-    "vector for no command-line arguments"
+    "_process_input should return an empty vector for no command-line arguments"
 ) {
     const auto argc = get_argc(default_num_args, default_num_args);
     auto argv = prepare_argv(default_num_args, default_num_args);
@@ -43,7 +41,10 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "_process_input should return a vector of correct arguments") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "_process_input should return a vector of correct arguments"
+) {
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
@@ -71,8 +72,7 @@ TEST_SUITE_BEGIN("test_argument_parser_parse_args::_parse_args_impl");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should throw when input "
-    "argument list is empty"
+    "_parse_args_impl should throw when input argument list is empty"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -84,9 +84,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should throw when there is "
-    "less input arguments than there are "
-    "positional arguments"
+    "_parse_args_impl should throw when there is less input"
+    "arguments than there are positional arguments"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -99,9 +98,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should throw when there is "
-    "less input positional argument values than "
-    "there are positional arguments"
+    "_parse_args_impl should throw when there is less input positional"
+    "argument values than there are positional arguments"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -113,9 +111,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should throw when there is "
-    "no value specified for an optional argument "
-    "present in the input list"
+    "_parse_args_impl should throw when there is no value specified"
+    "for an optional argument present in the input list"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -127,8 +124,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should not throw when the "
-    "arguments are correct"
+    "_parse_args_impl should not throw when the arguments are correct"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -142,9 +138,7 @@ TEST_SUITE_END(); // test_argument_parser_parse_args::_parse_args_impl
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "parse_args should throw when there is no "
-    "value specified for a required optional "
-    "argument"
+    "parse_args should throw when there is no value specified for a required optional argument"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -163,10 +157,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "parse_args should not throw if input and "
-    "numer of positional argument values are "
-    "correct and all required optional arguments "
-    "have values"
+    "parse_args should not throw if input and numer of positional argument"
+    "values are correct and all required optional arguments have values"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -233,8 +225,7 @@ TEST_SUITE_BEGIN("test_argument_parser_parse_args::has_value");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "has_value should return false if there is "
-    "no argument with given name present"
+    "has_value should return false if there is no argument with given name present"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -248,7 +239,10 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false before calling parse_args") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "has_value should return false before calling parse_args"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     for (std::size_t i = 0; i < non_default_num_args; i++) {
@@ -260,8 +254,7 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false b
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "has_value should return false if there is "
-    "no argument with given name present"
+    "has_value should return false if there is no argument with given name present"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -329,8 +322,7 @@ TEST_SUITE_BEGIN("value");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "value should throw if there is no argument "
-    "with given name present"
+    "value should throw if there is no argument with given name present"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -344,7 +336,10 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "value should throw before calling parse_args") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "value should throw before calling parse_args"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     for (std::size_t i = 0; i < non_default_num_args; i++) {
@@ -354,7 +349,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value should throw before calli
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "value should throw if the given argument doesn't have a value") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "value should throw if the given argument doesn't have a value"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
@@ -396,8 +394,7 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value should throw if the given
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "value should throw if an argument has a "
-    "value but the template parameter is invalid"
+    "value should throw if an argument has a value but the template parameter is invalid"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -422,9 +419,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "value should return a correct value when "
-    "there is an argument with the given name "
-    "and a parsed value present"
+    "value should return a correct value when there is an argument"
+    "with the given name and a parsed value present"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
