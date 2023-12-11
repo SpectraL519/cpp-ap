@@ -81,16 +81,13 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
-    "value() should return default any object if argument's "
-    "value has not been set"
+    "value() should return default any object if argument's value has not been set"
 ) {
     auto sut = prepare_argument(long_name);
 
     REQUIRE_FALSE(sut_has_value(sut));
     REQUIRE_THROWS_AS(std::any_cast<test_value_type>(sut_get_value(sut)), std::bad_any_cast);
 }
-
-// TODO: test invalid type
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
@@ -107,8 +104,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
-    "name() should return value passed to the optional argument "
-    "constructor for long name"
+    "name() should return value passed to the optional argument constructor for long name"
 ) {
     const auto sut = prepare_argument(long_name);
 
@@ -120,7 +116,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
-    "name() and short_name() should return value passed to the optional "
+    "name() and short_name() should return value passed to the optional"
     "argument constructor for both long and short names"
 ) {
     const auto sut = prepare_argument(long_name, short_name);

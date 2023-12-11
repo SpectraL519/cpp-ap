@@ -300,21 +300,22 @@ public:
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_positional_args.push_back(
-            std::make_unique<detail::positional_argument<T>>(name)
-        );
-        return static_cast<detail::positional_argument<T>&>(*this->_positional_args.back());
+            std::make_unique<detail::positional_argument<T>>(name));
+        return static_cast<detail::positional_argument<T>&>(
+            *this->_positional_args.back());
     }
 
     template <detail::readable T = std::string>
-    detail::positional_argument<T>&
-    add_positional_argument(std::string_view name, std::string_view short_name) {
+    detail::positional_argument<T>& add_positional_argument(
+        std::string_view name, std::string_view short_name
+    ) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
         this->_positional_args.push_back(
-            std::make_unique<detail::positional_argument<T>>(name, short_name)
-        );
-        return static_cast<detail::positional_argument<T>&>(*this->_positional_args.back());
+            std::make_unique<detail::positional_argument<T>>(name, short_name));
+        return static_cast<detail::positional_argument<T>&>(
+            *this->_positional_args.back());
     }
 
     template <detail::readable T = std::string>
@@ -326,14 +327,12 @@ public:
     }
 
     template <detail::readable T = std::string>
-    detail::optional_argument<T>&
-    add_optional_argument(std::string_view name, std::string_view short_name) {
+    detail::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden/allowed characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
         this->_optional_args.push_back(
-            std::make_unique<detail::optional_argument<T>>(name, short_name)
-        );
+            std::make_unique<detail::optional_argument<T>>(name, short_name));
         return static_cast<detail::optional_argument<T>&>(*this->_optional_args.back());
     }
 
@@ -404,14 +403,12 @@ private:
 
         if (std::find_if(this->_positional_args.begin(), this->_positional_args.end(), predicate)
             != this->_positional_args.end()) {
-            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: "
-                                        "msg");
+            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: msg");
         }
 
         if (std::find_if(this->_optional_args.begin(), this->_optional_args.end(), predicate)
             != this->_optional_args.end()) {
-            throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: "
-                                        "msg");
+            throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: msg");
         }
     }
 

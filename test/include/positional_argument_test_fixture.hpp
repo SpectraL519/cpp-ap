@@ -6,8 +6,8 @@
 
 #include <cstring>
 
-using ap::detail::positional_argument;
 using ap::detail::argument_name;
+using ap::detail::positional_argument;
 using ap::detail::readable;
 
 namespace ap_testing {

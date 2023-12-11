@@ -95,8 +95,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "value() should return default any object if argument's "
-    "value has not been set"
+    "value() should return default any object if argument's value has not been set"
 ) {
     auto sut = prepare_argument(long_name);
 
@@ -142,8 +141,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "name() should return value passed to the optional argument "
-    "constructor for long name"
+    "name() should return value passed to the optional argument constructor for long name"
 ) {
     const auto sut = prepare_argument(long_name);
 
@@ -155,7 +153,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "name() and short_name() should return value passed to the optional "
+    "name() and short_name() should return value passed to the optional"
     "argument constructor for both long and short names"
 ) {
     const auto sut = prepare_argument(long_name, short_name);
