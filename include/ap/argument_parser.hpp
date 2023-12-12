@@ -26,6 +26,68 @@ namespace ap {
 
 class argument_parser;
 
+namespace nargs {
+
+class range {
+public:
+    using count_type = uint16_t;
+
+    range() : _nlow(_ndefault), _nhigh(_ndefault) {}
+
+    range(const count_type n)
+        : _nlow(n), _nhigh(n) {}
+
+    range(const count_type nlow, const count_type nhigh)
+        : _nlow(nlow), _nhigh(nhigh) {}
+
+    ~range() = default;
+
+    range& operator= (const range&) = default;
+
+    friend bool in_range(const range&, const count_type);
+    friend range at_least(const count_type);
+    friend range more_than(const count_type);
+    friend range less_than(const count_type);
+    friend range up_to(const count_type);
+
+private:
+    range(const std::optional<count_type> nlow, const std::optional<count_type> nhigh)
+        : _nlow(nlow), _nhigh(nhigh) {}
+
+    const std::optional<count_type> _nlow;
+    const std::optional<count_type> _nhigh;
+
+    static constexpr count_type _ndefault = 1;
+};
+
+[[nodiscard]] inline bool in_range(const range& range, const range::count_type n) {
+    if (range._nlow.has_value() and range._nhigh.has_value())
+        return (n >= range._nlow.value()) and (n <= range._nhigh.value());
+
+    if (range._nlow.has_value())
+        return n >= range._nlow.value();
+
+    return n <= range._nhigh.value();
+}
+
+[[nodiscard]] inline range at_least(const range::count_type n) {
+    return range(n, std::nullopt);
+}
+
+[[nodiscard]] inline range more_than(const range::count_type n) {
+    return range(n + 1, std::nullopt);
+}
+
+[[nodiscard]] inline range less_than(const range::count_type n) {
+    return range(std::nullopt, n - 1);
+}
+
+[[nodiscard]] inline range up_to(const range::count_type n) {
+    return range(std::nullopt, n);
+}
+
+} // namespace nargs
+
 namespace detail {
 
 template <typename T>
