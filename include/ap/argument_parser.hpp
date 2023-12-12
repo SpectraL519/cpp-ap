@@ -26,11 +26,15 @@ namespace ap {
 
 class argument_parser;
 
-namespace detail {
+namespace utility {
 
 template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
+
+}
+
+namespace argument {
 
 struct argument_name {
     argument_name() = delete;
@@ -74,6 +78,8 @@ struct argument_name {
     const std::optional<std::string> short_name;
 };
 
+namespace detail {
+
 class argument_interface {
 public:
     using value_type = void;
@@ -105,8 +111,10 @@ protected:
     virtual const std::optional<std::string_view>& help() const = 0;
 };
 
-template <readable T>
-class positional_argument : public argument_interface {
+} // namespace detail
+
+template <utility::readable T>
+class positional_argument : public detail::argument_interface {
 public:
     using value_type = T;
 
@@ -180,8 +188,8 @@ private:
     std::stringstream _ss;
 };
 
-template <readable T>
-class optional_argument : public argument_interface {
+template <utility::readable T>
+class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
 
@@ -273,7 +281,7 @@ private:
     std::stringstream _ss;
 };
 
-} // namespace detail
+} // namespace argument
 
 class argument_parser {
 public:
@@ -295,45 +303,45 @@ public:
         return *this;
     }
 
-    template <detail::readable T = std::string>
-    detail::positional_argument<T>& add_positional_argument(std::string_view name) {
+    template <utility::readable T = std::string>
+    argument::positional_argument<T>& add_positional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_positional_args.push_back(
-            std::make_unique<detail::positional_argument<T>>(name));
-        return static_cast<detail::positional_argument<T>&>(
+            std::make_unique<argument::positional_argument<T>>(name));
+        return static_cast<argument::positional_argument<T>&>(
             *this->_positional_args.back());
     }
 
-    template <detail::readable T = std::string>
-    detail::positional_argument<T>& add_positional_argument(
+    template <utility::readable T = std::string>
+    argument::positional_argument<T>& add_positional_argument(
         std::string_view name, std::string_view short_name
     ) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
         this->_positional_args.push_back(
-            std::make_unique<detail::positional_argument<T>>(name, short_name));
-        return static_cast<detail::positional_argument<T>&>(
+            std::make_unique<argument::positional_argument<T>>(name, short_name));
+        return static_cast<argument::positional_argument<T>&>(
             *this->_positional_args.back());
     }
 
-    template <detail::readable T = std::string>
-    detail::optional_argument<T>& add_optional_argument(std::string_view name) {
+    template <utility::readable T = std::string>
+    argument::optional_argument<T>& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
         this->_check_arg_name_present(name);
-        this->_optional_args.push_back(std::make_unique<detail::optional_argument<T>>(name));
-        return static_cast<detail::optional_argument<T>&>(*this->_optional_args.back());
+        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(name));
+        return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
-    template <detail::readable T = std::string>
-    detail::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
+    template <utility::readable T = std::string>
+    argument::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden/allowed characters
         this->_check_arg_name_present(name);
         this->_check_arg_name_present(short_name);
         this->_optional_args.push_back(
-            std::make_unique<detail::optional_argument<T>>(name, short_name));
-        return static_cast<detail::optional_argument<T>&>(*this->_optional_args.back());
+            std::make_unique<argument::optional_argument<T>>(name, short_name));
+        return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
     void parse_args(int argc, char* argv[]) {
@@ -386,9 +394,9 @@ private:
     using cmd_argument_list = std::vector<std::string>;
     using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
 
-    using argument_ptr_type = std::unique_ptr<detail::argument_interface>;
+    using argument_ptr_type = std::unique_ptr<argument::detail::argument_interface>;
     using argument_opt_type =
-        std::optional<std::reference_wrapper<detail::argument_interface>>;
+        std::optional<std::reference_wrapper<argument::detail::argument_interface>>;
     using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator = typename argument_list_type::iterator;
 

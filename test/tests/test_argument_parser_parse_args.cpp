@@ -8,7 +8,7 @@
 #include <ap/argument_parser.hpp>
 #include <argument_parser_test_fixture.hpp>
 
-using namespace ap::detail;
+using namespace ap::argument;
 
 namespace {
 
