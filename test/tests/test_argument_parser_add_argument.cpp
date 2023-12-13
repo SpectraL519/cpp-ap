@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-using namespace ap::detail;
+using namespace ap::argument;
 
 
 namespace {

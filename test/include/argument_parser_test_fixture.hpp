@@ -74,8 +74,8 @@ struct argument_parser_test_fixture {
         delete[] argv;
     }
 
-    ap::detail::argument_name prepare_arg_name(std::size_t i) const {
-        return ap::detail::argument_name(
+    ap::argument::argument_name prepare_arg_name(std::size_t i) const {
+        return ap::argument::argument_name(
             "test_arg_" + std::to_string(i), "ta_" + std::to_string(i)
         );
     }
