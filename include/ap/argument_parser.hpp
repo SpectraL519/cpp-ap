@@ -32,7 +32,7 @@ template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
 
-} // utility
+} // namespace utility
 
 namespace argument {
 
