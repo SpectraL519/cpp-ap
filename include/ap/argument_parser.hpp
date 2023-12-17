@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <any>
+#include <compare>
 #include <concepts>
 #include <iostream>
 #include <memory>
@@ -44,7 +45,7 @@ public:
 
     range& operator= (const range&) = default;
 
-    friend bool in_range(const range&, const count_type);
+    friend std::weak_ordering in_range(const range&, const count_type);
     friend range at_least(const count_type);
     friend range more_than(const count_type);
     friend range less_than(const count_type);
@@ -60,14 +61,25 @@ private:
     static constexpr count_type _ndefault = 1;
 };
 
-[[nodiscard]] inline bool in_range(const range& range, const range::count_type n) {
-    if (range._nlow.has_value() and range._nhigh.has_value())
-        return (n >= range._nlow.value()) and (n <= range._nhigh.value());
+[[nodiscard]] inline std::weak_ordering in_range(
+    const range& range, const range::count_type n
+) {
+    if (range._nlow.has_value() and range._nhigh.has_value()) {
+        if (n < range._nlow.value())
+            return std::weak_ordering::less;
+
+        if (n > range._nhigh.value())
+            return std::weak_ordering::greater;
+
+        return std::weak_ordering::equivalent;
+    }
 
     if (range._nlow.has_value())
-        return n >= range._nlow.value();
+        return (n < range._nlow.value()) ? std::weak_ordering::less
+                                         : std::weak_ordering::equivalent;
 
-    return n <= range._nhigh.value();
+    return (n > range._nhigh.value()) ? std::weak_ordering::greater
+                                      : std::weak_ordering::equivalent;
 }
 
 [[nodiscard]] inline range at_least(const range::count_type n) {
@@ -278,7 +290,6 @@ public:
         return *this;
     }
 
-    // TODO: add tests for default_value throwing in test_optional_argument
     optional_argument& default_value(const std::any& default_value) {
         try {
             this->_default_value = std::any_cast<value_type>(default_value);
@@ -299,7 +310,6 @@ public:
 #endif
 
 private:
-    // TODO: add tests for value throwing in test_optional_argument
     optional_argument& value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
@@ -522,7 +532,6 @@ private:
                 throw std::runtime_error("[_parse_args_impl#1] TODO: msg (not "
                                          "enough values)");
 
-            // TODO: add argument name parsing for positional args
             pos_arg->value(*cmd_it++);
         }
 
@@ -578,7 +587,6 @@ private:
     argument_list_type _positional_args;
     argument_list_type _optional_args;
 
-    // TODO: make it modifiable
     static constexpr uint8_t _flag_prefix_char_length = 1;
     static constexpr uint8_t _flag_prefix_length = 2;
     static constexpr char _flag_prefix_char = '-';
