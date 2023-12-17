@@ -25,7 +25,10 @@ namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_positional_argument should return a positional argument reference") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "add_positional_argument should return a positional argument reference"
+) {
     SUBCASE("with just the long name") {
         const auto& argument = sut.add_positional_argument(name);
         REQUIRE_FALSE(argument.is_optional());
@@ -36,7 +39,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_positional_argument should 
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_optional_argument should return a positional argument reference") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "add_optional_argument should return a positional argument reference"
+) {
     SUBCASE("with just the long name") {
         const auto& argument = sut.add_optional_argument(name);
         REQUIRE(argument.is_optional());
@@ -49,8 +55,7 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_optional_argument should re
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "add_positional_argument should throw only when adding "
-    "an "
+    "add_positional_argument should throw only when adding an"
     "argument with previously used name"
 ) {
     sut.add_positional_argument(name, short_name);
@@ -74,8 +79,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "add_optional_argument should throw only when adding "
-    "an "
+    "add_optional_argument should throw only when adding an"
     "argument with previously used name"
 ) {
     sut.add_optional_argument(name, short_name);

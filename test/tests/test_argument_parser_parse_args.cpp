@@ -25,6 +25,7 @@ const std::string invalid_arg_name = "invalid_arg";
 namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
+
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::_process_input");
 
 TEST_CASE_FIXTURE(
@@ -48,25 +49,29 @@ TEST_CASE_FIXTURE(
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
-    const auto args = sut_process_input(argc, argv);
+    const auto cmd_args = sut_process_input(argc, argv);
 
-    REQUIRE_EQ(args.size(), get_args_length(non_default_num_args, non_default_args_split));
+    REQUIRE_EQ(
+        cmd_args.size(),
+        get_args_length(non_default_num_args, non_default_args_split)
+    );
 
     for (std::size_t i = 0; i < non_default_args_split; i++) { // positional args
-        REQUIRE_EQ(args.at(i), prepare_arg_value(i));
+        REQUIRE_EQ(cmd_args.at(i).value, prepare_arg_value(i));
     }
 
-    std::size_t opt_arg_i = non_default_args_split;
-    for (std::size_t i = non_default_args_split; i < args.size(); i += 2) { // optional args
-        REQUIRE_EQ(args.at(i), prepare_arg_name(opt_arg_i));
-        REQUIRE_EQ(args.at(i + 1), prepare_arg_value(opt_arg_i));
-        opt_arg_i++;
+    std::size_t opt_arg_idx = non_default_args_split;
+    for (std::size_t i = non_default_args_split; i < cmd_args.size(); i += 2) { // optional args
+        REQUIRE_EQ(cmd_args.at(i).value, prepare_arg_name(opt_arg_idx));
+        REQUIRE_EQ(cmd_args.at(i + 1).value, prepare_arg_value(opt_arg_idx));
+        opt_arg_idx++;
     }
 
     free_argv(argc, argv);
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::_process_input
+
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::_parse_args_impl");
 
@@ -77,7 +82,7 @@ TEST_CASE_FIXTURE(
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     constexpr int no_args = 0;
-    cmd_argument_list cmd_args = prepare_cmd_arg_list(no_args, no_args);
+    const auto cmd_args = prepare_cmd_arg_list(no_args, no_args);
 
     REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
 }
@@ -111,13 +116,13 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should throw when there is no value specified"
-    "for an optional argument present in the input list"
+    "_parse_args_impl should throw when there is a non-positional value specified "
+    "without an argument flag present before the value"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
-    cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split + 1));
+    cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split));
 
     REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
 }
@@ -135,6 +140,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::_parse_args_impl
+
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
@@ -193,6 +199,7 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
+
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::_get_argument");
 
 TEST_CASE_FIXTURE(
@@ -220,6 +227,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::has_value
+
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::has_value");
 
@@ -318,7 +326,8 @@ TEST_CASE_FIXTURE(
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::has_value
 
-TEST_SUITE_BEGIN("value");
+
+TEST_SUITE_BEGIN("test_argument_parser_parse_args::value");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
@@ -450,6 +459,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::value
+
 TEST_SUITE_END(); // test_argument_parser_parse_args
 
 } // namespace ap_testing
