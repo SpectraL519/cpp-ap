@@ -8,7 +8,7 @@
 #include <string_view>
 
 using namespace ap_testing;
-using ap::detail::optional_argument;
+using ap::argument::optional_argument;
 
 namespace {
 

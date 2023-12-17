@@ -6,9 +6,9 @@
 
 #include <cstring>
 
-using ap::detail::argument_name;
-using ap::detail::optional_argument;
-using ap::detail::readable;
+using ap::argument::argument_name;
+using ap::argument::optional_argument;
+using ap::utility::readable;
 
 namespace ap_testing {
 
