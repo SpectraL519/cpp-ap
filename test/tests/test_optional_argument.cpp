@@ -141,6 +141,62 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
+    "choices(any) should throw when passed choices are not of test_value_type"
+) {
+    auto sut = prepare_argument(long_name);
+    std::vector<std::any> choices = {"1", "2", "3"};
+
+    REQUIRE_THROWS_AS(sut_set_choices(sut, choices), std::invalid_argument);
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "value(any) should accept the arguement's value if it matches an entry set using choices()"
+) {
+    auto sut = prepare_argument(long_name);
+
+    std::vector<std::any> choices = {1, 2, 3};
+
+    test_value_type value1 = 1;
+    test_value_type value2 = 2;
+    test_value_type value3 = 3;
+
+    sut_set_choices(sut, choices);
+
+
+    sut_set_value(sut, std::to_string(value1));
+
+    REQUIRE(sut_has_value(sut));
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value1);
+
+    sut_set_value(sut, std::to_string(value2));
+
+    REQUIRE(sut_has_value(sut));
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value2);
+
+    sut_set_value(sut, std::to_string(value3));
+
+    REQUIRE(sut_has_value(sut));
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value3);
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "value(any) should throw when parameter passed to value() is not found in _choices"
+) {
+    auto sut = prepare_argument(long_name);
+
+    std::vector<std::any> choices = {1, 2, 3};
+
+    test_value_type value = 4;
+    sut_set_choices(sut, choices);
+
+    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(value)), std::invalid_argument);
+    REQUIRE_FALSE(sut_has_value(sut));
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
     "name() should return value passed to the optional argument constructor for long name"
 ) {
     const auto sut = prepare_argument(long_name);

@@ -24,6 +24,13 @@ struct positional_argument_test_fixture {
     }
 
     template <readable T>
+    positional_argument<T>& sut_set_choices(
+        positional_argument<T>& sut, const std::vector<std::any>& choices
+    ) const {
+        return sut.choices(choices);
+    }
+
+    template <readable T>
     bool sut_has_value(const positional_argument<T>& sut) const {
         return sut.has_value();
     }

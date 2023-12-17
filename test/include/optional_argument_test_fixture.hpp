@@ -24,6 +24,13 @@ struct optional_argument_test_fixture {
     }
 
     template <readable T>
+    optional_argument<T>& sut_set_choices(
+        optional_argument<T>& sut, const std::vector<std::any>& choices
+    ) const {
+        return sut.choices(choices);
+    }
+
+    template <readable T>
     bool sut_has_value(const optional_argument<T>& sut) const {
         return sut.has_value();
     }

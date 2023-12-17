@@ -11,6 +11,7 @@
 #include <string_view>
 #include <type_traits>
 #include <vector>
+#include <set>
 
 #ifdef AP_TESTING
 
@@ -88,6 +89,8 @@ public:
 
     virtual bool is_optional() const = 0;
 
+    virtual argument_interface& choices(const std::vector<std::any>&) = 0;
+
     virtual ~argument_interface() = default;
 
     friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
@@ -136,6 +139,21 @@ public:
         return *this;
     }
 
+    inline positional_argument& choices(const std::vector<std::any>& choices) override {
+        std::set<value_type> result;
+
+        for (const auto& item : choices) {
+            try {
+                result.insert(std::any_cast<value_type>(item));
+            } catch (const std::bad_any_cast& e) {
+                throw std::invalid_argument("[choices] Not castable to value_type");
+            }
+        }
+
+        this->_choices = result;
+        return *this;
+    }
+
     [[nodiscard]] bool is_optional() const { return this->_optional; }
 
     friend class ::ap::argument_parser;
@@ -153,7 +171,12 @@ private:
         if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
-        this->_value = value;
+        if (this->_choices.empty() || this->_choices.find(value) != this->_choices.end()) {
+            this->_value = value;
+        } else {
+            throw std::invalid_argument("[value] Value not in choices");
+        }
+
         return *this;
     }
 
@@ -179,6 +202,8 @@ private:
 
     const bool _optional = false;
     const argument_name _name;
+
+    std::set<value_type> _choices;
 
     std::any _value;
 
@@ -216,6 +241,21 @@ public:
         return *this;
     }
 
+    inline optional_argument& choices(const std::vector<std::any>& choices) override {
+        std::set<value_type> result;
+
+        for (const auto& item : choices) {
+            try {
+                result.insert(std::any_cast<value_type>(item));
+            } catch (const std::bad_any_cast& e) {
+                throw std::invalid_argument("[choices] Not castable to value_type");
+            }
+        }
+
+        this->_choices = result;
+        return *this;
+    }
+
     // TODO: add tests for default_value throwing in test_optional_argument
     optional_argument& default_value(const std::any& default_value) {
         try {
@@ -246,6 +286,12 @@ private:
         if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
+        if (this->_choices.empty() || this->_choices.find(value) != this->_choices.end()) {
+            this->_value = value;
+        } else {
+            throw std::invalid_argument("[value] Value not in choices");
+        }
+
         this->_value = value;
         return *this;
     }
@@ -271,6 +317,8 @@ private:
 
     const bool _optional = true;
     const argument_name _name;
+
+    std::set<value_type> _choices;
 
     std::any _value;
 
