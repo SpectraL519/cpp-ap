@@ -12,6 +12,7 @@ struct argument_parser_test_fixture {
     argument_parser_test_fixture() = default;
     ~argument_parser_test_fixture() = default;
 
+    using cmd_argument = ap::argument_parser::cmd_argument;
     using cmd_argument_list = ap::argument_parser::cmd_argument_list;
     using argument_list_type = ap::argument_parser::argument_list_type;
     using argument_opt_type = ap::argument_parser::argument_opt_type;
@@ -97,11 +98,14 @@ struct argument_parser_test_fixture {
         cmd_args.reserve(get_args_length(num_args, args_split));
 
         for (std::size_t i = 0; i < args_split; i++) { // positional args
-            cmd_args.emplace_back(prepare_arg_value(i));
+            cmd_args.push_back(cmd_argument{
+                cmd_argument::type_discriminator::value, prepare_arg_value(i)});
         }
         for (std::size_t i = args_split; i < num_args; i++) { // optional args
-            cmd_args.emplace_back(prepare_arg_name(i).name);
-            cmd_args.emplace_back(prepare_arg_value(i));
+            cmd_args.push_back(cmd_argument{
+                cmd_argument::type_discriminator::flag, prepare_arg_name(i).name});
+            cmd_args.push_back(cmd_argument{
+                cmd_argument::type_discriminator::value, prepare_arg_value(i)});
         }
 
         return cmd_args;
