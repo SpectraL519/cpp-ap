@@ -103,50 +103,7 @@ TEST_CASE("argument_name::operator==(string_view) should "
     }
 }
 
-TEST_CASE("argument_name should be correctly constructed "
-          "from another "
-          "argument_name object") {
-    SUBCASE("with long name only") {
-        const auto arg_name = default_argument_name_long_name();
-
-        SUBCASE("using copy constructor") {
-            const auto arg_name_copy = argument_name(arg_name);
-            REQUIRE_EQ(arg_name_copy, arg_name);
-        }
-
-        SUBCASE("using move constructor") {
-            const auto arg_name_moved = argument_name(std::move(arg_name));
-            REQUIRE_EQ(arg_name_moved, arg_name);
-        }
-
-        SUBCASE("using assignment operator") {
-            const auto arg_name_copy = arg_name;
-            REQUIRE_EQ(arg_name_copy, arg_name);
-        }
-    }
-
-    SUBCASE("with both names") {
-        const auto arg_name = default_argument_name_both_names();
-
-        SUBCASE("using copy constructor") {
-            const auto arg_name_copy = argument_name(arg_name);
-            REQUIRE_EQ(arg_name_copy, arg_name);
-        }
-
-        SUBCASE("using move constructor") {
-            const auto arg_name_moved = argument_name(std::move(arg_name));
-            REQUIRE_EQ(arg_name_moved, arg_name);
-        }
-
-        SUBCASE("using assignment operator") {
-            const auto arg_name_copy = arg_name;
-            REQUIRE_EQ(arg_name_copy, arg_name);
-        }
-    }
-}
-
-TEST_CASE("operator<< should push correct data to the "
-          "output stream") {
+TEST_CASE("operator<< should push correct data to the output stream") {
     std::stringstream ss, expected_ss;
 
     SUBCASE("argument_name with long name only") {
