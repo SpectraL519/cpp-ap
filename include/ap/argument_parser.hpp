@@ -157,13 +157,12 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[value] TODO: msg");
+            throw std::invalid_argument("[value#1] TODO: msg");
 
-        if (this->_is_valid_choice(value))
-            this->_value = value;
-        else
-            throw std::invalid_argument("[value] Value not in choices");
+        if (not this->_is_valid_choice(value))
+            throw std::invalid_argument("[value#2] TODO: msg (value not in choices)");
 
+        this->_value = value;
         return *this;
     }
 
@@ -195,12 +194,11 @@ private:
     const bool _optional = false;
     const argument_name _name;
 
-    std::vector<value_type> _choices;
-
     std::any _value;
 
-    const bool _required = true;
     std::optional<std::string> _help_msg;
+    const bool _required = true;
+    std::vector<value_type> _choices;
 
     std::stringstream _ss;
 };
@@ -240,11 +238,15 @@ public:
     }
 
     optional_argument& default_value(const std::any& default_value) {
+        //TODO: Figure out whether to enforce default value in choices in any order of function calls
         try {
-            this->_default_value = std::any_cast<value_type>(default_value);
+            const auto value = std::any_cast<value_type>(default_value);
+            if (not this->_is_valid_choice(value))
+                throw std::invalid_argument("[default_value#1] TODO: msg (value not in choices)");
+            this->_default_value = value;
         }
         catch (const std::bad_any_cast& err) {
-            throw std::invalid_argument("[default_value] TODO: msg");
+            throw std::invalid_argument("[default_value#2] TODO: msg");
         }
 
         return *this;
@@ -265,12 +267,10 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[value] TODO: msg");
+            throw std::invalid_argument("[value#1] TODO: msg");
 
-        if (this->_is_valid_choice(value))
-            this->_value = value;
-        else
-            throw std::invalid_argument("[value] Value not in choices");
+        if (not this->_is_valid_choice(value))
+            throw std::invalid_argument("[value#2] TODO: msg (value not in choices)");
 
         this->_value = value;
         return *this;
@@ -303,12 +303,11 @@ private:
     const bool _optional = true;
     const argument_name _name;
 
-    std::vector<value_type> _choices;
-
     std::any _value;
 
-    bool _required = false;
     std::optional<std::string> _help_msg;
+    bool _required = false;
+    std::vector<value_type> _choices;
     std::any _default_value;
 
     std::stringstream _ss;

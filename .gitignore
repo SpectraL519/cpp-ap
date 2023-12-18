@@ -4,6 +4,7 @@
 # build files
 *.exe
 test/build/*
+test/test
 
 # documentation files
 /documentation

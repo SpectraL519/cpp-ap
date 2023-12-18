@@ -29,7 +29,7 @@ sut_type prepare_argument(std::string_view name, std::string_view long_name) {
 const std::string empty_str = "";
 const std::string invalid_value_str = "invalid_value";
 
-const std::vector<test_value_type> default_choices = {1, 2, 3};
+const std::vector<test_value_type> default_choices{1, 2, 3};
 
 } // namespace
 
