@@ -64,13 +64,11 @@ TEST_CASE_FIXTURE(
         REQUIRE_NOTHROW(sut.add_positional_argument(other_name, other_short_name));
     }
 
-    SUBCASE("adding argument with a previously used long "
-            "name") {
+    SUBCASE("adding argument with a previously used long name") {
         REQUIRE_THROWS_AS(sut.add_positional_argument(name), std::invalid_argument);
     }
 
-    SUBCASE("adding argument with a previously used short "
-            "name") {
+    SUBCASE("adding argument with a previously used short name") {
         REQUIRE_THROWS_AS(
             sut.add_positional_argument(other_name, short_name), std::invalid_argument
         );
@@ -88,13 +86,11 @@ TEST_CASE_FIXTURE(
         REQUIRE_NOTHROW(sut.add_optional_argument(other_name, other_short_name));
     }
 
-    SUBCASE("adding argument with a previously used long "
-            "name") {
+    SUBCASE("adding argument with a previously used long name") {
         REQUIRE_THROWS_AS(sut.add_optional_argument(name), std::invalid_argument);
     }
 
-    SUBCASE("adding argument with a previously used short "
-            "name") {
+    SUBCASE("adding argument with a previously used short name") {
         REQUIRE_THROWS_AS(sut.add_optional_argument(other_name, short_name), std::invalid_argument);
     }
 }

@@ -60,9 +60,9 @@ struct argument_name {
 
     [[nodiscard]] inline std::string str() const {
         return this->short_name
-                 ? "[" + std::string(this->name) + "]"
-                 : "[" + std::string(this->name) + ","
-                       + std::string(this->short_name.value()) + "]";
+                 ? "[" + this->name + "]"
+                 : "[" + this->name + ","
+                       + this->short_name.value() + "]";
     }
 
     friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
@@ -108,7 +108,7 @@ protected:
 
     virtual const argument_name& name() const = 0;
     virtual bool is_required() const = 0;
-    virtual const std::optional<std::string_view>& help() const = 0;
+    virtual const std::optional<std::string>& help() const = 0;
 };
 
 } // namespace detail
@@ -173,7 +173,7 @@ private:
         return this->_required;
     }
 
-    [[nodiscard]] inline const std::optional<std::string_view>& help() const override {
+    [[nodiscard]] inline const std::optional<std::string>& help() const override {
         return this->_help_msg;
     }
 
@@ -183,7 +183,7 @@ private:
     std::any _value;
 
     const bool _required = true;
-    std::optional<std::string_view> _help_msg;
+    std::optional<std::string> _help_msg;
 
     std::stringstream _ss;
 };
@@ -263,7 +263,7 @@ private:
         return this->_required;
     }
 
-    [[nodiscard]] inline const std::optional<std::string_view>& help() const override {
+    [[nodiscard]] inline const std::optional<std::string>& help() const override {
         return this->_help_msg;
     }
 
@@ -273,7 +273,7 @@ private:
     std::any _value;
 
     bool _required = false;
-    std::optional<std::string_view> _help_msg;
+    std::optional<std::string> _help_msg;
     std::any _default_value;
 
     std::stringstream _ss;
@@ -304,7 +304,10 @@ public:
     template <utility::readable T = std::string>
     argument::positional_argument<T>& add_positional_argument(std::string_view name) {
         // TODO: check forbidden characters
-        this->_check_arg_name_present(name);
+
+        if (this->_is_arg_name_used(name))
+            throw std::invalid_argument("[add_positional_argument] TODO: msg (arg name colision)");
+
         this->_positional_args.push_back(
             std::make_unique<argument::positional_argument<T>>(name));
         return static_cast<argument::positional_argument<T>&>(
@@ -316,8 +319,10 @@ public:
         std::string_view name, std::string_view short_name
     ) {
         // TODO: check forbidden characters
-        this->_check_arg_name_present(name);
-        this->_check_arg_name_present(short_name);
+
+        if (this->_is_arg_name_used(name, short_name))
+            throw std::invalid_argument("[add_positional_argument] TODO: msg (arg name colision)");
+
         this->_positional_args.push_back(
             std::make_unique<argument::positional_argument<T>>(name, short_name));
         return static_cast<argument::positional_argument<T>&>(
@@ -327,16 +332,21 @@ public:
     template <utility::readable T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
-        this->_check_arg_name_present(name);
+
+        if (this->_is_arg_name_used(name))
+            throw std::invalid_argument("[add_optional_argument] TODO: msg (arg name colision)");
+
         this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
     template <utility::readable T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
-        // TODO: check forbidden/allowed characters
-        this->_check_arg_name_present(name);
-        this->_check_arg_name_present(short_name);
+        // TODO: check forbidden characters
+
+        if (this->_is_arg_name_used(name, short_name))
+            throw std::invalid_argument("[add_optional_argument] TODO: msg (arg name colision)");
+
         this->_optional_args.push_back(
             std::make_unique<argument::optional_argument<T>>(name, short_name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
@@ -392,8 +402,7 @@ private:
     struct cmd_argument {
         enum class type_discriminator { flag, value };
 
-        cmd_argument() = delete;
-
+        cmd_argument() = default;
         cmd_argument(const cmd_argument&) = default;
         cmd_argument(cmd_argument&&) = default;
         cmd_argument& operator= (const cmd_argument&) = default;
@@ -422,34 +431,67 @@ private:
     using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator = typename argument_list_type::iterator;
 
-    [[nodiscard]] inline auto _name_eq_predicate(std::string_view name) const {
-        return [name](const argument_ptr_type& arg) {
+    [[nodiscard]] inline auto _name_eq_predicate(const std::string_view& name) const {
+        return [&name](const argument_ptr_type& arg) {
             return name == arg->name();
         };
     }
 
-    void _check_arg_name_present(std::string_view name) const {
+    [[nodiscard]] inline auto _name_eq_predicate(
+        const std::string_view& name, const std::string_view& short_name
+    ) const {
+        return [&name, &short_name](const argument_ptr_type& arg) {
+            return name == arg->name() or short_name == arg->name();
+        };
+    }
+
+    [[nodiscard]] bool _is_arg_name_used(const std::string_view& name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
-        if (std::find_if(this->_positional_args.begin(), this->_positional_args.end(), predicate)
-            != this->_positional_args.end()) {
-            throw std::invalid_argument("[_check_arg_name_present(n)] TODO: msg");
-        }
+        if (
+            std::find_if(
+                this->_positional_args.begin(),
+                this->_positional_args.end(),
+                predicate
+            ) != this->_positional_args.end()
+        ) { return true; }
 
-        if (std::find_if(this->_optional_args.begin(), this->_optional_args.end(), predicate)
-            != this->_optional_args.end()) {
-            throw std::invalid_argument("[_check_arg_name_present(n, s)] TODO: msg");
-        }
+        if (
+            std::find_if(
+                this->_optional_args.begin(),
+                this->_optional_args.end(),
+                predicate
+            ) != this->_optional_args.end()
+        ) { return true; }
+
+        return false;
+    }
+
+    [[nodiscard]] bool _is_arg_name_used(
+        const std::string_view& name, const std::string_view& short_name
+    ) const {
+        const auto predicate = this->_name_eq_predicate(name, short_name);
+
+        if (
+            std::find_if(
+                this->_positional_args.begin(),
+                this->_positional_args.end(),
+                predicate
+            ) != this->_positional_args.end()
+        ) { return true; }
+
+        if (
+            std::find_if(
+                this->_optional_args.begin(),
+                this->_optional_args.end(),
+                predicate
+            ) != this->_optional_args.end()
+        ) { return true; }
+
+        return false;
     }
 
     [[nodiscard]] cmd_argument_list _process_input(int argc, char* argv[]) const {
-        /*
-        TODO:
-        * quotes detection
-        * negative number detection
-        * split into smaller functions
-        */
-
         if (argc < 2)
             return cmd_argument_list{};
 
@@ -457,30 +499,34 @@ private:
         args.reserve(argc - 1);
 
         for (int i = 1; i < argc; i++) {
-            std::string arg = argv[i];
-
-            if (
-                arg.length() > this->_flag_prefix_length and
-                arg.starts_with(this->_flag_prefix)
-            ) {
-                arg.erase(0, this->_flag_prefix_length);
-                args.push_back(cmd_argument{cmd_argument::type_discriminator::flag, arg});
-                continue;
+            std::string value = argv[i];
+            if (this->_is_flag(value)) {
+                this->_strip_flag_prefix(value);
+                args.push_back(cmd_argument{cmd_argument::type_discriminator::flag, value});
             }
-
-            if (
-                arg.length() > this->_flag_prefix_char_length and
-                arg.front() == this->_flag_prefix_char
-            ) {
-                arg.erase(0, this->_flag_prefix_char_length);
-                args.push_back(cmd_argument{cmd_argument::type_discriminator::flag, arg});
-                continue;
+            else {
+                args.push_back(cmd_argument{cmd_argument::type_discriminator::value, value});
             }
-
-            args.push_back(cmd_argument{cmd_argument::type_discriminator::value, arg});
         }
 
         return args;
+    }
+
+    [[nodiscard]] bool _is_flag(const std::string& arg) const {
+        if (arg.starts_with(this->_flag_prefix))
+            return this->_is_arg_name_used(arg.substr(this->_flag_prefix_length));
+
+        if (arg.starts_with(this->_flag_prefix_char))
+            return this->_is_arg_name_used(arg.substr(this->_flag_prefix_char_length));
+
+        return false;
+    }
+
+    void _strip_flag_prefix(std::string& arg) const {
+        if (arg.starts_with(this->_flag_prefix))
+            arg.erase(0, this->_flag_prefix_length);
+        else
+            arg.erase(0, this->_flag_prefix_char_length);
     }
 
     void _parse_args_impl(const cmd_argument_list& cmd_args) {

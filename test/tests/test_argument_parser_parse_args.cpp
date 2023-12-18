@@ -46,6 +46,8 @@ TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
     "_process_input should return a vector of correct arguments"
 ) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
