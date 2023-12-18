@@ -82,20 +82,15 @@ namespace detail {
 
 class argument_interface {
 public:
-    using value_type = void;
-
     virtual argument_interface& help(std::string_view) = 0;
-
     virtual bool is_optional() const = 0;
 
     virtual ~argument_interface() = default;
 
     friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
-
         const auto& argument_help_msg = argument.help();
         os << (argument_help_msg ? argument_help_msg.value() : "[ostream(argument)] TODO: msg");
-
         return os;
     }
 
