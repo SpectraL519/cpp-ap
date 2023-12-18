@@ -44,7 +44,7 @@ struct optional_argument_test_fixture {
     }
 
     template <readable T>
-    const std::optional<std::string_view>& sut_get_help(
+    const std::optional<std::string>& sut_get_help(
         const optional_argument<T>& sut
     ) const {
         return sut.help();
