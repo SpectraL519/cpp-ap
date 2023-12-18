@@ -145,7 +145,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "value(any) should accept the given value only when it's present in the choices set"
 ) {
-    const auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(long_name);
     sut_set_choices(sut, default_choices);
 
     const std::vector<test_value_type> test_values = default_choices;
@@ -163,12 +163,10 @@ TEST_CASE_FIXTURE(
 ) {
     auto sut = prepare_argument(long_name);
 
-    std::vector<std::any> choices = {1, 2, 3};
+    test_value_type invalid_value = 4;
+    sut_set_choices(sut, default_choices);
 
-    test_value_type value = 4;
-    sut_set_choices(sut, choices);
-
-    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(value)), std::invalid_argument);
+    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(invalid_value)), std::invalid_argument);
     REQUIRE_FALSE(sut_has_value(sut));
 }
 

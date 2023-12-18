@@ -108,7 +108,7 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
     "value(any) should accept the given value only when it's present in the choices set"
 ) {
-    const auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(long_name);
     sut_set_choices(sut, default_choices);
 
     const std::vector<test_value_type> test_values = default_choices;
