@@ -17,6 +17,9 @@ struct positional_argument_test_fixture {
     ~positional_argument_test_fixture() = default;
 
     template <readable T>
+    using value_type = typename positional_argument<T>::value_type;
+
+    template <readable T>
     positional_argument<T>& sut_set_value(
         positional_argument<T>& sut, const std::string& str_value
     ) const {
@@ -25,8 +28,8 @@ struct positional_argument_test_fixture {
 
     template <readable T>
     positional_argument<T>& sut_set_choices(
-        positional_argument<T>& sut, const std::vector<std::any>& choices
-    ) const {
+        positional_argument<T>& sut, const std::vector<value_type<T>>& choices
+    ) {
         return sut.choices(choices);
     }
 

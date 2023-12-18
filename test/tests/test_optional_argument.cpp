@@ -30,6 +30,8 @@ sut_type prepare_argument(std::string_view name, std::string_view long_name) {
 const std::string empty_str = "";
 const std::string invalid_value_str = "invalid_value";
 
+const std::vector<test_value_type> default_choices = {1, 2, 3};
+
 } // namespace
 
 TEST_SUITE_BEGIN("test_optional_argument");
@@ -141,29 +143,15 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "choices(vector<any>) should throw when passed choices are not of test_value_type"
-) {
-    auto sut = prepare_argument(long_name);
-    std::vector<std::any> choices = {"1", "2", "3"};
-
-    REQUIRE_THROWS_AS(sut_set_choices(sut, choices), std::invalid_argument);
-}
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
     "value(any) should accept the given value only when it's present in the choices set"
 ) {
     const auto sut = prepare_argument(long_name);
+    sut_set_choices(sut, default_choices);
 
-    const std::vector<std::any> choices = {1, 2, 3};
-
-    sut_set_choices(sut, choices);
-
-    const std::vector<test_value_type> test_values = {1, 2, 3};
+    const std::vector<test_value_type> test_values = default_choices;
 
     for (const auto& test_value : test_values) {
-        sut_set_value(sut, std::to_string(test_value));
-
+        REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(test_value)));
         REQUIRE(sut_has_value(sut));
         REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), test_value);
     }

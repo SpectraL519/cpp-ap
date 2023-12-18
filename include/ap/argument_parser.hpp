@@ -6,7 +6,6 @@
 #include <iostream>
 #include <memory>
 #include <optional>
-#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string_view>
@@ -32,6 +31,11 @@ namespace utility {
 template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
+
+template <typename T>
+concept equality_comparable = requires(T lhs, T rhs) { 
+    { lhs == rhs } -> std::convertible_to<bool>;
+};
 
 } // namespace utility
 
@@ -89,8 +93,6 @@ public:
 
     virtual bool is_optional() const = 0;
 
-    virtual argument_interface& choices(const std::vector<std::any>&) = 0;
-
     virtual ~argument_interface() = default;
 
     friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
@@ -139,19 +141,9 @@ public:
         return *this;
     }
 
-    inline positional_argument& choices(const std::vector<std::any>& choices) override {
-        std::set<value_type> value_choices;
-
-        for (const auto& value : choices) {
-            try {
-                value_choices.insert(std::any_cast<value_type>(value));
-            } 
-            catch (const std::bad_any_cast& e) {
-                throw std::invalid_argument("[choices] TODO: Cannot cast to value_type");
-            }
-        }
-
-        this->_choices = value_choices;
+    inline positional_argument& choices(const std::vector<value_type>& choices) 
+    requires(utility::equality_comparable<value_type>) {
+        this->_choices = choices;
         return *this;
     }
 
@@ -172,12 +164,10 @@ private:
         if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
-        if (this->_choices.empty() or this->_choices.find(value) != this->_choices.end()) {
+        if (this->_is_valid_choice(value))
             this->_value = value;
-        } 
-        else {
+        else
             throw std::invalid_argument("[value] Value not in choices");
-        }
 
         return *this;
     }
@@ -202,10 +192,15 @@ private:
         return this->_help_msg;
     }
 
+    [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
+        return this->_choices.empty() or
+               std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+    }
+
     const bool _optional = false;
     const argument_name _name;
 
-    std::set<value_type> _choices;
+    std::vector<value_type> _choices;
 
     std::any _value;
 
@@ -243,19 +238,9 @@ public:
         return *this;
     }
 
-    inline optional_argument& choices(const std::vector<std::any>& choices) override {
-        std::set<value_type> value_choices;
-
-        for (const auto& value : choices) {
-            try {
-                value_choices.insert(std::any_cast<value_type>(value));
-            } 
-            catch (const std::bad_any_cast& e) {
-                throw std::invalid_argument("[choices] TODO: Cannot cast to value_type");
-            }
-        }
-
-        this->_choices = value_choices;
+    inline optional_argument& choices(const std::vector<value_type>& choices)
+    requires(utility::equality_comparable<value_type>) {
+        this->_choices = choices;
         return *this;
     }
 
@@ -289,12 +274,10 @@ private:
         if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
-        if (this->_choices.empty() or this->_choices.find(value) != this->_choices.end()) {
+        if (this->_is_valid_choice(value))
             this->_value = value;
-        } 
-        else {
+        else
             throw std::invalid_argument("[value] Value not in choices");
-        }
 
         this->_value = value;
         return *this;
@@ -319,10 +302,15 @@ private:
         return this->_help_msg;
     }
 
+    [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
+        return this->_choices.empty() or
+               std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+    }
+
     const bool _optional = true;
     const argument_name _name;
 
-    std::set<value_type> _choices;
+    std::vector<value_type> _choices;
 
     std::any _value;
 

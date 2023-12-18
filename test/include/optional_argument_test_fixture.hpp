@@ -17,6 +17,9 @@ struct optional_argument_test_fixture {
     ~optional_argument_test_fixture() = default;
 
     template <readable T>
+    using value_type = typename optional_argument<T>::value_type;
+
+    template <readable T>
     optional_argument<T>& sut_set_value(
         optional_argument<T>& sut, const std::string& str_value
     ) const {
@@ -25,8 +28,8 @@ struct optional_argument_test_fixture {
 
     template <readable T>
     optional_argument<T>& sut_set_choices(
-        optional_argument<T>& sut, const std::vector<std::any>& choices
-    ) const {
+        optional_argument<T>& sut, const std::vector<value_type<T>>& choices
+    ) {
         return sut.choices(choices);
     }
 
