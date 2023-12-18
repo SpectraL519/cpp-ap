@@ -6,12 +6,12 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string_view>
 #include <type_traits>
 #include <vector>
-#include <set>
 
 #ifdef AP_TESTING
 
@@ -140,17 +140,18 @@ public:
     }
 
     inline positional_argument& choices(const std::vector<std::any>& choices) override {
-        std::set<value_type> result;
+        std::set<value_type> value_choices;
 
-        for (const auto& item : choices) {
+        for (const auto& value : choices) {
             try {
-                result.insert(std::any_cast<value_type>(item));
-            } catch (const std::bad_any_cast& e) {
-                throw std::invalid_argument("[choices] Not castable to value_type");
+                value_choices.insert(std::any_cast<value_type>(value));
+            } 
+            catch (const std::bad_any_cast& e) {
+                throw std::invalid_argument("[choices] TODO: Cannot cast to value_type");
             }
         }
 
-        this->_choices = result;
+        this->_choices = value_choices;
         return *this;
     }
 
@@ -171,9 +172,10 @@ private:
         if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
-        if (this->_choices.empty() || this->_choices.find(value) != this->_choices.end()) {
+        if (this->_choices.empty() or this->_choices.find(value) != this->_choices.end()) {
             this->_value = value;
-        } else {
+        } 
+        else {
             throw std::invalid_argument("[value] Value not in choices");
         }
 
@@ -242,17 +244,18 @@ public:
     }
 
     inline optional_argument& choices(const std::vector<std::any>& choices) override {
-        std::set<value_type> result;
+        std::set<value_type> value_choices;
 
-        for (const auto& item : choices) {
+        for (const auto& value : choices) {
             try {
-                result.insert(std::any_cast<value_type>(item));
-            } catch (const std::bad_any_cast& e) {
-                throw std::invalid_argument("[choices] Not castable to value_type");
+                value_choices.insert(std::any_cast<value_type>(value));
+            } 
+            catch (const std::bad_any_cast& e) {
+                throw std::invalid_argument("[choices] TODO: Cannot cast to value_type");
             }
         }
 
-        this->_choices = result;
+        this->_choices = value_choices;
         return *this;
     }
 
@@ -286,9 +289,10 @@ private:
         if (not (this->_ss >> value))
             throw std::invalid_argument("[value] TODO: msg");
 
-        if (this->_choices.empty() || this->_choices.find(value) != this->_choices.end()) {
+        if (this->_choices.empty() or this->_choices.find(value) != this->_choices.end()) {
             this->_value = value;
-        } else {
+        } 
+        else {
             throw std::invalid_argument("[value] Value not in choices");
         }
 

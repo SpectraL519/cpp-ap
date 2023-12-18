@@ -141,7 +141,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "choices(any) should throw when passed choices are not of test_value_type"
+    "choices(vector<any>) should throw when passed choices are not of test_value_type"
 ) {
     auto sut = prepare_argument(long_name);
     std::vector<std::any> choices = {"1", "2", "3"};
@@ -151,33 +151,22 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "value(any) should accept the arguement's value if it matches an entry set using choices()"
+    "value(any) should accept the given value only when it's present in the choices set"
 ) {
-    auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(long_name);
 
-    std::vector<std::any> choices = {1, 2, 3};
-
-    test_value_type value1 = 1;
-    test_value_type value2 = 2;
-    test_value_type value3 = 3;
+    const std::vector<std::any> choices = {1, 2, 3};
 
     sut_set_choices(sut, choices);
 
+    const std::vector<test_value_type> test_values = {1, 2, 3};
 
-    sut_set_value(sut, std::to_string(value1));
+    for (const auto& test_value : test_values) {
+        sut_set_value(sut, std::to_string(test_value));
 
-    REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value1);
-
-    sut_set_value(sut, std::to_string(value2));
-
-    REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value2);
-
-    sut_set_value(sut, std::to_string(value3));
-
-    REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value3);
+        REQUIRE(sut_has_value(sut));
+        REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), test_value);
+    }
 }
 
 TEST_CASE_FIXTURE(
