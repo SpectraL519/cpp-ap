@@ -262,6 +262,7 @@ TEST_CASE_FIXTURE(
 TEST_SUITE_END(); // test_argument_parser_parse_args::_get_argument
 
 
+
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::has_value");
 
 TEST_CASE_FIXTURE(

@@ -433,7 +433,7 @@ private:
 
     std::optional<std::string> _help_msg;
     bool _required = false;
-    std::optional<ap::nargs::range> _nargs_range; // TODO: make optional
+    std::optional<ap::nargs::range> _nargs_range;
     std::vector<value_type> _choices;
     std::any _default_value; // TODO: use vector<any>
 
@@ -729,18 +729,18 @@ private:
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
                 auto opt_arg_it =
                     this->_find_optional(this->_name_eq_predicate(cmd_it->value));
-
+              
                 if (opt_arg_it == this->_optional_args.end())
                     throw std::runtime_error(
                         "[_parse_optional_args#1] TODO: msg (opt_arg not found)");
-
+                
                 curr_opt_arg = std::ref(*opt_arg_it);
             }
             else {
                 if (not curr_opt_arg)
                     throw std::runtime_error(
                         "[_parse_optional_args#2] TODO: msg (cannot assign value)");
-
+                
                 curr_opt_arg->get()->set_value(cmd_it->value);
             }
 

@@ -285,7 +285,6 @@ TEST_CASE_FIXTURE(
     REQUIRE_FALSE(sut_has_value(sut));
 }
 
-
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "name() should return value passed to the optional argument constructor for long name"
