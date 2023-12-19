@@ -23,7 +23,7 @@ struct optional_argument_test_fixture {
     optional_argument<T>& sut_set_value(
         optional_argument<T>& sut, const std::string& str_value
     ) const {
-        return sut.value(str_value);
+        return sut.set_value(str_value);
     }
 
     template <readable T>

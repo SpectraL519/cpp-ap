@@ -4,6 +4,7 @@
 #include <any>
 #include <compare>
 #include <concepts>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <optional>
@@ -41,9 +42,14 @@ public:
     range(const count_type nlow, const count_type nhigh)
         : _nlow(nlow), _nhigh(nhigh) {}
 
+    range& operator= (const range&) = default;
+
     ~range() = default;
 
-    range& operator= (const range&) = default;
+    // TODO: delete after adding actions
+    [[nodiscard]] inline bool is_default() const {
+        return this->_nlow == this->_ndefault and this->_nhigh == this->_ndefault;
+    }
 
     friend std::weak_ordering in_range(const range&, const count_type);
     friend range at_least(const count_type);
@@ -55,8 +61,8 @@ private:
     range(const std::optional<count_type> nlow, const std::optional<count_type> nhigh)
         : _nlow(nlow), _nhigh(nhigh) {}
 
-    const std::optional<count_type> _nlow;
-    const std::optional<count_type> _nhigh;
+    std::optional<count_type> _nlow;
+    std::optional<count_type> _nhigh;
 
     static constexpr count_type _ndefault = 1;
 };
@@ -176,7 +182,7 @@ public:
     friend class ::ap::argument_parser;
 
 protected:
-    virtual argument_interface& value(const std::string&) = 0;
+    virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
     virtual const std::any& value() const = 0;
 
@@ -225,7 +231,7 @@ public:
 #endif
 
 private:
-    positional_argument& value(const std::string& str_value) override {
+    positional_argument& set_value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
 
@@ -305,6 +311,11 @@ public:
         return *this;
     }
 
+    inline optional_argument& nargs(const ap::nargs::range& nargs) {
+        this->_nargs = nargs;
+        return *this;
+    }
+
     inline optional_argument& choices(const std::vector<value_type>& choices)
     requires(utility::equality_comparable<value_type>) {
         this->_choices = choices;
@@ -312,7 +323,7 @@ public:
     }
 
     optional_argument& default_value(const std::any& default_value) {
-        //TODO: Figure out whether to enforce default value in choices in any order of function calls
+        // TODO: Figure out whether to enforce default value in choices in any order of function calls
         try {
             const auto value = std::any_cast<value_type>(default_value);
             if (not this->_is_valid_choice(value))
@@ -335,7 +346,7 @@ public:
 #endif
 
 private:
-    optional_argument& value(const std::string& str_value) override {
+    optional_argument& set_value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
 
@@ -346,15 +357,29 @@ private:
         if (not this->_is_valid_choice(value))
             throw std::invalid_argument("[value#2] TODO: msg (value not in choices)");
 
-        this->_value = value;
+        // TODO: replace with action checking
+        if (this->_nargs.is_default())
+            this->_value = value;
+        else
+            this->_values.push_back(value);
+
         return *this;
     }
+
     [[nodiscard]] inline bool has_value() const override {
-        return this->_value.has_value() or this->_default_value.has_value();
+        return this->_value.has_value() or
+               not this->_values.empty() or
+               this->_default_value.has_value();
     }
 
-    [[nodiscard]] inline const std::any& value() const override {
-        return this->_value.has_value() ? this->_value : this->_default_value;
+    [[nodiscard]] const std::any& value() const override {
+        if (this->_value.has_value())
+            return this->_value;
+
+        if (not this->_values.empty())
+            return this->_values.front();
+
+        return this->_default_value;
     }
 
     [[nodiscard]] inline const argument_name& name() const override {
@@ -378,9 +403,11 @@ private:
     const argument_name _name;
 
     std::any _value;
+    std::vector<std::any> _values;
 
     std::optional<std::string> _help_msg;
     bool _required = false;
+    ap::nargs::range _nargs;
     std::vector<value_type> _choices;
     std::any _default_value;
 
@@ -537,15 +564,19 @@ private:
     using argument_opt_type =
         std::optional<std::reference_wrapper<argument::detail::argument_interface>>;
     using argument_list_type = std::vector<argument_ptr_type>;
-    using argument_list_iterator = typename argument_list_type::iterator;
+    using argument_list_iterator_type = typename argument_list_type::iterator;
+    using argument_list_const_iterator_type = typename argument_list_type::const_iterator;
+    using argument_predicate_type = std::function<bool(const argument_ptr_type&)>;
 
-    [[nodiscard]] inline auto _name_eq_predicate(const std::string_view& name) const {
+    [[nodiscard]] inline argument_predicate_type _name_eq_predicate(
+        const std::string_view& name
+    ) const {
         return [&name](const argument_ptr_type& arg) {
             return name == arg->name();
         };
     }
 
-    [[nodiscard]] inline auto _name_eq_predicate(
+    [[nodiscard]] inline argument_predicate_type _name_eq_predicate(
         const std::string_view& name, const std::string_view& short_name
     ) const {
         return [&name, &short_name](const argument_ptr_type& arg) {
@@ -556,21 +587,11 @@ private:
     [[nodiscard]] bool _is_arg_name_used(const std::string_view& name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
-        if (
-            std::find_if(
-                this->_positional_args.begin(),
-                this->_positional_args.end(),
-                predicate
-            ) != this->_positional_args.end()
-        ) { return true; }
+        if (this->_const_find_positional(predicate) != this->_positional_args.end())
+            return true;
 
-        if (
-            std::find_if(
-                this->_optional_args.begin(),
-                this->_optional_args.end(),
-                predicate
-            ) != this->_optional_args.end()
-        ) { return true; }
+        if (this->_const_find_optional(predicate) != this->_optional_args.end())
+            return true;
 
         return false;
     }
@@ -580,21 +601,11 @@ private:
     ) const {
         const auto predicate = this->_name_eq_predicate(name, short_name);
 
-        if (
-            std::find_if(
-                this->_positional_args.begin(),
-                this->_positional_args.end(),
-                predicate
-            ) != this->_positional_args.end()
-        ) { return true; }
+        if (this->_const_find_positional(predicate) != this->_positional_args.end())
+            return true;
 
-        if (
-            std::find_if(
-                this->_optional_args.begin(),
-                this->_optional_args.end(),
-                predicate
-            ) != this->_optional_args.end()
-        ) { return true; }
+        if (this->_const_find_optional(predicate) != this->_optional_args.end())
+            return true;
 
         return false;
     }
@@ -655,7 +666,7 @@ private:
                 throw std::runtime_error(
                     "[_parse_positional_args#2] TODO: msg (invalid arg type)");
 
-            pos_arg->value(cmd_it->value);
+            pos_arg->set_value(cmd_it->value);
             cmd_it++;
         }
     }
@@ -667,11 +678,8 @@ private:
 
         while (cmd_it != cmd_args.end()) {
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
-                auto opt_arg_it = std::find_if(
-                    this->_optional_args.begin(),
-                    this->_optional_args.end(),
-                    this->_name_eq_predicate(cmd_it->value)
-                );
+                auto opt_arg_it =
+                    this->_find_optional(this->_name_eq_predicate(cmd_it->value));
 
                 if (opt_arg_it == this->_optional_args.end())
                     throw std::runtime_error(
@@ -684,7 +692,7 @@ private:
                     throw std::runtime_error(
                         "[_parse_optional_args#2] TODO: msg (cannot assign value)");
 
-                curr_opt_arg->get()->value(cmd_it->value);
+                curr_opt_arg->get()->set_value(cmd_it->value);
             }
 
             cmd_it++;
@@ -697,22 +705,48 @@ private:
                 throw std::runtime_error("[_check_required_args] TODO: msg (optional)");
     }
 
-    argument_opt_type _get_argument(std::string_view name) const {
+    argument_opt_type _get_argument(const std::string_view& name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
-        if (auto pos_arg_it = std::find_if(
-                this->_positional_args.begin(), this->_positional_args.end(), predicate);
+        if (auto pos_arg_it = this->_const_find_positional(predicate);
             pos_arg_it != this->_positional_args.end()) {
             return std::ref(**pos_arg_it);
         }
 
-        if (auto opt_arg_it = std::find_if(
-                this->_optional_args.begin(), this->_optional_args.end(), predicate);
+        if (auto opt_arg_it = this->_const_find_optional(predicate);
             opt_arg_it != this->_optional_args.end()) {
             return std::ref(**opt_arg_it);
         }
 
         return std::nullopt;
+    }
+
+    [[nodiscard]] inline argument_list_iterator_type _find_positional(
+        const argument_predicate_type& predicate
+    ) {
+        return std::find_if(
+            std::begin(this->_positional_args), std::end(this->_positional_args), predicate);
+    }
+
+    [[nodiscard]] inline argument_list_iterator_type _find_optional(
+        const argument_predicate_type& predicate
+    ) {
+        return std::find_if(
+            std::begin(this->_optional_args), std::end(this->_optional_args), predicate);
+    }
+
+    [[nodiscard]] inline argument_list_const_iterator_type _const_find_positional(
+        const argument_predicate_type& predicate
+    ) const {
+        return std::find_if(
+            std::cbegin(this->_positional_args), std::cend(this->_positional_args), predicate);
+    }
+
+    [[nodiscard]] inline argument_list_const_iterator_type _const_find_optional(
+        const argument_predicate_type& predicate
+    ) const {
+        return std::find_if(
+            std::cbegin(this->_optional_args), std::cend(this->_optional_args), predicate);
     }
 
     std::optional<std::string> _program_name;
