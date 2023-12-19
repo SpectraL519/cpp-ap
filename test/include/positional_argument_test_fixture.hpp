@@ -39,6 +39,11 @@ struct positional_argument_test_fixture {
     }
 
     template <readable T>
+    std::weak_ordering sut_nvalues_in_range(const positional_argument<T>& sut) const {
+        return sut.nvalues_in_range();
+    }
+
+    template <readable T>
     const std::any& sut_get_value(const positional_argument<T>& sut) const {
         return sut.value();
     }

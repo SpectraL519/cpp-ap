@@ -9,6 +9,7 @@
 #include <argument_parser_test_fixture.hpp>
 
 using namespace ap::argument;
+using namespace ap::nargs;
 
 namespace {
 
@@ -171,6 +172,25 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
+    "parse_args should throw when an optional argument's nvalues is not in a specified range"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    auto argc = get_argc(non_default_num_args, non_default_args_split);
+    auto argv = prepare_argv(non_default_num_args, non_default_args_split);
+
+    const auto range_arg_name = prepare_arg_name(non_default_num_args);
+    sut.add_optional_argument(
+        range_arg_name.name, range_arg_name.short_name.value()
+    ).nargs(at_least(1));
+
+    REQUIRE_THROWS_AS(sut.parse_args(argc, argv), std::runtime_error);
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
     "parse_args should not throw if input and numer of positional argument"
     "values are correct and all required optional arguments have values"
 ) {
@@ -234,7 +254,7 @@ TEST_CASE_FIXTURE(
     }
 }
 
-TEST_SUITE_END(); // test_argument_parser_parse_args::has_value
+TEST_SUITE_END(); // test_argument_parser_parse_args::_get_argument
 
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::has_value");

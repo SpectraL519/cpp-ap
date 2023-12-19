@@ -181,7 +181,7 @@ public:
 protected:
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
-    virtual bool has_correct_num_values() const = 0; // TODO: add tests + return std::weak_ordering
+    virtual std::weak_ordering nvalues_in_range() const = 0; // TODO: add tests
     virtual const std::any& value() const = 0;
     virtual const std::vector<std::any>& values() const = 0;
 
@@ -252,8 +252,9 @@ private:
         return this->_value.has_value();
     }
 
-    [[nodiscard]] inline bool has_correct_num_values() const override {
-        return this->_value.has_value();
+    [[nodiscard]] inline std::weak_ordering nvalues_in_range() const override {
+        return this->_value.has_value() ? std::weak_ordering::equivalent
+                                        : std::weak_ordering::less;
     }
 
     [[nodiscard]] inline const std::any& value() const override {
@@ -297,6 +298,7 @@ template <utility::readable T>
 class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
+    using count_type = ap::nargs::range::count_type;
 
     optional_argument() = delete;
 
@@ -323,6 +325,16 @@ public:
 
     inline optional_argument& nargs(const ap::nargs::range& range) {
         this->_nargs_range = range;
+        return *this;
+    }
+
+    inline optional_argument& nargs(const count_type count) {
+        this->_nargs_range = ap::nargs::range(count);
+        return *this;
+    }
+
+    inline optional_argument& nargs(const count_type nlow, const count_type nhigh) {
+        this->_nargs_range = ap::nargs::range(nlow, nhigh);
         return *this;
     }
 
@@ -367,8 +379,8 @@ private:
         if (not this->_is_valid_choice(value))
             throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
 
-        // TODO: replace with action checking
-        if (this->_nargs_range.is_default() and not this->_values.empty())
+        // TODO: replace nargs checking with action checking
+        if (not (this->_nargs_range or this->_values.empty()))
             throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
 
         this->_values.push_back(value);
@@ -379,9 +391,14 @@ private:
         return not this->_values.empty() or this->_default_value.has_value();
     }
 
-    [[nodiscard]] inline bool has_correct_num_values() const override {
-        return std::is_eq(this->_nargs_range.contains(this->_values.size())) or
-               this->_default_value.has_value();
+    [[nodiscard]] std::weak_ordering nvalues_in_range() const override {
+        if (not this->_nargs_range)
+            return std::weak_ordering::equivalent;
+
+        if (this->_values.empty() and this->_default_value.has_value())
+            return std::weak_ordering::equivalent;
+
+        return this->_nargs_range->contains(this->_values.size());
     }
 
     [[nodiscard]] inline const std::any& value() const override {
@@ -416,7 +433,7 @@ private:
 
     std::optional<std::string> _help_msg;
     bool _required = false;
-    ap::nargs::range _nargs_range; // TODO: make optional
+    std::optional<ap::nargs::range> _nargs_range; // TODO: make optional
     std::vector<value_type> _choices;
     std::any _default_value; // TODO: use vector<any>
 
@@ -499,7 +516,7 @@ public:
     void parse_args(int argc, char* argv[]) {
         this->_parse_args_impl(this->_process_input(argc, argv));
         this->_check_required_args();
-        this->_check_correct_num_values(); // TODO: add tests
+        this->_check_nvalues_in_range(); // TODO: add tests
     }
 
     bool has_value(std::string_view arg_name) const {
@@ -715,14 +732,22 @@ private:
                 throw std::runtime_error("[_check_required_args] TODO: msg");
     }
 
-    void _check_correct_num_values() const {
-        for (const auto& arg : this->_positional_args)
-            if (not arg->has_correct_num_values())
-                throw std::runtime_error("[_check_correct_num_values#1] TODO: msg");
+    void _check_nvalues_in_range() const {
+        for (const auto& arg : this->_positional_args) {
+            const auto correct_nvalues = arg->nvalues_in_range();
+            if (std::is_lt(correct_nvalues))
+                throw std::runtime_error("[_check_nvalues_in_range#1] TODO: msg");
+            if (std::is_gt(correct_nvalues))
+                throw std::runtime_error("[_check_nvalues_in_range#2] TODO: msg");
+        }
 
-        for (const auto& arg : this->_optional_args)
-            if (not arg->has_correct_num_values())
-                throw std::runtime_error("[_check_correct_num_values#2] TODO: msg");
+        for (const auto& arg : this->_optional_args) {
+            const auto correct_nvalues = arg->nvalues_in_range();
+            if (std::is_lt(correct_nvalues))
+                throw std::runtime_error("[_check_nvalues_in_range#1] TODO: msg");
+            if (std::is_gt(correct_nvalues))
+                throw std::runtime_error("[_check_nvalues_in_range#2] TODO: msg");
+        }
     }
 
     argument_opt_type _get_argument(const std::string_view& name) const {

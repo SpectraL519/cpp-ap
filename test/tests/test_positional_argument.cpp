@@ -70,6 +70,26 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
+    "nvalues_in_range() should return less by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE(std::is_lt(sut_nvalues_in_range(sut)));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "nvalues_in_range() should return equivalent if a value has been set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(std::is_eq(sut_nvalues_in_range(sut)));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
     "set_value(any) should throw when value_type cannot be obtained from given string"
 ) {
     auto sut = prepare_argument(long_name);

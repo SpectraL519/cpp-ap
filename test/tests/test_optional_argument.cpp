@@ -37,10 +37,10 @@ constexpr test_value_type value_1 = 1;
 constexpr test_value_type value_2 = 2;
 constexpr test_value_type default_value = 0;
 
-const range non_default_range = at_least(1);
-
 const std::vector<test_value_type> default_choices{1, 2, 3};
 constexpr test_value_type invalid_choice = 4;
+
+const range non_default_range = range(1u, default_choices.size());
 
 } // namespace
 
@@ -85,6 +85,46 @@ TEST_CASE_FIXTURE(
 
     REQUIRE(sut_has_value(sut));
     REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), default_value);
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "nvalues_in_range() should return equivalent if nargs has not been set"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE(std::is_eq(sut_nvalues_in_range(sut)));
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "nvalues_in_range() should return equivalent if a default value has been set"
+) {
+    auto sut = prepare_argument(long_name);
+    sut.nargs(non_default_range);
+
+    sut.default_value(default_value);
+
+    REQUIRE(std::is_eq(sut_nvalues_in_range(sut)));
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "nvalues_in_range() should return equivalent only when the number of values "
+    "is in the specified range"
+) {
+    auto sut = prepare_argument(long_name);
+    sut.nargs(non_default_range);
+
+    REQUIRE(std::is_lt(sut_nvalues_in_range(sut)));
+
+    for (const auto value : default_choices) {
+        REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value)));
+        REQUIRE(std::is_eq(sut_nvalues_in_range(sut)));
+    }
+
+    REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(invalid_choice)));
+    REQUIRE(std::is_gt(sut_nvalues_in_range(sut)));
 }
 
 TEST_CASE_FIXTURE(
@@ -139,7 +179,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "set_value(any) should throw when a value has already benn set when nargs is default"
+    "set_value(any) should throw when a value has already benn set when nargs has not been set"
 ) { // TODO: replace with "when action is store"
     auto sut = prepare_argument(long_name);
 
@@ -151,7 +191,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "set_value(any) should accept multiple values if nargs is not default"
+    "set_value(any) should accept multiple values if nargs has been set"
 ) { // TODO: replace with "when action is append"
     auto sut = prepare_argument(long_name);
     sut.nargs(non_default_range);
