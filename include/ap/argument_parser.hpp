@@ -106,6 +106,11 @@ template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
 
+template <typename T>
+concept equality_comparable = requires(T lhs, T rhs) {
+    { lhs == rhs } -> std::convertible_to<bool>;
+};
+
 } // namespace utility
 
 namespace argument {
@@ -205,6 +210,12 @@ public:
         return *this;
     }
 
+    inline positional_argument& choices(const std::vector<value_type>& choices)
+    requires(utility::equality_comparable<value_type>) {
+        this->_choices = choices;
+        return *this;
+    }
+
     [[nodiscard]] bool is_optional() const { return this->_optional; }
 
     friend class ::ap::argument_parser;
@@ -220,7 +231,10 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[value] TODO: msg");
+            throw std::invalid_argument("[value#1] TODO: msg");
+
+        if (not this->_is_valid_choice(value))
+            throw std::invalid_argument("[value#2] TODO: msg (value not in choices)");
 
         this->_value = value;
         return *this;
@@ -246,13 +260,19 @@ private:
         return this->_help_msg;
     }
 
+    [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
+        return this->_choices.empty() or
+               std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+    }
+
     const bool _optional = false;
     const argument_name _name;
 
     std::any _value;
 
-    const bool _required = true;
     std::optional<std::string> _help_msg;
+    const bool _required = true;
+    std::vector<value_type> _choices;
 
     std::stringstream _ss;
 };
@@ -285,12 +305,22 @@ public:
         return *this;
     }
 
+    inline optional_argument& choices(const std::vector<value_type>& choices)
+    requires(utility::equality_comparable<value_type>) {
+        this->_choices = choices;
+        return *this;
+    }
+
     optional_argument& default_value(const std::any& default_value) {
+        //TODO: Figure out whether to enforce default value in choices in any order of function calls
         try {
-            this->_default_value = std::any_cast<value_type>(default_value);
+            const auto value = std::any_cast<value_type>(default_value);
+            if (not this->_is_valid_choice(value))
+                throw std::invalid_argument("[default_value#1] TODO: msg (value not in choices)");
+            this->_default_value = value;
         }
         catch (const std::bad_any_cast& err) {
-            throw std::invalid_argument("[default_value] TODO: msg");
+            throw std::invalid_argument("[default_value#2] TODO: msg");
         }
 
         return *this;
@@ -311,7 +341,10 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[value] TODO: msg");
+            throw std::invalid_argument("[value#1] TODO: msg");
+
+        if (not this->_is_valid_choice(value))
+            throw std::invalid_argument("[value#2] TODO: msg (value not in choices)");
 
         this->_value = value;
         return *this;
@@ -336,13 +369,19 @@ private:
         return this->_help_msg;
     }
 
+    [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
+        return this->_choices.empty() or
+               std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+    }
+
     const bool _optional = true;
     const argument_name _name;
 
     std::any _value;
 
-    bool _required = false;
     std::optional<std::string> _help_msg;
+    bool _required = false;
+    std::vector<value_type> _choices;
     std::any _default_value;
 
     std::stringstream _ss;
@@ -662,15 +701,13 @@ private:
         const auto predicate = this->_name_eq_predicate(name);
 
         if (auto pos_arg_it = std::find_if(
-                this->_positional_args.begin(), this->_positional_args.end(), predicate
-            );
+                this->_positional_args.begin(), this->_positional_args.end(), predicate);
             pos_arg_it != this->_positional_args.end()) {
             return std::ref(**pos_arg_it);
         }
 
         if (auto opt_arg_it = std::find_if(
-                this->_optional_args.begin(), this->_optional_args.end(), predicate
-            );
+                this->_optional_args.begin(), this->_optional_args.end(), predicate);
             opt_arg_it != this->_optional_args.end()) {
             return std::ref(**opt_arg_it);
         }
