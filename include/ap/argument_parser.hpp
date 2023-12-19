@@ -237,10 +237,13 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[value#1] TODO: msg");
+            throw std::invalid_argument("[set_value#1] TODO: msg");
 
         if (not this->_is_valid_choice(value))
-            throw std::invalid_argument("[value#2] TODO: msg (value not in choices)");
+            throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
+
+        if (this->_value.has_value())
+            throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
 
         this->_value = value;
         return *this;
@@ -352,16 +355,20 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[value#1] TODO: msg");
+            throw std::invalid_argument("[set_value#1] TODO: msg");
 
         if (not this->_is_valid_choice(value))
-            throw std::invalid_argument("[value#2] TODO: msg (value not in choices)");
+            throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
 
         // TODO: replace with action checking
-        if (this->_nargs.is_default())
+        if (this->_nargs.is_default()) {
+            if (this->_value.has_value())
+                throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
             this->_value = value;
-        else
+        }
+        else {
             this->_values.push_back(value);
+        }
 
         return *this;
     }
