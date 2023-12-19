@@ -527,7 +527,6 @@ public:
     template <std::copy_constructible T = std::string>
     T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
-
         if (not arg_opt)
             throw std::invalid_argument("[value#1] TODO: msg (no arg found)");
 
@@ -537,6 +536,29 @@ public:
         }
         catch (const std::bad_any_cast& err) {
             throw std::invalid_argument("[value#2] TODO: msg (invalid type)");
+        }
+    }
+
+    template <std::copy_constructible T = std::string>
+    std::vector<T> values(std::string_view arg_name) const {
+        const auto arg_opt = this->_get_argument(arg_name);
+        if (not arg_opt)
+            throw std::invalid_argument("[values#1] TODO: msg (no arg found)");
+
+        try {
+            const auto& arg_values = arg_opt.value().get().values();
+
+            std::vector<T> values;
+            std::transform(
+                std::begin(arg_values),
+                std::end(arg_values),
+                std::back_inserter(values),
+                [] (const std::any& value) { return std::any_cast<T>(value); }
+            );
+            return values;
+        }
+        catch (const std::bad_any_cast& err) {
+            throw std::invalid_argument("[values#2] TODO: msg (invalid type)");
         }
     }
 

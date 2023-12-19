@@ -21,6 +21,11 @@ constexpr std::size_t non_default_args_split = non_default_num_args / 2;
 
 const std::string invalid_arg_name = "invalid_arg";
 
+const std::string positional_arg_name = "positional_arg";
+const std::string positional_arg_short_name = "pa";
+const std::string optional_arg_name = "optional_arg";
+const std::string optional_arg_short_name = "oa";
+
 } // namespace
 
 namespace ap_testing {
@@ -431,7 +436,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "value should throw if an argument has a value but the template parameter is invalid"
+    "value should throw if an argument has a value but the given type is invalid"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -487,6 +492,112 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::value
+
+
+TEST_SUITE_BEGIN("test_argument_parser_parse_args::values");
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "values() should throw when calling with a positional argument's name"
+) {
+    sut.add_positional_argument(positional_arg_name, positional_arg_short_name);
+
+    REQUIRE_THROWS_AS(sut.values(positional_arg_name), std::logic_error);
+    REQUIRE_THROWS_AS(sut.values(positional_arg_short_name), std::logic_error);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "values() should return an empty vector if an argument has no values"
+) {
+    sut.add_optional_argument(optional_arg_name, optional_arg_short_name);
+
+    SUBCASE("calling with argument's long name") {
+        const auto& values = sut.values(optional_arg_name);
+        REQUIRE(values.empty());
+    }
+
+    SUBCASE("calling with argument's short name") {
+        const auto& values = sut.values(optional_arg_short_name);
+        REQUIRE(values.empty());
+    }
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "values() should throw when an argument has values but the given type is invalid"
+) {
+    sut.add_optional_argument(optional_arg_name, optional_arg_short_name)
+       .nargs(at_least(1));
+
+    // prepare argc & argv
+    const int argc = 5;
+    char** argv = new char*[argc];
+
+    argv[0] = new char[8];
+    std::strcpy(argv[0], "program");
+
+    const std::string flag = "--" + optional_arg_name;
+    argv[1] = new char[flag.length() + 1];
+    std::strcpy(argv[1], flag.c_str());
+    for (int i = 2; i < argc; i++) {
+        const auto value = prepare_arg_value(i - 1);
+        argv[i] = new char[value.length() + 1];
+        std::strcpy(argv[i], value.c_str());
+    }
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    REQUIRE_THROWS_AS(
+        sut.values<invalid_argument_value_type>(optional_arg_name), std::logic_error);
+    REQUIRE_THROWS_AS(
+        sut.values<invalid_argument_value_type>(optional_arg_short_name), std::logic_error);
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "values() should return a correct vector of values when there is an argument with "
+    "a given name and parsed values present"
+) {
+    sut.add_optional_argument(optional_arg_name, optional_arg_short_name)
+       .nargs(at_least(1));
+
+    // prepare argc & argv
+    const int argc = 5;
+    char** argv = new char*[argc];
+
+    argv[0] = new char[8];
+    std::strcpy(argv[0], "program");
+
+    const std::string flag = "--" + optional_arg_name;
+    argv[1] = new char[flag.length() + 1];
+    std::strcpy(argv[1], flag.c_str());
+
+    std::vector<std::string> values;
+
+    for (int i = 2; i < argc; i++) {
+        const auto value = prepare_arg_value(i - 1);
+        argv[i] = new char[value.length() + 1];
+        std::strcpy(argv[i], value.c_str());
+        values.push_back(value);
+    }
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    const auto& stored_values = sut.values(optional_arg_name);
+
+    REQUIRE_EQ(stored_values.size(), values.size());
+    for (std::size_t i = 0; i < stored_values.size(); i++)
+        REQUIRE_EQ(stored_values[i], values[i]);
+
+    free_argv(argc, argv);
+}
+
+TEST_SUITE_END(); // test_argument_parser_parse_args::values
 
 TEST_SUITE_END(); // test_argument_parser_parse_args
 
