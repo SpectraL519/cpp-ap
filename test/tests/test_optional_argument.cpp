@@ -5,9 +5,12 @@
 #include <ap/argument_parser.hpp>
 #include <optional_argument_test_fixture.hpp>
 
+#include <ranges>
 #include <string_view>
 
 using namespace ap_testing;
+using namespace ap::nargs;
+
 using ap::argument::optional_argument;
 
 namespace {
@@ -33,6 +36,8 @@ const std::string invalid_value_str = "invalid_value";
 constexpr test_value_type value_1 = 1;
 constexpr test_value_type value_2 = 2;
 constexpr test_value_type default_value = 0;
+
+const range non_default_range = at_least(1);
 
 const std::vector<test_value_type> default_choices{1, 2, 3};
 constexpr test_value_type invalid_choice = 4;
@@ -84,7 +89,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "value(any) should throw when value_type cannot be obtained from given string"
+    "set_value(any) should throw when value_type cannot be obtained from given string"
 ) {
     auto sut = prepare_argument(long_name);
 
@@ -134,8 +139,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "value(any) should throw when a value has already benn set when nargs is default"
-) { // TODO: replace this with "when action is store"
+    "set_value(any) should throw when a value has already benn set when nargs is default"
+) { // TODO: replace with "when action is store"
     auto sut = prepare_argument(long_name);
 
     REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
@@ -146,7 +151,26 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "value(any) should accept the given value only when it's present in the choices set"
+    "set_value(any) should accept multiple values if nargs is not default"
+) { // TODO: replace with "when action is append"
+    auto sut = prepare_argument(long_name);
+    sut.nargs(non_default_range);
+
+    for (const auto value : default_choices) {
+        REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value)));
+    }
+
+    const auto stored_values = sut_get_values(sut);
+
+    REQUIRE_EQ(stored_values.size(), default_choices.size());
+    for (std::size_t i = 0; i < stored_values.size(); i++) {
+        REQUIRE_EQ(std::any_cast<test_value_type>(stored_values[i]), default_choices[i]);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "set_value(any) should accept the given value only when it's present in the choices set"
 ) {
     auto sut = prepare_argument(long_name);
     sut_set_choices(sut, default_choices);
@@ -167,7 +191,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "value(any) should throw when parameter passed to value() is not present in the choices set"
+    "set_value(any) should throw when parameter passed to value() is not present in the choices set"
 ) {
     auto sut = prepare_argument(long_name);
 

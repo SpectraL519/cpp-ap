@@ -32,7 +32,7 @@ namespace nargs {
 
 class range {
 public:
-    using count_type = uint16_t;
+    using count_type = std::size_t;
 
     range() : _nlow(_ndefault), _nhigh(_ndefault) {}
 
@@ -51,7 +51,25 @@ public:
         return this->_nlow == this->_ndefault and this->_nhigh == this->_ndefault;
     }
 
-    friend std::weak_ordering in_range(const range&, const count_type);
+    [[nodiscard]] std::weak_ordering contains(const range::count_type n) const {
+        if (this->_nlow.has_value() and this->_nhigh.has_value()) {
+            if (n < this->_nlow.value())
+                return std::weak_ordering::less;
+
+            if (n > this->_nhigh.value())
+                return std::weak_ordering::greater;
+
+            return std::weak_ordering::equivalent;
+        }
+
+        if (this->_nlow.has_value())
+            return (n < this->_nlow.value()) ? std::weak_ordering::less
+                                             : std::weak_ordering::equivalent;
+
+        return (n > this->_nhigh.value()) ? std::weak_ordering::greater
+                                          : std::weak_ordering::equivalent;
+    }
+
     friend range at_least(const count_type);
     friend range more_than(const count_type);
     friend range less_than(const count_type);
@@ -66,27 +84,6 @@ private:
 
     static constexpr count_type _ndefault = 1;
 };
-
-[[nodiscard]] inline std::weak_ordering in_range(
-    const range& range, const range::count_type n
-) {
-    if (range._nlow.has_value() and range._nhigh.has_value()) {
-        if (n < range._nlow.value())
-            return std::weak_ordering::less;
-
-        if (n > range._nhigh.value())
-            return std::weak_ordering::greater;
-
-        return std::weak_ordering::equivalent;
-    }
-
-    if (range._nlow.has_value())
-        return (n < range._nlow.value()) ? std::weak_ordering::less
-                                         : std::weak_ordering::equivalent;
-
-    return (n > range._nhigh.value()) ? std::weak_ordering::greater
-                                      : std::weak_ordering::equivalent;
-}
 
 [[nodiscard]] inline range at_least(const range::count_type n) {
     return range(n, std::nullopt);
@@ -184,7 +181,9 @@ public:
 protected:
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
+    virtual bool has_correct_num_values() const = 0; // TODO: add tests + return std::weak_ordering
     virtual const std::any& value() const = 0;
+    virtual const std::vector<std::any>& values() const = 0;
 
     virtual const argument_name& name() const = 0;
     virtual bool is_required() const = 0;
@@ -222,7 +221,7 @@ public:
         return *this;
     }
 
-    [[nodiscard]] bool is_optional() const { return this->_optional; }
+    [[nodiscard]] inline bool is_optional() const override { return this->_optional; }
 
     friend class ::ap::argument_parser;
 
@@ -253,8 +252,16 @@ private:
         return this->_value.has_value();
     }
 
+    [[nodiscard]] inline bool has_correct_num_values() const override {
+        return this->_value.has_value();
+    }
+
     [[nodiscard]] inline const std::any& value() const override {
         return this->_value;
+    }
+
+    [[nodiscard]] inline const std::vector<std::any>& values() const override {
+        throw std::logic_error("[values] TODO: msg (pos arg has 1 value)");
     }
 
     [[nodiscard]] inline const argument_name& name() const override {
@@ -314,8 +321,8 @@ public:
         return *this;
     }
 
-    inline optional_argument& nargs(const ap::nargs::range& nargs) {
-        this->_nargs = nargs;
+    inline optional_argument& nargs(const ap::nargs::range& range) {
+        this->_nargs_range = range;
         return *this;
     }
 
@@ -340,7 +347,7 @@ public:
         return *this;
     }
 
-    [[nodiscard]] bool is_optional() const { return this->_optional; }
+    [[nodiscard]] inline bool is_optional() const override { return this->_optional; }
 
     friend class ::ap::argument_parser;
 
@@ -361,32 +368,28 @@ private:
             throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
 
         // TODO: replace with action checking
-        if (this->_nargs.is_default()) {
-            if (this->_value.has_value())
-                throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
-            this->_value = value;
-        }
-        else {
-            this->_values.push_back(value);
-        }
+        if (this->_nargs_range.is_default() and not this->_values.empty())
+            throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
 
+        this->_values.push_back(value);
         return *this;
     }
 
     [[nodiscard]] inline bool has_value() const override {
-        return this->_value.has_value() or
-               not this->_values.empty() or
+        return not this->_values.empty() or this->_default_value.has_value();
+    }
+
+    [[nodiscard]] inline bool has_correct_num_values() const override {
+        return std::is_eq(this->_nargs_range.contains(this->_values.size())) or
                this->_default_value.has_value();
     }
 
-    [[nodiscard]] const std::any& value() const override {
-        if (this->_value.has_value())
-            return this->_value;
+    [[nodiscard]] inline const std::any& value() const override {
+        return this->_values.empty() ? this->_default_value : this->_values.front();
+    }
 
-        if (not this->_values.empty())
-            return this->_values.front();
-
-        return this->_default_value;
+    [[nodiscard]] inline const std::vector<std::any>& values() const override {
+        return this->_values;
     }
 
     [[nodiscard]] inline const argument_name& name() const override {
@@ -409,14 +412,13 @@ private:
     const bool _optional = true;
     const argument_name _name;
 
-    std::any _value;
     std::vector<std::any> _values;
 
     std::optional<std::string> _help_msg;
     bool _required = false;
-    ap::nargs::range _nargs;
+    ap::nargs::range _nargs_range; // TODO: make optional
     std::vector<value_type> _choices;
-    std::any _default_value;
+    std::any _default_value; // TODO: use vector<any>
 
     std::stringstream _ss;
 };
@@ -497,6 +499,7 @@ public:
     void parse_args(int argc, char* argv[]) {
         this->_parse_args_impl(this->_process_input(argc, argv));
         this->_check_required_args();
+        this->_check_correct_num_values(); // TODO: add tests
     }
 
     bool has_value(std::string_view arg_name) const {
@@ -512,7 +515,7 @@ public:
             throw std::invalid_argument("[value#1] TODO: msg (no arg found)");
 
         try {
-            T value{ std::any_cast<T>(arg_opt.value().get().value()) };
+            T value{std::any_cast<T>(arg_opt.value().get().value())};
             return value;
         }
         catch (const std::bad_any_cast& err) {
@@ -709,7 +712,17 @@ private:
     void _check_required_args() const {
         for (const auto& arg : this->_optional_args)
             if (arg->is_required() and not arg->has_value())
-                throw std::runtime_error("[_check_required_args] TODO: msg (optional)");
+                throw std::runtime_error("[_check_required_args] TODO: msg");
+    }
+
+    void _check_correct_num_values() const {
+        for (const auto& arg : this->_positional_args)
+            if (not arg->has_correct_num_values())
+                throw std::runtime_error("[_check_correct_num_values#1] TODO: msg");
+
+        for (const auto& arg : this->_optional_args)
+            if (not arg->has_correct_num_values())
+                throw std::runtime_error("[_check_correct_num_values#2] TODO: msg");
     }
 
     argument_opt_type _get_argument(const std::string_view& name) const {

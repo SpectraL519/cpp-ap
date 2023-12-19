@@ -44,6 +44,11 @@ struct optional_argument_test_fixture {
     }
 
     template <readable T>
+    const std::vector<std::any>& sut_get_values(const optional_argument<T>& sut) const {
+        return sut.values();
+    }
+
+    template <readable T>
     const argument_name& sut_get_name(const optional_argument<T>& sut) const {
         return sut.name();
     }
