@@ -17,6 +17,9 @@ struct argument_parser_test_fixture {
     using argument_list_type = ap::argument_parser::argument_list_type;
     using argument_opt_type = ap::argument_parser::argument_opt_type;
 
+    using argument_value_type = std::string;
+    using invalid_argument_value_type = int;
+
     // test utility functions
     std::string prepare_arg_flag(std::size_t i) const {
         return "--test_arg_" + std::to_string(i);
@@ -26,7 +29,7 @@ struct argument_parser_test_fixture {
         return "-ta_" + std::to_string(i);
     }
 
-    std::string prepare_arg_value(std::size_t i) const {
+    argument_value_type prepare_arg_value(std::size_t i) const {
         return "test_value_" + std::to_string(i);
     }
 
