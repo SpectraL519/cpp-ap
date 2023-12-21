@@ -1,0 +1,75 @@
+# Structure
+DIR_CURR 		:= .
+DIR_PREV 		:= ..
+DIR_INC 		:= $(DIR_CURR)\inc
+DIR_INC_GLOB 	:= $(DIR_PREV)\inc
+DIR_DOC			:= $(DIR_CURR)\doc
+DIR_SRC 		:= $(DIR_CURR)\src
+DIR_OUT 		:= $(DIR_CURR)\out
+DIR_APP			:= $(DIR_CURR)\app
+
+APP_TARGET 	:= test.exe
+
+# Shell
+DEL := del /Q
+
+# Compiler & flags
+CXX ?= g++
+
+ifeq ($(CXX), clang++)
+CXX_FLAGS := -Weverything -pedantic -Wno-c++98-compat -g
+else
+CXX_FLAGS := -std=c++2a -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
+endif
+
+CXX_ARGS := -I $(DIR_INC_GLOB) -I $(DIR_INC) -I $(DIR_DOC) $(CXX_FLAGS)
+
+# Test source & object files
+APP_SRC := $(wildcard $(DIR_APP)/*.cpp)
+
+ifeq ($(words $(APP_SRC)),1)
+APP_SRC += $(wildcard $(DIR_SRC)/*.cpp)
+else ifneq (,$(filter all build,$(MAKECMDGOALS)))
+$(error More than one .cpp file found in $(DIR_APP))
+endif
+
+APP_OBJ := $(foreach file, $(APP_SRC), $(DIR_OUT)/$(notdir $(file:.cpp=.o)))
+
+COUNT_OBJ := 0
+COUNT_SRC := $(words $(APP_SRC))
+
+.PHONY: all build clean help
+
+all: clean build
+
+build: $(APP_TARGET)
+
+$(DIR_OUT)/main.o: $(DIR_APP)/main.cpp
+	$(eval COUNT_OBJ=$(shell echo $$(($(COUNT_OBJ)+1))))
+	@echo [$(COUNT_OBJ)/$(COUNT_SRC)] Compiling: $<
+	@$(CXX) -c $< -o $@ $(CXX_ARGS)
+
+$(DIR_OUT)/%.o: $(DIR_SRC)/%.cpp
+	$(eval COUNT_OBJ=$(shell echo $$(($(COUNT_OBJ)+1))))
+	@echo [$(COUNT_OBJ)/$(COUNT_SRC)] Compiling: $<
+	@$(CXX) -c $< -o $@ $(CXX_ARGS)
+
+$(APP_TARGET): $(APP_OBJ)
+	@echo
+	@echo Linking: $@
+	@$(CXX) $^ -o $@ $(CXX_ARGS)
+	@echo
+	@echo Build successful!
+
+clean:
+	@echo Cleaning all generated files...
+	@$(DEL) $(DIR_OUT)\*.o $(DIR_CURR)\*.exe
+	@echo All generated files removed!
+	@echo
+
+help:
+	@echo "Available targets:"
+	@echo "  all        - Clean and build the test module"
+	@echo "  build      - Build the test module"
+	@echo "  clean      - Clean all generated files in the test module"
+	@echo "  help       - Display this help message"
