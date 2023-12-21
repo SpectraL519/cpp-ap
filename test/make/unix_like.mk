@@ -1,9 +1,8 @@
 # Structure
 DIR_CURR 		:= .
 DIR_PREV 		:= ..
-DIR_INC 		:= $(DIR_CURR)/inc
-DIR_INC_GLOB 	:= $(DIR_PREV)/inc
-DIR_DOC			:= $(DIR_CURR)/doc
+DIR_INC 		:= $(DIR_CURR)/include
+DIR_INC_GLOB 	:= $(DIR_PREV)/include
 DIR_SRC 		:= $(DIR_CURR)/src
 DIR_OUT 		:= $(DIR_CURR)/out
 DIR_APP			:= $(DIR_CURR)/app
@@ -23,7 +22,7 @@ else
 CXX_FLAGS := -std=c++2a -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
 endif
 
-CXX_ARGS := -I $(DIR_INC_GLOB) -I $(DIR_INC) -I $(DIR_DOC) $(CXX_FLAGS)
+CXX_ARGS := -I $(DIR_INC_GLOB) -I $(DIR_INC) $(CXX_FLAGS)
 
 # Test source & object files
 APP_SRC := $(wildcard $(DIR_APP)/*.cpp)
@@ -75,3 +74,4 @@ help:
 	@echo "  build      - Build the test module"
 	@echo "  clean      - Clean all generated files in test module"
 	@echo "  help       - Display this help message"
+ 
