@@ -42,6 +42,12 @@ concept equality_comparable = requires(T lhs, T rhs) {
     { lhs == rhs } -> std::convertible_to<bool>;
 };
 
+template <typename T, typename... ValidTypes>
+struct is_valid_type : std::disjunction<std::is_same<T, ValidTypes>...> {};
+
+template <typename T, typename... ValidTypes>
+inline constexpr bool is_valid_type_v = is_valid_type<T, ValidTypes...>::value;
+
 } // namespace utility
 
 
@@ -121,28 +127,39 @@ private:
 } // namespace nargs
 
 
+struct valued_action {
+    template <ap::utility::readable T>
+    using type = std::function<T(const T&)>;
+};
+
+struct void_action {
+    template <ap::utility::readable T>
+    using type = std::function<void(T&)>;
+};
+
 namespace action {
 
 namespace detail {
 
-template <ap::utility::readable T>
-using valued_type = std::function<T(const T&)>;
+template <typename AS>
+concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
+
+template <valid_action_specifier AS, ap::utility::readable T>
+using action_type = typename AS::type<T>;
 
 template <ap::utility::readable T>
-using void_type = std::function<void(T&)>;
+using action_variant_type =
+    std::variant<action_type<ap::valued_action, T>, action_type<ap::void_action, T>>;
 
 template <ap::utility::readable T>
-using type = std::variant<valued_type<T>, void_type<T>>;
-
-template <ap::utility::readable T>
-[[nodiscard]] inline bool is_void_action(const type<T>& action) {
-    return std::holds_alternative<void_type<T>>(action);
+[[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) {
+    return std::holds_alternative<action_type<ap::void_action, T>>(action);
 }
 
 } // namespace detail
 
 template <ap::utility::readable T>
-detail::void_type<T> default_action{ [](T&) {} };
+detail::action_type<ap::void_action, T> default_action{ [](T&) {} };
 
 // TODO: add more predefined actions
 // * trim_whitespace_action ?
@@ -233,7 +250,6 @@ template <utility::readable T>
 class positional_argument : public detail::argument_interface {
 public:
     using value_type = T;
-    using action_type = ap::action::detail::type<value_type>;
 
     positional_argument() = delete;
 
@@ -259,9 +275,10 @@ public:
         return *this;
     }
 
-    inline positional_argument& action(action_type&& action) {
-        // TODO: add tests
-        this->_action.emplace(std::forward<action_type>(action));
+    template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
+    inline positional_argument& action(F&& action) {
+        using action_type = ap::action::detail::action_type<AS, value_type>;
+        this->_action = std::forward<action_type>(action);
         return *this;
     }
 
@@ -303,9 +320,9 @@ private:
             throw std::invalid_argument("[set_value#3] TODO: msg (value not in choices)");
 
         if (ap::action::detail::is_void_action(this->_action))
-            std::get<ap::action::detail::void_type<T>>(this->_action)(value);
+            std::get<ap::action::detail::action_type<ap::void_action, value_type>>(this->_action)(value);
         else
-            value = std::get<ap::action::detail::valued_type<T>>(this->_action)(value);
+            value = std::get<ap::action::detail::action_type<ap::valued_action, value_type>>(this->_action)(value);
 
         this->_value = value;
         return *this;
@@ -337,6 +354,8 @@ private:
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
 
+    using action_type = ap::action::detail::action_variant_type<T>;
+
     static constexpr bool _optional{false};
     const argument_name _name;
     std::optional<std::string> _help_msg;
@@ -355,7 +374,6 @@ class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
     using count_type = ap::nargs::range::count_type;
-    using action_type = ap::action::detail::type<T>;
 
     optional_argument() = delete;
 
@@ -395,9 +413,10 @@ public:
         return *this;
     }
 
-    inline optional_argument& action(action_type&& action) {
-        // TODO: add tests
-        this->_action.emplace(std::forward<action_type>(action));
+    template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
+    inline optional_argument& action(F&& action) {
+        using action_type = ap::action::detail::action_type<AS, value_type>;
+        this->_action = std::forward<action_type>(action);
         return *this;
     }
 
@@ -413,7 +432,6 @@ public:
     }
 
     optional_argument& implicit_value(const value_type& implicit_value) {
-        // TODO: add tests
         this->_implicit_value = implicit_value;
         return *this;
     }
@@ -455,9 +473,9 @@ private:
             throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
 
         if (ap::action::detail::is_void_action(this->_action))
-            std::get<ap::action::detail::void_type<T>>(this->_action)(value);
+            std::get<ap::action::detail::action_type<ap::void_action, value_type>>(this->_action)(value);
         else
-            value = std::get<ap::action::detail::valued_type<T>>(this->_action)(value);
+            value = std::get<ap::action::detail::action_type<ap::valued_action, value_type>>(this->_action)(value);
 
         // TODO: replace nargs checking with action checking
         if (not (this->_nargs_range or this->_values.empty()))
@@ -506,6 +524,8 @@ private:
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
+
+    using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional{true};
     const argument_name _name;
@@ -825,6 +845,7 @@ private:
                         "[_parse_optional_args#1] TODO: msg (opt_arg not found)");
 
                 curr_opt_arg = std::ref(*opt_arg_it);
+                curr_opt_arg->get()->set_used();
             }
             else {
                 if (not curr_opt_arg)
@@ -912,10 +933,10 @@ private:
     argument_list_type _positional_args;
     argument_list_type _optional_args;
 
-    static constexpr uint8_t _flag_prefix_char_length = 1;
-    static constexpr uint8_t _flag_prefix_length = 2;
-    static constexpr char _flag_prefix_char = '-';
-    const std::string _flag_prefix = "--";
+    static constexpr uint8_t _flag_prefix_char_length{1u};
+    static constexpr uint8_t _flag_prefix_length{2u};
+    static constexpr char _flag_prefix_char{'-'};
+    const std::string _flag_prefix{"--"}; // not static constexpr because of ubuntu :(
 };
 
 } // namespace ap

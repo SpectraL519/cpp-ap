@@ -312,6 +312,39 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
+    "set_value(any) should perform the specified action"
+) {
+    auto sut = prepare_argument(long_name);
+
+    SUBCASE("valued action") {
+        const auto double_valued_action =
+            [] (const test_value_type& value) { return 2 * value; };
+        sut.action<ap::valued_action>(double_valued_action);
+
+        sut_set_value(sut, std::to_string(value_1));
+
+        REQUIRE_EQ(
+            std::any_cast<test_value_type>(sut_get_value(sut)),
+            double_valued_action(value_1)
+        );
+    }
+
+    SUBCASE("void action") {
+        const auto double_void_action = [] (test_value_type& value) { value *= 2; };
+        sut.action<ap::void_action>(double_void_action);
+
+        auto test_value = value_1;
+
+        sut_set_value(sut, std::to_string(test_value));
+
+        double_void_action(test_value);
+        REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), test_value);
+    }
+}
+
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
     "nvalues_in_range() should return equivalent if nargs has not been set"
 ) {
     const auto sut = prepare_argument(long_name);
