@@ -1,3 +1,31 @@
+/*
+[cpp-ap] Command-line argument parser for C++20
+
+MIT License
+
+Copyright (c) 2023 Jakub Musiał
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+
+
 #pragma once
 
 #include <algorithm>
@@ -729,18 +757,18 @@ private:
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
                 auto opt_arg_it =
                     this->_find_optional(this->_name_eq_predicate(cmd_it->value));
-              
+
                 if (opt_arg_it == this->_optional_args.end())
                     throw std::runtime_error(
                         "[_parse_optional_args#1] TODO: msg (opt_arg not found)");
-                
+
                 curr_opt_arg = std::ref(*opt_arg_it);
             }
             else {
                 if (not curr_opt_arg)
                     throw std::runtime_error(
                         "[_parse_optional_args#2] TODO: msg (cannot assign value)");
-                
+
                 curr_opt_arg->get()->set_value(cmd_it->value);
             }
 
