@@ -80,8 +80,30 @@ TEST_CASE_FIXTURE(
     "has_value() should return true if a default value is set"
 ) {
     auto sut = prepare_argument(long_name);
-
     sut.default_value(default_value);
+
+    REQUIRE(sut_has_value(sut));
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), default_value);
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "has_value() should return false if an implicit value is set but the argument is not used"
+) {
+    auto sut = prepare_argument(long_name);
+    sut.implicit_value(default_value);
+
+    REQUIRE_FALSE(sut_has_value(sut));
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "has_value() should return true if an implicit value is set and the agument is used"
+) {
+    auto sut = prepare_argument(long_name);
+    sut.implicit_value(default_value);
+
+    sut_set_used(sut);
 
     REQUIRE(sut_has_value(sut));
     REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), default_value);
@@ -149,8 +171,7 @@ TEST_CASE_FIXTURE(
 ) {
     auto sut = prepare_argument(long_name);
 
-    REQUIRE_FALSE(sut_has_value(sut));
-    REQUIRE_THROWS_AS(std::any_cast<test_value_type>(sut_get_value(sut)), std::bad_any_cast);
+    REQUIRE_FALSE(sut_get_value(sut).has_value());
 }
 
 TEST_CASE_FIXTURE(
@@ -167,10 +188,9 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "value() should return the default value if one has been provided and value has not been parsed"
+    "value() should return the default value if one has been provided and argument is not used"
 ) {
     auto sut = prepare_argument(long_name);
-
     sut.default_value(value_1);
 
     REQUIRE(sut_has_value(sut));
@@ -179,8 +199,21 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "set_value(any) should throw when a value has already benn set when nargs has not been set"
-) { // TODO: replace with "when action is store"
+    "value() should return the implicit value if one has been provided and argument is used"
+) {
+    auto sut = prepare_argument(long_name);
+    sut.implicit_value(value_1);
+
+    sut_set_used(sut);
+
+    REQUIRE(sut_has_value(sut));
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value_1);
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "set_value(any) should throw when a value has already benn set when nargs is_default"
+) {
     auto sut = prepare_argument(long_name);
 
     REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
@@ -191,8 +224,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "set_value(any) should accept multiple values if nargs has been set"
-) { // TODO: replace with "when action is append"
+    "set_value(any) should accept multiple values if nargs is not detault"
+) {
     auto sut = prepare_argument(long_name);
     sut.nargs(non_default_range);
 

@@ -54,18 +54,17 @@ public:
     range() : _nlow(_ndefault), _nhigh(_ndefault) {}
 
     range(const count_type n)
-        : _nlow(n), _nhigh(n) {}
+        : _nlow(n), _nhigh(n), _default(n == _ndefault) {}
 
     range(const count_type nlow, const count_type nhigh)
-        : _nlow(nlow), _nhigh(nhigh) {}
+        : _nlow(nlow), _nhigh(nhigh), _default(false) {}
 
     range& operator= (const range&) = default;
 
     ~range() = default;
 
-    // TODO: delete after adding actions
     [[nodiscard]] inline bool is_default() const {
-        return this->_nlow == this->_ndefault and this->_nhigh == this->_ndefault;
+        return this->_default;
     }
 
     [[nodiscard]] std::weak_ordering contains(const range::count_type n) const {
@@ -98,6 +97,7 @@ private:
 
     std::optional<count_type> _nlow;
     std::optional<count_type> _nhigh;
+    bool _default = true;
 
     static constexpr count_type _ndefault = 1;
 };
@@ -209,9 +209,12 @@ public:
     friend class ::ap::argument_parser;
 
 protected:
+    virtual void set_used() = 0;
+
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
-    virtual std::weak_ordering nvalues_in_range() const = 0; // TODO: add tests
+    virtual bool has_parsed_values() const = 0; // TODO: add tests
+    virtual std::weak_ordering nvalues_in_range() const = 0;
     virtual const std::any& value() const = 0;
     virtual const std::vector<std::any>& values() const = 0;
 
@@ -260,6 +263,8 @@ public:
 #endif
 
 private:
+    void set_used() override {} // not required for positional arguments
+
     positional_argument& set_value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
@@ -279,6 +284,10 @@ private:
     }
 
     [[nodiscard]] inline bool has_value() const override {
+        return this->_value.has_value();
+    }
+
+    [[nodiscard]] inline bool has_parsed_values() const override {
         return this->_value.has_value();
     }
 
@@ -383,6 +392,12 @@ public:
         return *this;
     }
 
+    optional_argument& implicit_value(const value_type& implicit_value) {
+        // TODO: add tests
+        this->_implicit_value = implicit_value;
+        return *this;
+    }
+
     [[nodiscard]] inline bool is_optional() const override { return this->_optional; }
 
     friend class ::ap::argument_parser;
@@ -392,6 +407,10 @@ public:
 #endif
 
 private:
+    void set_used() override {
+        this->_used = true;
+    }
+
     optional_argument& set_value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
@@ -412,21 +431,25 @@ private:
     }
 
     [[nodiscard]] inline bool has_value() const override {
-        return not this->_values.empty() or this->_default_value.has_value();
+        return this->has_parsed_values() or this->_has_predefined_value();
+    }
+
+    [[nodiscard]] inline bool has_parsed_values() const override {
+        return not this->_values.empty();
     }
 
     [[nodiscard]] std::weak_ordering nvalues_in_range() const override {
         if (not this->_nargs_range)
             return std::weak_ordering::equivalent;
 
-        if (this->_values.empty() and this->_default_value.has_value())
+        if (this->_values.empty() and this->_has_predefined_value())
             return std::weak_ordering::equivalent;
 
         return this->_nargs_range->contains(this->_values.size());
     }
 
     [[nodiscard]] inline const std::any& value() const override {
-        return this->_values.empty() ? this->_default_value : this->_values.front();
+        return this->_values.empty() ? this->_predefined_value() : this->_values.front();
     }
 
     [[nodiscard]] inline const std::vector<std::any>& values() const override {
@@ -445,6 +468,15 @@ private:
         return this->_help_msg;
     }
 
+    [[nodiscard]] inline bool _has_predefined_value() const {
+        return this->_default_value.has_value() or
+               (this->_used and this->_implicit_value.has_value());
+    }
+
+    [[nodiscard]] inline const std::any& _predefined_value() const {
+        return this->_used ? this->_implicit_value : this->_default_value;
+    }
+
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
@@ -453,13 +485,15 @@ private:
     const bool _optional = true;
     const argument_name _name;
 
+    bool _used = false;
     std::vector<std::any> _values;
 
     std::optional<std::string> _help_msg;
     bool _required = false;
     std::optional<ap::nargs::range> _nargs_range;
     std::vector<value_type> _choices;
-    std::any _default_value; // TODO: use vector<any>
+    std::any _default_value;
+    std::any _implicit_value;
 
     std::stringstream _ss;
 };
@@ -570,8 +604,13 @@ public:
         if (not arg_opt)
             throw std::invalid_argument("[values#1] TODO: msg (no arg found)");
 
+        const auto& arg = arg_opt.value().get();
+
         try {
-            const auto& arg_values = arg_opt.value().get().values();
+            if (not arg.has_parsed_values() and arg.has_value()) // TODO: add tests
+                return std::vector<T>{std::any_cast<T>(arg.value())};
+
+            const auto& arg_values = arg.values();
 
             std::vector<T> values;
             std::transform(
