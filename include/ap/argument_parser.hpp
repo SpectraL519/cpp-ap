@@ -120,34 +120,38 @@ private:
 
 } // namespace nargs
 
-/*
+
 namespace action {
 
 namespace detail {
 
-template <utility::redable T>
+template <ap::utility::readable T>
 using valued_type = std::function<T(const T&)>;
 
-using void_type = std::function<void(const T&)>;
+template <ap::utility::readable T>
+using void_type = std::function<void(T&)>;
 
-template <utility::readable T>
-using type = std::variant<valued_type<T>, void_type>;
+template <ap::utility::readable T>
+using type = std::variant<valued_type<T>, void_type<T>>;
 
-template <utility::readable T>
-const valued_type default_action{ [] (const T& value) { return value; } };
-
+template <ap::utility::readable T>
+[[nodiscard]] inline bool is_void_action(const type<T>& action) {
+    return std::holds_alternative<void_type<T>>(action);
 }
 
-// TODO: add predefined actions
+} // namespace detail
 
-};
+template <ap::utility::readable T>
+detail::void_type<T> default_action{ [](T&) {} };
+
+// TODO: add more predefined actions
+// * trim_whitespace_action ?
 
 } // namespace action
-*/
+
 
 namespace argument {
 
-// TODO: move to detail
 struct argument_name {
     argument_name() = delete;
     argument_name& operator= (const argument_name&) = delete;
@@ -229,6 +233,7 @@ template <utility::readable T>
 class positional_argument : public detail::argument_interface {
 public:
     using value_type = T;
+    using action_type = ap::action::detail::type<value_type>;
 
     positional_argument() = delete;
 
@@ -251,6 +256,12 @@ public:
     inline positional_argument& choices(const std::vector<value_type>& choices)
     requires(utility::equality_comparable<value_type>) {
         this->_choices = choices;
+        return *this;
+    }
+
+    inline positional_argument& action(action_type&& action) {
+        // TODO: add tests
+        this->_action.emplace(std::forward<action_type>(action));
         return *this;
     }
 
@@ -291,6 +302,11 @@ private:
         if (not this->_is_valid_choice(value))
             throw std::invalid_argument("[set_value#3] TODO: msg (value not in choices)");
 
+        if (ap::action::detail::is_void_action(this->_action))
+            std::get<ap::action::detail::void_type<T>>(this->_action)(value);
+        else
+            value = std::get<ap::action::detail::valued_type<T>>(this->_action)(value);
+
         this->_value = value;
         return *this;
     }
@@ -321,12 +337,13 @@ private:
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
 
-    const bool _optional = false;
+    static constexpr bool _optional{false};
     const argument_name _name;
     std::optional<std::string> _help_msg;
 
-    const bool _required = true;
+    const bool _required{true};
     std::vector<value_type> _choices;
+    action_type _action{ap::action::default_action<value_type>};
 
     std::any _value;
 
@@ -338,6 +355,7 @@ class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
     using count_type = ap::nargs::range::count_type;
+    using action_type = ap::action::detail::type<T>;
 
     optional_argument() = delete;
 
@@ -374,6 +392,12 @@ public:
 
     inline optional_argument& nargs(const count_type nlow, const count_type nhigh) {
         this->_nargs_range = ap::nargs::range(nlow, nhigh);
+        return *this;
+    }
+
+    inline optional_argument& action(action_type&& action) {
+        // TODO: add tests
+        this->_action.emplace(std::forward<action_type>(action));
         return *this;
     }
 
@@ -416,7 +440,7 @@ private:
     }
 
     void set_used() override {
-        this->_used = true;
+        this->_used = true; // TODO: use _count
     }
 
     optional_argument& set_value(const std::string& str_value) override {
@@ -429,6 +453,11 @@ private:
 
         if (not this->_is_valid_choice(value))
             throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
+
+        if (ap::action::detail::is_void_action(this->_action))
+            std::get<ap::action::detail::void_type<T>>(this->_action)(value);
+        else
+            value = std::get<ap::action::detail::valued_type<T>>(this->_action)(value);
 
         // TODO: replace nargs checking with action checking
         if (not (this->_nargs_range or this->_values.empty()))
@@ -478,12 +507,13 @@ private:
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
 
-    const bool _optional = true;
+    static constexpr bool _optional{true};
     const argument_name _name;
     std::optional<std::string> _help_msg;
 
-    bool _required = false;
+    bool _required{false};
     std::optional<ap::nargs::range> _nargs_range;
+    action_type _action{ap::action::default_action<value_type>};
     std::vector<value_type> _choices;
     std::any _default_value;
     std::any _implicit_value;
