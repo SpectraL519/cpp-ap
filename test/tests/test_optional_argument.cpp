@@ -243,16 +243,6 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "default_value(any) should throw when value_type cannot be obtained from given any object"
-) {
-    auto sut = prepare_argument(long_name);
-
-    REQUIRE_THROWS_AS(sut.default_value(invalid_value_type{}), std::invalid_argument);
-    REQUIRE_FALSE(sut_has_value(sut));
-}
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
     "default_value(any) should accept the given value only when it's present in the choices set"
 ) {
     auto sut = prepare_argument(long_name);

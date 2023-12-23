@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <string_view>
 #include <type_traits>
+#include <variant>
 #include <vector>
 
 #ifdef AP_TESTING
@@ -24,9 +25,25 @@ struct argument_parser_test_fixture;
 
 #endif
 
+
 namespace ap {
 
 class argument_parser;
+
+
+namespace utility {
+
+template <typename T>
+concept readable =
+    requires(T value, std::istream& input_stream) { input_stream >> value; };
+
+template <typename T>
+concept equality_comparable = requires(T lhs, T rhs) {
+    { lhs == rhs } -> std::convertible_to<bool>;
+};
+
+} // namespace utility
+
 
 namespace nargs {
 
@@ -103,21 +120,34 @@ private:
 
 } // namespace nargs
 
-namespace utility {
+/*
+namespace action {
 
-template <typename T>
-concept readable =
-    requires(T value, std::istream& input_stream) { input_stream >> value; };
+namespace detail {
 
-template <typename T>
-concept equality_comparable = requires(T lhs, T rhs) {
-    { lhs == rhs } -> std::convertible_to<bool>;
+template <utility::redable T>
+using valued_type = std::function<T(const T&)>;
+
+using void_type = std::function<void(const T&)>;
+
+template <utility::readable T>
+using type = std::variant<valued_type<T>, void_type>;
+
+template <utility::readable T>
+const valued_type default_action{ [] (const T& value) { return value; } };
+
+}
+
+// TODO: add predefined actions
+
 };
 
-} // namespace utility
+} // namespace action
+*/
 
 namespace argument {
 
+// TODO: move to detail
 struct argument_name {
     argument_name() = delete;
     argument_name& operator= (const argument_name&) = delete;
@@ -344,18 +374,12 @@ public:
         return *this;
     }
 
-    optional_argument& default_value(const std::any& default_value) {
+    optional_argument& default_value(const value_type& default_value) {
         // TODO: Figure out whether to enforce default value in choices in any order of function calls
-        try {
-            const auto value = std::any_cast<value_type>(default_value);
-            if (not this->_is_valid_choice(value))
-                throw std::invalid_argument("[default_value#1] TODO: msg (value not in choices)");
-            this->_default_value = value;
-        }
-        catch (const std::bad_any_cast& err) {
-            throw std::invalid_argument("[default_value#2] TODO: msg");
-        }
+        if (not this->_is_valid_choice(default_value))
+            throw std::invalid_argument("[default_value] TODO: msg (value not in choices)");
 
+        this->_default_value = default_value;
         return *this;
     }
 
@@ -441,6 +465,7 @@ private:
 };
 
 } // namespace argument
+
 
 class argument_parser {
 public:
@@ -729,18 +754,18 @@ private:
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
                 auto opt_arg_it =
                     this->_find_optional(this->_name_eq_predicate(cmd_it->value));
-              
+
                 if (opt_arg_it == this->_optional_args.end())
                     throw std::runtime_error(
                         "[_parse_optional_args#1] TODO: msg (opt_arg not found)");
-                
+
                 curr_opt_arg = std::ref(*opt_arg_it);
             }
             else {
                 if (not curr_opt_arg)
                     throw std::runtime_error(
                         "[_parse_optional_args#2] TODO: msg (cannot assign value)");
-                
+
                 curr_opt_arg->get()->set_value(cmd_it->value);
             }
 
