@@ -263,21 +263,33 @@ public:
 #endif
 
 private:
+    [[nodiscard]] inline const argument_name& name() const override {
+        return this->_name;
+    }
+
+    [[nodiscard]] inline const std::optional<std::string>& help() const override {
+        return this->_help_msg;
+    }
+
+    [[nodiscard]] inline bool is_required() const override {
+        return this->_required;
+    }
+
     void set_used() override {} // not required for positional arguments
 
     positional_argument& set_value(const std::string& str_value) override {
+        if (this->_value.has_value())
+            throw std::runtime_error("[set_value#1] TODO: msg (value already set)");
+
         this->_ss.clear();
         this->_ss.str(str_value);
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[set_value#1] TODO: msg");
+            throw std::invalid_argument("[set_value#2] TODO: msg");
 
         if (not this->_is_valid_choice(value))
-            throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
-
-        if (this->_value.has_value())
-            throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
+            throw std::invalid_argument("[set_value#3] TODO: msg (value not in choices)");
 
         this->_value = value;
         return *this;
@@ -304,18 +316,6 @@ private:
         throw std::logic_error("[values] TODO: msg (pos arg has 1 value)");
     }
 
-    [[nodiscard]] inline const argument_name& name() const override {
-        return this->_name;
-    }
-
-    [[nodiscard]] inline bool is_required() const override {
-        return this->_required;
-    }
-
-    [[nodiscard]] inline const std::optional<std::string>& help() const override {
-        return this->_help_msg;
-    }
-
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
@@ -323,12 +323,12 @@ private:
 
     const bool _optional = false;
     const argument_name _name;
-
-    std::any _value;
-
     std::optional<std::string> _help_msg;
+
     const bool _required = true;
     std::vector<value_type> _choices;
+
+    std::any _value;
 
     std::stringstream _ss;
 };
@@ -384,10 +384,6 @@ public:
     }
 
     optional_argument& default_value(const value_type& default_value) {
-        // TODO: Figure out whether to enforce default value in choices in any order of function calls
-        if (not this->_is_valid_choice(default_value))
-            throw std::invalid_argument("[default_value] TODO: msg (value not in choices)");
-
         this->_default_value = default_value;
         return *this;
     }
@@ -407,6 +403,18 @@ public:
 #endif
 
 private:
+    [[nodiscard]] inline const argument_name& name() const override {
+        return this->_name;
+    }
+
+    [[nodiscard]] inline const std::optional<std::string>& help() const override {
+        return this->_help_msg;
+    }
+
+    [[nodiscard]] inline bool is_required() const override {
+        return this->_required;
+    }
+
     void set_used() override {
         this->_used = true;
     }
@@ -456,18 +464,6 @@ private:
         return this->_values;
     }
 
-    [[nodiscard]] inline const argument_name& name() const override {
-        return this->_name;
-    }
-
-    [[nodiscard]] inline bool is_required() const override {
-        return this->_required;
-    }
-
-    [[nodiscard]] inline const std::optional<std::string>& help() const override {
-        return this->_help_msg;
-    }
-
     [[nodiscard]] inline bool _has_predefined_value() const {
         return this->_default_value.has_value() or
                (this->_used and this->_implicit_value.has_value());
@@ -484,16 +480,16 @@ private:
 
     const bool _optional = true;
     const argument_name _name;
-
-    bool _used = false;
-    std::vector<std::any> _values;
-
     std::optional<std::string> _help_msg;
+
     bool _required = false;
     std::optional<ap::nargs::range> _nargs_range;
     std::vector<value_type> _choices;
     std::any _default_value;
     std::any _implicit_value;
+
+    bool _used = false;
+    std::vector<std::any> _values;
 
     std::stringstream _ss;
 };
