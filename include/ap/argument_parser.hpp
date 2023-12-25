@@ -37,6 +37,12 @@ template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
 
+/* TODO:
+    * assignable ?
+    * parser_compatible (maybe a different name?) \
+      should be readable and copy_constructible or assignable
+*/
+
 template <typename T>
 concept equality_comparable = requires(T lhs, T rhs) {
     { lhs == rhs } -> std::convertible_to<bool>;
@@ -145,21 +151,21 @@ template <typename AS>
 concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
 template <valid_action_specifier AS, ap::utility::readable T>
-using action_type = typename AS::type<T>;
+using callable_type = typename AS::type<T>;
 
 template <ap::utility::readable T>
 using action_variant_type =
-    std::variant<action_type<ap::valued_action, T>, action_type<ap::void_action, T>>;
+    std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
 
 template <ap::utility::readable T>
 [[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) {
-    return std::holds_alternative<action_type<ap::void_action, T>>(action);
+    return std::holds_alternative<callable_type<ap::void_action, T>>(action);
 }
 
 } // namespace detail
 
 template <ap::utility::readable T>
-detail::action_type<ap::void_action, T> default_action{ [](T&) {} };
+detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
 // TODO: add more predefined actions
 // * trim_whitespace_action ?
@@ -277,8 +283,8 @@ public:
 
     template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
     inline positional_argument& action(F&& action) {
-        using action_type = ap::action::detail::action_type<AS, value_type>;
-        this->_action = std::forward<action_type>(action);
+        using callable_type = ap::action::detail::callable_type<AS, value_type>;
+        this->_action = std::forward<callable_type>(action);
         return *this;
     }
 
@@ -319,10 +325,7 @@ private:
         if (not this->_is_valid_choice(value))
             throw std::invalid_argument("[set_value#3] TODO: msg (value not in choices)");
 
-        if (ap::action::detail::is_void_action(this->_action))
-            std::get<ap::action::detail::action_type<ap::void_action, value_type>>(this->_action)(value);
-        else
-            value = std::get<ap::action::detail::action_type<ap::valued_action, value_type>>(this->_action)(value);
+        this->_apply_action(value);
 
         this->_value = value;
         return *this;
@@ -352,6 +355,14 @@ private:
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+    }
+
+    void _apply_action(value_type& value) const {
+        namespace action = ap::action::detail;
+        if (action::is_void_action(this->_action))
+            std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
+        else
+            value = std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value);
     }
 
     using action_type = ap::action::detail::action_variant_type<T>;
@@ -415,8 +426,8 @@ public:
 
     template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
     inline optional_argument& action(F&& action) {
-        using action_type = ap::action::detail::action_type<AS, value_type>;
-        this->_action = std::forward<action_type>(action);
+        using callable_type = ap::action::detail::callable_type<AS, value_type>;
+        this->_action = std::forward<callable_type>(action);
         return *this;
     }
 
@@ -472,12 +483,8 @@ private:
         if (not this->_is_valid_choice(value))
             throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
 
-        if (ap::action::detail::is_void_action(this->_action))
-            std::get<ap::action::detail::action_type<ap::void_action, value_type>>(this->_action)(value);
-        else
-            value = std::get<ap::action::detail::action_type<ap::valued_action, value_type>>(this->_action)(value);
+        this->_apply_action(value);
 
-        // TODO: replace nargs checking with action checking
         if (not (this->_nargs_range or this->_values.empty()))
             throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
 
@@ -523,6 +530,14 @@ private:
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+    }
+
+    void _apply_action(value_type& value) const {
+        namespace action = ap::action::detail;
+        if (action::is_void_action(this->_action))
+            std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
+        else
+            value = std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value);
     }
 
     using action_type = ap::action::detail::action_variant_type<T>;
