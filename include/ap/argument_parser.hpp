@@ -40,6 +40,7 @@ SOFTWARE.
 #include <stdexcept>
 #include <string_view>
 #include <type_traits>
+#include <variant>
 #include <vector>
 
 #ifdef AP_TESTING
@@ -52,9 +53,37 @@ struct argument_parser_test_fixture;
 
 #endif
 
+
 namespace ap {
 
 class argument_parser;
+
+
+namespace utility {
+
+template <typename T>
+concept readable =
+    requires(T value, std::istream& input_stream) { input_stream >> value; };
+
+/* TODO:
+    * assignable ?
+    * parser_compatible (maybe a different name?) \
+      should be readable and copy_constructible or assignable
+*/
+
+template <typename T>
+concept equality_comparable = requires(T lhs, T rhs) {
+    { lhs == rhs } -> std::convertible_to<bool>;
+};
+
+template <typename T, typename... ValidTypes>
+struct is_valid_type : std::disjunction<std::is_same<T, ValidTypes>...> {};
+
+template <typename T, typename... ValidTypes>
+inline constexpr bool is_valid_type_v = is_valid_type<T, ValidTypes...>::value;
+
+} // namespace utility
+
 
 namespace nargs {
 
@@ -65,18 +94,17 @@ public:
     range() : _nlow(_ndefault), _nhigh(_ndefault) {}
 
     range(const count_type n)
-        : _nlow(n), _nhigh(n) {}
+        : _nlow(n), _nhigh(n), _default(n == _ndefault) {}
 
     range(const count_type nlow, const count_type nhigh)
-        : _nlow(nlow), _nhigh(nhigh) {}
+        : _nlow(nlow), _nhigh(nhigh), _default(false) {}
 
     range& operator= (const range&) = default;
 
     ~range() = default;
 
-    // TODO: delete after adding actions
     [[nodiscard]] inline bool is_default() const {
-        return this->_nlow == this->_ndefault and this->_nhigh == this->_ndefault;
+        return this->_default;
     }
 
     [[nodiscard]] std::weak_ordering contains(const range::count_type n) const {
@@ -109,6 +137,7 @@ private:
 
     std::optional<count_type> _nlow;
     std::optional<count_type> _nhigh;
+    bool _default = true;
 
     static constexpr count_type _ndefault = 1;
 };
@@ -131,18 +160,48 @@ private:
 
 } // namespace nargs
 
-namespace utility {
 
-template <typename T>
-concept readable =
-    requires(T value, std::istream& input_stream) { input_stream >> value; };
-
-template <typename T>
-concept equality_comparable = requires(T lhs, T rhs) {
-    { lhs == rhs } -> std::convertible_to<bool>;
+struct valued_action {
+    template <ap::utility::readable T>
+    using type = std::function<T(const T&)>;
 };
 
-} // namespace utility
+struct void_action {
+    template <ap::utility::readable T>
+    using type = std::function<void(T&)>;
+};
+
+// TODO: on_read_action
+
+namespace action {
+
+namespace detail {
+
+template <typename AS>
+concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
+
+template <valid_action_specifier AS, ap::utility::readable T>
+using callable_type = typename AS::type<T>;
+
+template <ap::utility::readable T>
+using action_variant_type =
+    std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
+
+template <ap::utility::readable T>
+[[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) {
+    return std::holds_alternative<callable_type<ap::void_action, T>>(action);
+}
+
+} // namespace detail
+
+template <ap::utility::readable T>
+detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
+
+// TODO: add more predefined actions
+// * trim_whitespace_action ?
+
+} // namespace action
+
 
 namespace argument {
 
@@ -207,9 +266,12 @@ public:
     friend class ::ap::argument_parser;
 
 protected:
+    virtual void set_used() = 0;
+
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
-    virtual std::weak_ordering nvalues_in_range() const = 0; // TODO: add tests
+    virtual bool has_parsed_values() const = 0;
+    virtual std::weak_ordering nvalues_in_range() const = 0;
     virtual const std::any& value() const = 0;
     virtual const std::vector<std::any>& values() const = 0;
 
@@ -249,6 +311,13 @@ public:
         return *this;
     }
 
+    template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
+    inline positional_argument& action(F&& action) {
+        using callable_type = ap::action::detail::callable_type<AS, value_type>;
+        this->_action = std::forward<callable_type>(action);
+        return *this;
+    }
+
     [[nodiscard]] inline bool is_optional() const override { return this->_optional; }
 
     friend class ::ap::argument_parser;
@@ -258,25 +327,45 @@ public:
 #endif
 
 private:
+    [[nodiscard]] inline const argument_name& name() const override {
+        return this->_name;
+    }
+
+    [[nodiscard]] inline const std::optional<std::string>& help() const override {
+        return this->_help_msg;
+    }
+
+    [[nodiscard]] inline bool is_required() const override {
+        return this->_required;
+    }
+
+    void set_used() override {} // not required for positional arguments
+
     positional_argument& set_value(const std::string& str_value) override {
+        if (this->_value.has_value())
+            throw std::runtime_error("[set_value#1] TODO: msg (value already set)");
+
         this->_ss.clear();
         this->_ss.str(str_value);
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[set_value#1] TODO: msg");
+            throw std::invalid_argument("[set_value#2] TODO: msg");
 
         if (not this->_is_valid_choice(value))
-            throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
+            throw std::invalid_argument("[set_value#3] TODO: msg (value not in choices)");
 
-        if (this->_value.has_value())
-            throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
+        this->_apply_action(value);
 
         this->_value = value;
         return *this;
     }
 
     [[nodiscard]] inline bool has_value() const override {
+        return this->_value.has_value();
+    }
+
+    [[nodiscard]] inline bool has_parsed_values() const override {
         return this->_value.has_value();
     }
 
@@ -293,31 +382,30 @@ private:
         throw std::logic_error("[values] TODO: msg (pos arg has 1 value)");
     }
 
-    [[nodiscard]] inline const argument_name& name() const override {
-        return this->_name;
-    }
-
-    [[nodiscard]] inline bool is_required() const override {
-        return this->_required;
-    }
-
-    [[nodiscard]] inline const std::optional<std::string>& help() const override {
-        return this->_help_msg;
-    }
-
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
 
-    const bool _optional = false;
+    void _apply_action(value_type& value) const {
+        namespace action = ap::action::detail;
+        if (action::is_void_action(this->_action))
+            std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
+        else
+            value = std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value);
+    }
+
+    using action_type = ap::action::detail::action_variant_type<T>;
+
+    static constexpr bool _optional{false};
     const argument_name _name;
+    std::optional<std::string> _help_msg;
+
+    const bool _required{true};
+    std::vector<value_type> _choices;
+    action_type _action{ap::action::default_action<value_type>};
 
     std::any _value;
-
-    std::optional<std::string> _help_msg;
-    const bool _required = true;
-    std::vector<value_type> _choices;
 
     std::stringstream _ss;
 };
@@ -366,24 +454,26 @@ public:
         return *this;
     }
 
+    template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
+    inline optional_argument& action(F&& action) {
+        using callable_type = ap::action::detail::callable_type<AS, value_type>;
+        this->_action = std::forward<callable_type>(action);
+        return *this;
+    }
+
     inline optional_argument& choices(const std::vector<value_type>& choices)
     requires(utility::equality_comparable<value_type>) {
         this->_choices = choices;
         return *this;
     }
 
-    optional_argument& default_value(const std::any& default_value) {
-        // TODO: Figure out whether to enforce default value in choices in any order of function calls
-        try {
-            const auto value = std::any_cast<value_type>(default_value);
-            if (not this->_is_valid_choice(value))
-                throw std::invalid_argument("[default_value#1] TODO: msg (value not in choices)");
-            this->_default_value = value;
-        }
-        catch (const std::bad_any_cast& err) {
-            throw std::invalid_argument("[default_value#2] TODO: msg");
-        }
+    optional_argument& default_value(const value_type& default_value) {
+        this->_default_value = default_value;
+        return *this;
+    }
 
+    optional_argument& implicit_value(const value_type& implicit_value) {
+        this->_implicit_value = implicit_value;
         return *this;
     }
 
@@ -396,6 +486,22 @@ public:
 #endif
 
 private:
+    [[nodiscard]] inline const argument_name& name() const override {
+        return this->_name;
+    }
+
+    [[nodiscard]] inline const std::optional<std::string>& help() const override {
+        return this->_help_msg;
+    }
+
+    [[nodiscard]] inline bool is_required() const override {
+        return this->_required;
+    }
+
+    void set_used() override {
+        this->_used = true; // TODO: use _count
+    }
+
     optional_argument& set_value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
@@ -407,7 +513,8 @@ private:
         if (not this->_is_valid_choice(value))
             throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
 
-        // TODO: replace nargs checking with action checking
+        this->_apply_action(value);
+
         if (not (this->_nargs_range or this->_values.empty()))
             throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
 
@@ -416,37 +523,38 @@ private:
     }
 
     [[nodiscard]] inline bool has_value() const override {
-        return not this->_values.empty() or this->_default_value.has_value();
+        return this->has_parsed_values() or this->_has_predefined_value();
+    }
+
+    [[nodiscard]] inline bool has_parsed_values() const override {
+        return not this->_values.empty();
     }
 
     [[nodiscard]] std::weak_ordering nvalues_in_range() const override {
         if (not this->_nargs_range)
             return std::weak_ordering::equivalent;
 
-        if (this->_values.empty() and this->_default_value.has_value())
+        if (this->_values.empty() and this->_has_predefined_value())
             return std::weak_ordering::equivalent;
 
         return this->_nargs_range->contains(this->_values.size());
     }
 
     [[nodiscard]] inline const std::any& value() const override {
-        return this->_values.empty() ? this->_default_value : this->_values.front();
+        return this->_values.empty() ? this->_predefined_value() : this->_values.front();
     }
 
     [[nodiscard]] inline const std::vector<std::any>& values() const override {
         return this->_values;
     }
 
-    [[nodiscard]] inline const argument_name& name() const override {
-        return this->_name;
+    [[nodiscard]] inline bool _has_predefined_value() const {
+        return this->_default_value.has_value() or
+               (this->_used and this->_implicit_value.has_value());
     }
 
-    [[nodiscard]] inline bool is_required() const override {
-        return this->_required;
-    }
-
-    [[nodiscard]] inline const std::optional<std::string>& help() const override {
-        return this->_help_msg;
+    [[nodiscard]] inline const std::any& _predefined_value() const {
+        return this->_used ? this->_implicit_value : this->_default_value;
     }
 
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
@@ -454,21 +562,35 @@ private:
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
 
-    const bool _optional = true;
+    void _apply_action(value_type& value) const {
+        namespace action = ap::action::detail;
+        if (action::is_void_action(this->_action))
+            std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
+        else
+            value = std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value);
+    }
+
+    using action_type = ap::action::detail::action_variant_type<T>;
+
+    static constexpr bool _optional{true};
     const argument_name _name;
-
-    std::vector<std::any> _values;
-
     std::optional<std::string> _help_msg;
-    bool _required = false;
+
+    bool _required{false};
     std::optional<ap::nargs::range> _nargs_range;
+    action_type _action{ap::action::default_action<value_type>};
     std::vector<value_type> _choices;
-    std::any _default_value; // TODO: use vector<any>
+    std::any _default_value;
+    std::any _implicit_value;
+
+    bool _used = false;
+    std::vector<std::any> _values;
 
     std::stringstream _ss;
 };
 
 } // namespace argument
+
 
 class argument_parser {
 public:
@@ -573,8 +695,13 @@ public:
         if (not arg_opt)
             throw std::invalid_argument("[values#1] TODO: msg (no arg found)");
 
+        const auto& arg = arg_opt.value().get();
+
         try {
-            const auto& arg_values = arg_opt.value().get().values();
+            if (not arg.has_parsed_values() and arg.has_value()) // TODO: add tests
+                return std::vector<T>{std::any_cast<T>(arg.value())};
+
+            const auto& arg_values = arg.values();
 
             std::vector<T> values;
             std::transform(
@@ -763,6 +890,7 @@ private:
                         "[_parse_optional_args#1] TODO: msg (opt_arg not found)");
 
                 curr_opt_arg = std::ref(*opt_arg_it);
+                curr_opt_arg->get()->set_used();
             }
             else {
                 if (not curr_opt_arg)
@@ -850,10 +978,10 @@ private:
     argument_list_type _positional_args;
     argument_list_type _optional_args;
 
-    static constexpr uint8_t _flag_prefix_char_length = 1;
-    static constexpr uint8_t _flag_prefix_length = 2;
-    static constexpr char _flag_prefix_char = '-';
-    const std::string _flag_prefix = "--";
+    static constexpr uint8_t _flag_prefix_char_length{1u};
+    static constexpr uint8_t _flag_prefix_length{2u};
+    static constexpr char _flag_prefix_char{'-'};
+    const std::string _flag_prefix{"--"}; // not static constexpr because of ubuntu :(
 };
 
 } // namespace ap
