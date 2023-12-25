@@ -48,137 +48,6 @@ TEST_CASE_FIXTURE(
     REQUIRE_FALSE(sut.is_optional());
 }
 
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "has_value() should return false by default"
-) {
-    const auto sut = prepare_argument(long_name);
-
-    REQUIRE_FALSE(sut_has_value(sut));
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "has_value() should return true is value is set"
-) {
-    auto sut = prepare_argument(long_name);
-
-    sut_set_value(sut, std::to_string(value_1));
-
-    REQUIRE(sut_has_value(sut));
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "nvalues_in_range() should return less by default"
-) {
-    const auto sut = prepare_argument(long_name);
-
-    REQUIRE(std::is_lt(sut_nvalues_in_range(sut)));
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "nvalues_in_range() should return equivalent if a value has been set"
-) {
-    auto sut = prepare_argument(long_name);
-
-    sut_set_value(sut, std::to_string(value_1));
-
-    REQUIRE(std::is_eq(sut_nvalues_in_range(sut)));
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "set_value(any) should throw when value_type cannot be obtained from given string"
-) {
-    auto sut = prepare_argument(long_name);
-
-    SUBCASE("given string is empty") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), std::invalid_argument);
-        REQUIRE_FALSE(sut_has_value(sut));
-    }
-    SUBCASE("given string is non-convertible to value_type") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, invalid_value_str), std::invalid_argument);
-        REQUIRE_FALSE(sut_has_value(sut));
-    }
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "set_value(any) should throw when a value has already been set"
-) {
-    auto sut = prepare_argument(long_name);
-
-    REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
-    REQUIRE(sut_has_value(sut));
-
-    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(value_2)), std::runtime_error);
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "set_value(any) should accept the given value only when it's present in the choices set"
-) {
-    auto sut = prepare_argument(long_name);
-    sut_set_choices(sut, default_choices);
-
-    const std::vector<test_value_type> correct_values = default_choices;
-    test_value_type value;
-
-    for (const auto& v : correct_values) {
-        SUBCASE("correct value") { value = v; }
-    }
-
-    CAPTURE(value);
-
-    REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value)));
-    REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value);
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "set_value(any) should throw when parameter passed to value() is not present in the choices set"
-) {
-    auto sut = prepare_argument(long_name);
-
-    sut_set_choices(sut, default_choices);
-
-    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(invalid_choice)), std::invalid_argument);
-    REQUIRE_FALSE(sut_has_value(sut));
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "value() should return default any object if argument's value has not been set"
-) {
-    auto sut = prepare_argument(long_name);
-
-    REQUIRE_FALSE(sut_has_value(sut));
-    REQUIRE_THROWS_AS(std::any_cast<test_value_type>(sut_get_value(sut)), std::bad_any_cast);
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "value() should return the argument's value if it has been set"
-) {
-    auto sut = prepare_argument(long_name);
-
-    sut_set_value(sut, std::to_string(value_1));
-
-    REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value_1);
-}
-
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "values() should throw logic_error"
-) {
-    auto sut = prepare_argument(long_name);
-
-    REQUIRE_THROWS_AS(sut_get_values(sut), std::logic_error);
-}
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
@@ -205,14 +74,6 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(name, short_name);
 }
 
-TEST_CASE_FIXTURE(
-    positional_argument_test_fixture,
-    "is_required() should return true"
-) {
-    auto sut = prepare_argument(long_name);
-
-    REQUIRE(sut_is_required(sut));
-}
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
@@ -236,6 +97,208 @@ TEST_CASE_FIXTURE(
 
     REQUIRE(stored_help_msg);
     REQUIRE_EQ(stored_help_msg, help_msg);
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "is_required() should return true"
+) {
+    auto sut = prepare_argument(long_name);
+
+    REQUIRE(sut_is_required(sut));
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "has_value() should return false by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE_FALSE(sut_has_value(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "has_value() should return true is value is set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(sut_has_value(sut));
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "has_parsed_values() should return false by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE_FALSE(sut_has_parsed_values(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "has_parsed_values() should true if the value is set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(sut_has_parsed_values(sut));
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "set_value(any) should throw when a value has already been set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
+    REQUIRE(sut_has_value(sut));
+
+    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(value_2)), std::runtime_error);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "set_value(any) should throw when value_type cannot be obtained from given string"
+) {
+    auto sut = prepare_argument(long_name);
+
+    SUBCASE("given string is empty") {
+        REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), std::invalid_argument);
+        REQUIRE_FALSE(sut_has_value(sut));
+    }
+    SUBCASE("given string is non-convertible to value_type") {
+        REQUIRE_THROWS_AS(sut_set_value(sut, invalid_value_str), std::invalid_argument);
+        REQUIRE_FALSE(sut_has_value(sut));
+    }
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "set_value(any) should throw when parameter passed to value() is not present in the choices set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_choices(sut, default_choices);
+
+    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(invalid_choice)), std::invalid_argument);
+    REQUIRE_FALSE(sut_has_value(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "set_value(any) should accept the given value only when no value has been set yet "
+    "and if the given value is present in the choices set"
+) {
+    auto sut = prepare_argument(long_name);
+    sut_set_choices(sut, default_choices);
+
+    const std::vector<test_value_type> correct_values = default_choices;
+    test_value_type value;
+
+    for (const auto& v : correct_values) {
+        SUBCASE("correct value") { value = v; }
+    }
+
+    CAPTURE(value);
+
+    REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value)));
+    REQUIRE(sut_has_value(sut));
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value);
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "set_value(any) should perform the specified action"
+) {
+    auto sut = prepare_argument(long_name);
+
+    SUBCASE("valued action") {
+        const auto double_valued_action =
+            [] (const test_value_type& value) { return 2 * value; };
+        sut.action<ap::valued_action>(double_valued_action);
+
+        sut_set_value(sut, std::to_string(value_1));
+
+        REQUIRE_EQ(
+            std::any_cast<test_value_type>(sut_get_value(sut)),
+            double_valued_action(value_1)
+        );
+    }
+
+    SUBCASE("void action") {
+        const auto double_void_action = [] (test_value_type& value) { value *= 2; };
+        sut.action<ap::void_action>(double_void_action);
+
+        auto test_value = value_1;
+
+        sut_set_value(sut, std::to_string(test_value));
+
+        double_void_action(test_value);
+        REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), test_value);
+    }
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "value() should return default any object if argument's value has not been set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    REQUIRE_FALSE(sut_has_value(sut));
+    REQUIRE_THROWS_AS(std::any_cast<test_value_type>(sut_get_value(sut)), std::bad_any_cast);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "value() should return the argument's value if it has been set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(sut_has_value(sut));
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value_1);
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "values() should throw logic_error"
+) {
+    auto sut = prepare_argument(long_name);
+
+    REQUIRE_THROWS_AS(sut_get_values(sut), std::logic_error);
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "nvalues_in_range() should return less by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE(std::is_lt(sut_nvalues_in_range(sut)));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "nvalues_in_range() should return equivalent if a value has been set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(std::is_eq(sut_nvalues_in_range(sut)));
 }
 
 TEST_SUITE_END();
