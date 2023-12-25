@@ -143,6 +143,8 @@ struct void_action {
     using type = std::function<void(T&)>;
 };
 
+// TODO: on_read_action
+
 namespace action {
 
 namespace detail {
@@ -240,7 +242,7 @@ protected:
 
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
-    virtual bool has_parsed_values() const = 0; // TODO: add tests
+    virtual bool has_parsed_values() const = 0;
     virtual std::weak_ordering nvalues_in_range() const = 0;
     virtual const std::any& value() const = 0;
     virtual const std::vector<std::any>& values() const = 0;

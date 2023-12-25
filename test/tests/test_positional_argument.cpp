@@ -133,6 +133,27 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
+    "has_parsed_values() should return false by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE_FALSE(sut_has_parsed_values(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "has_parsed_values() should true if the value is set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(sut_has_parsed_values(sut));
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
     "set_value(any) should throw when a value has already been set"
 ) {
     auto sut = prepare_argument(long_name);

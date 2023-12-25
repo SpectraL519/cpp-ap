@@ -36,6 +36,7 @@ const std::string invalid_value_str = "invalid_value";
 constexpr test_value_type value_1 = 1;
 constexpr test_value_type value_2 = 2;
 constexpr test_value_type default_value = 0;
+constexpr test_value_type implicit_value = -1;
 
 const std::vector<test_value_type> default_choices{1, 2, 3};
 constexpr test_value_type invalid_choice = 4;
@@ -164,7 +165,7 @@ TEST_CASE_FIXTURE(
     "has_value() should return false if an implicit value is set but the argument is not used"
 ) {
     auto sut = prepare_argument(long_name);
-    sut.implicit_value(default_value);
+    sut.implicit_value(implicit_value);
 
     REQUIRE_FALSE(sut_has_value(sut));
 }
@@ -174,12 +175,57 @@ TEST_CASE_FIXTURE(
     "has_value() should return true if an implicit value is set and the agument is used"
 ) {
     auto sut = prepare_argument(long_name);
-    sut.implicit_value(default_value);
+    sut.implicit_value(implicit_value);
 
     sut_set_used(sut);
 
     REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), default_value);
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), implicit_value);
+}
+
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "has_parsed_values() should return false by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE_FALSE(sut_has_parsed_values(sut));
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "has_parsed_values() should return false regardles of the "
+    "default_value and implicit_value parameters"
+) {
+    auto sut = prepare_argument(long_name);
+
+    SUBCASE("default_value") {
+        sut.default_value(default_value);
+        REQUIRE_FALSE(sut_has_parsed_values(sut));
+    }
+
+    SUBCASE("implicit_value") {
+        sut.implicit_value(implicit_value);
+        REQUIRE_FALSE(sut_has_parsed_values(sut));
+    }
+
+    SUBCASE("default_value & implicit_value") {
+        sut.default_value(default_value);
+        sut.implicit_value(implicit_value);
+        REQUIRE_FALSE(sut_has_parsed_values(sut));
+    }
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "has_parsed_values() should true if the value is set"
+) {
+    auto sut = prepare_argument(long_name);
+
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(sut_has_parsed_values(sut));
 }
 
 
@@ -220,12 +266,12 @@ TEST_CASE_FIXTURE(
     "value() should return the implicit value if one has been provided and argument is used"
 ) {
     auto sut = prepare_argument(long_name);
-    sut.implicit_value(value_1);
+    sut.implicit_value(implicit_value);
 
     sut_set_used(sut);
 
     REQUIRE(sut_has_value(sut));
-    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), value_1);
+    REQUIRE_EQ(std::any_cast<test_value_type>(sut_get_value(sut)), implicit_value);
 }
 
 
