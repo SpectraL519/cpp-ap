@@ -7,8 +7,15 @@ int main(int argc, char* argv[]) {
     ap::argument_parser parser;
     parser
         .program_name("power")
-        .program_description(
-            "calculates the value of expression: base ^ exponent");
+        .program_description("calculates the value of expression: base ^ exponent");
+
+    parser
+        .add_optional_argument<bool>("help", "h")
+        .default_value(false)
+        .implicit_value(true)
+        .nargs(0)
+        .help("displays help message")
+        .bypass_required();
 
     parser.add_positional_argument<double>("base");
     parser
@@ -19,8 +26,13 @@ int main(int argc, char* argv[]) {
         parser.parse_args(argc, argv);
     }
     catch (const std::exception& err) {
-        std::cerr << err.what() << std::endl << parser << std::endl;
+        std::cerr << "[ERROR] : " << err.what() << std::endl << parser << std::endl;
         std::exit(1);
+    }
+
+    if (parser.value<bool>("help")) {
+        std::cout << parser << std::endl;
+        std::exit(0);
     }
 
     const auto base = parser.value<double>("base");

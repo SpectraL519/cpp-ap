@@ -691,6 +691,10 @@ public:
 
     void parse_args(int argc, char* argv[]) {
         this->_parse_args_impl(this->_process_input(argc, argv));
+
+        if (this->_bypass_required_args())
+            return;
+
         this->_check_required_args();
         this->_check_nvalues_in_range(); // TODO: add tests
     }
@@ -929,16 +933,16 @@ private:
         }
     }
 
-    void _check_required_args() const {
-        // TODO: align tests
-        if (std::any_of(
-                std::cbegin(this->_optional_args), std::cend(this->_optional_args),
-                [](const argument_ptr_type& arg) {
-                    return arg->is_used() and arg->bypass_required_enabled();
-                }
-            )
-        ) return;
+    [[nodiscard]] inline bool _bypass_required_args() const {
+        return std::any_of(
+            std::cbegin(this->_optional_args), std::cend(this->_optional_args),
+            [](const argument_ptr_type& arg) {
+                return arg->is_used() and arg->bypass_required_enabled();
+            }
+        );
+    }
 
+    void _check_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used())
                 throw std::runtime_error("[_check_required_args#1] TODO: msg");
