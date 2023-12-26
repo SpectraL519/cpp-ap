@@ -91,45 +91,6 @@ TEST_SUITE_BEGIN("test_argument_parser_parse_args::_parse_args_impl");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_parse_args_impl should throw when input argument list is empty"
-) {
-    add_arguments(sut, non_default_num_args, non_default_args_split);
-
-    constexpr int no_args = 0;
-    const auto cmd_args = prepare_cmd_arg_list(no_args, no_args);
-
-    REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
-}
-
-TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
-    "_parse_args_impl should throw when there is less input"
-    "arguments than there are positional arguments"
-) {
-    add_arguments(sut, non_default_num_args, non_default_args_split);
-
-    const auto num_positional_values = non_default_num_args / 4;
-    const auto cmd_args =
-        prepare_cmd_arg_list(num_positional_values, num_positional_values);
-
-    REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
-}
-
-TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
-    "_parse_args_impl should throw when there is less input positional"
-    "argument values than there are positional arguments"
-) {
-    add_arguments(sut, non_default_num_args, non_default_args_split);
-
-    auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
-    cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split - 1));
-
-    REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
-}
-
-TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
     "_parse_args_impl should throw when there is a non-positional value specified "
     "without an argument flag present before the value"
 ) {

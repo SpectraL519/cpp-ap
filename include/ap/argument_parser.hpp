@@ -199,6 +199,7 @@ detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
 // TODO: add more predefined actions
 // * trim_whitespace_action ?
+// * for help/version: show and exit action - requires arg to have access to parser
 
 } // namespace action
 
@@ -266,7 +267,13 @@ public:
     friend class ::ap::argument_parser;
 
 protected:
+    virtual const argument_name& name() const = 0;
+    virtual bool is_required() const = 0;
+    virtual bool bypass_required_enabled() const = 0;
+    virtual const std::optional<std::string>& help() const = 0;
+
     virtual void set_used() = 0;
+    virtual bool is_used() const = 0;
 
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
@@ -274,10 +281,6 @@ protected:
     virtual std::weak_ordering nvalues_in_range() const = 0;
     virtual const std::any& value() const = 0;
     virtual const std::vector<std::any>& values() const = 0;
-
-    virtual const argument_name& name() const = 0;
-    virtual bool is_required() const = 0;
-    virtual const std::optional<std::string>& help() const = 0;
 };
 
 } // namespace detail
@@ -339,7 +342,15 @@ private:
         return this->_required;
     }
 
+    [[nodiscard]] inline bool bypass_required_enabled() const override {
+        return this->_bypass_required;
+    }
+
     void set_used() override {} // not required for positional arguments
+
+    [[nodiscard]] inline bool is_used() const override {
+        return this->_value.has_value();
+    }
 
     positional_argument& set_value(const std::string& str_value) override {
         if (this->_value.has_value())
@@ -401,7 +412,8 @@ private:
     const argument_name _name;
     std::optional<std::string> _help_msg;
 
-    const bool _required{true};
+    static constexpr bool _required{true};
+    static constexpr bool _bypass_required{false};
     std::vector<value_type> _choices;
     action_type _action{ap::action::default_action<value_type>};
 
@@ -436,6 +448,11 @@ public:
 
     inline optional_argument& required() {
         this->_required = true;
+        return *this;
+    }
+
+    inline optional_argument& bypass_required() {
+        this->_bypass_required = true;
         return *this;
     }
 
@@ -498,8 +515,16 @@ private:
         return this->_required;
     }
 
+    [[nodiscard]] inline bool bypass_required_enabled() const {
+        return this->_bypass_required;
+    }
+
     void set_used() override {
         this->_used = true; // TODO: use _count
+    }
+
+    [[nodiscard]] inline bool is_used() const override {
+        return this->_used;
     }
 
     optional_argument& set_value(const std::string& str_value) override {
@@ -577,6 +602,7 @@ private:
     std::optional<std::string> _help_msg;
 
     bool _required{false};
+    bool _bypass_required{false};
     std::optional<ap::nargs::range> _nargs_range;
     action_type _action{ap::action::default_action<value_type>};
     std::vector<value_type> _choices;
@@ -861,14 +887,13 @@ private:
     void _parse_positional_args(
         const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
     ) {
+        // TODO: align tests
         for (const auto& pos_arg : this->_positional_args) {
             if (cmd_it == cmd_args.end())
-                throw std::runtime_error(
-                    "[_parse_positional_args#1] TODO: msg (not enough values)");
+                return;
 
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag)
-                throw std::runtime_error(
-                    "[_parse_positional_args#2] TODO: msg (invalid arg type)");
+                return;
 
             pos_arg->set_value(cmd_it->value);
             cmd_it++;
@@ -905,9 +930,22 @@ private:
     }
 
     void _check_required_args() const {
+        // TODO: align tests
+        if (std::any_of(
+                std::cbegin(this->_optional_args), std::cend(this->_optional_args),
+                [](const argument_ptr_type& arg) {
+                    return arg->is_used() and arg->bypass_required_enabled();
+                }
+            )
+        ) return;
+
+        for (const auto& arg : this->_positional_args)
+            if (not arg->is_used())
+                throw std::runtime_error("[_check_required_args#1] TODO: msg");
+
         for (const auto& arg : this->_optional_args)
             if (arg->is_required() and not arg->has_value())
-                throw std::runtime_error("[_check_required_args] TODO: msg");
+                throw std::runtime_error("[_check_required_args#2] TODO: msg");
     }
 
     void _check_nvalues_in_range() const {
