@@ -6,7 +6,7 @@
 
 #include <cstring>
 
-using ap::argument::argument_name;
+using ap::argument::detail::argument_name;
 using ap::argument::positional_argument;
 using ap::utility::readable;
 

@@ -205,6 +205,8 @@ detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
 namespace argument {
 
+namespace detail {
+
 struct argument_name {
     argument_name() = delete;
     argument_name& operator= (const argument_name&) = delete;
@@ -246,8 +248,6 @@ struct argument_name {
     const std::string name;
     const std::optional<std::string> short_name;
 };
-
-namespace detail {
 
 class argument_interface {
 public:
@@ -329,7 +329,7 @@ public:
 #endif
 
 private:
-    [[nodiscard]] inline const argument_name& name() const override {
+    [[nodiscard]] inline const detail::argument_name& name() const override {
         return this->_name;
     }
 
@@ -408,7 +408,7 @@ private:
     using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional{false};
-    const argument_name _name;
+    const detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
     static constexpr bool _required{true};
@@ -502,7 +502,7 @@ public:
 #endif
 
 private:
-    [[nodiscard]] inline const argument_name& name() const override {
+    [[nodiscard]] inline const detail::argument_name& name() const override {
         return this->_name;
     }
 
@@ -597,7 +597,7 @@ private:
     using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional{true};
-    const argument_name _name;
+    const detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
     bool _required{false};
