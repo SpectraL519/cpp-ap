@@ -4,9 +4,9 @@
 #define AP_TESTING
 
 #include "doctest.h"
+#include "argument_parser_test_fixture.hpp"
 
 #include <ap/argument_parser.hpp>
-#include <argument_parser_test_fixture.hpp>
 
 using namespace ap::argument;
 using namespace ap::nargs;

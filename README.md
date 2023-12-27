@@ -35,7 +35,18 @@ Argument Parser for C++20
         ```
         ```
         > ./test -ts="<test-suite-name>"
+
+3. Error fixing:
+
+    In case you face an error in Windows saying that:
         ```
+        ...\profile.ps1 cannot be loaded because running scripts is disable on this system. ...
+        ```
+    Then you should run the following command to enable running scripts by Windows' Makefile:
+        ```
+        > Set-ExecutionPolicy Bypass -Scope CurrentUser
+        ```
+
 
 ## Documentation
 

@@ -1,9 +1,9 @@
 #define AP_TESTING
 
 #include "doctest.h"
+#include "positional_argument_test_fixture.hpp"
 
 #include <ap/argument_parser.hpp>
-#include <positional_argument_test_fixture.hpp>
 
 #include <string_view>
 
