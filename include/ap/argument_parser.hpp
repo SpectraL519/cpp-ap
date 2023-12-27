@@ -65,11 +65,10 @@ template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
 
-/* TODO:
-    * assignable ?
-    * parser_compatible (maybe a different name?) \
-      should be readable and copy_constructible or assignable
-*/
+template <typename T>
+concept valid_argument_value_type =
+    readable<T> and
+    std::copy_constructible<T> and std::assignable_from<T&, const T&>;
 
 template <typename T>
 concept equality_comparable = requires(T lhs, T rhs) {
@@ -162,12 +161,12 @@ private:
 
 
 struct valued_action {
-    template <ap::utility::readable T>
+    template <ap::utility::valid_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
 struct void_action {
-    template <ap::utility::readable T>
+    template <ap::utility::valid_argument_value_type T>
     using type = std::function<void(T&)>;
 };
 
@@ -180,25 +179,26 @@ namespace detail {
 template <typename AS>
 concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
-template <valid_action_specifier AS, ap::utility::readable T>
+template <valid_action_specifier AS, ap::utility::valid_argument_value_type T>
 using callable_type = typename AS::type<T>;
 
-template <ap::utility::readable T>
+template <ap::utility::valid_argument_value_type T>
 using action_variant_type =
     std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
 
-template <ap::utility::readable T>
+template <ap::utility::valid_argument_value_type T>
 [[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) {
     return std::holds_alternative<callable_type<ap::void_action, T>>(action);
 }
 
 } // namespace detail
 
-template <ap::utility::readable T>
+template <ap::utility::valid_argument_value_type T>
 detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
 // TODO: add more predefined actions
 // * trim_whitespace_action ?
+// * for help/version: show and exit action - requires arg to have access to parser
 
 } // namespace action
 
@@ -266,7 +266,13 @@ public:
     friend class ::ap::argument_parser;
 
 protected:
+    virtual const argument_name& name() const = 0;
+    virtual bool is_required() const = 0;
+    virtual bool bypass_required_enabled() const = 0;
+    virtual const std::optional<std::string>& help() const = 0;
+
     virtual void set_used() = 0;
+    virtual bool is_used() const = 0;
 
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
@@ -274,15 +280,11 @@ protected:
     virtual std::weak_ordering nvalues_in_range() const = 0;
     virtual const std::any& value() const = 0;
     virtual const std::vector<std::any>& values() const = 0;
-
-    virtual const argument_name& name() const = 0;
-    virtual bool is_required() const = 0;
-    virtual const std::optional<std::string>& help() const = 0;
 };
 
 } // namespace detail
 
-template <utility::readable T>
+template <utility::valid_argument_value_type T>
 class positional_argument : public detail::argument_interface {
 public:
     using value_type = T;
@@ -339,7 +341,15 @@ private:
         return this->_required;
     }
 
+    [[nodiscard]] inline bool bypass_required_enabled() const override {
+        return this->_bypass_required;
+    }
+
     void set_used() override {} // not required for positional arguments
+
+    [[nodiscard]] inline bool is_used() const override {
+        return this->_value.has_value();
+    }
 
     positional_argument& set_value(const std::string& str_value) override {
         if (this->_value.has_value())
@@ -401,7 +411,8 @@ private:
     const argument_name _name;
     std::optional<std::string> _help_msg;
 
-    const bool _required{true};
+    static constexpr bool _required{true};
+    static constexpr bool _bypass_required{false};
     std::vector<value_type> _choices;
     action_type _action{ap::action::default_action<value_type>};
 
@@ -410,7 +421,7 @@ private:
     std::stringstream _ss;
 };
 
-template <utility::readable T>
+template <utility::valid_argument_value_type T>
 class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
@@ -436,6 +447,11 @@ public:
 
     inline optional_argument& required() {
         this->_required = true;
+        return *this;
+    }
+
+    inline optional_argument& bypass_required() {
+        this->_bypass_required = true;
         return *this;
     }
 
@@ -498,8 +514,16 @@ private:
         return this->_required;
     }
 
+    [[nodiscard]] inline bool bypass_required_enabled() const {
+        return this->_bypass_required;
+    }
+
     void set_used() override {
         this->_used = true; // TODO: use _count
+    }
+
+    [[nodiscard]] inline bool is_used() const override {
+        return this->_used;
     }
 
     optional_argument& set_value(const std::string& str_value) override {
@@ -577,6 +601,7 @@ private:
     std::optional<std::string> _help_msg;
 
     bool _required{false};
+    bool _bypass_required{false};
     std::optional<ap::nargs::range> _nargs_range;
     action_type _action{ap::action::default_action<value_type>};
     std::vector<value_type> _choices;
@@ -612,7 +637,7 @@ public:
         return *this;
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(std::string_view name) {
         // TODO: check forbidden characters
 
@@ -625,7 +650,7 @@ public:
             *this->_positional_args.back());
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(
         std::string_view name, std::string_view short_name
     ) {
@@ -640,7 +665,7 @@ public:
             *this->_positional_args.back());
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
 
@@ -651,7 +676,7 @@ public:
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden characters
 
@@ -665,8 +690,12 @@ public:
 
     void parse_args(int argc, char* argv[]) {
         this->_parse_args_impl(this->_process_input(argc, argv));
+
+        if (this->_bypass_required_args())
+            return;
+
         this->_check_required_args();
-        this->_check_nvalues_in_range(); // TODO: add tests
+        this->_check_nvalues_in_range();
     }
 
     bool has_value(std::string_view arg_name) const {
@@ -698,7 +727,7 @@ public:
         const auto& arg = arg_opt.value().get();
 
         try {
-            if (not arg.has_parsed_values() and arg.has_value()) // TODO: add tests
+            if (not arg.has_parsed_values() and arg.has_value())
                 return std::vector<T>{std::any_cast<T>(arg.value())};
 
             const auto& arg_values = arg.values();
@@ -861,14 +890,13 @@ private:
     void _parse_positional_args(
         const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
     ) {
+        // TODO: align tests
         for (const auto& pos_arg : this->_positional_args) {
             if (cmd_it == cmd_args.end())
-                throw std::runtime_error(
-                    "[_parse_positional_args#1] TODO: msg (not enough values)");
+                return;
 
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag)
-                throw std::runtime_error(
-                    "[_parse_positional_args#2] TODO: msg (invalid arg type)");
+                return;
 
             pos_arg->set_value(cmd_it->value);
             cmd_it++;
@@ -904,10 +932,23 @@ private:
         }
     }
 
+    [[nodiscard]] inline bool _bypass_required_args() const {
+        return std::any_of(
+            std::cbegin(this->_optional_args), std::cend(this->_optional_args),
+            [](const argument_ptr_type& arg) {
+                return arg->is_used() and arg->bypass_required_enabled();
+            }
+        );
+    }
+
     void _check_required_args() const {
+        for (const auto& arg : this->_positional_args)
+            if (not arg->is_used())
+                throw std::runtime_error("[_check_required_args#1] TODO: msg");
+
         for (const auto& arg : this->_optional_args)
             if (arg->is_required() and not arg->has_value())
-                throw std::runtime_error("[_check_required_args] TODO: msg");
+                throw std::runtime_error("[_check_required_args#2] TODO: msg");
     }
 
     void _check_nvalues_in_range() const {
