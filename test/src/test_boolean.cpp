@@ -1,4 +1,4 @@
-#include "../doctest.h"
+#include "doctest.h"
 
 /*
 This test file was created to determine whether the doctest library
