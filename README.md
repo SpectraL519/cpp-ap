@@ -28,6 +28,7 @@ Argument Parser for C++20
         > cd <project-root>/test
         > make all
         ```
+        ```
         > ./test
         ```
         ```
@@ -39,6 +40,7 @@ Argument Parser for C++20
         > cd <project-root>/cmake
         > cmake ..
         > make
+        ```
         ```
         > ./test/out/test
         ```
