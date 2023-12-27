@@ -768,7 +768,7 @@ public:
 
 private:
     struct cmd_argument {
-        enum class type_discriminator { flag, value };
+        enum class type_discriminator : bool { flag, value };
 
         cmd_argument() = default;
         cmd_argument(const cmd_argument&) = default;
