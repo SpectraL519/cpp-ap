@@ -43,12 +43,6 @@ The documentation for this project is generated using Doxygen. Follow the steps 
 
 ### Prerequisites
 
-1. **Doxygen Installation**: Make sure you have Doxygen installed on your system. If not, you can download it from [here](https:## Documentation
-
-The documentation for this project is generated using Doxygen. Follow the steps below to generate and view the documentation.
-
-### Prerequisites
-
 1. **Doxygen Installation**: Make sure you have Doxygen installed on your system. If not, you can download it from [here](https://www.doxygen.nl/download.html).
 
 ### Generating Documentation
