@@ -5,7 +5,8 @@
 *.exe
 test/out/*
 test/test
-log/
+log/*
+cmake/*
 
 # documentation files
 /documentation
