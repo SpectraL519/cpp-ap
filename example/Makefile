@@ -2,7 +2,8 @@ DIR_MAKEFILE := ./make
 DIR_LOG      := ../log
 
 ifeq (,$(wildcard $(DIR_LOG)/*.sys))
-    $(info There is no log including your operating system...)
+    $(info Syslog file not found...)
+
     ifndef SYSTEM
         ifeq ($(OS), Windows_NT)
             SYSTEM := windows
@@ -19,20 +20,18 @@ ifeq (,$(wildcard $(DIR_LOG)/*.sys))
     endif
 
     $(shell echo $(SYSTEM) > $(DIR_LOG)/$(SYSTEM).sys)
-    $(info Log including your operating system has been created!)
-else
-    $(info File .sys found!)
+    $(info Syslog file created!)
 endif
 
 $(info )
-$(info Checking your operating system...)
+$(info Checking your syslog...)
 
 ifndef SYSTEM
     FILES_SYS := $(wildcard $(DIR_LOG)/*.sys)
     FILES_COUNT := $(words $(FILES_SYS))
 
     ifneq (1,$(FILES_COUNT))
-        $(error More than one .sys file found in $(DIR_LOG). Rejecting target...)
+        $(error More than one syslog file found in $(DIR_LOG). Rejecting target...)
     endif
 
     SYSTEM := $(patsubst $(DIR_LOG)/%.sys,%,$(FILES_SYS))
