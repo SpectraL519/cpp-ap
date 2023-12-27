@@ -65,11 +65,10 @@ template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
 
-/* TODO:
-    * assignable ?
-    * parser_compatible (maybe a different name?) \
-      should be readable and copy_constructible or assignable
-*/
+template <typename T>
+concept valid_argument_value_type =
+    readable<T> and
+    std::copy_constructible<T> and std::assignable_from<T&, const T&>;
 
 template <typename T>
 concept equality_comparable = requires(T lhs, T rhs) {
@@ -162,12 +161,12 @@ private:
 
 
 struct valued_action {
-    template <ap::utility::readable T>
+    template <ap::utility::valid_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
 struct void_action {
-    template <ap::utility::readable T>
+    template <ap::utility::valid_argument_value_type T>
     using type = std::function<void(T&)>;
 };
 
@@ -180,21 +179,21 @@ namespace detail {
 template <typename AS>
 concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
-template <valid_action_specifier AS, ap::utility::readable T>
+template <valid_action_specifier AS, ap::utility::valid_argument_value_type T>
 using callable_type = typename AS::type<T>;
 
-template <ap::utility::readable T>
+template <ap::utility::valid_argument_value_type T>
 using action_variant_type =
     std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
 
-template <ap::utility::readable T>
+template <ap::utility::valid_argument_value_type T>
 [[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) {
     return std::holds_alternative<callable_type<ap::void_action, T>>(action);
 }
 
 } // namespace detail
 
-template <ap::utility::readable T>
+template <ap::utility::valid_argument_value_type T>
 detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
 // TODO: add more predefined actions
@@ -285,7 +284,7 @@ protected:
 
 } // namespace detail
 
-template <utility::readable T>
+template <utility::valid_argument_value_type T>
 class positional_argument : public detail::argument_interface {
 public:
     using value_type = T;
@@ -422,7 +421,7 @@ private:
     std::stringstream _ss;
 };
 
-template <utility::readable T>
+template <utility::valid_argument_value_type T>
 class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
@@ -638,7 +637,7 @@ public:
         return *this;
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(std::string_view name) {
         // TODO: check forbidden characters
 
@@ -651,7 +650,7 @@ public:
             *this->_positional_args.back());
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(
         std::string_view name, std::string_view short_name
     ) {
@@ -666,7 +665,7 @@ public:
             *this->_positional_args.back());
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
 
@@ -677,7 +676,7 @@ public:
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
-    template <utility::readable T = std::string>
+    template <utility::valid_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden characters
 
@@ -696,7 +695,7 @@ public:
             return;
 
         this->_check_required_args();
-        this->_check_nvalues_in_range(); // TODO: add tests
+        this->_check_nvalues_in_range();
     }
 
     bool has_value(std::string_view arg_name) const {
@@ -728,7 +727,7 @@ public:
         const auto& arg = arg_opt.value().get();
 
         try {
-            if (not arg.has_parsed_values() and arg.has_value()) // TODO: add tests
+            if (not arg.has_parsed_values() and arg.has_value())
                 return std::vector<T>{std::any_cast<T>(arg.value())};
 
             const auto& arg_values = arg.values();
