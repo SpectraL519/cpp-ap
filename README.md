@@ -44,7 +44,7 @@ Argument Parser for C++20
         ```
     Then you should run the following command to enable running scripts by Windows' Makefile:
         ```
-        > Set-ExecutionPolicy Bypass -Scope CurrentUser
+        > PowerShell -ExecutionPolicy Bypass
         ```
 
 
