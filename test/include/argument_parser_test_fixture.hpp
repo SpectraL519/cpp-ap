@@ -6,6 +6,8 @@
 
 #include <cstring>
 
+using ap::argument::detail::argument_name;
+
 namespace ap_testing {
 
 struct argument_parser_test_fixture {
@@ -21,27 +23,29 @@ struct argument_parser_test_fixture {
     using invalid_argument_value_type = int;
 
     // test utility functions
-    std::string prepare_arg_flag(std::size_t i) const {
+    [[nodiscard]] std::string prepare_arg_flag(std::size_t i) const {
         return "--test_arg_" + std::to_string(i);
     }
 
-    std::string prepare_arg_flag_short(std::size_t i) const {
+    [[nodiscard]] std::string prepare_arg_flag_short(std::size_t i) const {
         return "-ta_" + std::to_string(i);
     }
 
-    argument_value_type prepare_arg_value(std::size_t i) const {
+    [[nodiscard]] argument_value_type prepare_arg_value(std::size_t i) const {
         return "test_value_" + std::to_string(i);
     }
 
-    std::size_t get_args_length(std::size_t num_args, std::size_t args_split) const {
+    [[nodiscard]] std::size_t get_args_length(
+        std::size_t num_args, std::size_t args_split
+    ) const {
         return args_split + 2 * (num_args - args_split);
     }
 
-    int get_argc(std::size_t num_args, std::size_t args_split) const {
+    [[nodiscard]] int get_argc(std::size_t num_args, std::size_t args_split) const {
         return static_cast<int>(get_args_length(num_args, args_split) + 1);
     }
 
-    char** prepare_argv(std::size_t num_args, std::size_t args_split) const {
+    [[nodiscard]] char** prepare_argv(std::size_t num_args, std::size_t args_split) const {
         char** argv = new char*[get_argc(num_args, args_split)];
 
         argv[0] = new char[8];
@@ -78,13 +82,13 @@ struct argument_parser_test_fixture {
         delete[] argv;
     }
 
-    ap::argument::argument_name prepare_arg_name(std::size_t i) const {
-        return ap::argument::argument_name(
-            "test_arg_" + std::to_string(i), "ta_" + std::to_string(i)
-        );
+    [[nodiscard]] argument_name prepare_arg_name(std::size_t i) const {
+        return argument_name("test_arg_" + std::to_string(i), "ta_" + std::to_string(i));
     }
 
-    void add_arguments(ap::argument_parser& parser, std::size_t num_args, std::size_t args_split) const {
+    void add_arguments(
+        ap::argument_parser& parser, std::size_t num_args, std::size_t args_split
+    ) const {
         for (std::size_t i = 0; i < args_split; i++) { // positional args
             const auto arg_name = prepare_arg_name(i);
             parser.add_positional_argument(arg_name.name, arg_name.short_name.value());
@@ -96,7 +100,9 @@ struct argument_parser_test_fixture {
         }
     }
 
-    cmd_argument_list prepare_cmd_arg_list(std::size_t num_args, std::size_t args_split) const {
+    [[nodiscard]] cmd_argument_list prepare_cmd_arg_list(
+        std::size_t num_args, std::size_t args_split
+    ) const {
         cmd_argument_list cmd_args;
         cmd_args.reserve(get_args_length(num_args, args_split));
 
@@ -115,15 +121,15 @@ struct argument_parser_test_fixture {
     }
 
     // argument_parser private function accessors
-    const std::optional<std::string>& sut_get_program_name() const {
+    [[nodiscard]] const std::optional<std::string>& sut_get_program_name() const {
         return sut._program_name;
     }
 
-    const std::optional<std::string>& sut_get_program_description() const {
+    [[nodiscard]] const std::optional<std::string>& sut_get_program_description() const {
         return sut._program_description;
     }
 
-    cmd_argument_list sut_process_input(int argc, char* argv[]) const {
+    [[nodiscard]] cmd_argument_list sut_process_input(int argc, char* argv[]) const {
         return sut._process_input(argc, argv);
     }
 
@@ -131,7 +137,7 @@ struct argument_parser_test_fixture {
         sut._parse_args_impl(cmd_args);
     }
 
-    argument_opt_type sut_get_argument(std::string_view arg_name) const {
+    [[nodiscard]] argument_opt_type sut_get_argument(std::string_view arg_name) const {
         return sut._get_argument(arg_name);
     }
 
