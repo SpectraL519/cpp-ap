@@ -38,7 +38,7 @@ APP_OBJ := $(foreach file, $(APP_SRC), $(DIR_OUT)/$(notdir $(file:.cpp=.o)))
 COUNT_OBJ := 0
 COUNT_SRC := $(words $(APP_SRC))
 
-.PHONY: all build clean help
+.PHONY: all build clean cleansys cleanall help
 
 all: clean build
 
@@ -68,10 +68,22 @@ clean:
 	@echo All generated files removed!
 	@echo
 
+cleansys:
+	@echo Removing .sys file...
+	@$(RM) $(DIR_LOG)/*.sys
+	@echo Removed .sys file!
+	@echo
+
+cleanall: clean cleansys
+	@echo Removed everything!
+	@echo
+
 help:
 	@echo "Available targets:"
 	@echo "  all        - Clean and build the test module"
 	@echo "  build      - Build the test module"
 	@echo "  clean      - Clean all generated files in test module"
 	@echo "  help       - Display this help message"
+	@echo "  cleanall   - Clean all generated files"
+	@echo "  cleansys   - Clean .sys generated file"
  

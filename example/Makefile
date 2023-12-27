@@ -30,9 +30,11 @@ $(info Checking your operating system...)
 ifndef SYSTEM
     FILES_SYS := $(wildcard $(DIR_LOG)/*.sys)
     FILES_COUNT := $(words $(FILES_SYS))
+
     ifneq (1,$(FILES_COUNT))
         $(error More than one .sys file found in $(DIR_LOG). Rejecting target...)
     endif
+
     SYSTEM := $(patsubst $(DIR_LOG)/%.sys,%,$(FILES_SYS))
 endif
 
@@ -40,7 +42,9 @@ ifeq ($(SYSTEM), unknown)
     $(info This program does not support your operating system.)
 else
     MAKEFILE := $(DIR_MAKEFILE)/$(SYSTEM).mk
+
     $(info Including: $(MAKEFILE))
     $(info )
+    
     include $(MAKEFILE)
 endif

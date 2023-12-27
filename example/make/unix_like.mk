@@ -74,7 +74,9 @@ cleanall: clean cleansys
 
 help:
 	@echo "Available targets:"
-	@echo "  all        - Clean and build the example module"
-	@echo "  build      - Build the example module"
-	@echo "  clean      - Clean all generated files in example module"
+	@echo "  all        - Clean and build the test module"
+	@echo "  build      - Build the test module"
+	@echo "  clean      - Clean all generated files in test module"
 	@echo "  help       - Display this help message"
+	@echo "  cleanall   - Clean all generated files"
+	@echo "  cleansys   - Clean .sys generated file"

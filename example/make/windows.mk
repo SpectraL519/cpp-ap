@@ -85,4 +85,5 @@ help:
 	@echo   build      - Build the example module
 	@echo   clean      - Clean all generated files in example module
 	@echo   help       - Display this help message
-
+	@echo   cleanall   - Clean all generated files
+	@echo   cleansys   - Clean .sys generated file
