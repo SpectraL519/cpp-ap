@@ -22,19 +22,29 @@ Argument Parser for C++20
 
 2. Building and running tests:
 
-    * Building
+    * By hand
 
         ```
         > cd <project-root>/test
         > make all
         ```
-
-    * Running
-        ```
         > ./test
         ```
         ```
         > ./test -ts="<test-suite-name>"
+        ```
+    
+    * By CMake
+        ```
+        > cd <project-root>/cmake
+        > cmake ..
+        > make
+        ```
+        > ./test/out/test
+        ```
+        ```
+        > ./test/out/test -ts="<test-suite-name>"
+        ```
 
 3. Error fixing:
 
