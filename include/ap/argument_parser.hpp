@@ -107,6 +107,9 @@ public:
     }
 
     [[nodiscard]] std::weak_ordering contains(const range::count_type n) const {
+        if (not (this->_nlow.has_value() or this->_nhigh.has_value()))
+            return std::weak_ordering::equivalent; // TODO: add tests
+
         if (this->_nlow.has_value() and this->_nhigh.has_value()) {
             if (n < this->_nlow.value())
                 return std::weak_ordering::less;
@@ -129,6 +132,7 @@ public:
     friend range more_than(const count_type);
     friend range less_than(const count_type);
     friend range up_to(const count_type);
+    friend range any();
 
 private:
     range(const std::optional<count_type> nlow, const std::optional<count_type> nhigh)
@@ -155,6 +159,11 @@ private:
 
 [[nodiscard]] inline range up_to(const range::count_type n) {
     return range(std::nullopt, n);
+}
+
+[[nodiscard]] inline range any() {
+    // TODO: add tests
+    return range(std::nullopt, std::nullopt);
 }
 
 } // namespace nargs
@@ -617,6 +626,20 @@ private:
 } // namespace argument
 
 
+struct default_argument {
+    enum class positional : uint8_t {
+        input,
+        output
+    };
+
+    enum class optional : uint8_t {
+        help,
+        input,
+        output
+    };
+};
+
+
 class argument_parser {
 public:
     argument_parser() = default;
@@ -634,6 +657,22 @@ public:
 
     inline argument_parser& program_description(std::string_view description) {
         this->_program_description = description;
+        return *this;
+    }
+
+    inline argument_parser& default_positional_arguments(
+        const std::vector<default_argument::positional>& args
+    ) {
+        for (const auto arg : args)
+            this->_add_default_positional_argument(arg);
+        return *this;
+    }
+
+    inline argument_parser& default_optional_arguments(
+        const std::vector<default_argument::optional>& args
+    ) {
+        for (const auto arg : args)
+            this->_add_default_optional_argument(arg);
         return *this;
     }
 
@@ -686,6 +725,20 @@ public:
         this->_optional_args.push_back(
             std::make_unique<argument::optional_argument<T>>(name, short_name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
+    }
+
+    template <bool StoreImplicitly = true>
+    argument::optional_argument<bool>& add_flag(std::string_view name) {
+        // TODO: add tests
+        return this->add_optional_argument<bool>(name)
+                    .default_value(not StoreImplicitly).implicit_value(StoreImplicitly);
+    }
+
+    template <bool StoreImplicitly = true>
+    argument::optional_argument<bool>& add_flag(std::string_view name, std::string_view short_name) {
+        // TODO: add tests
+        return this->add_optional_argument<bool>(name, short_name)
+                    .default_value(not StoreImplicitly).implicit_value(StoreImplicitly);
     }
 
     void parse_args(int argc, char* argv[]) {
@@ -767,6 +820,43 @@ public:
 #endif
 
 private:
+    void _add_default_positional_argument(const default_argument::positional arg) {
+        switch (arg) {
+            case default_argument::positional::input:
+                this->add_positional_argument("input")
+                     .help("Input file path");
+                break;
+
+            case default_argument::positional::output:
+                this->add_positional_argument("output")
+                     .help("Output file path");
+                break;
+        }
+    }
+
+    void _add_default_optional_argument(const default_argument::optional arg) {
+        switch (arg) {
+            case default_argument::optional::help:
+                this->add_flag("help", "h")
+                     .bypass_required()
+                     .help("Display help message");
+                     // TODO: on flag action
+                break;
+
+            case default_argument::optional::input:
+                this->add_optional_argument("input", "i")
+                     .required() // ?
+                     .help("Input file path");
+                break;
+
+            case default_argument::optional::output:
+                this->add_optional_argument("output", "o")
+                     .required() // ?
+                     .help("Output file path");
+                break;
+        }
+    }
+
     struct cmd_argument {
         enum class type_discriminator : bool { flag, value };
 
