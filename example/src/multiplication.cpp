@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
     parser.add_positional_argument<double>("multiplicant");
     parser
         .add_optional_argument<double>("multiplier", "m")
-        .default_value(1.)
+        .default_value(0.)
         .implicit_value(1.)
         .nargs(ap::nargs::up_to(5));
 
