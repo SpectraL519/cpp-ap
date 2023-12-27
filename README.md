@@ -22,30 +22,93 @@ Argument Parser for C++20
 
 2. Building and running tests:
 
-    * Building
+    * With GNU Make
 
         ```
         > cd <project-root>/test
         > make all
         ```
-
-    * Running
         ```
         > ./test
         ```
         ```
         > ./test -ts="<test-suite-name>"
+        ```
+    
+    * With CMake
+        ```
+        > cd <project-root>/test/cmake
+        > cmake ..
+        > make
+        ```
+        ```
+        > ./test/out/test
+        ```
+        ```
+        > ./test/out/test -ts="<test-suite-name>"
+        ```
 
 3. Error fixing:
 
-    In case you face an error in Windows saying that:
+    * Makefile error
+
+        In case you face an error in Windows saying that:
         ```
         ...\profile.ps1 cannot be loaded because running scripts is disable on this system. ...
         ```
-    Then you should run the following command to enable running scripts by Windows' Makefile:
+        Then you should run the following command to enable running scripts by Windows' Makefile:
         ```
         > PowerShell -ExecutionPolicy Bypass
         ```
+    * Wrong CMake generator
+
+        In case you generate VS Studio files by using CMake instead of Makefile then you should change used generator in CMake by using the following command:
+        ```
+        > cmake -G "Unix Makefiles" ..
+        ```
+        Instead of this command:
+        ```
+        > cmake ..
+        ```
+        In case this fix does not work then you will probably have to search for another generator matching your system's requirements. You can do that by listing all available generators in "Generators" section when running the following command:
+        ```
+        > cmake --help
+        ```
+        Just try to find a right generator for your system and run mentioned command by subtituting a chosen generator into this command:
+        ```
+        > cmake -G "<generator>" ..
+        ```
+
+4. Tips and tricks:
+
+    * CMake compiler swap
+
+        In case you would like to swap used compiler in CMake to the same compiler with other version or a different compiler then you should run cmake command by using -D flag in the following way:
+        ```
+        > cmake -DCMAKE_CXX_COMPILER=<compiler> ..
+        ```
+        The default is:
+        ```
+        > cmake -DCMAKE_CXX_COMPILER=g++ ..
+        ```
+        You can also change used flags in current compiler in the following way:
+        ```
+        > cmake -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
+        ```
+        Or both things at once:
+        ```
+        > cmake -DCMAKE_CXX_COMPILER=<compiler> -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
+        ```
+
+    * GNU Make non-default compiler usage
+
+        In case you would like to use non-default compiler in GNU Make which is clang++ then you should run make with following parameters:
+        ```
+        > make <your_target> CXX=clang++
+        ```
+        Default compiler is g++. Flags for other compilers than g++ and clang++ are not prepared. You will have to change them manually in the code in case of another compiler usage.
+
+    Remember that this project does not work with older standards of c++ than c++-20.
 
 
 ## Documentation

@@ -5,6 +5,9 @@
 *.exe
 test/out/*
 test/test
+log/*
+test/cmake/*
+!test/cmake/.gitkeep
 
 # documentation files
 /documentation

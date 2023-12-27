@@ -188,7 +188,7 @@ template <typename AS>
 concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
 template <valid_action_specifier AS, ap::utility::valid_argument_value_type T>
-using callable_type = typename AS::type<T>;
+using callable_type = typename AS::template type<T>;
 
 template <ap::utility::valid_argument_value_type T>
 using action_variant_type =
