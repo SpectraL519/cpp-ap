@@ -18,7 +18,8 @@ endif
 ifeq ($(SYSTEM), unknown)
     $(info This program does not support your operating system.)
 else
-    MAKEFILE := $(DIR_MAKEFILE)/system_$(SYSTEM).mk
+    MAKEFILE := $(DIR_MAKEFILE)/$(SYSTEM).mk
     $(info Including: $(MAKEFILE))
+    $(info )
     include $(MAKEFILE)
 endif
