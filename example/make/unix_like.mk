@@ -35,7 +35,7 @@ OBJECTS := $(notdir $(SOURCES:.cpp=))
 COUNT_OBJ := 0
 COUNT_SRC := $(words $(SOURCES))
 
-.PHONY: all build clean help
+.PHONY: all build clean cleansys cleanall help
 
 all: clean build
 
@@ -60,6 +60,16 @@ clean:
 	@echo Cleaning all generated files...
 	@$(FIND) $(DIR_EXE) -type f ! -name .gitkeep -delete
 	@echo All generated files removed!
+	@echo
+
+cleansys:
+	@echo Removing .sys file...
+	@$(RM) $(DIR_LOG)/*.sys
+	@echo Removed .sys file!
+	@echo
+
+cleanall: clean cleansys
+	@echo Removed everything!
 	@echo
 
 help:

@@ -35,7 +35,7 @@ FILE_COUNT 	:= count.tmp
 COUNT_OBJ 	:= 0
 COUNT_SRC 	:= $(words $(SOURCES))
 
-.PHONY: all build init destroy clean help
+.PHONY: all build init destroy clean cleansys cleanall help
 
 all: clean build
 
@@ -67,6 +67,16 @@ clean:
 	@for %%i in ($(DIR_EXE)\*) do if /I not "%%~nxi" == ".gitkeep" del "%%i"
 	@$(DEL) $(DIR_CURR)\$(FILE_COUNT) 2>NUL
 	@echo All generated files removed!
+	@echo.
+
+cleansys:
+	@echo Removing .sys file...
+	@$(DEL) $(DIR_LOG)\*.sys 2>NUL
+	@echo Removed .sys file!
+	@echo.
+
+cleanall: clean cleansys
+	@echo Removed everything!
 	@echo.
 
 help:
