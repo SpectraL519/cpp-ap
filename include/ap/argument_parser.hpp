@@ -108,7 +108,7 @@ public:
 
     [[nodiscard]] std::weak_ordering contains(const range::count_type n) const {
         if (not (this->_nlow.has_value() or this->_nhigh.has_value()))
-            return std::weak_ordering::equivalent; // TODO: add tests
+            return std::weak_ordering::equivalent;
 
         if (this->_nlow.has_value() and this->_nhigh.has_value()) {
             if (n < this->_nlow.value())
@@ -162,7 +162,6 @@ private:
 }
 
 [[nodiscard]] inline range any() {
-    // TODO: add tests
     return range(std::nullopt, std::nullopt);
 }
 
