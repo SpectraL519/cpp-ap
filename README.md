@@ -74,7 +74,7 @@ Argument Parser for C++20
         ```
         > cmake --help
         ```
-        Just try to find a right generator for your system and run mentioned command but subtituting a chosen generator into this command:
+        Just try to find a right generator for your system and run mentioned command by subtituting a chosen generator into this command:
         ```
         > cmake -G "<generator>" ..
         ```
@@ -93,7 +93,7 @@ Argument Parser for C++20
         ```
 
     * GNU Make compiler swap
-    
+
         In case you would like to swap used compiler in GNU Make to clang++ then you should run make with following parameters:
         ```
         > make <your_target> CXX=clang++
