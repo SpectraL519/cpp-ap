@@ -15,7 +15,7 @@ Argument Parser for C++20
 ## DEV NOTES
 
 1. Requirements:
-   * g++ >= g++-20
+   * g++ >= g++-11
    * clang-format-17 ([ubuntu download tutorial](https://ubuntuhandbook.org/index.php/2023/09/how-to-install-clang-17-or-16-in-ubuntu-22-04-20-04/amp/?fbclid=IwAR1ZfJpoiitjwn8aMlKVWpFdkYmUqtaQwraJBju09v1gtc0jQANTgVeCuMY))
 
 <br />
@@ -89,18 +89,26 @@ Argument Parser for C++20
         ```
         The default is:
         ```
-        > cmake -DCMAKE_CXX_COMPILER=g++-20 ..
+        > cmake -DCMAKE_CXX_COMPILER=g++ ..
+        ```
+        You can also change used flags in current compiler in the following way:
+        ```
+        > cmake -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
+        ```
+        Or both things at once:
+        ```
+        > cmake -DCMAKE_CXX_COMPILER=<compiler> -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
         ```
 
-    * GNU Make compiler swap
+    * GNU Make non-default compiler usage
 
-        In case you would like to swap used compiler in GNU Make to clang++ then you should run make with following parameters:
+        In case you would like to use non-default compiler in GNU Make which is clang++ then you should run make with following parameters:
         ```
         > make <your_target> CXX=clang++
         ```
-        Default compiler is g++-20. Flags for other compilers than g++ and clang++ are not prepared. You will have to change them manually in the code in case of another compiler usage.
+        Default compiler is g++. Flags for other compilers than g++ and clang++ are not prepared. You will have to change them manually in the code in case of another compiler usage.
 
-    Remember that this project does not work with older versions of g++ than g++-20.
+    Remember that this project does not work with older standards of c++ than c++-20.
 
 
 ## Documentation

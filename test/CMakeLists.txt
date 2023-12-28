@@ -31,6 +31,17 @@ set_target_properties(test PROPERTIES
     CXX_EXTENSIONS NO
 )
 
+# Default compile options
+set(DEFAULT_CXX_FLAGS "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3")
+
+# Setting the compile options with default or command line values
+if(NOT DEFINED CMAKE_CXX_FLAGS)
+    set(CMAKE_CXX_FLAGS ${DEFAULT_CXX_FLAGS} CACHE STRING "Default C++ compile flags" FORCE)
+endif()
+
+# Adding compile options
+target_compile_options(test PRIVATE ${CMAKE_CXX_FLAGS})
+
 # Setting the path to the directory where executables will be linked
 set(EXECUTABLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${EXECUTABLE_DIR}")
 
