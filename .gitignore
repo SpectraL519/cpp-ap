@@ -3,7 +3,7 @@
 
 # build files
 *.exe
-test/build/*
+test/out/*
 test/test
 
 # documentation files

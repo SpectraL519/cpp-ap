@@ -765,7 +765,12 @@ public:
 
     bool has_value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
-        return arg_opt ? arg_opt.value().get().has_value() : false;
+        return arg_opt ? arg_opt->get().has_value() : false; // TODO: throw
+    }
+
+    std::size_t count(std::string_view arg_name) const {
+        const auto arg_opt = this->_get_argument(arg_name);
+        return arg_opt ? arg_opt->get().nused() : 0u; // TODO: throw
     }
 
     template <std::copy_constructible T = std::string>
