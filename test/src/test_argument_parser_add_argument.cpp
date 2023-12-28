@@ -1,10 +1,10 @@
 #define AP_TESTING
 
-#include "../doctest.h"
+#include "doctest.h"
+#include "argument_parser_test_fixture.hpp"
+#include "optional_argument_test_fixture.hpp"
 
 #include <ap/argument_parser.hpp>
-#include <argument_parser_test_fixture.hpp>
-#include <optional_argument_test_fixture.hpp>
 
 #include <iostream>
 
