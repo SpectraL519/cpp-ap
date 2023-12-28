@@ -15,7 +15,7 @@ Argument Parser for C++20
 ## DEV NOTES
 
 1. Requirements:
-   * g++ >= g++-11
+   * g++ >= g++-20
    * clang-format-17 ([ubuntu download tutorial](https://ubuntuhandbook.org/index.php/2023/09/how-to-install-clang-17-or-16-in-ubuntu-22-04-20-04/amp/?fbclid=IwAR1ZfJpoiitjwn8aMlKVWpFdkYmUqtaQwraJBju09v1gtc0jQANTgVeCuMY))
 
 <br />
@@ -98,9 +98,9 @@ Argument Parser for C++20
         ```
         > make <your_target> CXX=clang++
         ```
-        Default compiler is g++-20.
+        Default compiler is g++-20. Flags for other compilers than g++ and clang++ are not prepared. You will have to change them manually in the code in case of another compiler usage.
 
-    Remember that this project does not work with older versions of g++ than g++-11.
+    Remember that this project does not work with older versions of g++ than g++-20.
 
 
 ## Documentation
