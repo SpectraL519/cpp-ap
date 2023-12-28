@@ -101,6 +101,17 @@ TEST_CASE("range builders should return correct range objects") {
         REQUIRE(std::is_gt(sut.contains(nhigh + 1)));
         REQUIRE(std::is_gt(sut.contains(nmax)));
     }
+
+    SUBCASE("any") {
+        const auto sut = any();
+
+        REQUIRE(std::is_eq(sut.contains(nmin)));
+        REQUIRE(std::is_eq(sut.contains(ndefault)));
+        REQUIRE(std::is_eq(sut.contains(nlow)));
+        REQUIRE(std::is_eq(sut.contains(nmid)));
+        REQUIRE(std::is_eq(sut.contains(nhigh)));
+        REQUIRE(std::is_eq(sut.contains(nmax)));
+    }
 }
 
 TEST_SUITE_END(); // test_nargs_range
