@@ -1,18 +1,62 @@
 # Structure
-INCLUDE_DIR := ../include
-EXAMPLE_SRC := ./main.cpp
-EXAMPLE_EXEC := example
+DIR_CURR 		:= .
+DIR_PREV 		:= ..
+DIR_INC_GLOB 		:= $(DIR_PREV)/include
+DIR_SRC 		:= $(DIR_CURR)/src
+DIR_EXE			:= $(DIR_CURR)/exe
 
+# Shell
+DEL := del /Q
 
 # Compiler & flags
-CXX := g++
-CXX_STD := -std=c++2a
-CXX_FLAGS += $(CXX_STD) -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
-COMPILE_ARGS := -I $(INCLUDE_DIR) $(CXX_FLAGS)
+CXX ?= g++
 
+ifeq ($(CXX), clang++)
+CXX_FLAGS := -Weverything -pedantic -Wno-c++98-compat -g
+else
+CXX_FLAGS := -std=c++2a -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
+endif
 
-all:
-	$(CXX) -o $(EXAMPLE_EXEC) $(EXAMPLE_SRC) $(COMPILE_ARGS)
+CXX_ARGS := -I $(DIR_INC_GLOB) $(CXX_FLAGS)
+
+# Test source & object files
+SOURCES := $(wildcard $(DIR_SRC)/*.cpp)
+OBJECTS := $(notdir $(SOURCES:.cpp=))
+
+FILE_COUNT 	:= count.tmp
+COUNT_OBJ 	:= 0
+COUNT_SRC 	:= $(words $(SOURCES))
+
+.PHONY: all build init destroy clean help
+
+all: clean build
+
+build: init $(OBJECTS) destroy
+	@echo.
+	@echo Build successful!
+
+%: $(DIR_SRC)/%.cpp
+	@$(shell powershell -command echo $$(($(shell powershell -command type $(DIR_CURR)/$(FILE_COUNT))+1)) > $(DIR_CURR)/$(FILE_COUNT))
+	@echo [$(shell powershell -command type $(DIR_CURR)/$(FILE_COUNT))/$(COUNT_SRC)] Compiling: $<
+	@$(CXX) $< -o $(DIR_EXE)/$@ $(CXX_ARGS)
+
+init:
+	@$(shell powershell -command echo 0 > $(DIR_CURR)/$(FILE_COUNT))
+
+destroy:
+	@$(DEL) $(DIR_CURR)\$(FILE_COUNT) 2>NUL
 
 clean:
-	del $(EXAMPLE_EXEC).exe
+	@echo Cleaning all generated files...
+	@for %%i in ($(DIR_EXE)\*) do if /I not "%%~nxi" == ".gitkeep" del "%%i"
+	@$(DEL) $(DIR_CURR)\$(FILE_COUNT) 2>NUL
+	@echo All generated files removed!
+	@echo.
+
+help:
+	@echo Available targets:
+	@echo   all        - Clean and build the example module
+	@echo   build      - Build the example module
+	@echo   clean      - Clean all generated files in example module
+	@echo   help       - Display this help message
+
