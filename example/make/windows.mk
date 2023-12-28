@@ -71,7 +71,7 @@ clean:
 
 cleansys:
 	@echo Removing .sys file...
-	@$(DEL) $(DIR_LOG)\*.sys 2>NUL
+	@$(DEL) ..\log\windows.sys
 	@echo Removed .sys file!
 	@echo.
 
