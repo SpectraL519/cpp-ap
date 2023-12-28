@@ -28,6 +28,40 @@ TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
+    "default_positional_arguments should add the specified arguments"
+) {
+    sut.default_positional_arguments({
+        ap::default_argument::positional::input,
+        ap::default_argument::positional::output
+    });
+
+    REQUIRE_FALSE(sut_get_argument("input")->get().is_optional());
+    REQUIRE_FALSE(sut_get_argument("output")->get().is_optional());
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "default_optional_arguments should add the specified arguments"
+) {
+    sut.default_optional_arguments({
+        ap::default_argument::optional::help,
+        ap::default_argument::optional::input,
+        ap::default_argument::optional::output
+    });
+
+    REQUIRE(sut_get_argument("help")->get().is_optional());
+    REQUIRE(sut_get_argument("h")->get().is_optional());
+
+    REQUIRE(sut_get_argument("input")->get().is_optional());
+    REQUIRE(sut_get_argument("i")->get().is_optional());
+
+    REQUIRE(sut_get_argument("output")->get().is_optional());
+    REQUIRE(sut_get_argument("o")->get().is_optional());
+}
+
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
     "add_positional_argument should return a positional argument reference"
 ) {
     const auto& argument = sut.add_positional_argument(name, short_name);

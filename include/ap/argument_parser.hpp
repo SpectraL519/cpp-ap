@@ -729,7 +729,9 @@ public:
     template <bool StoreImplicitly = true>
     argument::optional_argument<bool>& add_flag(std::string_view name) {
         return this->add_optional_argument<bool>(name)
-                    .default_value(not StoreImplicitly).implicit_value(StoreImplicitly);
+                    .default_value(not StoreImplicitly)
+                    .implicit_value(StoreImplicitly)
+                    .nargs(0);
     }
 
     template <bool StoreImplicitly = true>
@@ -737,7 +739,9 @@ public:
         std::string_view name, std::string_view short_name
     ) {
         return this->add_optional_argument<bool>(name, short_name)
-                    .default_value(not StoreImplicitly).implicit_value(StoreImplicitly);
+                    .default_value(not StoreImplicitly)
+                    .implicit_value(StoreImplicitly)
+                    .nargs(0);
     }
 
     void parse_args(int argc, char* argv[]) {
