@@ -38,7 +38,7 @@ FILE_COUNT 	:= count.tmp
 COUNT_OBJ 	:= $(shell powershell -command type $(DIR_OUT)/$(FILE_COUNT))
 COUNT_SRC 	:= $(words $(APP_SRC))
 
-.PHONY: all build init destroy clean cleansys cleanall help
+.PHONY: all build init destroy clean help
 
 all: clean build
 
@@ -73,22 +73,10 @@ clean:
 	@echo All generated files removed!
 	@echo.
 
-cleansys:
-	@echo Removing .sys file...
-	@$(DEL) ..\log\windows.sys
-	@echo Removed .sys file!
-	@echo.
-
-cleanall: clean cleansys
-	@echo Removed everything!
-	@echo.
-
 help:
 	@echo Available targets:
 	@echo   all        - Clean and build the test module
 	@echo   build      - Build the test module
 	@echo   clean      - Clean all generated files in the test module
 	@echo   help       - Display this help message
-	@echo   cleanall   - Clean all generated files
-	@echo   cleansys   - Clean .sys generated file
 	

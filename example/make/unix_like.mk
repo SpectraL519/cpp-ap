@@ -35,7 +35,7 @@ OBJECTS := $(notdir $(SOURCES:.cpp=))
 COUNT_OBJ := 0
 COUNT_SRC := $(words $(SOURCES))
 
-.PHONY: all build clean cleansys cleanall help
+.PHONY: all build clean help
 
 all: clean build
 
@@ -62,21 +62,9 @@ clean:
 	@echo All generated files removed!
 	@echo
 
-cleansys:
-	@echo Removing .sys file...
-	@$(RM) $(DIR_LOG)/*.sys
-	@echo Removed .sys file!
-	@echo
-
-cleanall: clean cleansys
-	@echo Removed everything!
-	@echo
-
 help:
 	@echo "Available targets:"
-	@echo "  all        - Clean and build the test module"
-	@echo "  build      - Build the test module"
-	@echo "  clean      - Clean all generated files in test module"
+	@echo "  all        - Clean and build the example module"
+	@echo "  build      - Build the example module"
+	@echo "  clean      - Clean all generated files in example module"
 	@echo "  help       - Display this help message"
-	@echo "  cleanall   - Clean all generated files"
-	@echo "  cleansys   - Clean .sys generated file"
