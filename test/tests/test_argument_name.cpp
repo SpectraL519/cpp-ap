@@ -7,7 +7,7 @@
 #include <sstream>
 #include <string_view>
 
-using namespace ap::argument;
+using namespace ap::argument::detail;
 
 
 namespace {

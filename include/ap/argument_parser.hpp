@@ -107,6 +107,9 @@ public:
     }
 
     [[nodiscard]] std::weak_ordering contains(const range::count_type n) const {
+        if (not (this->_nlow.has_value() or this->_nhigh.has_value()))
+            return std::weak_ordering::equivalent;
+
         if (this->_nlow.has_value() and this->_nhigh.has_value()) {
             if (n < this->_nlow.value())
                 return std::weak_ordering::less;
@@ -129,6 +132,7 @@ public:
     friend range more_than(const count_type);
     friend range less_than(const count_type);
     friend range up_to(const count_type);
+    friend range any();
 
 private:
     range(const std::optional<count_type> nlow, const std::optional<count_type> nhigh)
@@ -155,6 +159,10 @@ private:
 
 [[nodiscard]] inline range up_to(const range::count_type n) {
     return range(std::nullopt, n);
+}
+
+[[nodiscard]] inline range any() {
+    return range(std::nullopt, std::nullopt);
 }
 
 } // namespace nargs
@@ -205,6 +213,8 @@ detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
 namespace argument {
 
+namespace detail {
+
 struct argument_name {
     argument_name() = delete;
     argument_name& operator= (const argument_name&) = delete;
@@ -246,8 +256,6 @@ struct argument_name {
     const std::string name;
     const std::optional<std::string> short_name;
 };
-
-namespace detail {
 
 class argument_interface {
 public:
@@ -329,7 +337,7 @@ public:
 #endif
 
 private:
-    [[nodiscard]] inline const argument_name& name() const override {
+    [[nodiscard]] inline const detail::argument_name& name() const override {
         return this->_name;
     }
 
@@ -408,7 +416,7 @@ private:
     using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional{false};
-    const argument_name _name;
+    const detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
     static constexpr bool _required{true};
@@ -502,7 +510,7 @@ public:
 #endif
 
 private:
-    [[nodiscard]] inline const argument_name& name() const override {
+    [[nodiscard]] inline const detail::argument_name& name() const override {
         return this->_name;
     }
 
@@ -597,7 +605,7 @@ private:
     using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional{true};
-    const argument_name _name;
+    const detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
     bool _required{false};
@@ -617,6 +625,20 @@ private:
 } // namespace argument
 
 
+struct default_argument {
+    enum class positional : uint8_t {
+        input,
+        output
+    };
+
+    enum class optional : uint8_t {
+        help,
+        input,
+        output
+    };
+};
+
+
 class argument_parser {
 public:
     argument_parser() = default;
@@ -634,6 +656,22 @@ public:
 
     inline argument_parser& program_description(std::string_view description) {
         this->_program_description = description;
+        return *this;
+    }
+
+    inline argument_parser& default_positional_arguments(
+        const std::vector<default_argument::positional>& args
+    ) {
+        for (const auto arg : args)
+            this->_add_default_positional_argument(arg);
+        return *this;
+    }
+
+    inline argument_parser& default_optional_arguments(
+        const std::vector<default_argument::optional>& args
+    ) {
+        for (const auto arg : args)
+            this->_add_default_optional_argument(arg);
         return *this;
     }
 
@@ -686,6 +724,24 @@ public:
         this->_optional_args.push_back(
             std::make_unique<argument::optional_argument<T>>(name, short_name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
+    }
+
+    template <bool StoreImplicitly = true>
+    argument::optional_argument<bool>& add_flag(std::string_view name) {
+        return this->add_optional_argument<bool>(name)
+                    .default_value(not StoreImplicitly)
+                    .implicit_value(StoreImplicitly)
+                    .nargs(0);
+    }
+
+    template <bool StoreImplicitly = true>
+    argument::optional_argument<bool>& add_flag(
+        std::string_view name, std::string_view short_name
+    ) {
+        return this->add_optional_argument<bool>(name, short_name)
+                    .default_value(not StoreImplicitly)
+                    .implicit_value(StoreImplicitly)
+                    .nargs(0);
     }
 
     void parse_args(int argc, char* argv[]) {
@@ -767,8 +823,45 @@ public:
 #endif
 
 private:
+    void _add_default_positional_argument(const default_argument::positional arg) {
+        switch (arg) {
+            case default_argument::positional::input:
+                this->add_positional_argument("input")
+                     .help("Input file path");
+                break;
+
+            case default_argument::positional::output:
+                this->add_positional_argument("output")
+                     .help("Output file path");
+                break;
+        }
+    }
+
+    void _add_default_optional_argument(const default_argument::optional arg) {
+        switch (arg) {
+            case default_argument::optional::help:
+                this->add_flag("help", "h")
+                     .bypass_required()
+                     .help("Display help message");
+                     // TODO: on flag action
+                break;
+
+            case default_argument::optional::input:
+                this->add_optional_argument("input", "i")
+                     .required() // ?
+                     .help("Input file path");
+                break;
+
+            case default_argument::optional::output:
+                this->add_optional_argument("output", "o")
+                     .required() // ?
+                     .help("Output file path");
+                break;
+        }
+    }
+
     struct cmd_argument {
-        enum class type_discriminator { flag, value };
+        enum class type_discriminator : bool { flag, value };
 
         cmd_argument() = default;
         cmd_argument(const cmd_argument&) = default;
