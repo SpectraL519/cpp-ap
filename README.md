@@ -50,14 +50,53 @@ Argument Parser for C++20
 
 3. Error fixing:
 
-    In case you face an error in Windows saying that:
+    * Makefile error
+        In case you face an error in Windows saying that:
         ```
         ...\profile.ps1 cannot be loaded because running scripts is disable on this system. ...
         ```
-    Then you should run the following command to enable running scripts by Windows' Makefile:
+        Then you should run the following command to enable running scripts by Windows' Makefile:
         ```
         > PowerShell -ExecutionPolicy Bypass
         ```
+    * Wrong CMake generator
+        In case you generate VS Studio files by using CMake instead of Makefile then you should change used generator in CMake by using the following command:
+        ```
+        > cmake -G "Unix Makefiles" ..
+        ```
+        Instead of this command:
+        ```
+        > cmake ..
+        ```
+        In case this fix does not work then you will probably have to search for another generator matching your system's requirements. You can do that by listing all available generators in "Generators" section when running the following command:
+        ```
+        > cmake --help
+        ```
+        Just try to find a right generator for your system and run mentioned command but subtituting a chosen generator into this command:
+        ```
+        > cmake -G "<generator>" ..
+        ```
+
+4. Tips and tricks:
+
+    * CMake compiler swap
+        In case you would like to swap used compiler in CMake to the same compiler with other version or a different compiler then you should run cmake command by using -D flag in the following way:
+        ```
+        > cmake -DCMAKE_CXX_COMPILER=<compiler> ..
+        ```
+        The default is:
+        ```
+        > cmake -DCMAKE_CXX_COMPILER=g++-20 ..
+        ```
+
+    * GNU Make compiler swap
+        In case you would like to swap used compiler in GNU Make to clang++ then you should run make with following parameters:
+        ```
+        > make <your_target> CXX=clang++
+        ```
+        Default compiler is g++-20.
+
+    Remember that this project does not work with older versions of g++ than g++-11.
 
 
 ## Documentation
