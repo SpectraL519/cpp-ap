@@ -264,22 +264,6 @@ TEST_SUITE_BEGIN("test_argument_parser_parse_args::has_value");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "has_value should return false if there is no argument with given name present"
-) {
-    add_arguments(sut, non_default_num_args, non_default_args_split);
-
-    const auto argc = get_argc(non_default_num_args, non_default_args_split);
-    auto argv = prepare_argv(non_default_num_args, non_default_args_split);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-
-    REQUIRE_FALSE(sut.has_value(invalid_arg_name));
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
     "has_value should return false before calling parse_args"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
@@ -294,6 +278,21 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
     "has_value should return false if there is no argument with given name present"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    const auto argc = get_argc(non_default_num_args, non_default_args_split);
+    auto argv = prepare_argv(non_default_num_args, non_default_args_split);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+    REQUIRE_FALSE(sut.has_value(invalid_arg_name));
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "has_value should return false when an argument has no values"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -356,6 +355,90 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_SUITE_END(); // test_argument_parser_parse_args::has_value
+
+
+TEST_SUITE_BEGIN("test_argument_parser_parse_args::count");
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "count should return 0 before calling parse_args"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    for (std::size_t i = 0; i < non_default_num_args; i++) {
+        const auto arg_name = prepare_arg_name(i);
+        REQUIRE_EQ(sut.count(arg_name.name), 0u);
+        REQUIRE_EQ(sut.count(arg_name.short_name.value()), 0u);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "count should return 0 if there is no argument with given name present"
+) {
+    add_arguments(sut, non_default_num_args, non_default_args_split);
+
+    const auto argc = get_argc(non_default_num_args, non_default_args_split);
+    auto argv = prepare_argv(non_default_num_args, non_default_args_split);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+    REQUIRE_EQ(sut.count(invalid_arg_name), 0u);
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "count should return the number of argument's flag usage"
+) {
+    // prepare sut
+    sut.add_positional_argument(positional_arg_name, positional_arg_short_name);
+    sut.add_optional_argument(optional_arg_name, optional_arg_short_name)
+       .nargs(ap::nargs::any());
+
+    // expected values
+    const std::size_t positional_count = 1u;
+    const std::size_t optional_count = 4u;
+
+    // prepare argc & argv
+    const int argc = 1 + positional_count + 2 * optional_count + 1;
+    char** argv = new char*[argc];
+
+    argv[0] = new char[8];
+    std::strcpy(argv[0], "program");
+
+    const std::string positional_arg_value = "positonal_arg_value";
+    argv[1] = new char[positional_arg_value.length() + 1];
+    std::strcpy(argv[1], positional_arg_value.c_str());
+
+    const std::string optional_arg_flag = "--" + optional_arg_name;
+    const std::string optional_arg_value = optional_arg_name + "_value";
+    for (std::size_t i = 2; i < argc; i += 2) {
+        if (i == argc - 1) {
+            argv[i] = new char[optional_arg_value.length() + 1];
+            std::strcpy(argv[i], optional_arg_value.c_str());
+            continue;
+        }
+
+        argv[i] = new char[optional_arg_flag.length() + 1];
+        std::strcpy(argv[i], optional_arg_flag.c_str());
+
+        argv[i + 1] = new char[optional_arg_value.length() + 1];
+        std::strcpy(argv[i + 1], optional_arg_value.c_str());
+    }
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    // test count
+    REQUIRE_EQ(sut.count(positional_arg_name), positional_count);
+    REQUIRE_EQ(sut.count(optional_arg_name), optional_count);
+
+    // free argv
+    free_argv(argc, argv);
+}
+
+TEST_SUITE_END(); // test_argument_parser_parse_args::count
 
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::value");
