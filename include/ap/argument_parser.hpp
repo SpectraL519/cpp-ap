@@ -281,6 +281,7 @@ protected:
 
     virtual void set_used() = 0;
     virtual bool is_used() const = 0;
+    virtual std::size_t nused() const = 0;
 
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
@@ -357,6 +358,10 @@ private:
 
     [[nodiscard]] inline bool is_used() const override {
         return this->_value.has_value();
+    }
+
+    [[nodiscard]] inline std::size_t nused() const override {
+        return static_cast<std::size_t>(this->_value.has_value());
     }
 
     positional_argument& set_value(const std::string& str_value) override {
@@ -527,11 +532,15 @@ private:
     }
 
     void set_used() override {
-        this->_used = true; // TODO: use _count
+        this->_nused++;
     }
 
     [[nodiscard]] inline bool is_used() const override {
-        return this->_used;
+        return this->_nused > 0;
+    }
+
+    [[nodiscard]] inline std::size_t nused() const override {
+        return this->_nused;
     }
 
     optional_argument& set_value(const std::string& str_value) override {
@@ -582,11 +591,11 @@ private:
 
     [[nodiscard]] inline bool _has_predefined_value() const {
         return this->_default_value.has_value() or
-               (this->_used and this->_implicit_value.has_value());
+               (this->is_used() and this->_implicit_value.has_value());
     }
 
     [[nodiscard]] inline const std::any& _predefined_value() const {
-        return this->_used ? this->_implicit_value : this->_default_value;
+        return this->is_used() ? this->_implicit_value : this->_default_value;
     }
 
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
@@ -616,7 +625,7 @@ private:
     std::any _default_value;
     std::any _implicit_value;
 
-    bool _used = false;
+    std::size_t _nused{0u};
     std::vector<std::any> _values;
 
     std::stringstream _ss;
