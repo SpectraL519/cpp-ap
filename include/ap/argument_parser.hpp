@@ -728,14 +728,14 @@ public:
 
     template <bool StoreImplicitly = true>
     argument::optional_argument<bool>& add_flag(std::string_view name) {
-        // TODO: add tests
         return this->add_optional_argument<bool>(name)
                     .default_value(not StoreImplicitly).implicit_value(StoreImplicitly);
     }
 
     template <bool StoreImplicitly = true>
-    argument::optional_argument<bool>& add_flag(std::string_view name, std::string_view short_name) {
-        // TODO: add tests
+    argument::optional_argument<bool>& add_flag(
+        std::string_view name, std::string_view short_name
+    ) {
         return this->add_optional_argument<bool>(name, short_name)
                     .default_value(not StoreImplicitly).implicit_value(StoreImplicitly);
     }
