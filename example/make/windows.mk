@@ -19,6 +19,14 @@ endif
 
 CXX_ARGS := -I $(DIR_INC_GLOB) $(CXX_FLAGS)
 
+# Enumeration
+ENUMARATE := false
+
+ifeq ($(filter all build,$(MAKECMDGOALS)),)
+else
+ENUMARATE := true
+endif
+
 # Test source & object files
 SOURCES := $(wildcard $(DIR_SRC)/*.cpp)
 OBJECTS := $(notdir $(SOURCES:.cpp=))
@@ -36,9 +44,17 @@ build: init $(OBJECTS) destroy
 	@echo Build successful!
 
 %: $(DIR_SRC)/%.cpp
+ifeq ($(ENUMARATE), true)
 	@$(shell powershell -command echo $$(($(shell powershell -command type $(DIR_CURR)/$(FILE_COUNT))+1)) > $(DIR_CURR)/$(FILE_COUNT))
 	@echo [$(shell powershell -command type $(DIR_CURR)/$(FILE_COUNT))/$(COUNT_SRC)] Compiling: $<
+else
+	@echo Compiling: $<
+endif
 	@$(CXX) $< -o $(DIR_EXE)/$@ $(CXX_ARGS)
+ifeq ($(ENUMARATE), false)
+	@echo Build successful!
+	@echo.
+endif
 
 init:
 	@$(shell powershell -command echo 0 > $(DIR_CURR)/$(FILE_COUNT))
