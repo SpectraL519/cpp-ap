@@ -12,7 +12,7 @@ DEL := del /Q
 CXX ?= g++
 
 ifeq ($(CXX), clang++)
-CXX_FLAGS := -Weverything -pedantic -Wno-c++98-compat -g
+CXX_FLAGS := -std=c++2a -pedantic -Wno-c++98-compat -g
 else
 CXX_FLAGS := -std=c++2a -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
 endif
@@ -75,4 +75,3 @@ help:
 	@echo   build      - Build the example module
 	@echo   clean      - Clean all generated files in example module
 	@echo   help       - Display this help message
-
