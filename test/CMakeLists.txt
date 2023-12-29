@@ -8,7 +8,7 @@ project(cpp-ap)
 set(SOURCE_DIRS "src" "app")
 set(INCLUDE_DIRS "include" "../include")
 set(BINARY_DIR "..")
-set(EXECUTABLE_DIR ".")
+set(EXECUTABLE_DIR "cmake/exe")
 
 # Source files
 file(GLOB_RECURSE SOURCES "")
