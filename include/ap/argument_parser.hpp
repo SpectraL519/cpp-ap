@@ -67,53 +67,53 @@ namespace error {
             : std::runtime_error("Argument '" + arg_name + "' has already set value.") {}
     };
 
-    class invalid_value_error : public std::invalid_argument {
+    class invalid_value_error : public std::runtime_error {
     public:
         explicit invalid_value_error(const std::string& arg_name, const std::string& value)
-            : std::invalid_argument("Failed to parse value '" + value + "' for argument '" + 
+            : std::runtime_error("Failed to parse value '" + value + "' for argument '" + 
                 arg_name + "'. Invalid format.") {}
     };
 
 
-    class invalid_choice_error : std::invalid_argument {
+    class invalid_choice_error : std::runtime_error {
     public:
         explicit invalid_choice_error(const std::string& arg_name, const std::string& value)
-            : std::invalid_argument("Value '" + value + "' is not in choices for argument '" + 
+            : std::runtime_error("Value '" + value + "' is not in choices for argument '" + 
                 arg_name + "'.") {}
     };
 
-    class positional_argument_name_used_error : public std::invalid_argument {
+    class positional_argument_name_used_error : public std::runtime_error {
     public:
         explicit positional_argument_name_used_error(const std::string& arg_name)
-            : std::invalid_argument("Argument name collision. Positional argument with name '" + arg_name + 
+            : std::runtime_error("Argument name collision. Positional argument with name '" + arg_name + 
                 "' already exists.") {}
 
         explicit positional_argument_name_used_error(const std::string& arg_name, const std::string& arg_short_name)
-            : std::invalid_argument("Argument name collision. Positional argument with a name '" + arg_name + 
+            : std::runtime_error("Argument name collision. Positional argument with a name '" + arg_name + 
                 "' or a short name '" + arg_short_name + "' already exists.") {}
     };
 
-    class optional_argument_name_used_error : public std::invalid_argument {
+    class optional_argument_name_used_error : public std::runtime_error {
     public:
         explicit optional_argument_name_used_error(const std::string& arg_name)
-            : std::invalid_argument("Argument name collision. Optional argument with name '" + arg_name + 
+            : std::runtime_error("Argument name collision. Optional argument with name '" + arg_name + 
                 "' already exists.") {}
 
         explicit optional_argument_name_used_error(const std::string& arg_name, const std::string& arg_short_name)
-            : std::invalid_argument("Argument name collision. Optional argument with name '" + arg_name + 
+            : std::runtime_error("Argument name collision. Optional argument with name '" + arg_name + 
                 "' or short name '" + arg_short_name + "' already exists.") {}
     };
 
-    class argument_name_not_found_error : std::invalid_argument {
+    class argument_name_not_found_error : std::runtime_error {
     public:
         explicit argument_name_not_found_error(const std::string& arg_name)
-            : std::invalid_argument("Argument with name '" + arg_name + "' was not found.") {}
+            : std::runtime_error("Argument with name '" + arg_name + "' was not found.") {}
     };
 
-    class invalid_value_type_error : std::invalid_argument {
+    class invalid_value_type_error : std::runtime_error {
     public:
         explicit invalid_value_type_error(const std::type_info& arg_type)
-            : std::invalid_argument("Failed to cast type '" + std::string(arg_type.name()) + 
+            : std::runtime_error("Failed to cast type '" + std::string(arg_type.name()) + 
                 "' was not found.") {}
     };
 
