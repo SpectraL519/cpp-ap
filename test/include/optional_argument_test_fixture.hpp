@@ -53,7 +53,8 @@ struct optional_argument_test_fixture {
     [[nodiscard]] inline std::weak_ordering sut_nvalues_in_range(
         const optional_argument<T>& sut
     ) const {
-        return sut.nvalues_in_range();
+        const auto [correct_nvalues, nargs_range_nlow, nargs_range_nhigh] = sut.nvalues_in_range();
+        return correct_nvalues;
     }
 
     template <readable T>

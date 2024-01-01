@@ -42,6 +42,8 @@ SOFTWARE.
 #include <type_traits>
 #include <variant>
 #include <vector>
+#include <typeinfo>
+#include <tuple>
 
 #ifdef AP_TESTING
 
@@ -57,6 +59,135 @@ struct argument_parser_test_fixture;
 namespace ap {
 
 class argument_parser;
+
+namespace error {
+    class value_already_set_error : std::runtime_error {
+    public:
+        explicit value_already_set_error(const std::string& arg_name)
+            : std::runtime_error("Argument '" + arg_name + "' has already set value.") {}
+    };
+
+    class invalid_value_error : public std::invalid_argument {
+    public:
+        explicit invalid_value_error(const std::string& arg_name, const std::string& value)
+            : std::invalid_argument("Failed to parse value '" + value + "' for argument '" + 
+                arg_name + "'. Invalid format.") {}
+    };
+
+
+    class invalid_choice_error : std::invalid_argument {
+    public:
+        explicit invalid_choice_error(const std::string& arg_name, const std::string& value)
+            : std::invalid_argument("Value '" + value + "' is not in choices for argument '" + 
+                arg_name + "'.") {}
+    };
+
+    class positional_argument_name_used_error : public std::invalid_argument {
+    public:
+        explicit positional_argument_name_used_error(const std::string& arg_name)
+            : std::invalid_argument("Argument name collision. Positional argument with name '" + arg_name + 
+                "' already exists.") {}
+
+        explicit positional_argument_name_used_error(const std::string& arg_name, const std::string& arg_short_name)
+            : std::invalid_argument("Argument name collision. Positional argument with a name '" + arg_name + 
+                "' or a short name '" + arg_short_name + "' already exists.") {}
+    };
+
+    class optional_argument_name_used_error : public std::invalid_argument {
+    public:
+        explicit optional_argument_name_used_error(const std::string& arg_name)
+            : std::invalid_argument("Argument name collision. Optional argument with name '" + arg_name + 
+                "' already exists.") {}
+
+        explicit optional_argument_name_used_error(const std::string& arg_name, const std::string& arg_short_name)
+            : std::invalid_argument("Argument name collision. Optional argument with name '" + arg_name + 
+                "' or short name '" + arg_short_name + "' already exists.") {}
+    };
+
+    class argument_name_not_found_error : std::invalid_argument {
+    public:
+        explicit argument_name_not_found_error(const std::string& arg_name)
+            : std::invalid_argument("Argument with name '" + arg_name + "' was not found.") {}
+    };
+
+    class invalid_value_type_error : std::invalid_argument {
+    public:
+        explicit invalid_value_type_error(const std::type_info& arg_type)
+            : std::invalid_argument("Failed to cast type '" + std::string(arg_type.name()) + 
+                "' was not found.") {}
+    };
+
+    class optional_argument_not_found_error : std::runtime_error {
+    public:
+        explicit optional_argument_not_found_error(const std::string& arg_name)
+            : std::runtime_error("Optional argument '" + arg_name + "' was not found while parsing.") {}
+    };
+
+    class optional_argument_assign_error : std::runtime_error {
+    public:
+        explicit optional_argument_assign_error(const std::string& value)
+            : std::runtime_error("Cannot assign value '" + value + "' for optional argument. Missing flag.") {}
+    };
+
+    class positional_required_args_error : std::runtime_error {
+    public:
+        explicit positional_required_args_error(const std::string& arg_name)
+            : std::runtime_error("Required positional argument '" + arg_name + "' is not used.") {}
+    };
+
+    class optional_required_args_error : std::runtime_error {
+    public:
+        explicit optional_required_args_error(const std::string& arg_name)
+            : std::runtime_error("Required optional argument '" + arg_name + "' has not assigned value.") {}
+    };
+    
+    class positional_nvalues_lt_error : std::runtime_error {
+    public:
+        explicit positional_nvalues_lt_error(const std::string& arg_name)
+            : std::runtime_error("Too few values provided for positional argument '" + arg_name +
+                "'. Expected 1, provided 0.") {}
+    };
+    
+    class optional_nvalues_lt_error : std::runtime_error {
+    public:
+        explicit optional_nvalues_lt_error(
+            const std::string& arg_name, 
+            const std::size_t provided_nvalues,
+            const std::size_t expected_nvalues )
+            : std::runtime_error("Too few values provided for optional argument '" + arg_name +
+                "'. Expected at least" + std::to_string(expected_nvalues) + ", provided " + 
+                std::to_string(provided_nvalues) + ".") {}
+    };
+    
+    class optional_nvalues_gt_error : std::runtime_error {
+    public:
+        explicit optional_nvalues_gt_error(
+            const std::string& arg_name, 
+            const std::size_t provided_nvalues,
+            const std::size_t expected_nvalues )
+            : std::runtime_error("Too many values provided for optional argument '" + arg_name +
+                "'. Expected at most" + std::to_string(expected_nvalues) + ", provided " +
+                std::to_string(provided_nvalues) + ".") {}
+    };
+    
+    class optional_nvalues_lt_default_error : std::runtime_error {
+    public:
+        explicit optional_nvalues_lt_default_error(
+            const std::string& arg_name, 
+            const std::size_t provided_nvalues)
+            : std::runtime_error("Too few values provided for optional argument '" + arg_name +
+                "'. Provided " + std::to_string(provided_nvalues) + ".") {}
+    };
+
+    class optional_nvalues_gt_default_error : std::runtime_error {
+    public:
+        explicit optional_nvalues_gt_default_error(
+            const std::string& arg_name, 
+            const std::size_t provided_nvalues)
+            : std::runtime_error("Too many values provided for optional argument '" + arg_name +
+                "'. Provided " + std::to_string(provided_nvalues) + ".") {}
+    };
+}; // namespace error
 
 
 namespace utility {
@@ -126,6 +257,14 @@ public:
 
         return (n > this->_nhigh.value()) ? std::weak_ordering::greater
                                           : std::weak_ordering::equivalent;
+    }
+
+    [[nodiscard]] inline int get_nlow() const {
+        return this->_nlow.has_value() ? _nlow.value() : -1;
+    }
+
+    [[nodiscard]] inline int get_nhigh() const {
+        return this->_nhigh.has_value() ? _nhigh.value() : -1;
     }
 
     friend range at_least(const count_type);
@@ -285,7 +424,7 @@ protected:
     virtual argument_interface& set_value(const std::string&) = 0;
     virtual bool has_value() const = 0;
     virtual bool has_parsed_values() const = 0;
-    virtual std::weak_ordering nvalues_in_range() const = 0;
+    virtual std::tuple<std::weak_ordering, int, int> nvalues_in_range() const = 0;
     virtual const std::any& value() const = 0;
     virtual const std::vector<std::any>& values() const = 0;
 };
@@ -361,17 +500,17 @@ private:
 
     positional_argument& set_value(const std::string& str_value) override {
         if (this->_value.has_value())
-            throw std::runtime_error("[set_value#1] TODO: msg (value already set)");
+            throw error::value_already_set_error(this->name().name);
 
         this->_ss.clear();
         this->_ss.str(str_value);
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[set_value#2] TODO: msg");
+            throw error::invalid_value_error(this->name().name, _ss.str());
 
         if (not this->_is_valid_choice(value))
-            throw std::invalid_argument("[set_value#3] TODO: msg (value not in choices)");
+            throw error::invalid_choice_error(this->name().name, str_value);
 
         this->_apply_action(value);
 
@@ -387,9 +526,9 @@ private:
         return this->_value.has_value();
     }
 
-    [[nodiscard]] inline std::weak_ordering nvalues_in_range() const override {
-        return this->_value.has_value() ? std::weak_ordering::equivalent
-                                        : std::weak_ordering::less;
+    [[nodiscard]] inline std::tuple<std::weak_ordering, int, int> nvalues_in_range() const override {
+        return this->_value.has_value() ? std::make_tuple(std::weak_ordering::equivalent, -1, -1)
+                                        : std::make_tuple(std::weak_ordering::less, -1, -1);
     }
 
     [[nodiscard]] inline const std::any& value() const override {
@@ -397,7 +536,7 @@ private:
     }
 
     [[nodiscard]] inline const std::vector<std::any>& values() const override {
-        throw std::logic_error("[values] TODO: msg (pos arg has 1 value)");
+        throw std::logic_error("Positional argument " + this->name().name + "has only 1 value.");
     }
 
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
@@ -540,15 +679,15 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw std::invalid_argument("[set_value#1] TODO: msg");
+            throw error::invalid_value_error(this->name().name, this->_ss.str()); 
 
         if (not this->_is_valid_choice(value))
-            throw std::invalid_argument("[set_value#2] TODO: msg (value not in choices)");
+            throw error::invalid_choice_error(this->name().name, str_value);
 
         this->_apply_action(value);
 
         if (not (this->_nargs_range or this->_values.empty()))
-            throw std::runtime_error("[set_value#3] TODO: msg (value already set)");
+            throw error::value_already_set_error(this->name().name);
 
         this->_values.push_back(value);
         return *this;
@@ -562,14 +701,18 @@ private:
         return not this->_values.empty();
     }
 
-    [[nodiscard]] std::weak_ordering nvalues_in_range() const override {
+    [[nodiscard]] std::tuple<std::weak_ordering, int, int> nvalues_in_range() const override {
         if (not this->_nargs_range)
-            return std::weak_ordering::equivalent;
+            return std::make_tuple(std::weak_ordering::equivalent, -1, -1);
 
         if (this->_values.empty() and this->_has_predefined_value())
-            return std::weak_ordering::equivalent;
-
-        return this->_nargs_range->contains(this->_values.size());
+            return std::make_tuple(std::weak_ordering::equivalent, -1, -1);
+        
+        return std::make_tuple(
+                this->_nargs_range->contains(this->_values.size()), 
+                this->_nargs_range->get_nlow(), 
+                this->_nargs_range->get_nhigh());
+    
     }
 
     [[nodiscard]] inline const std::any& value() const override {
@@ -680,7 +823,7 @@ public:
         // TODO: check forbidden characters
 
         if (this->_is_arg_name_used(name))
-            throw std::invalid_argument("[add_positional_argument] TODO: msg (arg name colision)");
+            throw error::positional_argument_name_used_error(std::string(name));
 
         this->_positional_args.push_back(
             std::make_unique<argument::positional_argument<T>>(name));
@@ -695,7 +838,7 @@ public:
         // TODO: check forbidden characters
 
         if (this->_is_arg_name_used(name, short_name))
-            throw std::invalid_argument("[add_positional_argument] TODO: msg (arg name colision)");
+            throw error::positional_argument_name_used_error(std::string(name), std::string(short_name));
 
         this->_positional_args.push_back(
             std::make_unique<argument::positional_argument<T>>(name, short_name));
@@ -708,7 +851,7 @@ public:
         // TODO: check forbidden characters
 
         if (this->_is_arg_name_used(name))
-            throw std::invalid_argument("[add_optional_argument] TODO: msg (arg name colision)");
+            throw error::optional_argument_name_used_error(std::string(name));
 
         this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
@@ -719,7 +862,7 @@ public:
         // TODO: check forbidden characters
 
         if (this->_is_arg_name_used(name, short_name))
-            throw std::invalid_argument("[add_optional_argument] TODO: msg (arg name colision)");
+            throw error::optional_argument_name_used_error(std::string(name), std::string(short_name));
 
         this->_optional_args.push_back(
             std::make_unique<argument::optional_argument<T>>(name, short_name));
@@ -763,14 +906,14 @@ public:
     T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw std::invalid_argument("[value#1] TODO: msg (no arg found)");
+            throw error::argument_name_not_found_error(std::string(arg_name));
 
         try {
             T value{std::any_cast<T>(arg_opt.value().get().value())};
             return value;
         }
         catch (const std::bad_any_cast& err) {
-            throw std::invalid_argument("[value#2] TODO: msg (invalid type)");
+            throw error::invalid_value_type_error(typeid(arg_opt));
         }
     }
 
@@ -778,7 +921,7 @@ public:
     std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw std::invalid_argument("[values#1] TODO: msg (no arg found)");
+            throw error::argument_name_not_found_error(std::string(arg_name));
 
         const auto& arg = arg_opt.value().get();
 
@@ -798,7 +941,7 @@ public:
             return values;
         }
         catch (const std::bad_any_cast& err) {
-            throw std::invalid_argument("[values#2] TODO: msg (invalid type)");
+            throw error::invalid_value_type_error(typeid(arg_opt));
         }
     }
 
@@ -1007,16 +1150,14 @@ private:
                     this->_find_optional(this->_name_eq_predicate(cmd_it->value));
 
                 if (opt_arg_it == this->_optional_args.end())
-                    throw std::runtime_error(
-                        "[_parse_optional_args#1] TODO: msg (opt_arg not found)");
+                    throw error::optional_argument_not_found_error(cmd_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 curr_opt_arg->get()->set_used();
             }
             else {
                 if (not curr_opt_arg)
-                    throw std::runtime_error(
-                        "[_parse_optional_args#2] TODO: msg (cannot assign value)");
+                    throw error::optional_argument_assign_error(cmd_it->value);
 
                 curr_opt_arg->get()->set_value(cmd_it->value);
             }
@@ -1037,28 +1178,26 @@ private:
     void _check_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used())
-                throw std::runtime_error("[_check_required_args#1] TODO: msg");
+                throw error::positional_required_args_error(arg->name().name);
 
         for (const auto& arg : this->_optional_args)
             if (arg->is_required() and not arg->has_value())
-                throw std::runtime_error("[_check_required_args#2] TODO: msg");
+                throw error::optional_required_args_error(arg->name().name);
     }
 
     void _check_nvalues_in_range() const {
         for (const auto& arg : this->_positional_args) {
-            const auto correct_nvalues = arg->nvalues_in_range();
+            const auto [correct_nvalues, nargs_range_nlow, nargs_range_nhigh] = arg->nvalues_in_range();
             if (std::is_lt(correct_nvalues))
-                throw std::runtime_error("[_check_nvalues_in_range#1] TODO: msg");
-            if (std::is_gt(correct_nvalues))
-                throw std::runtime_error("[_check_nvalues_in_range#2] TODO: msg");
+                throw error::positional_nvalues_lt_error(arg->name().name);
         }
 
         for (const auto& arg : this->_optional_args) {
-            const auto correct_nvalues = arg->nvalues_in_range();
+            const auto [correct_nvalues, nargs_range_nlow, nargs_range_nhigh] = arg->nvalues_in_range();
             if (std::is_lt(correct_nvalues))
-                throw std::runtime_error("[_check_nvalues_in_range#1] TODO: msg");
+                throw error::optional_nvalues_lt_error(arg->name().name, arg->values().size(), nargs_range_nlow);
             if (std::is_gt(correct_nvalues))
-                throw std::runtime_error("[_check_nvalues_in_range#2] TODO: msg");
+                throw error::optional_nvalues_gt_error(arg->name().name, arg->values().size(), nargs_range_nhigh);
         }
     }
 

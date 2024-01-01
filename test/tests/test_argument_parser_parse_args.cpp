@@ -97,9 +97,10 @@ TEST_CASE_FIXTURE(
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
+    
     cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split));
-
-    REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), std::runtime_error);
+    
+    REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), ap::error::optional_argument_assign_error);
 }
 
 TEST_CASE_FIXTURE(
@@ -160,7 +161,7 @@ TEST_CASE_FIXTURE(
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
-    REQUIRE_THROWS_AS(sut.parse_args(argc, argv), std::runtime_error);
+    REQUIRE_THROWS_AS(sut.parse_args(argc, argv), ap::error::optional_required_args_error);
 
     free_argv(argc, argv);
 }
@@ -179,7 +180,7 @@ TEST_CASE_FIXTURE(
         range_arg_name.name, range_arg_name.short_name.value()
     ).nargs(at_least(1));
 
-    REQUIRE_THROWS_AS(sut.parse_args(argc, argv), std::runtime_error);
+    REQUIRE_THROWS_AS(sut.parse_args(argc, argv), ap::error::optional_nvalues_lt_error);
 
     free_argv(argc, argv);
 }
@@ -371,7 +372,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-    REQUIRE_THROWS_AS(sut.value(invalid_arg_name), std::invalid_argument);
+    REQUIRE_THROWS_AS(sut.value(invalid_arg_name), ap::error::argument_name_not_found_error);
 
     free_argv(argc, argv);
 }
@@ -384,8 +385,8 @@ TEST_CASE_FIXTURE(
 
     for (std::size_t i = 0; i < non_default_num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
-        REQUIRE_THROWS_AS(sut.value(arg_name.name), std::invalid_argument);
-        REQUIRE_THROWS_AS(sut.value(arg_name.short_name.value()), std::invalid_argument);
+        REQUIRE_THROWS_AS(sut.value(arg_name.name), ap::error::invalid_value_type_error);
+        REQUIRE_THROWS_AS(sut.value(arg_name.short_name.value()), ap::error::invalid_value_type_error);
     }
 }
 
@@ -420,8 +421,8 @@ TEST_CASE_FIXTURE(
     }
     for (std::size_t i = non_default_args_split; i < non_default_num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
-        REQUIRE_THROWS_AS(sut.value(arg_name.name), std::invalid_argument);
-        REQUIRE_THROWS_AS(sut.value(arg_name.short_name.value()), std::invalid_argument);
+        REQUIRE_THROWS_AS(sut.value(arg_name.name), ap::error::invalid_value_type_error);
+        REQUIRE_THROWS_AS(sut.value(arg_name.short_name.value()), ap::error::invalid_value_type_error);
     }
     for (std::size_t i = non_default_num_args; i < num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
@@ -451,7 +452,7 @@ TEST_CASE_FIXTURE(
         const auto arg_name = prepare_arg_name(i);
 
         REQUIRE(sut.has_value(arg_name.name));
-        REQUIRE_THROWS_AS(sut.value<invalid_value_type>(arg_name.name), std::invalid_argument);
+        REQUIRE_THROWS_AS(sut.value<invalid_value_type>(arg_name.name), ap::error::invalid_value_type_error);
     }
 
     free_argv(argc, argv);
@@ -548,9 +549,11 @@ TEST_CASE_FIXTURE(
     sut.parse_args(argc, argv);
 
     REQUIRE_THROWS_AS(
-        sut.values<invalid_argument_value_type>(optional_arg_name), std::logic_error);
+        sut.values<invalid_argument_value_type>(optional_arg_name), 
+        ap::error::invalid_value_type_error);
     REQUIRE_THROWS_AS(
-        sut.values<invalid_argument_value_type>(optional_arg_short_name), std::logic_error);
+        sut.values<invalid_argument_value_type>(optional_arg_short_name), 
+        ap::error::invalid_value_type_error);
 
     free_argv(argc, argv);
 }
