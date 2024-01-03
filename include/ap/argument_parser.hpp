@@ -731,35 +731,74 @@ protected:
 
 } // namespace detail
 
+
+/**
+ * @brief "Positional argument class of type T.
+ * @tparam T The type of the argument value.
+ */
 template <utility::valid_argument_value_type T>
 class positional_argument : public detail::argument_interface {
 public:
-    using value_type = T;
+    using value_type = T; ///< Type of the argument value.
 
+    /// @brief Deleted default constructor.
     positional_argument() = delete;
 
+    /**
+     * @brief Constructor for positional_argument with a name.
+     * @param name The primary name of the positional argument.
+     */
     positional_argument(std::string_view name) : _name(name) {}
 
+    /**
+     * @brief Constructor for positional_argument with a name and a short name.
+     * @param name The primary name of the positional argument.
+     * @param short_name The short name of the positional argument (optional).
+     */
     positional_argument(std::string_view name, std::string_view short_name)
         : _name(name, short_name) {}
 
+    /// @brief Destructor for positional argument.
     ~positional_argument() = default;
 
+    /**
+     * @brief Equality operator for positional_argument.
+     * @param other Another positional_argument for comparison.
+     * @return Result of equality
+     */
     inline bool operator== (const positional_argument& other) const {
         return this->_name == other._name;
     }
 
+    /**
+     * @brief Set the help message for the positional argument.
+     * @param help_msg The help message to set.
+     * @return Reference to the positional_argument.
+     */
     inline positional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
     }
 
+    /**
+     * @brief Set the choices for the positional argument.
+     * @param choices The vector of valid choices for the argument.
+     * @return Reference to the positional_argument.
+     * @note Requires T to be equality comparable.
+     */
     inline positional_argument& choices(const std::vector<value_type>& choices)
     requires(utility::equality_comparable<value_type>) {
         this->_choices = choices;
         return *this;
     }
 
+    /**
+     * @brief Set the action for the positional argument.
+     * @tparam AS The action specifier type (valued_action or void_action).
+     * @tparam F The type of the action function.
+     * @param action The action function to set.
+     * @return Reference to the positional_argument.
+     */
     template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
     inline positional_argument& action(F&& action) {
         using callable_type = ap::action::detail::callable_type<AS, value_type>;
@@ -767,37 +806,60 @@ public:
         return *this;
     }
 
+    /// @return True if the positional argument is optional., false if required.
     [[nodiscard]] inline bool is_optional() const override { return this->_optional; }
 
+    
+    /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
 #ifdef AP_TESTING
+    /**
+     * @brief Friend struct declaration for testing purposes.
+     */
     friend struct ::ap_testing::positional_argument_test_fixture;
 #endif
 
 private:
+    /// @return Reference the name of the positional argument.
     [[nodiscard]] inline const detail::argument_name& name() const override {
         return this->_name;
     }
 
+    /// @return Optional help message for the positional argument.
     [[nodiscard]] inline const std::optional<std::string>& help() const override {
         return this->_help_msg;
     }
 
+    /// @return True if the positional argument is required, false otherwise
     [[nodiscard]] inline bool is_required() const override {
         return this->_required;
     }
 
+    /// @return True if bypassing the required status is enabled for the positional argument, false otherwise.
     [[nodiscard]] inline bool bypass_required_enabled() const override {
         return this->_bypass_required;
     }
 
-    void set_used() override {} // not required for positional arguments
+    /**
+     * @brief Mark the positional argument as used.
+     * @note Not required for positional arguments.
+     */
+    void set_used() override {}
 
+    /**
+     * @brief Check if the positional argument has been used.
+     * @return True if used, false otherwise.
+     */
     [[nodiscard]] inline bool is_used() const override {
         return this->_value.has_value();
     }
 
+    /**
+     * @brief Set the value for the positional argument.
+     * @param str_value The string representation of the value.
+     * @return Reference to the positional_argument.
+     */
     positional_argument& set_value(const std::string& str_value) override {
         if (this->_value.has_value())
             throw error::value_already_set_error(this->name().name);
@@ -818,32 +880,46 @@ private:
         return *this;
     }
 
+    /// @return True if the positional argument has a value, false otherwise.
     [[nodiscard]] inline bool has_value() const override {
         return this->_value.has_value();
     }
 
+    /// @return True if the positional argument has parsed values, false otherwise.
     [[nodiscard]] inline bool has_parsed_values() const override {
         return this->_value.has_value();
     }
 
+    /// @return Tuple containing the ordering relationship of positional argument range, lower and upper bounds are -1 as non set
     [[nodiscard]] inline std::tuple<std::weak_ordering, int, int> nvalues_in_range() const override {
         return this->_value.has_value() ? std::make_tuple(std::weak_ordering::equivalent, -1, -1)
                                         : std::make_tuple(std::weak_ordering::less, -1, -1);
     }
 
+    /// @brief Get the stored value of the positional argument.
     [[nodiscard]] inline const std::any& value() const override {
         return this->_value;
     }
 
+    /// @return Reference to the vector of parsed values for the positional argument.
     [[nodiscard]] inline const std::vector<std::any>& values() const override {
-        throw std::logic_error("Positional argument " + this->name().name + "has only 1 value.");
+        throw std::logic_error("Positional argument '" + this->name().name + "' has only 1 value.");
     }
 
+    /**
+     * @brief Check if the provided choice is valid for the positional argument.
+     * @param choice The value to check against choices.
+     * @return True if the choice valid, false otherwise.
+     */
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
 
+    /**
+     * @brief Apply the specified action to the value of the positional argument.
+     * @param value The value to apply the action to.
+     */
     void _apply_action(value_type& value) const {
         namespace action = ap::action::detail;
         if (action::is_void_action(this->_action))
@@ -854,69 +930,125 @@ private:
 
     using action_type = ap::action::detail::action_variant_type<T>;
 
-    static constexpr bool _optional{false};
-    const detail::argument_name _name;
-    std::optional<std::string> _help_msg;
+    static constexpr bool _optional{false}; ///< Positional arguments are not optional.
+    const detail::argument_name _name; ///< Name and optional short name of the positional argument.
+    std::optional<std::string> _help_msg; ///< Optional help message for the positional argument.
 
-    static constexpr bool _required{true};
-    static constexpr bool _bypass_required{false};
-    std::vector<value_type> _choices;
-    action_type _action{ap::action::default_action<value_type>};
+    static constexpr bool _required{true}; ///< Positional arguments are required by default.
+    static constexpr bool _bypass_required{false}; ///< Bypassing required status is defaultly not allowed for positional arguments.
+    std::vector<value_type> _choices; ///< Vector of valid choices for the positional argument.
+    action_type _action{ap::action::default_action<value_type>}; ///< Action associated with the positional argument.
 
-    std::any _value;
+    std::any _value; ///< Stored value of the positional argument.
 
-    std::stringstream _ss;
+    std::stringstream _ss; ///< Stringstream used for parsing values.
 };
 
+/**
+ * @brief Optional argument class of type T.
+ * @tparam T The type of the argument value.
+ */
 template <utility::valid_argument_value_type T>
 class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
     using count_type = ap::nargs::range::count_type;
 
+    /// @brief Deleted default constructor for optional_argument.
     optional_argument() = delete;
 
+    /**
+     * @brief Constructor for optional_argument with a name.
+     * @param name The primary name of the optional argument.
+     */
     optional_argument(std::string_view name) : _name(name) {}
 
+    /**
+     * @brief Constructor for optional_argument with a name and a short name.
+     * @param name The primary name of the optional argument.
+     * @param short_name The short name of the optional argument (optional).
+     */
     optional_argument(std::string_view name, std::string_view short_name)
         : _name(name, short_name) {}
 
+    /// @brief Destructor for optional_argument.
     ~optional_argument() = default;
 
+    /**
+     * @brief Equality comparison operator for optional_argument.
+     * @param other The optional_argument to compare with.
+     * @return Equality of comparison.
+     */
     inline bool operator== (const optional_argument& other) const {
         return this->_name == other._name;
     }
 
+    /**
+     * @brief Set the help message for the optional argument.
+     * @param help_msg The help message to set.
+     * @return Reference to the optional_argument.
+     */
     inline optional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
     }
 
+    /**
+     * @brief Mark the optional argument as required.
+     * @return Reference to the optional_argument.
+     */
     inline optional_argument& required() {
         this->_required = true;
         return *this;
     }
 
+    /**
+     * @brief Enable bypassing the required status for the optional argument.
+     * @return Reference to the optional_argument.
+     */
     inline optional_argument& bypass_required() {
         this->_bypass_required = true;
         return *this;
     }
 
+    /**
+     * @brief Set the nargs range for the optional argument.
+     * @param range The nargs range to set.
+     * @return Reference to the optional_argument.
+     */
     inline optional_argument& nargs(const ap::nargs::range& range) {
         this->_nargs_range = range;
         return *this;
     }
 
+    /**
+     * @brief Set the nargs range for the optional argument.
+     * @param count The count for nargs range.
+     * @return Reference to the optional_argument.
+     */
     inline optional_argument& nargs(const count_type count) {
         this->_nargs_range = ap::nargs::range(count);
         return *this;
     }
 
+    /**
+     * @brief Set the nargs range for the optional argument.
+     * @param nlow The lower bound for nargs range.
+     * @param nhigh The upper bound for nargs range.
+     * @return Reference to the optional_argument.
+     */
     inline optional_argument& nargs(const count_type nlow, const count_type nhigh) {
         this->_nargs_range = ap::nargs::range(nlow, nhigh);
         return *this;
     }
 
+    /**
+     * @brief Set the action for the optional argument.
+     * @tparam AS The action specifier type (valued_action or void_action).
+     * @tparam F The type of the action function.
+     * @param action The action function to set.
+     * @return Reference to the optional_argument.
+     */
     template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
     inline optional_argument& action(F&& action) {
         using callable_type = ap::action::detail::callable_type<AS, value_type>;
@@ -924,55 +1056,87 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Set the choices for the optional argument.
+     * @param choices The vector of valid choices for the argument.
+     * @return Reference to the optional_argument.
+     * @note Requires T to be equality comparable.
+     */
     inline optional_argument& choices(const std::vector<value_type>& choices)
     requires(utility::equality_comparable<value_type>) {
         this->_choices = choices;
         return *this;
     }
 
+    /**
+     * @brief Set the default value for the optional argument.
+     * @param default_value The default value to set.
+     * @return Reference to the optional_argument.
+     */
     optional_argument& default_value(const value_type& default_value) {
         this->_default_value = default_value;
         return *this;
     }
 
+    /**
+     * @brief Set the implicit value for the optional argument.
+     * @param implicit_value The implicit value to set.
+     * @return Reference to the optional_argument.
+     */
     optional_argument& implicit_value(const value_type& implicit_value) {
         this->_implicit_value = implicit_value;
         return *this;
     }
 
+    /// @return True if argument is optional, false otherwise.
     [[nodiscard]] inline bool is_optional() const override { return this->_optional; }
 
+    /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
 #ifdef AP_TESTING
+    /**
+     * @brief Friend struct declaration for testing purposes.
+     */
     friend struct ::ap_testing::optional_argument_test_fixture;
 #endif
 
 private:
+    /// @return Reference to the name of the optional argument.
     [[nodiscard]] inline const detail::argument_name& name() const override {
         return this->_name;
     }
 
+    /// @return Reference to the optional help message for the optional argument.
     [[nodiscard]] inline const std::optional<std::string>& help() const override {
         return this->_help_msg;
     }
 
+    /// @return True if the optional argument is required, false otherwise.
     [[nodiscard]] inline bool is_required() const override {
         return this->_required;
     }
 
+    /// @return True if bypassing the required status is enabled for the optional argument, false otherwise.
     [[nodiscard]] inline bool bypass_required_enabled() const {
         return this->_bypass_required;
     }
 
+    /// @brief Mark the optional argument as used.
     void set_used() override {
-        this->_used = true; // TODO: use _count
+        this->_used = true;
     }
 
+    /// @return True if the optional argument is used, false otherwise.
     [[nodiscard]] inline bool is_used() const override {
         return this->_used;
     }
 
+    /**
+     * @brief Set the value for the optional argument.
+     * @param str_value The string value to set.
+     * @return Reference to the optional_argument.
+     */
     optional_argument& set_value(const std::string& str_value) override {
         this->_ss.clear();
         this->_ss.str(str_value);
@@ -993,14 +1157,17 @@ private:
         return *this;
     }
 
+    /// @return True if the optional argument has a value, false otherwise.
     [[nodiscard]] inline bool has_value() const override {
         return this->has_parsed_values() or this->_has_predefined_value();
     }
 
+    /// @return True if parsed values are available for the optional argument, false otherwise.
     [[nodiscard]] inline bool has_parsed_values() const override {
         return not this->_values.empty();
     }
 
+    /// @return Tuple containing the ordering relationship of optional argument range, lower bound, and upper bound of argument counts.
     [[nodiscard]] std::tuple<std::weak_ordering, int, int> nvalues_in_range() const override {
         if (not this->_nargs_range)
             return std::make_tuple(std::weak_ordering::equivalent, -1, -1);
@@ -1015,28 +1182,41 @@ private:
     
     }
 
+    /// @return Reference to the stored value of the optional argument.
     [[nodiscard]] inline const std::any& value() const override {
         return this->_values.empty() ? this->_predefined_value() : this->_values.front();
     }
 
+    /// @return Reference to the vector of parsed values for the optional argument.
     [[nodiscard]] inline const std::vector<std::any>& values() const override {
         return this->_values;
     }
 
+    /// @return True if the optional argument has a predefined value, false otherwise.
     [[nodiscard]] inline bool _has_predefined_value() const {
         return this->_default_value.has_value() or
                (this->_used and this->_implicit_value.has_value());
     }
 
+    /// @return Reference to the predefined value of the optional argument.
     [[nodiscard]] inline const std::any& _predefined_value() const {
         return this->_used ? this->_implicit_value : this->_default_value;
     }
 
+    /**
+     * @brief Check if the provided choice is valid for the optional argument.
+     * @param choice The value to check against choices.
+     * @return True if choice is valid, false otherwise.
+     */
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or
                std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
     }
 
+    /**
+     * @brief Apply the specified action to the value of the optional argument.
+     * @param value The value to apply the action to.
+     */
     void _apply_action(value_type& value) const {
         namespace action = ap::action::detail;
         if (action::is_void_action(this->_action))
@@ -1051,23 +1231,24 @@ private:
     const detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
-    bool _required{false};
-    bool _bypass_required{false};
+    bool _required{false}; ///< Optional arguments are not required by default. */
+    bool _bypass_required{false}; 
     std::optional<ap::nargs::range> _nargs_range;
-    action_type _action{ap::action::default_action<value_type>};
-    std::vector<value_type> _choices;
+    action_type _action{ap::action::default_action<value_type>}; ///< Action associated with the opitonal argument.
+    std::vector<value_type> _choices; ///< Vector of valid choices for the optional argument.
     std::any _default_value;
     std::any _implicit_value;
 
-    bool _used = false;
-    std::vector<std::any> _values;
+    bool _used = false; ///< Flag indicating if the optional argument has been used.
+    std::vector<std::any> _values; ///< Vector holding parsed values for the optional argument.
 
-    std::stringstream _ss;
+    std::stringstream _ss; ///< Stringstream used for parsing values.
 };
 
 } // namespace argument
 
 
+/// @brief Struct defining default argument categories for positional and optional arguments.
 struct default_argument {
     enum class positional : uint8_t {
         input,
@@ -1081,27 +1262,49 @@ struct default_argument {
     };
 };
 
-
+/// @brief Main argument parser class.
 class argument_parser {
 public:
+    /// @brief Default constructor.
     argument_parser() = default;
 
+    /// @brief Deleted copy constructor.
     argument_parser(const argument_parser&) = delete;
+
+    /// @brief Deleted move constructor.
     argument_parser(argument_parser&&) = delete;
+
+    /// @brief Deleted copy assignment operator.
     argument_parser& operator= (const argument_parser&) = delete;
 
+    /// @brief Destructor for the argument parser.
     ~argument_parser() = default;
 
+    /**
+     * @brief Set the program name.
+     * @param name The name of the program.
+     * @return Reference to the argument parser.
+     */
     inline argument_parser& program_name(std::string_view name) {
         this->_program_name = name;
         return *this;
     }
 
+    /**
+     * @brief Set the program description.
+     * @param description The description of the program.
+     * @return Reference to the argument parser.
+     */
     inline argument_parser& program_description(std::string_view description) {
         this->_program_description = description;
         return *this;
     }
 
+    /**
+     * @brief Set default positional arguments.
+     * @param args Vector of default positional argument categories.
+     * @return Reference to the argument parser.
+     */
     inline argument_parser& default_positional_arguments(
         const std::vector<default_argument::positional>& args
     ) {
@@ -1110,6 +1313,11 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Set default optional arguments.
+     * @param args Vector of default optional argument categories.
+     * @return Reference to the argument parser.
+     */
     inline argument_parser& default_optional_arguments(
         const std::vector<default_argument::optional>& args
     ) {
@@ -1118,6 +1326,12 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Add a positional argument to the parser.
+     * @tparam T Type of the argument value.
+     * @param name The name of the argument.
+     * @return Reference to the added positional argument.
+     */
     template <utility::valid_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(std::string_view name) {
         // TODO: check forbidden characters
@@ -1131,6 +1345,13 @@ public:
             *this->_positional_args.back());
     }
 
+    /**
+     * @brief Add a positional argument with a short name to the parser.
+     * @tparam T Type of the argument value.
+     * @param name The name of the argument.
+     * @param short_name The short name of the argument.
+     * @return Reference to the added positional argument.
+     */
     template <utility::valid_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(
         std::string_view name, std::string_view short_name
@@ -1146,6 +1367,12 @@ public:
             *this->_positional_args.back());
     }
 
+    /**
+     * @brief Add an optional argument to the parser.
+     * @tparam T Type of the argument value.
+     * @param name The name of the argument.
+     * @return Reference to the added optional argument.
+     */
     template <utility::valid_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name) {
         // TODO: check forbidden characters
@@ -1157,6 +1384,13 @@ public:
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
+    /**
+     * @brief Add an optional argument with a short name to the parser.
+     * @tparam T Type of the argument value.
+     * @param name The name of the argument.
+     * @param short_name The short name of the argument.
+     * @return Reference to the added optional argument.
+     */
     template <utility::valid_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
         // TODO: check forbidden characters
@@ -1169,6 +1403,12 @@ public:
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
+    /**
+     * @brief Add a boolean flag to the parser.
+     * @tparam StoreImplicitly Flag indicating whether to store implicitly.
+     * @param name The name of the flag.
+     * @return Reference to the added boolean flag argument.
+     */
     template <bool StoreImplicitly = true>
     argument::optional_argument<bool>& add_flag(std::string_view name) {
         return this->add_optional_argument<bool>(name)
@@ -1177,6 +1417,13 @@ public:
                     .nargs(0);
     }
 
+    /**
+     * @brief Add a boolean flag with a short name to the parser.
+     * @tparam StoreImplicitly Flag indicating whether to store implicitly.
+     * @param name The name of the flag.
+     * @param short_name The short name of the flag.
+     * @return Reference to the added boolean flag argument.
+     */
     template <bool StoreImplicitly = true>
     argument::optional_argument<bool>& add_flag(
         std::string_view name, std::string_view short_name
@@ -1187,6 +1434,11 @@ public:
                     .nargs(0);
     }
 
+    /**
+     * @brief Parse command-line arguments.
+     * @param argc Number of command-line arguments.
+     * @param argv Array of command-line argument strings.
+     */
     void parse_args(int argc, char* argv[]) {
         this->_parse_args_impl(this->_process_input(argc, argv));
 
@@ -1197,11 +1449,22 @@ public:
         this->_check_nvalues_in_range();
     }
 
+    /**
+     * @brief Check if an argument has a value.
+     * @param arg_name The name of the argument.
+     * @return True if the argument has a value, false otherwise.
+     */
     bool has_value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         return arg_opt ? arg_opt.value().get().has_value() : false;
     }
 
+    /**
+     * @brief Get the value of a typed argument.
+     * @tparam T Type of the argument value.
+     * @param arg_name The name of the argument.
+     * @return The value of the argument.
+     */
     template <std::copy_constructible T = std::string>
     T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
@@ -1217,6 +1480,12 @@ public:
         }
     }
 
+    /**
+     * @brief Get the values of a typed argument.
+     * @tparam T Type of the argument values.
+     * @param arg_name The name of the argument.
+     * @return The values of the argument as a vector.
+     */
     template <std::copy_constructible T = std::string>
     std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
@@ -1245,6 +1514,12 @@ public:
         }
     }
 
+    /**
+     * @brief Overloaded stream insertion operator for printing the argument parser details.
+     * @param os Output stream.
+     * @param parser The argument parser to print.
+     * @return The modified output stream.
+     */
     friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
             os << parser._program_name.value() << std::endl;
@@ -1262,10 +1537,15 @@ public:
     }
 
 #ifdef AP_TESTING
+    /// @brief Friend struct for testing purposes.
     friend struct ::ap_testing::argument_parser_test_fixture;
 #endif
 
 private:
+    /**
+     * @brief Add default positional argument based on the specified category.
+     * @param arg The default positional argument category.
+     */
     void _add_default_positional_argument(const default_argument::positional arg) {
         switch (arg) {
             case default_argument::positional::input:
@@ -1280,6 +1560,10 @@ private:
         }
     }
 
+    /**
+     * @brief Add default optional argument based on the specified category.
+     * @param arg The default optional argument category.
+     */
     void _add_default_optional_argument(const default_argument::optional arg) {
         switch (arg) {
             case default_argument::optional::help:
@@ -1303,6 +1587,7 @@ private:
         }
     }
 
+    /// @brief Structure representing a command-line argument.
     struct cmd_argument {
         enum class type_discriminator : bool { flag, value };
 
@@ -1311,12 +1596,22 @@ private:
         cmd_argument(cmd_argument&&) = default;
         cmd_argument& operator= (const cmd_argument&) = default;
 
+        /**
+         * @brief Constructor of a command-line argument.
+         * @param discriminator Type discriminator (flag or value).
+         * @param value The value of the argument.
+         */
         cmd_argument(
             const type_discriminator discriminator, const std::string& value
         ) : discriminator(discriminator), value(value) {}
 
         ~cmd_argument() = default;
 
+        /**
+         * @brief Equality operator for comparing cmd_argument instances.
+         * @param other Another cmd_argument to compare with.
+         * @return Boolean statement of equality comparison.
+         */
         inline bool operator== (const cmd_argument& other) const {
             return this->discriminator == other.discriminator and
                    this->value == other.value;
@@ -1337,6 +1632,11 @@ private:
     using argument_list_const_iterator_type = typename argument_list_type::const_iterator;
     using argument_predicate_type = std::function<bool(const argument_ptr_type&)>;
 
+    /**
+     * @brief Function to create a predicate for finding arguments by name.
+     * @param name The name of the argument.
+     * @return Argument predicate based on the provided name.
+     */
     [[nodiscard]] inline argument_predicate_type _name_eq_predicate(
         const std::string_view& name
     ) const {
@@ -1345,6 +1645,12 @@ private:
         };
     }
 
+    /**
+     * @brief Function to create a predicate for finding arguments by name and short name.
+     * @param name The name of the argument.
+     * @param short_name The short name of the argument.
+     * @return Argument predicate based on the provided name and short name.
+     */
     [[nodiscard]] inline argument_predicate_type _name_eq_predicate(
         const std::string_view& name, const std::string_view& short_name
     ) const {
@@ -1353,6 +1659,11 @@ private:
         };
     }
 
+    /**
+     * @brief Check if an argument name is already used.
+     * @param name The name of the argument.
+     * @return True if the argument name is already used, false otherwise.
+     */
     [[nodiscard]] bool _is_arg_name_used(const std::string_view& name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
@@ -1365,6 +1676,12 @@ private:
         return false;
     }
 
+    /**
+     * @brief Check if an argument name and short name pair is already used.
+     * @param name The name of the argument.
+     * @param short_name The short name of the argument.
+     * @return True if the argument name or short name is already used, false otherwise.
+     */
     [[nodiscard]] bool _is_arg_name_used(
         const std::string_view& name, const std::string_view& short_name
     ) const {
@@ -1379,6 +1696,12 @@ private:
         return false;
     }
 
+    /**
+     * @brief Process command-line input arguments.
+     * @param argc Number of command-line arguments.
+     * @param argv Array of command-line argument strings.
+     * @return List of processed command-line arguments.
+     */
     [[nodiscard]] cmd_argument_list _process_input(int argc, char* argv[]) const {
         if (argc < 2)
             return cmd_argument_list{};
@@ -1400,6 +1723,11 @@ private:
         return args;
     }
 
+    /**
+     * @brief Check if an argument is a flag based on its value.
+     * @param arg The argument value.
+     * @return True if the argument is a flag, false otherwise.
+     */
     [[nodiscard]] bool _is_flag(const std::string& arg) const {
         if (arg.starts_with(this->_flag_prefix))
             return this->_is_arg_name_used(arg.substr(this->_flag_prefix_length));
@@ -1410,6 +1738,10 @@ private:
         return false;
     }
 
+    /**
+     * @brief Remove the flag prefix from the argument.
+     * @param arg The argument to strip the prefix from.
+     */
     void _strip_flag_prefix(std::string& arg) const {
         if (arg.starts_with(this->_flag_prefix))
             arg.erase(0, this->_flag_prefix_length);
@@ -1417,12 +1749,21 @@ private:
             arg.erase(0, this->_flag_prefix_char_length);
     }
 
+    /**
+     * @brief Implementation of parsing command-line arguments.
+     * @param cmd_args The list of command-line arguments.
+     */
     void _parse_args_impl(const cmd_argument_list& cmd_args) {
         cmd_argument_list_iterator cmd_it = cmd_args.begin();
         this->_parse_positional_args(cmd_args, cmd_it);
         this->_parse_optional_args(cmd_args, cmd_it);
     }
 
+    /**
+     * @brief Parse positional arguments based on command-line input.
+     * @param cmd_args The list of command-line arguments.
+     * @param cmd_it Iterator for iterating through command-line arguments.
+     */
     void _parse_positional_args(
         const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
     ) {
@@ -1439,6 +1780,11 @@ private:
         }
     }
 
+    /**
+     * @brief Parse optional arguments based on command-line input.
+     * @param cmd_args The list of command-line arguments.
+     * @param cmd_it Iterator for iterating through command-line arguments.
+     */
     void _parse_optional_args(
         const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
     ) {
@@ -1466,6 +1812,10 @@ private:
         }
     }
 
+    /**
+     * @brief Check if optional arguments can bypass the required arguments.
+     * @return True if optional arguments can bypass required arguments, false otherwise.
+     */
     [[nodiscard]] inline bool _bypass_required_args() const {
         return std::any_of(
             std::cbegin(this->_optional_args), std::cend(this->_optional_args),
@@ -1475,6 +1825,7 @@ private:
         );
     }
 
+    /// @brief Check if all required positional and optional arguments are used.
     void _check_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used())
@@ -1485,6 +1836,7 @@ private:
                 throw error::optional_required_args_error(arg->name().name);
     }
 
+    /// @brief Check if the number of argument values is within the specified range.
     void _check_nvalues_in_range() const {
         for (const auto& arg : this->_positional_args) {
             const auto [correct_nvalues, nargs_range_nlow, nargs_range_nhigh] = arg->nvalues_in_range();
@@ -1501,6 +1853,11 @@ private:
         }
     }
 
+    /**
+     * @brief Get the argument with the specified name.
+     * @param name The name of the argument.
+     * @return The argument with the specified name, if found; otherwise, std::nullopt.
+     */
     argument_opt_type _get_argument(const std::string_view& name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
@@ -1517,6 +1874,11 @@ private:
         return std::nullopt;
     }
 
+    /**
+     * @brief Find a positional argument based on the provided predicate.
+     * @param predicate The predicate for finding the argument.
+     * @return Iterator to the found positional argument.
+     */
     [[nodiscard]] inline argument_list_iterator_type _find_positional(
         const argument_predicate_type& predicate
     ) {
@@ -1524,6 +1886,11 @@ private:
             std::begin(this->_positional_args), std::end(this->_positional_args), predicate);
     }
 
+    /**
+     * @brief Find an optional argument based on the provided predicate.
+     * @param predicate The predicate for finding the argument.
+     * @return Iterator to the found optional argument.
+     */
     [[nodiscard]] inline argument_list_iterator_type _find_optional(
         const argument_predicate_type& predicate
     ) {
@@ -1531,6 +1898,11 @@ private:
             std::begin(this->_optional_args), std::end(this->_optional_args), predicate);
     }
 
+    /**
+     * @brief Find a positional argument based on the provided predicate (const version).
+     * @param predicate The predicate for finding the argument.
+     * @return Iterator to the found positional argument.
+     */
     [[nodiscard]] inline argument_list_const_iterator_type _const_find_positional(
         const argument_predicate_type& predicate
     ) const {
@@ -1538,6 +1910,11 @@ private:
             std::cbegin(this->_positional_args), std::cend(this->_positional_args), predicate);
     }
 
+    /**
+     * @brief Find an optional argument based on the provided predicate (const version).
+     * @param predicate The predicate for finding the argument.
+     * @return Iterator to the found optional argument.
+     */
     [[nodiscard]] inline argument_list_const_iterator_type _const_find_optional(
         const argument_predicate_type& predicate
     ) const {
