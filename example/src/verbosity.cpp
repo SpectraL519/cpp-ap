@@ -29,15 +29,12 @@ std::istream& operator>>(std::istream& input, verbosity_level& v) {
         break;
 
     default:
-        std::cerr << "[ERROR] Invalid verbosity_level value" << std::endl;
+        std::cerr << "[ERROR] : Invalid verbosity_level value - " << value << std::endl;
         std::exit(EXIT_FAILURE);
     }
 
     return input;
 }
-
-} // namespace
-
 
 void print_msg(const verbosity_level verbosity) {
     switch (verbosity) {
@@ -54,12 +51,14 @@ void print_msg(const verbosity_level verbosity) {
     }
 }
 
+} // namespace
+
 
 int main(int argc, char* argv[]) {
     ap::argument_parser parser;
     parser
-        .program_name("verbosity_level")
-        .program_description("sets the verbosity_level level for the program")
+        .program_name("verbosity level")
+        .program_description("shows the correct way of using enums as a parser argument type")
         .default_optional_arguments({ap::default_argument::optional::help});
 
     parser
@@ -73,12 +72,12 @@ int main(int argc, char* argv[]) {
     }
     catch (const std::exception& err) {
         std::cerr << "[ERROR] : " << err.what() << std::endl << parser << std::endl;
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
 
     if (parser.value<bool>("help")) {
         std::cout << parser << std::endl;
-        std::exit(0);
+        std::exit(EXIT_SUCCESS);
     }
 
     print_msg(parser.value<verbosity_level>("verbosity_level"));
