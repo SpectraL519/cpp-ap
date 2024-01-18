@@ -51,10 +51,6 @@ else
 	@echo Compiling: $<
 endif
 	@$(CXX) $< -o $(DIR_EXE)/$@ $(CXX_ARGS)
-ifeq ($(ENUMARATE), false)
-	@echo Build successful!
-	@echo.
-endif
 
 init:
 	@$(shell powershell -command echo 0 > $(DIR_CURR)/$(FILE_COUNT))
