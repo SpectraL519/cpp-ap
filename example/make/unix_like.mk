@@ -43,7 +43,7 @@ build: $(OBJECTS)
 	@echo
 	@echo Build successful!
 
-%: $(DIR_SRC)/%.cpp 
+%: $(DIR_SRC)/%.cpp
 ifeq ($(ENUMARATE), true)
 	$(eval COUNT_OBJ=$(shell echo $$(($(COUNT_OBJ)+1))))
 	@echo [$(COUNT_OBJ)/$(COUNT_SRC)] Compiling: $<
@@ -51,10 +51,6 @@ else
 	@echo Compiling: $<
 endif
 	@$(CXX) $< -o $(DIR_EXE)/$@ $(CXX_ARGS)
-ifeq ($(ENUMARATE), false)
-	@echo Build successful!
-	@echo
-endif
 
 clean:
 	@echo Cleaning all generated files...
