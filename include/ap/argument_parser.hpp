@@ -32,6 +32,7 @@ SOFTWARE.
 #include <any>
 #include <compare>
 #include <concepts>
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -204,9 +205,14 @@ template <ap::utility::valid_argument_value_type T>
 template <ap::utility::valid_argument_value_type T>
 detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
-// TODO: add more predefined actions
-// * trim_whitespace_action ?
-// * for help/version: show and exit action - requires arg to have access to parser
+detail::callable_type<ap::void_action, std::string> check_file_exists_action{
+    [](std::string& file_path) {
+        if (not std::filesystem::exists(file_path)) {
+            std::cerr << "[ERROR] : File " + file_path + " does not exists!";
+            std::exit(EXIT_FAILURE);
+        }
+    }
+};
 
 } // namespace action
 
@@ -634,18 +640,22 @@ private:
 } // namespace argument
 
 
-struct default_argument {
-    enum class positional : uint8_t {
-        input,
-        output
-    };
+namespace default_argument {
 
-    enum class optional : uint8_t {
-        help,
-        input,
-        output
-    };
+enum class positional : uint8_t {
+    input,
+    output
 };
+
+enum class optional : uint8_t {
+    help,
+    input,
+    output,
+    multi_input,
+    multi_output
+};
+
+} // namespace default_argument
 
 
 class argument_parser {
@@ -841,6 +851,7 @@ private:
         switch (arg) {
             case default_argument::positional::input:
                 this->add_positional_argument("input")
+                     .action<ap::void_action>(ap::action::check_file_exists_action)
                      .help("Input file path");
                 break;
 
@@ -857,19 +868,36 @@ private:
                 this->add_flag("help", "h")
                      .bypass_required()
                      .help("Display help message");
-                     // TODO: on flag action
                 break;
 
             case default_argument::optional::input:
                 this->add_optional_argument("input", "i")
-                     .required() // ?
+                     .required()
+                     .nargs(1)
+                     .action<ap::void_action>(ap::action::check_file_exists_action)
                      .help("Input file path");
                 break;
 
             case default_argument::optional::output:
                 this->add_optional_argument("output", "o")
-                     .required() // ?
+                     .required()
+                     .nargs(1)
                      .help("Output file path");
+                break;
+
+            case default_argument::optional::multi_input:
+                this->add_optional_argument("input", "i")
+                     .required()
+                     .nargs(ap::nargs::at_least(1))
+                     .action<ap::void_action>(ap::action::check_file_exists_action)
+                     .help("Input file path");
+                break;
+
+            case default_argument::optional::multi_output:
+                this->add_optional_argument("output", "o")
+                     .required()
+                     .nargs(ap::nargs::at_least(1))
+                     .help("Input file path");
                 break;
         }
     }
