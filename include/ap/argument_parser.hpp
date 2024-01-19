@@ -58,28 +58,26 @@ struct argument_parser_test_fixture;
 
 #endif
 
-/// @brief Main argument parser library namespace. 
+/// @brief Main argument parser library namespace.
 namespace ap {
 
 class argument_parser;
 
-/**
- * @namespace utility
- * @brief Namespace containing utility concepts and templates for the argument parser.
- */
+
+/// @brief Template type validation utility.
 namespace utility {
 
 /**
- * @brief Concept for types that can be read from an input stream.
- * @tparam T The type to check for readability.
+ * @brief The concept is satisfied when `T` overloads the std::istream operator `>>`.
+ * @tparam T Type to check.
  */
 template <typename T>
 concept readable =
     requires(T value, std::istream& input_stream) { input_stream >> value; };
 
 /**
- * @brief Concept for types that are valid as argument values.
- * @tparam T The type to check for validity as an argument value.
+ * @brief The concept is satisfied when `T` is readable, copy constructible and assignable.
+ * @tparam T Type to check.
  */
 template <typename T>
 concept valid_argument_value_type =
@@ -87,8 +85,8 @@ concept valid_argument_value_type =
     std::copy_constructible<T> and std::assignable_from<T&, const T&>;
 
 /**
- * @brief Concept for types that can be compared for equality.
- * @tparam T The type to check for equality comparability.
+ * @brief The concept is satisfied when `T` is comparable using the equality operator `==`.
+ * @tparam T Type to check.
  */
 template <typename T>
 concept equality_comparable = requires(T lhs, T rhs) {
@@ -96,71 +94,59 @@ concept equality_comparable = requires(T lhs, T rhs) {
 };
 
 /**
- * @brief Template to check if a type is one of the valid types.
- * @tparam T The type to check.
+ * @brief Holds the boolean value indicating whether type `T` is the same as one of the `ValidTypes`.
+ * @tparam T Type to check.
  * @tparam ValidTypes The valid types to compare against.
  */
 template <typename T, typename... ValidTypes>
-struct is_valid_type : std::disjunction<std::is_same<T, ValidTypes>...> {};
-
-/**
- * @brief Constant expression indicating whether a type is one of the valid types.
- * @tparam T The type to check.
- * @tparam ValidTypes The valid types to compare against.
- */
-template <typename T, typename... ValidTypes>
-inline constexpr bool is_valid_type_v = is_valid_type<T, ValidTypes...>::value;
+inline constexpr bool is_valid_type_v = std::disjunction_v<std::is_same<T, ValidTypes>...>;
 
 } // namespace utility
 
 
-/**
- * @namespace nargs
- * @brief Namespace containing classes and functions related to specifying argument counts.
- */
+/// @brief Argument's number of values management utility.
 namespace nargs {
 
-/// @brief Class representing a range of valid argument counts.
+/// @brief Argument's number of values managing class.
 class range {
 public:
     using count_type = std::size_t;
 
-    /// @brief Constructor for the range class without specified argument count.
+    /// @brief Default constructor: creates range [1, 1].
     range() : _nlow(_ndefault), _nhigh(_ndefault) {}
 
     /**
-     * @brief Constructor for the range class with a single argument count.
-     * @param n The argument count.
+     * @brief Exact count constructor: creates range [n, n].
+     * @param n Expected value count.
      */
     range(const count_type n)
-        : _nlow(n), _nhigh(n), _default(n == _ndefault) {}
+    : _nlow(n), _nhigh(n), _default(n == _ndefault) {}
 
     /**
-     * @brief Constructor for the range class with a range of argument counts.
-     * @param nlow The lower bound of the range.
-     * @param nhigh The upper bound of the range.
+     * @brief Concrete range constructor: creates range [nlow, nhigh].
+     * @param nlow The lower bound.
+     * @param nhigh The upper bound.
      */
     range(const count_type nlow, const count_type nhigh)
-        : _nlow(nlow), _nhigh(nhigh), _default(false) {}
+    : _nlow(nlow), _nhigh(nhigh), _default(nlow == _ndefault and nhigh == _ndefault) {}
 
     /**
-     * @brief Copy assignment operator for the range class.
-     * @param rhs The range to copy.
-     * @return Reference to the assigned range.
+     * @brief Assignment operator.
+     * @return Reference to the initialized range instance.
      */
     range& operator= (const range&) = default;
 
-    /// @brief Destructor for the range class.
+    /// @brief Class destructor.
     ~range() = default;
 
-    /// @return True if the range is using default values, false otherwise.
+    /// @return True if the range is [1, 1].
     [[nodiscard]] inline bool is_default() const {
         return this->_default;
     }
 
     /**
-     * @brief Check if a specific count is within the range.
-     * @param n The count to check.
+     * @brief Checks if a given value count is within the range.
+     * @param n The value count to check.
      * @return Ordering relationship between the count and the range.
      */
     [[nodiscard]] std::weak_ordering contains(const range::count_type n) const {
@@ -185,43 +171,15 @@ public:
                                           : std::weak_ordering::equivalent;
     }
 
-    /**
-     * @brief Friend function to create a range representing at least a specified count.
-     * @param n The minimum count.
-     * @return Range representing at least the specified count.
-     */
     friend range at_least(const count_type);
-
-    /**
-     * @brief Friend function to create a range representing more than a specified count.
-     * @param n The count.
-     * @return Range representing more than the specified count.
-     */
     friend range more_than(const count_type);
-
-    /**
-     * @brief Friend function to create a range representing less than a specified count.
-     * @param n The count.
-     * @return Range representing less than the specified count.
-     */
     friend range less_than(const count_type);
-
-    /**
-     * @brief Friend function to create a range representing up to a specified count.
-     * @param n The maximum count.
-     * @return Range representing up to the specified count.
-     */
     friend range up_to(const count_type);
-
-    /**
-     * @brief Friend function to create a range representing any count.
-     * @return Range representing any count.
-     */
     friend range any();
 
 private:
     /**
-     * @brief Private constructor for the range class with optional lower and upper bounds.
+     * @brief Private constructor: creates a possibly unbound range
      * @param nlow The optional lower bound of the range.
      * @param nhigh The optional upper bound of the range.
      */
@@ -236,44 +194,44 @@ private:
 };
 
 /**
- * @brief Create a range representing at least a specified count.
- * @param n The minimum count.
- * @return Range representing at least the specified count.
+ * @brief `range` class builder function. Creates a range [n, inf].
+ * @param n The lower bound.
+ * @return Built `range` class instance.
  */
 [[nodiscard]] inline range at_least(const range::count_type n) {
     return range(n, std::nullopt);
 }
 
 /**
- * @brief Create a range representing more than a specified count.
- * @param n The count.
- * @return Range representing more than the specified count.
+ * @brief `range` class builder function. Creates a range [n + 1, inf].
+ * @param n The lower bound.
+ * @return Built `range` class instance.
  */
 [[nodiscard]] inline range more_than(const range::count_type n) {
     return range(n + 1, std::nullopt);
 }
 
 /**
- * @brief Create a range representing less than a specified count.
- * @param n The count.
- * @return Range representing less than the specified count.
+ * @brief `range` class builder function. Creates a range [0, n - 1].
+ * @param n The upper bound
+ * @return Built `range` class instance.
  */
 [[nodiscard]] inline range less_than(const range::count_type n) {
     return range(std::nullopt, n - 1);
 }
 
 /**
- * @brief Create a range representing up to a specified count.
- * @param n The maximum count.
- * @return Range representing up to the specified count.
+ * @brief `range` class builder function. Creates a range [0, n].
+ * @param n The upper bound
+ * @return Built `range` class instance.
  */
 [[nodiscard]] inline range up_to(const range::count_type n) {
     return range(std::nullopt, n);
 }
 
 /**
- * @brief Create a range representing any count.
- * @return Range representing any count.
+ * @brief `range` class builder function. Creates a range [0, inf].
+ * @return Built `range` class instance.
  */
 [[nodiscard]] inline range any() {
     return range(std::nullopt, std::nullopt);
@@ -282,13 +240,13 @@ private:
 } // namespace nargs
 
 
-/// @brief Struct providing a template type alias for a valued action function.
+/// @brief Defines valued argument action traits.
 struct valued_action {
     template <ap::utility::valid_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
-/// @brief Struct providing a template type alias for a void action function.
+/// @brief Defines void argument action traits.
 struct void_action {
     template <ap::utility::valid_argument_value_type T>
     using type = std::function<void(T&)>;
@@ -296,33 +254,33 @@ struct void_action {
 
 // TODO: on_read_action
 
-/// @brief Namespace containing utilities for handling actions associated with argument parsing.
+/// @brief Argument action handling utility.
 namespace action {
 
-/// @brief Internal namespace containing details of the action utilities.
+/// @brief Internal argument action handling utility
 namespace detail {
 
 /**
- * @brief Concept checking if a type is a valid action specifier.
+ * @brief The concept is satisfied when `AS` is either a valued or void argument action
  * @tparam AS The action specifier type.
  */
 template <typename AS>
 concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
-/// @brief Alias for the callable type of a specified action specifier and argument value type.
+/// @brief Template argument action callable type alias.
 template <valid_action_specifier AS, ap::utility::valid_argument_value_type T>
 using callable_type = typename AS::template type<T>;
 
-/// @brief Alias for the variant type representing different action specifier types.
+/// @brief Template argument action callabla variant type alias.
 template <ap::utility::valid_argument_value_type T>
 using action_variant_type =
     std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
 
 /**
- * @brief Check if an action variant is a void action.
+ * @brief Checks if an argument action variant holds a void action.
  * @tparam T The argument value type.
  * @param action The action variant.
- * @return True if the action is a void action, false otherwise.
+ * @return True if the held action is a void action.
  */
 template <ap::utility::valid_argument_value_type T>
 [[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) {
@@ -331,11 +289,12 @@ template <ap::utility::valid_argument_value_type T>
 
 } // namespace detail
 
-/// @brief Default void action for argument values.
+/// @brief Default argument action.
 template <ap::utility::valid_argument_value_type T>
 detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
-/// @brief Action to check if a file exists for string argument values.
+/// @brief Predefined action for file name handling arguments. \
+           Checks whether a file with the given name exists.
 inline detail::callable_type<ap::void_action, std::string> check_file_exists_action{
     [](std::string& file_path) {
         if (not std::filesystem::exists(file_path)) {
@@ -348,15 +307,15 @@ inline detail::callable_type<ap::void_action, std::string> check_file_exists_act
 } // namespace action
 
 
-/// @brief Namespace containing classes and utilities for handling command-line arguments.
+/// @brief Internal argument handling utility.
 namespace argument::detail {
 
-/// @brief Represents the name of a command-line argument.
+/// @brief Structure holding the argument name.
 struct argument_name {
     /// @brief Default constructor (deleted).
     argument_name() = delete;
 
-    /// @brief Deleted copy assignment operator for argument_name.
+    /// @brief Assignment operator for argument_name (deleted).
     argument_name& operator= (const argument_name&) = delete;
 
     /// @brief Copy constructor
@@ -366,25 +325,25 @@ struct argument_name {
     argument_name(argument_name&&) = default;
 
     /**
-     * @brief Constructor for argument_name with only a long name.
+     * @brief Primary name constructor.
      * @param name The primary name of the argument.
      */
     explicit argument_name(std::string_view name) : name(name) {}
 
     /**
-     * @brief Constructor for argument_name with a long name and a short name.
+     * @brief Primary and secondary name constructor.
      * @param name The primary name of the argument.
-     * @param short_name The short name of the argument (optional).
+     * @param short_name The secondary (short) name of the argument.
      */
     explicit argument_name(std::string_view name, std::string_view short_name)
-        : name(name), short_name(short_name) {}
+    : name(name), short_name(short_name) {}
 
-    /// @brief Default destructor for argument_name.
+    /// @brief Class destructor.
     ~argument_name() = default;
 
     /**
      * @brief Equality comparison operator.
-     * @param other The argument_name to compare with.
+     * @param other The argument_name instance to compare with.
      * @return Equality of argument names.
      */
     inline bool operator== (const argument_name& other) const {
@@ -418,6 +377,9 @@ struct argument_name {
         return os;
     }
 
+    // TODO: rename
+    // * name -> primary
+    // * short_name -> secondary
     const std::string name; ///< The primary name of the argument.
     const std::optional<std::string> short_name; ///< The optional short name of the argument.
 };
@@ -741,7 +703,7 @@ public:
     /// @return True if the positional argument is optional., false if required.
     [[nodiscard]] inline bool is_optional() const override { return this->_optional; }
 
-    
+
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
@@ -1167,7 +1129,7 @@ private:
     std::optional<std::string> _help_msg;
 
     bool _required{false};
-    bool _bypass_required{false}; 
+    bool _bypass_required{false};
     std::optional<ap::nargs::range> _nargs_range;
     action_type _action{ap::action::default_action<value_type>}; ///< Action associated with the opitonal argument.
     std::vector<value_type> _choices; ///< Vector of valid choices for the optional argument.
