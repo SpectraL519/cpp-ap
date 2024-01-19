@@ -57,7 +57,7 @@ $(DIR_OUT)/%.o: $(DIR_SRC)/%.cpp
 $(APP_TARGET): $(APP_OBJ)
 	@echo
 	@echo Linking: $@
-	@$(CXX) $^ -o $@ $(CXX_ARGS)
+	@$(CXX) $< -o $(DIR_APP)/$@ $(CXX_ARGS)
 	@echo
 	@echo Build successful!
 
@@ -74,4 +74,3 @@ help:
 	@echo "  build      - Build the test module"
 	@echo "  clean      - Clean all generated files in test module"
 	@echo "  help       - Display this help message"
- 
