@@ -26,7 +26,7 @@ add_executable(test ${SOURCES})
 # Setting the output directory path
 set_target_properties(test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${BINARY_DIR}"
-    CXX_STANDARD 20 
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
 )

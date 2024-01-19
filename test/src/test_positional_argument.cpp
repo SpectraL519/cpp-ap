@@ -112,6 +112,46 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
+    "is_used() should return false by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE_FALSE(sut_is_used(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "is_used() should return true when argument contains value"
+) {
+    auto sut = prepare_argument(long_name);
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE(sut_is_used(sut));
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "nused() should return 0 by default"
+) {
+    const auto sut = prepare_argument(long_name);
+
+    REQUIRE_EQ(sut_get_nused(sut), 0u);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "is_used() should return 1 when argument contains value"
+) {
+    auto sut = prepare_argument(long_name);
+    sut_set_value(sut, std::to_string(value_1));
+
+    REQUIRE_EQ(sut_get_nused(sut), 1u);
+}
+
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
     "has_value() should return false by default"
 ) {
     const auto sut = prepare_argument(long_name);
@@ -182,7 +222,7 @@ TEST_CASE_FIXTURE(
     }
     SUBCASE("given string is non-convertible to value_type") {
         REQUIRE_THROWS_AS(
-            sut_set_value(sut, invalid_value_str), 
+            sut_set_value(sut, invalid_value_str),
             ap::error::invalid_value_error);
 
         REQUIRE_FALSE(sut_has_value(sut));
@@ -198,7 +238,7 @@ TEST_CASE_FIXTURE(
     sut_set_choices(sut, default_choices);
 
     REQUIRE_THROWS_AS(
-        sut_set_value(sut, std::to_string(invalid_choice)), 
+        sut_set_value(sut, std::to_string(invalid_choice)),
         ap::error::invalid_choice_error);
 
     REQUIRE_FALSE(sut_has_value(sut));
