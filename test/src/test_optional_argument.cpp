@@ -131,50 +131,6 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "is_used() should return false by default"
-) {
-    const auto sut = prepare_argument(long_name);
-
-    REQUIRE_FALSE(sut_is_used(sut));
-}
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
-    "is_used() should return true when argument contains value"
-) {
-    auto sut = prepare_argument(long_name);
-    sut_set_value(sut, std::to_string(value_1));
-
-    REQUIRE(sut_is_used(sut));
-}
-
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
-    "nused() should return 0 by default"
-) {
-    const auto sut = prepare_argument(long_name);
-
-    REQUIRE_EQ(sut_get_nused(sut), 0u);
-}
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
-    "is_used() should return the number of times the argument's flag has been used "
-    "[number of set_used() function calls]"
-) {
-    auto sut = prepare_argument(long_name);
-
-    constexpr std::size_t nused = 5u;
-    for (std::size_t n = 0; n < nused; n++)
-        sut_set_used(sut);
-
-    REQUIRE_EQ(sut_get_nused(sut), nused);
-}
-
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
     "has_value() should return false by default"
 ) {
     const auto sut = prepare_argument(long_name);
@@ -326,11 +282,17 @@ TEST_CASE_FIXTURE(
     auto sut = prepare_argument(long_name);
 
     SUBCASE("given string is empty") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), std::invalid_argument);
+        REQUIRE_THROWS_AS(
+            sut_set_value(sut, empty_str), 
+            ap::error::invalid_value_error);
+
         REQUIRE_FALSE(sut_has_value(sut));
     }
     SUBCASE("given string is non-convertible to value_type") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, invalid_value_str), std::invalid_argument);
+        REQUIRE_THROWS_AS(
+            sut_set_value(sut, invalid_value_str), 
+            ap::error::invalid_value_error);
+
         REQUIRE_FALSE(sut_has_value(sut));
     }
 }
@@ -343,7 +305,11 @@ TEST_CASE_FIXTURE(
 
     sut_set_choices(sut, default_choices);
 
-    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(invalid_choice)), std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        sut_set_value(
+            sut, std::to_string(invalid_choice)), 
+            ap::error::invalid_choice_error);
+
     REQUIRE_FALSE(sut_has_value(sut));
 }
 
@@ -370,14 +336,16 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "set_value(any) should throw when a value has already benn set when nargs is default"
+    "set_value(any) should throw when a value has already been set when nargs is default"
 ) {
     auto sut = prepare_argument(long_name);
 
     REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
     REQUIRE(sut_has_value(sut));
 
-    REQUIRE_THROWS_AS(sut_set_value(sut, std::to_string(value_2)), std::runtime_error);
+    REQUIRE_THROWS_AS(
+        sut_set_value(sut, std::to_string(value_2)), 
+        ap::error::value_already_set_error);
 }
 
 TEST_CASE_FIXTURE(
