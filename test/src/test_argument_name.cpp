@@ -107,14 +107,17 @@ TEST_CASE("operator<< should push correct data to the output stream") {
     std::stringstream ss, expected_ss;
 
     SUBCASE("argument_name with long name only") {
-        expected_ss << default_argument_name_long_name();
-        ss << "[" << name << "]";
+        ss << default_argument_name_long_name();
+        expected_ss << "[" << name << "]";
     }
 
     SUBCASE("argument_name with both names") {
-        expected_ss << default_argument_name_both_names();
-        ss << "[" << name << "," << short_name << "]";
+        ss << default_argument_name_both_names();
+        expected_ss << "[" << name << "," << short_name << "]";
     }
+
+    CAPTURE(ss);
+    CAPTURE(expected_ss);
 
     REQUIRE_EQ(ss.str(), expected_ss.str());
 }

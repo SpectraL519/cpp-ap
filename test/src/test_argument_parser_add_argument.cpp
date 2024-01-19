@@ -82,13 +82,14 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("adding argument with a previously used long name") {
         REQUIRE_THROWS_AS(
-            sut.add_positional_argument(name, other_short_name), std::invalid_argument);
+            sut.add_positional_argument(name, other_short_name),
+            ap::error::argument_name_used_error);
     }
 
     SUBCASE("adding argument with a previously used short name") {
         REQUIRE_THROWS_AS(
-            sut.add_positional_argument(other_name, short_name), std::invalid_argument
-        );
+            sut.add_positional_argument(other_name, short_name),
+            ap::error::argument_name_used_error);
     }
 }
 
@@ -114,11 +115,14 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("adding argument with a previously used long name") {
         REQUIRE_THROWS_AS(
-            sut.add_optional_argument(name, other_short_name), std::invalid_argument);
+            sut.add_optional_argument(name, other_short_name),
+            ap::error::argument_name_used_error);
     }
 
     SUBCASE("adding argument with a previously used short name") {
-        REQUIRE_THROWS_AS(sut.add_optional_argument(other_name, short_name), std::invalid_argument);
+        REQUIRE_THROWS_AS(
+            sut.add_optional_argument(other_name, short_name),
+            ap::error::argument_name_used_error);
     }
 }
 
@@ -161,11 +165,15 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("adding argument with a previously used long name") {
-        REQUIRE_THROWS_AS(sut.add_flag(name, other_short_name), std::invalid_argument);
+        REQUIRE_THROWS_AS(
+            sut.add_flag(name, other_short_name),
+            ap::error::argument_name_used_error);
     }
 
     SUBCASE("adding argument with a previously used short name") {
-        REQUIRE_THROWS_AS(sut.add_flag(other_name, short_name), std::invalid_argument);
+        REQUIRE_THROWS_AS(
+            sut.add_flag(other_name, short_name),
+            ap::error::argument_name_used_error);
     }
 }
 
