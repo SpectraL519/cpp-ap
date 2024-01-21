@@ -130,7 +130,7 @@ struct argument_parser_test_fixture {
     }
 
     [[nodiscard]] cmd_argument_list sut_process_input(int argc, char* argv[]) const {
-        return sut._process_input(argc, argv);
+        return sut._preprocess_input(argc, argv);
     }
 
     void sut_parse_args_impl(const cmd_argument_list& cmd_args) {

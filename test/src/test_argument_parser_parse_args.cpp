@@ -32,11 +32,11 @@ namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
-TEST_SUITE_BEGIN("test_argument_parser_parse_args::_process_input");
+TEST_SUITE_BEGIN("test_argument_parser_parse_args::_preprocess_input");
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_process_input should return an empty vector for no command-line arguments"
+    "_preprocess_input should return an empty vector for no command-line arguments"
 ) {
     const auto argc = get_argc(default_num_args, default_num_args);
     auto argv = prepare_argv(default_num_args, default_num_args);
@@ -50,7 +50,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_parser_test_fixture,
-    "_process_input should return a vector of correct arguments"
+    "_preprocess_input should return a vector of correct arguments"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
@@ -84,7 +84,7 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
-TEST_SUITE_END(); // test_argument_parser_parse_args::_process_input
+TEST_SUITE_END(); // test_argument_parser_parse_args::_preprocess_input
 
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args::_parse_args_impl");

@@ -3,11 +3,9 @@
 
 # build files
 *.exe
-test/out/*
 test/test
-log/*
-test/cmake/*
-!test/cmake/.gitkeep
+test/build/
+example/build/
 
 # documentation files
 /documentation
