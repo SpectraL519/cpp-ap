@@ -1,0 +1,39 @@
+name: test
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        run: |
+          cd test
+          cmake -B build -DCMAKE_CXX_COMPILER=g++-11
+        continue-on-error: false
+
+      - name: Build test executable
+        shell: bash
+        env:
+          CC:  gcc-11
+          CXX: g++-11
+        run: |
+          cd test/build
+          make
+        continue-on-error: false
+
+      - name: Run tests
+        run: |
+          cd test/build
+          ./test
+        continue-on-error: false

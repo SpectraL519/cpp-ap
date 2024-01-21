@@ -2,43 +2,43 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Project
-project(cpp-ap-test)
+project(cpp-ap-examples)
 
 # Structure
-set(SOURCE_DIRS "src" "app")
+set(SOURCE_DIR "src")
 set(INCLUDE_DIRS "include" "../include")
-set(BINARY_DIR ".")
-set(EXECUTABLE_DIR ".")
+set(BINARY_DIR "bin")
+set(EXECUTABLE_DIR "bin")
 
 # Source files
-file(GLOB_RECURSE SOURCES "")
-foreach(SOURCE_DIR ${SOURCE_DIRS})
-    file(GLOB_RECURSE CURRENT_SOURCES ${SOURCE_DIR}/*.cpp)
-    list(APPEND SOURCES ${CURRENT_SOURCES})
-endforeach()
+file(GLOB_RECURSE SOURCES "${SOURCE_DIR}/*.cpp")
 
 # Include dirs
 include_directories(${INCLUDE_DIRS})
 
-# Default compile options
+# Default compiler options
 set(DEFAULT_CXX_FLAGS "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3")
 
-# Set compile options
+# Set compiler options
 if(NOT DEFINED CMAKE_CXX_FLAGS)
     set(CMAKE_CXX_FLAGS ${DEFAULT_CXX_FLAGS} CACHE STRING "Default C++ compile flags" FORCE)
 endif()
 
-# Executable
-add_executable(test ${SOURCES})
+# Executables
+foreach(source_file ${SOURCES})
+    # get file name without extensions
+    get_filename_component(executable_name ${source_file} NAME_WE)
 
-# Target properties
-set_target_properties(test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${BINARY_DIR}"
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO
-)
-target_compile_options(test PRIVATE ${CMAKE_CXX_FLAGS})
+    add_executable(${executable_name} ${source_file})
+    # Target properties
+    set_target_properties(${executable_name} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${BINARY_DIR}"
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO
+    )
+    target_compile_options(${executable_name} PRIVATE ${CMAKE_CXX_FLAGS})
+endforeach()
 
 # Executable path
 set(EXECUTABLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${EXECUTABLE_DIR}")
