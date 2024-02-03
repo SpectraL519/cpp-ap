@@ -34,10 +34,11 @@ Argument Parser for C++20
         ```
         > ./test -ts="<test-suite-name>"
         ```
-    
+
     * With CMake
         ```
-        > cd <project-root>/test/cmake
+        > cd <project-root>/test/
+        > mkdir build
         > cmake ..
         > make
         ```
