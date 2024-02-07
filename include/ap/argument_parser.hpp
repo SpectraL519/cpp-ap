@@ -103,7 +103,7 @@ public:
     range(const count_type nlow, const count_type nhigh)
     : _nlow(nlow), _nhigh(nhigh), _default(nlow == _ndefault and nhigh == _ndefault) {}
 
-    range& operator= (const range&) = default;
+    range& operator=(const range&) = default;
 
     ~range() = default;
 
@@ -223,10 +223,11 @@ inline detail::callable_type<ap::void_action, std::string> check_file_exists_act
 
 namespace argument::detail {
 
+// TODO: allow for a variadic number of names
 struct argument_name {
     argument_name() = delete;
 
-    argument_name& operator= (const argument_name&) = delete;
+    argument_name& operator=(const argument_name&) = delete;
 
     argument_name(const argument_name&) = default;
 
@@ -239,11 +240,11 @@ struct argument_name {
 
     ~argument_name() = default;
 
-    inline bool operator== (const argument_name& other) const {
+    inline bool operator==(const argument_name& other) const {
         return this->name == other.name;
     }
 
-    inline bool operator== (std::string_view name) const {
+    inline bool operator==(std::string_view name) const {
         return name == this->name or
                (this->short_name and name == this->short_name.value());
     }
@@ -253,7 +254,7 @@ struct argument_name {
                                 : ("[" + this->name + "]");
     }
 
-    friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
+    friend std::ostream& operator<<(std::ostream& os, const argument_name& arg_name) {
         os << arg_name.str();
         return os;
     }
@@ -273,7 +274,7 @@ public:
     virtual argument_interface& help(std::string_view) = 0;
 
 
-    friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
+    friend std::ostream& operator<<(std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
         const auto& argument_help_msg = argument.help();
         os << (argument_help_msg ? argument_help_msg.value() : "[ostream(argument)] TODO: msg");
@@ -410,7 +411,7 @@ public:
 
     ~positional_argument() = default;
 
-    inline bool operator== (const positional_argument& other) const {
+    inline bool operator==(const positional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -552,7 +553,7 @@ public:
 
     ~optional_argument() = default;
 
-    inline bool operator== (const optional_argument& other) const {
+    inline bool operator==(const optional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -763,7 +764,7 @@ public:
 
     argument_parser(const argument_parser&) = delete;
     argument_parser(argument_parser&&) = delete;
-    argument_parser& operator= (const argument_parser&) = delete;
+    argument_parser& operator=(const argument_parser&) = delete;
 
     ~argument_parser() = default;
 
@@ -863,7 +864,8 @@ public:
     }
 
     void parse_args(int argc, char* argv[]) {
-        this->_parse_args_impl(this->_process_input(argc, argv));
+        // TODO: check for nullptr
+        this->_parse_args_impl(this->_preprocess_input(argc, argv));
 
         if (this->_bypass_required_args())
             return;
@@ -925,7 +927,7 @@ public:
         }
     }
 
-    friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
+    friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
             os << parser._program_name.value() << std::endl;
 
@@ -1007,7 +1009,7 @@ private:
         cmd_argument() = default;
         cmd_argument(const cmd_argument&) = default;
         cmd_argument(cmd_argument&&) = default;
-        cmd_argument& operator= (const cmd_argument&) = default;
+        cmd_argument& operator=(const cmd_argument&) = default;
 
         cmd_argument(
             const type_discriminator discriminator, const std::string& value
@@ -1015,7 +1017,7 @@ private:
 
         ~cmd_argument() = default;
 
-        inline bool operator== (const cmd_argument& other) const {
+        inline bool operator==(const cmd_argument& other) const {
             return this->discriminator == other.discriminator and
                    this->value == other.value;
         }
@@ -1077,7 +1079,7 @@ private:
         return false;
     }
 
-    [[nodiscard]] cmd_argument_list _process_input(int argc, char* argv[]) const {
+    [[nodiscard]] cmd_argument_list _preprocess_input(int argc, char* argv[]) const {
         if (argc < 2)
             return cmd_argument_list{};
 

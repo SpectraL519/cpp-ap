@@ -1,97 +1,225 @@
-# cpp-ap
-Argument Parser for C++20
+# CPP-AP
+Command-line argument parser for C++20
 
 <br />
 
-> CPP-AP is a project developed for the *Team Programming* course at the *Wrocław University of Science and Technology*
->
-> Faculty: *W04N - Faculty of Information and Communication Technology*
->
-> Field of study: *Algorithmic Computer Science*
+## Project description
+
+The `CPP-AP` poject has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
+
+Faculty: *W04N - Faculty of Information and Communication Technology*
+
+Field of study: *Algorithmic Computer Science*
+
+<br />
+
+The goal of the project was to create a light,  intuitive and simple to use command-line argument parser library for the `C++20` and newer standards.
+
+The `CPP-AP` library does not require installing any additional tools or heavy libraries, like with `boost::program_options`. Much like with the `Doctest` framework - the only thing you need to do is copy the `argument_parser.hpp` file into the include directory of your project and you're set to go.
 
 <br />
 <br />
 
-## DEV NOTES
+## Table of contents
 
-1. Requirements:
-   * g++ >= g++-11
+* [Tutorial](#tutorial)
+    * [The parser class](#the-parser-class)
+    * [Adding arguments](#adding-arguments)
+    * [Argument parameters](#argument-parameters)
+    * [Parsing arguments](#parsing-arguments)
+* [Examples](#examples)
+* [Dev notes](#dev-notes)
+    * [Requirements](#requirements)
+    * [Building and testing](#building-and-testing)
+* [Compiler support](#compiler-support)
+* [Licence](#licence)
+
+<br />
+<br />
+
+## Tutorial
+
+To use the `CPP-AP` library in your project, copy the [argument_parser.hpp](include/ap/argument_parser.hpp) file into your include directory, e.g. `include/ap`. No other setup is necessary - you only need to include this header in your code:
+
+```c++
+#include <ap/argument_parser.hpp>
+```
+
+If you wish to use the library across multiple projects without copying the header into each one, you can copy it into a common directory and add the `-I <argument-parser-dir>` option when compiling your project.
+
+### The parser class
+
+To use the argument parser in your code you need to use the `ap::argument_parser` class.
+
+The parameters you can specify for a parser's instance are:
+* Program name
+* Program description
+* [Arguments](#adding-arguments)
+
+```c++
+ap::argument_parser parser;
+parser.program_name("Name of the program")
+      .program_description("Description of the program");
+```
+
+### Adding arguments
+
+The parser supports both positional and optional arguments. Both argument types are identified by their names represented as strings. Arguments can be defined with only a primary name or with a primary and a secondary (short) name.
+
+**NOTE:** The rules of parsing positional and optional arguments are described in the [Parsing arguments](#parsing-arguments) section.
+
+To add an argument to the parameter's configurations use the following syntax:
+
+```c++
+parser.add_<positional/optional>_argument<value_type>("argument_name");
+```
+
+or
+
+```c++
+parser.add_<positional/optional>_argument<value_type>("argument_name", "a");
+```
+
+**NOTE:** The library supports any argument value types which meet the following requirements:
+* The `std::ostream& operator<<` must be overloaded for a value type
+* The type must have a copy constructor and an assignment operator
+
+**NOTE:** If the `value_type` is not provided, `std::string` will be used.
+
+### Argument parameters
+
+**Common parameters**
+
+Parameters which can be specified for both positional and optional arguments include:
+
+* `help` - the argument's description which will be printed when printing the parser class instance.
+
+    ```c++
+    parser.add_positional_argument<std::size_t>("number", "n")
+          .help("a positive integer value");
+    ```
+
+* `choices` - a list of valid argument values.
+    The `choices` parameter takes a `const std::vector<value_type>&` as an argument.
+
+    **NOTE:** To use the `choices` the `value_type` must overload the equaility comparison operator: `==`;
+
+    ```c++
+    parser.add_optional_argument<char>("method", "m")
+          .choices({'a', 'b', 'c'});
+    ```
+
+* `action`: TODO
+
+**Optional argument specific parameters**
+
+* `required`: TODO
+* `bypass_required`: TODO
+* `nargs`: TODO
+* `default_value`: TODO
+* `implicit_value`: TODO
+
+### Parsing arguments
+
+To parse the command-line arguments use the `argument_parser::parse_args` method:
+
+```c++
+#include <ap/argument_parser.hpp>
+
+int main(int argc, char** argv) {
+    ap::argument_parser parser;
+    parser.program_name("test program");
+
+    parser.add_positional_argument<int>("positional_argument", "p");
+    parser.add_optional_argument("optional_argument", "o");
+
+    try {
+        parser.parse_args(argc, argv);
+    }
+    catch (const ap::argument_parser_error& err) {
+        std::cerr << "[ERROR] : " << err.what() << std::endl << parser << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+
+    std::cout << "value parsed for the positional argument: " << parser.value<int>("positional_argument") << std::endl;
+    std::cout << "value parsed for the optional argument: " << parser.value("optional_argument") << std::endl;
+
+    return 0;
+}
+```
+
+<br />
+<br />
+
+## Examples
+
+TODO
+
+<br />
+<br />
+
+## Dev notes
+
+#### Requirements:
+   * Supported compiler (check compiler support [here](#compiler-support))
    * clang-format-17 ([ubuntu download tutorial](https://ubuntuhandbook.org/index.php/2023/09/how-to-install-clang-17-or-16-in-ubuntu-22-04-20-04/amp/?fbclid=IwAR1ZfJpoiitjwn8aMlKVWpFdkYmUqtaQwraJBju09v1gtc0jQANTgVeCuMY))
 
 <br />
 
-2. Building and running tests:
+#### Building and testing:
+
+1. Build the testing executable:
 
     * With GNU Make
-
-        ```
+        ```shell
         > cd <project-root>/test
         > make all
         ```
-        ```
-        > ./test
-        ```
-        ```
-        > ./test -ts="<test-suite-name>"
-        ```
 
     * With CMake
-        ```
+        ```shell
         > cd <project-root>/test/
         > mkdir build
         > cmake ..
         > make
         ```
-        ```
-        > ./test/out/test
-        ```
-        ```
-        > ./test/out/test -ts="<test-suite-name>"
-        ```
 
-3. Error fixing:
+2. Run tests
 
-    * Makefile error
+    ```shell
+    cd <project-root>/test
+    ```
 
-        In case you face an error in Windows saying that:
-        ```
-        ...\profile.ps1 cannot be loaded because running scripts is disable on this system. ...
-        ```
-        Then you should run the following command to enable running scripts by Windows' Makefile:
-        ```
-        > PowerShell -ExecutionPolicy Bypass
-        ```
-    * Wrong CMake generator
+    Run all tests:
+    ```shell
+    > ./test
+    ```
 
-        In case you generate VS Studio files by using CMake instead of Makefile then you should change used generator in CMake by using the following command:
-        ```
-        > cmake -G "Unix Makefiles" ..
-        ```
-        Instead of this command:
-        ```
-        > cmake ..
-        ```
-        In case this fix does not work then you will probably have to search for another generator matching your system's requirements. You can do that by listing all available generators in "Generators" section when running the following command:
-        ```
-        > cmake --help
-        ```
-        Just try to find a right generator for your system and run mentioned command by subtituting a chosen generator into this command:
-        ```
-        > cmake -G "<generator>" ..
-        ```
+    Run a single test suite:
+    ```shell
+    > ./test -ts="<test-suite-name>"
+    ```
 
-4. Tips and tricks:
+    > **Note**: Test suites in the project have the same name as the files they're in.
 
-    * CMake compiler swap
+3. Tips and tricks:
 
-        In case you would like to swap used compiler in CMake to the same compiler with other version or a different compiler then you should run cmake command by using -D flag in the following way:
+    * Using a non-default compiler with GNU Make:
+
+        If you wish to use a non-default compiler when building the project with GNU Make, run the Makefile with a `CXX=<compiler>` option, e.g.:
+        ```shell
+        > make all CXX=clang++
         ```
-        > cmake -DCMAKE_CXX_COMPILER=<compiler> ..
+        > **Note:** The project uses the `g++` compiler by default.
+
+    * Using a non-default compiler with CMake:
+
+        If you wish to use a non-default compiler when building the project with CMake, run the cmake command with a `-DCMAKE_CXX_COMPILER=<compiler>` option, e.g:
+        ``` shell
+        > cmake -DCMAKE_CXX_COMPILER=clang++ ..
         ```
-        The default is:
-        ```
-        > cmake -DCMAKE_CXX_COMPILER=g++ ..
-        ```
+        > **Note:** The project uses the `g++` compiler by default.
+
         You can also change used flags in current compiler in the following way:
         ```
         > cmake -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
@@ -101,31 +229,39 @@ Argument Parser for C++20
         > cmake -DCMAKE_CXX_COMPILER=<compiler> -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
         ```
 
-    * GNU Make non-default compiler usage
+    * Changing the CMake generator:
 
-        In case you would like to use non-default compiler in GNU Make which is clang++ then you should run make with following parameters:
+        If you wish for CMake to generate a different type of project, use the `-G` option, e.g. (building a Make project on Windows instead of a VS project):
         ```
-        > make <your_target> CXX=clang++
+        > cmake -G "Unix Makefiles" ..
         ```
-        Default compiler is g++. Flags for other compilers than g++ and clang++ are not prepared. You will have to change them manually in the code in case of another compiler usage.
 
-    Remember that this project does not work with older standards of c++ than c++-20.
+4. Possible errors:
 
+    * Windows Make - running scripts error:
 
-## Documentation
+        If you see an error:
+        ```shell
+        ...\profile.ps1 cannot be loaded because running scripts is disabled on this system. ...
+        ```
+        when building the project on Windows using GNU Make, run the following command:
+        ```shell
+        > PowerShell -ExecutionPolicy Bypass
+        ```
+        This modifies the execution policy **for the current powershell session**.
 
-The documentation for this project is generated using Doxygen. Follow the steps below to generate and view the documentation.
+<br />
+<br />
 
-### Prerequisites
+## Compiler support
 
-1. **Doxygen Installation**: Make sure you have Doxygen installed on your system. If not, you can download it from [here](https://www.doxygen.nl/download.html).
+As of now the project supports the **GNU G++** compilers with `C++20` support (g++ >= 11.3.0) on Linux and Windows.
 
-### Generating Documentation
+The project does compile with **clang** compilers, however it is not officialy tested yet.
 
-1. Open a terminal in the root directory of the project.
+<br />
+<br />
 
-2. Run the following command to generate the documentation:
+## Licence
 
-   ```bash
-   doxygen Doxyfile
-   ```
+The `CPP-AP` project uses the [MIT Licence](https://opensource.org/license/mit/)
