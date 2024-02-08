@@ -27,7 +27,11 @@ SOFTWARE.
 
 /*!
  * @file argument_parser.hpp
- * @brief Header file for the C++20 argument parser library.
+ * @brief CPP-AP library header file.
+ *
+ * This header file contians the entire CPP-AP library implementation.
+ *
+ * @version 1.0
  */
 
 #pragma once
