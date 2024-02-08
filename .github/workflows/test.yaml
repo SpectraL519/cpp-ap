@@ -28,5 +28,6 @@ jobs:
 
       - name: Run tests
         run: |
+          cd test
           ./test
         continue-on-error: false
