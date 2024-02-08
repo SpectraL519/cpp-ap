@@ -1,0 +1,32 @@
+name: test
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build test executable
+        shell: bash
+        env:
+          CC:  gcc-11
+          CXX: g++-11
+        run: |
+          cd test
+          make CXX=g++-11
+        continue-on-error: false
+
+      - name: Run tests
+        run: |
+          ./test
+        continue-on-error: false

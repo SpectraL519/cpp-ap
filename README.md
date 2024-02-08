@@ -1,11 +1,14 @@
 # CPP-AP
 Command-line argument parser for C++20
 
+[![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
+[![test](https://github.com/SpectraL519/cpp-ap/actions/workflows/test.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/test)
+
 <br />
 
-## Project description
+## Overview
 
-The `CPP-AP` poject has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
+The `CPP-AP` library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
 
 Faculty: *W04N - Faculty of Information and Communication Technology*
 
