@@ -1,13 +1,15 @@
-# Structure
-DIR_CURR 		:= .
-DIR_PREV 		:= ..
-DIR_INC 		:= $(DIR_CURR)/include
-DIR_INC_GLOB 	:= $(DIR_PREV)/include
-DIR_SRC 		:= $(DIR_CURR)/src
-DIR_OUT 		:= $(DIR_CURR)/out
-DIR_APP			:= $(DIR_CURR)/app
+# TODO: fix
 
-APP_TARGET 	:= test.exe
+# Structure
+GLOB_DIR 	 := ..
+TEST_DIR 	 := .
+INC_DIR  	 := $(TEST_DIR)/include
+INC_GLOB_DIR := $(GLOB_DIR)/include
+SRC_DIR  	 := $(TEST_DIR)/src
+OUT_DIR  	 := $(TEST_DIR)/out
+APP_DIR	 	 := $(TEST_DIR)/app
+
+TEST_TARGET := $(TEST_DIR)/test.exe
 
 # Shell
 DEL := del /Q
@@ -21,55 +23,55 @@ else
 CXX_FLAGS := -std=c++2a -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
 endif
 
-CXX_ARGS := -I $(DIR_INC_GLOB) -I $(DIR_INC) $(CXX_FLAGS)
+CXX_ARGS := -I $(INC_GLOB_DIR) -I $(INC_DIR) $(CXX_FLAGS)
 
 # Test source & object files
-APP_SRC := $(wildcard $(DIR_APP)/*.cpp)
+SRC_FILES := $(wildcard $(APP_DIR)/*.cpp)
 
-ifeq ($(words $(APP_SRC)),1)
-APP_SRC += $(wildcard $(DIR_SRC)/*.cpp)
+ifeq ($(words $(SRC_FILES)),1)
+SRC_FILES += $(wildcard $(SRC_DIR)/*.cpp)
 else ifneq (,$(filter all build,$(MAKECMDGOALS)))
-$(error More than one .cpp file found in $(DIR_APP))
+$(error More than one .cpp file found in $(APP_DIR))
 endif
 
-APP_OBJ := $(foreach file, $(APP_SRC), $(DIR_OUT)/$(notdir $(file:.cpp=.o)))
+APP_OBJ := $(foreach file, $(SRC_FILES), $(OUT_DIR)/$(notdir $(file:.cpp=.o)))
 
 FILE_COUNT 	:= count.tmp
-COUNT_OBJ 	:= $(shell powershell -command type $(DIR_OUT)/$(FILE_COUNT))
-COUNT_SRC 	:= $(words $(APP_SRC))
+COUNT_OBJ 	:= $(shell powershell -command type $(OUT_DIR)/$(FILE_COUNT))
+COUNT_SRC 	:= $(words $(SRC_FILES))
 
 .PHONY: all build init destroy clean help
 
 all: clean build
 
-build: init $(APP_TARGET) destroy
+build: init $(TEST_TARGET) destroy
 
-$(DIR_OUT)/main.o: $(DIR_APP)/main.cpp
-	@$(shell powershell -command echo $$(($(shell powershell -command type $(DIR_OUT)/$(FILE_COUNT))+1)) > $(DIR_OUT)/$(FILE_COUNT))
-	@echo [$(shell powershell -command type $(DIR_OUT)/$(FILE_COUNT))/$(COUNT_SRC)] Compiling: $<
+$(OUT_DIR)/main.o: $(APP_DIR)/main.cpp
+	@$(shell powershell -command echo $$(($(shell powershell -command type $(OUT_DIR)/$(FILE_COUNT))+1)) > $(OUT_DIR)/$(FILE_COUNT))
+	@echo [$(shell powershell -command type $(OUT_DIR)/$(FILE_COUNT))/$(COUNT_SRC)] Compiling: $<
 	@$(CXX) -c $< -o $@ $(CXX_ARGS)
 
-$(DIR_OUT)/%.o: $(DIR_SRC)/%.cpp
-	@$(shell powershell -command echo $$(($(shell powershell -command type $(DIR_OUT)/$(FILE_COUNT))+1)) > $(DIR_OUT)/$(FILE_COUNT))
-	@echo [$(shell powershell -command type $(DIR_OUT)/$(FILE_COUNT))/$(COUNT_SRC)] Compiling: $<
+$(OUT_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@$(shell powershell -command echo $$(($(shell powershell -command type $(OUT_DIR)/$(FILE_COUNT))+1)) > $(OUT_DIR)/$(FILE_COUNT))
+	@echo [$(shell powershell -command type $(OUT_DIR)/$(FILE_COUNT))/$(COUNT_SRC)] Compiling: $<
 	@$(CXX) -c $< -o $@ $(CXX_ARGS)
 
-$(APP_TARGET): $(APP_OBJ)
+$(TEST_TARGET): $(APP_OBJ)
 	@echo.
 	@echo Linking: $@
-	@$(CXX) $< -o $(DIR_APP)/$@ $(CXX_ARGS)
+	@$(CXX) $< -o $@ $(CXX_ARGS)
 	@echo.
 	@echo Build successful!
 
 init:
-	@$(shell powershell -command echo 0 > $(DIR_OUT)/$(FILE_COUNT))
+	@$(shell powershell -command echo 0 > $(OUT_DIR)/$(FILE_COUNT))
 
 destroy:
-	@$(DEL) $(DIR_CURR)\out\*.tmp 2>NUL
+	@$(DEL) $(TEST_DIR)\out\*.tmp 2>NUL
 
 clean:
 	@echo Cleaning all generated files...
-	@$(DEL) $(DIR_CURR)\out\*.o $(DIR_CURR)\out\*.tmp $(DIR_CURR)\*.exe 2>NUL
+	@$(DEL) $(TEST_DIR)\out\*.o $(TEST_DIR)\out\*.tmp $(TEST_DIR)\*.exe 2>NUL
 	@echo All generated files removed!
 	@echo.
 

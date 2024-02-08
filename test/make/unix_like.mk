@@ -1,13 +1,15 @@
-# Structure
-DIR_CURR 		:= .
-DIR_PREV 		:= ..
-DIR_INC 		:= $(DIR_CURR)/include
-DIR_INC_GLOB 	:= $(DIR_PREV)/include
-DIR_SRC 		:= $(DIR_CURR)/src
-DIR_OUT 		:= $(DIR_CURR)/out
-DIR_APP			:= $(DIR_CURR)/app
+# TODO: fix
 
-APP_TARGET 	:= test
+# Structure
+GLOB_DIR 	 := ..
+TEST_DIR 	 := .
+INC_DIR  	 := $(TEST_DIR)/include
+INC_GLOB_DIR := $(GLOB_DIR)/include
+SRC_DIR  	 := $(TEST_DIR)/src
+OUT_DIR  	 := $(TEST_DIR)/out
+APP_DIR	 	 := $(TEST_DIR)/app
+
+TEST_TARGET := $(TEST_DIR)/test
 
 # Shell
 RM 		:= rm -rf
@@ -22,48 +24,48 @@ else
 CXX_FLAGS := -std=c++2a -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3
 endif
 
-CXX_ARGS := -I $(DIR_INC_GLOB) -I $(DIR_INC) $(CXX_FLAGS)
+CXX_ARGS := -I $(INC_GLOB_DIR) -I $(INC_DIR) $(CXX_FLAGS)
 
 # Test source & object files
-APP_SRC := $(wildcard $(DIR_APP)/*.cpp)
+SRC_FILES := $(wildcard $(APP_DIR)/*.cpp)
 
-ifeq ($(words $(APP_SRC)),1)
-APP_SRC += $(wildcard $(DIR_SRC)/*.cpp)
+ifeq ($(words $(SRC_FILES)),1)
+SRC_FILES += $(wildcard $(SRC_DIR)/*.cpp)
 else ifneq (,$(filter all build,$(MAKECMDGOALS)))
-$(error More than one .cpp file found in $(DIR_APP))
+$(error More than one .cpp file found in $(APP_DIR))
 endif
 
-APP_OBJ := $(foreach file, $(APP_SRC), $(DIR_OUT)/$(notdir $(file:.cpp=.o)))
+APP_OBJ := $(foreach file, $(SRC_FILES), $(OUT_DIR)/$(notdir $(file:.cpp=.o)))
 
 COUNT_OBJ := 0
-COUNT_SRC := $(words $(APP_SRC))
+COUNT_SRC := $(words $(SRC_FILES))
 
 .PHONY: all build clean help
 
 all: clean build
 
-build: $(APP_TARGET)
+build: $(TEST_TARGET)
 
-$(DIR_OUT)/main.o: $(DIR_APP)/main.cpp
+$(OUT_DIR)/main.o: $(APP_DIR)/main.cpp
 	$(eval COUNT_OBJ=$(shell echo $$(($(COUNT_OBJ)+1))))
 	@echo [$(COUNT_OBJ)/$(COUNT_SRC)] Compiling: $<
 	@$(CXX) -c $< -o $@ $(CXX_ARGS)
 
-$(DIR_OUT)/%.o: $(DIR_SRC)/%.cpp
+$(OUT_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(eval COUNT_OBJ=$(shell echo $$(($(COUNT_OBJ)+1))))
 	@echo [$(COUNT_OBJ)/$(COUNT_SRC)] Compiling: $<
 	@$(CXX) -c $< -o $@ $(CXX_ARGS)
 
-$(APP_TARGET): $(APP_OBJ)
+$(TEST_TARGET): $(APP_OBJ)
 	@echo
 	@echo Linking: $@
-	@$(CXX) $< -o $(DIR_APP)/$@ $(CXX_ARGS)
+	@$(CXX) $< -o $@ $(CXX_ARGS)
 	@echo
 	@echo Build successful!
 
 clean:
 	@echo Cleaning all generated files...
-	@$(RM) 	$(DIR_OUT)/*.o
+	@$(RM) 	$(OUT_DIR)/*.o
 	@$(FIND) . -type f -executable -not -iname "*.*" -not -iname "Makefile" -delete
 	@echo All generated files removed!
 	@echo

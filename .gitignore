@@ -5,6 +5,7 @@
 *.exe
 test/out/*
 test/test
+test/build/
 
 # documentation files
 /documentation
