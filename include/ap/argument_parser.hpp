@@ -27,7 +27,11 @@ SOFTWARE.
 
 /*!
  * @file argument_parser.hpp
- * @brief Header file for the C++20 argument parser library.
+ * @brief CPP-AP library header file.
+ *
+ * This header file contians the entire CPP-AP library implementation.
+ *
+ * @version 1.0
  */
 
 #pragma once
@@ -135,7 +139,7 @@ public:
      * @brief Assignment operator.
      * @return Reference to the initialized range instance.
      */
-    range& operator= (const range&) = default;
+    range& operator=(const range&) = default;
 
     /// @brief Class destructor.
     ~range() = default;
@@ -294,8 +298,7 @@ template <ap::utility::valid_argument_value_type T>
 template <ap::utility::valid_argument_value_type T>
 detail::callable_type<ap::void_action, T> default_action{ [](T&) {} };
 
-/// @brief Predefined action for file name handling arguments. \
-           Checks whether a file with the given name exists.
+/// @brief Predefined action for file name handling arguments. Checks whether a file with the given name exists.
 inline detail::callable_type<ap::void_action, std::string> check_file_exists_action{
     [](std::string& file_path) {
         if (not std::filesystem::exists(file_path)) {
@@ -304,6 +307,8 @@ inline detail::callable_type<ap::void_action, std::string> check_file_exists_act
         }
     }
 };
+
+// TODO: on_flag_action
 
 } // namespace action
 
@@ -317,7 +322,7 @@ struct argument_name {
     argument_name() = delete;
 
     /// @brief Assignment operator for argument_name (deleted).
-    argument_name& operator= (const argument_name&) = delete;
+    argument_name& operator=(const argument_name&) = delete;
 
     /// @brief Copy constructor
     argument_name(const argument_name&) = default;
@@ -347,7 +352,7 @@ struct argument_name {
      * @param other The argument_name instance to compare with.
      * @return Equality of argument names.
      */
-    inline bool operator== (const argument_name& other) const {
+    inline bool operator==(const argument_name& other) const {
         return this->name == other.name;
     }
 
@@ -356,7 +361,7 @@ struct argument_name {
      * @param name The string view to compare with.
      * @return Equality of names comparison (either full or short name).
      */
-    inline bool operator== (std::string_view name) const {
+    inline bool operator==(std::string_view name) const {
         return name == this->name or
                (this->short_name and name == this->short_name.value());
     }
@@ -373,7 +378,7 @@ struct argument_name {
      * @param arg_name The argument name to be inserted into the stream.
      * @return The modified output stream.
      */
-    friend std::ostream& operator<< (std::ostream& os, const argument_name& arg_name) {
+    friend std::ostream& operator<<(std::ostream& os, const argument_name& arg_name) {
         os << arg_name.str();
         return os;
     }
@@ -407,7 +412,7 @@ public:
      * @param argument The argument_interface to output.
      * @return The output stream.
      */
-    friend std::ostream& operator<< (std::ostream& os, const argument_interface& argument) {
+    friend std::ostream& operator<<(std::ostream& os, const argument_interface& argument) {
         os << argument.name() << " : ";
         const auto& argument_help_msg = argument.help();
         os << (argument_help_msg ? argument_help_msg.value() : "[ostream(argument)] TODO: msg");
@@ -661,7 +666,7 @@ public:
      * @param other Another positional_argument for comparison.
      * @return Result of equality
      */
-    inline bool operator== (const positional_argument& other) const {
+    inline bool operator==(const positional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -876,7 +881,7 @@ public:
      * @param other The optional_argument to compare with.
      * @return Equality of comparison.
      */
-    inline bool operator== (const optional_argument& other) const {
+    inline bool operator==(const optional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -1180,7 +1185,7 @@ public:
     argument_parser(argument_parser&&) = delete;
 
     /// @brief Deleted copy assignment operator.
-    argument_parser& operator= (const argument_parser&) = delete;
+    argument_parser& operator=(const argument_parser&) = delete;
 
     /// @brief Destructor for the argument parser.
     ~argument_parser() = default;
@@ -1345,7 +1350,7 @@ public:
      * @param argv Array of command-line argument strings.
      */
     void parse_args(int argc, char* argv[]) {
-        this->_parse_args_impl(this->_process_input(argc, argv));
+        this->_parse_args_impl(this->_preprocess_input(argc, argv));
 
         if (this->_bypass_required_args())
             return;
@@ -1435,7 +1440,7 @@ public:
      * @param parser The argument parser to print.
      * @return The modified output stream.
      */
-    friend std::ostream& operator<< (std::ostream& os, const argument_parser& parser) {
+    friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) {
         if (parser._program_name)
             os << parser._program_name.value() << std::endl;
 
@@ -1508,14 +1513,14 @@ private:
                      .required()
                      .nargs(ap::nargs::at_least(1))
                      .action<ap::void_action>(ap::action::check_file_exists_action)
-                     .help("Input file path");
+                     .help("Input files paths");
                 break;
 
             case default_argument::optional::multi_output:
                 this->add_optional_argument("output", "o")
                      .required()
                      .nargs(ap::nargs::at_least(1))
-                     .help("Input file path");
+                     .help("Output files paths");
                 break;
         }
     }
@@ -1527,7 +1532,7 @@ private:
         cmd_argument() = default;
         cmd_argument(const cmd_argument&) = default;
         cmd_argument(cmd_argument&&) = default;
-        cmd_argument& operator= (const cmd_argument&) = default;
+        cmd_argument& operator=(const cmd_argument&) = default;
 
         /**
          * @brief Constructor of a command-line argument.
@@ -1545,7 +1550,7 @@ private:
          * @param other Another cmd_argument to compare with.
          * @return Boolean statement of equality comparison.
          */
-        inline bool operator== (const cmd_argument& other) const {
+        inline bool operator==(const cmd_argument& other) const {
             return this->discriminator == other.discriminator and
                    this->value == other.value;
         }
@@ -1633,9 +1638,9 @@ private:
      * @brief Process command-line input arguments.
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument strings.
-     * @return List of processed command-line arguments.
+     * @return List of preprocessed command-line arguments.
      */
-    [[nodiscard]] cmd_argument_list _process_input(int argc, char* argv[]) const {
+    [[nodiscard]] cmd_argument_list _preprocess_input(int argc, char* argv[]) const {
         if (argc < 2)
             return cmd_argument_list{};
 
