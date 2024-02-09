@@ -19,7 +19,7 @@ jobs:
       - name: Prepare
         run: |
           cd test
-          mkdir build
+          cmake -B build -DCMAKE_CXX_COMPILER=g++-11
         continue-on-error: false
 
       - name: Build test executable
@@ -29,12 +29,11 @@ jobs:
           CXX: g++-11
         run: |
           cd test/build
-          cmake .. -DCMAKE_CXX_COMPILER=g++-11
           make
         continue-on-error: false
 
       - name: Run tests
         run: |
-          cd test
+          cd test/build
           ./test
         continue-on-error: false

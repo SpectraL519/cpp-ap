@@ -23,5 +23,7 @@ jobs:
           CXX: g++-11
         run: |
           cd example
-          make CXX=g++-11
+          cmake -B build -DCMAKE_CXX_COMPILER=g++-11
+          cd build
+          make
         continue-on-error: false

@@ -1,7 +1,7 @@
 # CPP-AP
 Command-line argument parser for C++20
 
-[![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
+[![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp)
 [![test](https://github.com/SpectraL519/cpp-ap/actions/workflows/test.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/test)
 
 <br />
@@ -413,7 +413,25 @@ The examples' source files are in the `<project-root>/example/src` directory.
 
 > **Note:** Each source file is a sepparate example.
 
-To build the examples use the `make all` command in the example base directory. The generated executable files will appear in the `<project-root>/example/exe` directory and will have the same names as their corresponding source files.
+Building the examples:
+
+```shell
+cd <project-root>/example
+cmake -B build
+cd build
+make
+```
+
+or
+
+```shell
+cd <project-root>/example
+mkdir build && cd build
+cmake ..
+make
+```
+
+The compiled binaries will appear in the `<project-root>/example/build/bin` directory.
 
 <br />
 <br />
@@ -430,85 +448,45 @@ To build the examples use the `make all` command in the example base directory. 
 
 1. Build the testing executable:
 
-    * With GNU Make
-        ```shell
-        > cd <project-root>/test
-        > make all
-        ```
+    ```shell
+    cd <project-root>/test/
+    cmake -B build
+    cd build
+    make
+    ```
 
-    * With CMake
-        ```shell
-        > cd <project-root>/test/
-        > mkdir build
-        > cmake ..
-        > make
-        ```
+    or
+
+    ```shell
+    cd <project-root>/test/
+    mkdir build && cd build
+    cmake ..
+    make
+    ```
 
 2. Run tests
 
-    ```shell
-    cd <project-root>/test
-    ```
-
     Run all tests:
     ```shell
-    > ./test
+    cd <project-root>/test/build
+    ./test
     ```
 
     Run a single test suite:
     ```shell
-    > ./test -ts="<test-suite-name>"
+    ./test -ts="<test-suite-name>"
     ```
 
     > **Note**: Test suites in the project have the same name as the files they're in.
 
 3. Tips and tricks:
 
-    * Using a non-default compiler with GNU Make:
-
-        If you wish to use a non-default compiler when building the project with GNU Make, run the Makefile with a `CXX=<compiler>` option, e.g.:
-        ```shell
-        > make all CXX=clang++
-        ```
-        > **Note:** The project uses the `g++` compiler by default.
-
-    * Using a non-default compiler with CMake:
-
-        If you wish to use a non-default compiler when building the project with CMake, run the cmake command with a `-DCMAKE_CXX_COMPILER=<compiler>` option, e.g:
-        ``` shell
-        > cmake -DCMAKE_CXX_COMPILER=clang++ ..
-        ```
-        > **Note:** The project uses the `g++` compiler by default.
-
-        You can also change used flags in current compiler in the following way:
-        ```
-        > cmake -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
-        ```
-        Or both things at once:
-        ```
-        > cmake -DCMAKE_CXX_COMPILER=<compiler> -DCMAKE_CXX_FLAGS="<flag1> <flag2> ..." ..
-        ```
-
     * Changing the CMake generator:
 
         If you wish for CMake to generate a different type of project, use the `-G` option, e.g. (building a Make project on Windows instead of a VS project):
         ```
-        > cmake -G "Unix Makefiles" ..
+        cmake -G "Unix Makefiles"
         ```
-
-4. Possible errors:
-
-    * Windows Make - running scripts error:
-
-        If you see an error:
-        ```shell
-        ...\profile.ps1 cannot be loaded because running scripts is disabled on this system. ...
-        ```
-        when building the project on Windows using GNU Make, run the following command:
-        ```shell
-        > PowerShell -ExecutionPolicy Bypass
-        ```
-        This modifies the execution policy **for the current powershell session**.
 
 <br />
 <br />
