@@ -1,7 +1,7 @@
 # CPP-AP
 Command-line argument parser for C++20
 
-[![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp)
+[![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
 [![test](https://github.com/SpectraL519/cpp-ap/actions/workflows/test.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/test)
 
 <br />
@@ -416,7 +416,6 @@ The examples' source files are in the `<project-root>/example/src` directory.
 Building the examples:
 
 ```shell
-cd <project-root>/example
 cmake -B build
 cd build
 make
@@ -425,7 +424,6 @@ make
 or
 
 ```shell
-cd <project-root>/example
 mkdir build && cd build
 cmake ..
 make
