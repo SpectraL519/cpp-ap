@@ -8,7 +8,6 @@
 
 using namespace ap::nargs;
 
-
 namespace {
 
 constexpr range::count_type ndefault = 1;
@@ -20,7 +19,6 @@ constexpr range::count_type nmin = std::numeric_limits<range::count_type>::min()
 constexpr range::count_type nmax = std::numeric_limits<range::count_type>::max();
 
 } // namespace
-
 
 namespace ap_testing {
 

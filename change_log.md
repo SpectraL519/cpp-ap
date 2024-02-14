@@ -18,3 +18,4 @@
 ### Version 1.1
 
 * Added `change_log.md`
+* Aligned the `.clang-format` configuration file and renamed `format/unix_like.sh` to `format/unix.sh`

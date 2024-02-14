@@ -1,16 +1,14 @@
 #define AP_TESTING
 
-#include "doctest.h"
 #include "argument_parser_test_fixture.hpp"
+#include "doctest.h"
 
 #include <ap/argument_parser.hpp>
-
 
 namespace {
 const std::string test_name = "test program name";
 const std::string test_description = "test program description";
 } // namespace
-
 
 namespace ap_testing {
 

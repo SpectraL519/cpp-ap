@@ -6,8 +6,8 @@
 
 #include <cstring>
 
-using ap::argument::detail::argument_name;
 using ap::argument::optional_argument;
+using ap::argument::detail::argument_name;
 using ap::utility::valid_argument_value_type;
 
 namespace ap_testing {
@@ -35,9 +35,7 @@ struct optional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    inline optional_argument<T>& sut_set_value(
-        optional_argument<T>& sut, const std::string& str_value
-    ) const {
+    inline optional_argument<T>& sut_set_value(optional_argument<T>& sut, const std::string& str_value) const {
         sut.set_used();
         return sut.set_value(str_value);
     }
@@ -60,30 +58,22 @@ struct optional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline std::weak_ordering sut_nvalues_in_range(
-        const optional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline std::weak_ordering sut_nvalues_in_range(const optional_argument<T>& sut) const {
         return sut.nvalues_in_range();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::any& sut_get_value(
-        const optional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline const std::any& sut_get_value(const optional_argument<T>& sut) const {
         return sut.value();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::vector<std::any>& sut_get_values(
-        const optional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline const std::vector<std::any>& sut_get_values(const optional_argument<T>& sut) const {
         return sut.values();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const argument_name& sut_get_name(
-        const optional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline const argument_name& sut_get_name(const optional_argument<T>& sut) const {
         return sut.name();
     }
 
@@ -93,9 +83,7 @@ struct optional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::optional<std::string>& sut_get_help(
-        const optional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline const std::optional<std::string>& sut_get_help(const optional_argument<T>& sut) const {
         return sut.help();
     }
 };

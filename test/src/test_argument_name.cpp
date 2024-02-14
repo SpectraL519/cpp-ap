@@ -9,7 +9,6 @@
 
 using namespace ap::argument::detail;
 
-
 namespace {
 
 constexpr std::string_view name = "test";
@@ -27,7 +26,6 @@ argument_name default_argument_name_both_names() {
 }
 
 } // namespace
-
 
 namespace ap_testing {
 

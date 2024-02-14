@@ -1,6 +1,6 @@
 ---
 Language: Cpp
-Standard: Latest
+Standard: c++20
 DisableFormat: false
 
 
@@ -8,69 +8,41 @@ DisableFormat: false
 IndentWidth:             4
 TabWidth:                4
 UseTab:                  Never
-ColumnLimit:             80
+ColumnLimit:             100
 ContinuationIndentWidth: 4
 
 
 # Alignment options
 AlignAfterOpenBracket:  BlockIndent
 AlignArrayOfStructures: Right
-AlignConsecutiveAssignments:
-  Enabled:          false
-  AcrossEmptyLines: false
-  AcrossComments:   false
-  AlignCompound:    false
-  PadOperators:     false
-AlignConsecutiveBitFields:
-  Enabled:          false
-  AcrossEmptyLines: false
-  AcrossComments:   false
-  AlignCompound:    false
-  PadOperators:     false
-AlignConsecutiveDeclarations:
-  Enabled:          false
-  AcrossEmptyLines: false
-  AcrossComments:   false
-  AlignCompound:    false
-  PadOperators:     false
-AlignConsecutiveMacros:
-  Enabled:          false
-  AcrossEmptyLines: false
-  AcrossComments:   false
-  AlignCompound:    false
-  PadOperators:     false
+AlignConsecutiveAssignments: false
+AlignConsecutiveBitFields: false
+AlignConsecutiveDeclarations: false
+AlignConsecutiveMacros: false
 AlignConsecutiveShortCaseStatements:
-  Enabled:          true
-  AcrossEmptyLines: true
-  AcrossComments:   true
-  AlignCaseColons:  false
+  Enabled: false
 AlignEscapedNewlines: Left
 AlignOperands:        AlignAfterOperator
-AlignTrailingComments:
-  Kind:           Always
-  OverEmptyLines: 0
+AlignTrailingComments: false
 
 AllowAllArgumentsOnNextLine:               true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine:             Empty
 AllowShortCaseLabelsOnASingleLine:         false
 AllowShortEnumsOnASingleLine:              true
-AllowShortFunctionsOnASingleLine:          Inline
+AllowShortFunctionsOnASingleLine:          Empty
 AllowShortIfStatementsOnASingleLine:       Never
-AllowShortLambdasOnASingleLine:            Inline
+AllowShortLambdasOnASingleLine:            All
 AllowShortLoopsOnASingleLine:              false
 
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType:           None
 AlwaysBreakBeforeMultilineStrings:    false
 AlwaysBreakTemplateDeclarations:      Yes
-BreakAfterAttributes:                 Leave
-BreakAfterJavaFieldAnnotations:       true
-BreakArrays:                          false
+BreakAfterAttributes:                 Never
 BreakBeforeBinaryOperators:           NonAssignment
 BreakBeforeBraces:                    Custom
 BreakBeforeConceptDeclarations:       Always
-BreakBeforeInlineASMColon:            OnlyMultiline
 BreakBeforeTernaryOperators:          true
 BreakConstructorInitializers:         BeforeColon
 BreakInheritanceList:                 BeforeColon
@@ -123,14 +95,14 @@ ShortNamespaceLines:  0
 
 IndentAccessModifiers:             false
 AccessModifierOffset:              -4
-ConstructorInitializerIndentWidth: 4
+ConstructorInitializerIndentWidth: 0
 EmptyLineAfterAccessModifier:      Never
 EmptyLineBeforeAccessModifier:     LogicalBlock
 PackConstructorInitializers:       NextLine
-SeparateDefinitionBlocks:          Leave
+SeparateDefinitionBlocks:          Always
 
-IndentCaseBlocks: true
-IndentCaseLabels: true
+IndentCaseBlocks: false
+IndentCaseLabels: false
 
 IndentWrappedFunctionNames: false
 LambdaBodyIndentation:      Signature
@@ -154,7 +126,7 @@ SpaceAfterLogicalNot:              true
 SpaceAfterTemplateKeyword:         true
 SpaceAroundPointerQualifiers:      Default
 SpaceBeforeAssignmentOperators:    true
-SpaceBeforeCaseColon:              true
+SpaceBeforeCaseColon:              false
 SpaceBeforeCpp11BracedList:        false
 SpaceBeforeCtorInitializerColon:   true
 SpaceBeforeParens:                 Custom
@@ -164,7 +136,7 @@ SpaceBeforeParensOptions:
   AfterFunctionDeclarationName: false
   AfterFunctionDefinitionName:  false
   AfterIfMacros:                false
-  AfterOverloadedOperator:      true
+  AfterOverloadedOperator:      false
   AfterRequiresInClause:        false
   AfterRequiresInExpression:    false
   BeforeNonEmptyParentheses:    false
