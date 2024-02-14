@@ -19,3 +19,11 @@
 
 * Added `change_log.md`
 * Aligned the `.clang-format` configuration file and renamed `format/unix_like.sh` to `format/unix.sh`
+
+TODO:
+* Split dev notes into sections and include them in table of contents
+* Explicit formatting instructions in dev notes
+* Add format checking workflow
+* Explicit clang compiler flags setting in CMake
+* Add `CMakeLists.txt` in project root
+* Add CMake integration instructions in dev notes
