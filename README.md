@@ -39,6 +39,7 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
 * [Documentation](#documentation)
 * [Compiler support](#compiler-support)
 * [Licence](#licence)
+* [Change log](change_log.md)
 
 <br />
 <br />
