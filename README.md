@@ -4,6 +4,7 @@ Command-line argument parser for C++20
 [![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
 [![clang++](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang++)
 [![test](https://github.com/SpectraL519/cpp-ap/actions/workflows/test.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/test)
+[![format](https://github.com/SpectraL519/cpp-ap/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/format)
 
 <br />
 
@@ -34,8 +35,8 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
     * [Parsing arguments](#parsing-arguments)
 * [Examples](#examples)
 * [Dev notes](#dev-notes)
-    * [Requirements](#requirements)
     * [Building and testing](#building-and-testing)
+    * [Formatting](#formatting)
 * [Documentation](#documentation)
 * [Compiler support](#compiler-support)
 * [Licence](#licence)
@@ -438,55 +439,67 @@ The compiled binaries will appear in the `<project-root>/example/build/bin` dire
 
 ## Dev notes
 
-#### Requirements:
-   * Supported compiler (check compiler support [here](#compiler-support))
-   * clang-format-17 ([ubuntu download tutorial](https://ubuntuhandbook.org/index.php/2023/09/how-to-install-clang-17-or-16-in-ubuntu-22-04-20-04/amp/?fbclid=IwAR1ZfJpoiitjwn8aMlKVWpFdkYmUqtaQwraJBju09v1gtc0jQANTgVeCuMY))
+### Building and testing:
 
-<br />
+First build the testing executable:
 
-#### Building and testing:
+```shell
+cd <project-root>/test/
+cmake -B build
+cd build
+make
+```
 
-1. Build the testing executable:
+or alternatively:
+
+```shell
+cd <project-root>/test/
+mkdir build && cd build
+cmake ..
+make
+```
+
+> **NOTE:** Building on Windows -  use the `-G "Unix Makefiles"` option when running CMake to build a GNU Make project instead of a default Visual Studio project.
+
+Run the tests:
+
+> **NOTE:** The test executable is generated in the `<project-root>/test/build` directory.
+
+* All tests:
 
     ```shell
-    cd <project-root>/test/
-    cmake -B build
-    cd build
-    make
-    ```
-
-    or
-
-    ```shell
-    cd <project-root>/test/
-    mkdir build && cd build
-    cmake ..
-    make
-    ```
-
-2. Run tests
-
-    Run all tests:
-    ```shell
-    cd <project-root>/test/build
     ./test
     ```
 
-    Run a single test suite:
+* A single test suite:
+
     ```shell
     ./test -ts="<test-suite-name>"
     ```
 
     > **Note**: Test suites in the project have the same name as the files they're in.
 
-3. Tips and tricks:
+<br />
 
-    * Changing the CMake generator:
+### Formatting
 
-        If you wish for CMake to generate a different type of project, use the `-G` option, e.g. (building a Make project on Windows instead of a VS project):
-        ```
-        cmake -G "Unix Makefiles"
-        ```
+> **NOTE:** The project uses `clang-format-17`.
+>
+> To install this tool on ubuntu run `sudo ./scripts/install_clang_format_17.sh`.
+>
+> On windows you can download the LLVM package from the official LLVM [GitHub release page](https://github.com/llvm/llvm-project/releases/tag/llvmorg-17.0.1)
+
+To format the code use run the following:
+
+```shell
+# Unix platforms
+./scripts/format_unix.sh
+```
+
+```shell
+# Windows: powershell
+./scripts/format_win.ps1
+```
 
 <br />
 <br />

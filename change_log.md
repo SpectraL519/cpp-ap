@@ -18,7 +18,9 @@
 ### Version 1.1
 
 * Added `change_log.md`
-* Aligned the `.clang-format` configuration file and renamed `format/unix_like.sh` to `format/unix.sh`
+* Aligned the `.clang-format` configuration file and moved formatting scripts to a new directory `<project-root>/scripts`
+* Added the `install_clang_format_17.sh` script
+* Added the `format` workflow
 
 TODO:
 * Split dev notes into sections and include them in table of contents

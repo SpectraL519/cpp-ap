@@ -1,0 +1,28 @@
+name: format
+on:
+  push:
+    branches:
+      - version-1.1
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Test code formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        shell: bash
+        run: |
+          sudo ./scripts/install_clang_format_17.sh
+        continue-on-error: false
+
+      - name: Test formatting
+        shell: bash
+        run: |
+          find . -type f -name "*.hpp" -o -name "*.cpp" -exec clang-format-17 --dry-run --Werror {} \;
