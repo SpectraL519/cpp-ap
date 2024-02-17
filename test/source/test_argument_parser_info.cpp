@@ -5,12 +5,12 @@
 
 #include <ap/argument_parser.hpp>
 
+using namespace ap_testing;
+
 namespace {
 const std::string test_name = "test program name";
 const std::string test_description = "test program description";
 } // namespace
-
-namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_info");
 
@@ -45,5 +45,3 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "name() should set the program n
 }
 
 TEST_SUITE_END();
-
-} // namespace ap_testing

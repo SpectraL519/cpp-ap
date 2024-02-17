@@ -8,6 +8,7 @@
 
 #include <ap/argument_parser.hpp>
 
+using namespace ap_testing;
 using namespace ap::argument;
 using namespace ap::nargs;
 
@@ -27,8 +28,6 @@ const std::string optional_arg_name = "optional_arg";
 const std::string optional_arg_short_name = "oa";
 
 } // namespace
-
-namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
@@ -649,5 +648,3 @@ TEST_CASE_FIXTURE(
 TEST_SUITE_END(); // test_argument_parser_parse_args::values
 
 TEST_SUITE_END(); // test_argument_parser_parse_args
-
-} // namespace ap_testing

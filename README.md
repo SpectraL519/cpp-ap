@@ -485,7 +485,7 @@ Run the tests:
 
 > **NOTE:** The project uses `clang-format-17`.
 >
-> To install this tool on ubuntu run `sudo ./scripts/env/install_clang_format_17.sh`.
+> To install this tool on ubuntu run `sudo bash ./scripts/env/install_clang_format_17.sh`.
 >
 > On windows you can download the LLVM package from the official LLVM [GitHub release page](https://github.com/llvm/llvm-project/releases/tag/llvmorg-17.0.1)
 

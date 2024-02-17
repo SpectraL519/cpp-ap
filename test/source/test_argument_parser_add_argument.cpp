@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+using namespace ap_testing;
 using namespace ap::argument;
 
 namespace {
@@ -19,8 +20,6 @@ constexpr std::string_view other_name = "other";
 constexpr std::string_view other_short_name = "o";
 
 } // namespace
-
-namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
@@ -141,5 +140,3 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_flag should throw only when
 }
 
 TEST_SUITE_END();
-
-} // namespace ap_testing
