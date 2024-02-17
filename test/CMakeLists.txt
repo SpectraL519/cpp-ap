@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.12)
 project(cpp-ap-test)
 
 # Structure
-set(SOURCE_DIRS "src" "app")
+set(SOURCE_DIRS "source" "app")
 set(INCLUDE_DIRS "include" "../include")
 set(BINARY_DIR ".")
 set(EXECUTABLE_DIR ".")

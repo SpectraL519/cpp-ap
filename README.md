@@ -412,7 +412,7 @@ Open your terminal in the project's example directory:
 cd <project-root>/example
 ```
 
-The examples' source files are in the `<project-root>/example/src` directory.
+The examples' source files are in the `<project-root>/example/source` directory.
 
 > **Note:** Each source file is a sepparate example.
 
@@ -485,7 +485,7 @@ Run the tests:
 
 > **NOTE:** The project uses `clang-format-17`.
 >
-> To install this tool on ubuntu run `sudo ./scripts/install_clang_format_17.sh`.
+> To install this tool on ubuntu run `sudo ./scripts/env/install_clang_format_17.sh`.
 >
 > On windows you can download the LLVM package from the official LLVM [GitHub release page](https://github.com/llvm/llvm-project/releases/tag/llvmorg-17.0.1)
 
@@ -493,12 +493,12 @@ To format the code use run the following:
 
 ```shell
 # Unix platforms
-./scripts/format_unix.sh
+./scripts/format/unix.sh
 ```
 
 ```shell
 # Windows: powershell
-./scripts/format_win.ps1
+./scripts/format/windows.ps1
 ```
 
 <br />

@@ -19,7 +19,7 @@ jobs:
       - name: Prepare
         shell: bash
         run: |
-          sudo ./scripts/install_clang_format_17.sh
+          sudo bash ./scripts/env/install_clang_format_17.sh
         continue-on-error: false
 
       - name: Test formatting
