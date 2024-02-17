@@ -501,6 +501,8 @@ To format the code use run the following:
 ./scripts/format/windows.ps1
 ```
 
+To run a forrmat check use the scripts mentioned above with a `--check` flag.
+
 <br />
 <br />
 

@@ -25,4 +25,4 @@ jobs:
       - name: Test formatting
         shell: bash
         run: |
-          find . -type f -name "*.hpp" -o -name "*.cpp" -exec clang-format-17 --dry-run --Werror {} \;
+          bash ./scripts/format/unix.sh --check
