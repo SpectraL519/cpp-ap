@@ -16,14 +16,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Prepare
+        shell: bash
+        run: |
+          sudo bash ./scripts/env/install_clang_17_toolchain.sh
+        continue-on-error: false
+
       - name: Build
         shell: bash
         env:
-          CC:  clang-14
-          CXX: clang++-14
+          CC:  clang-17
+          CXX: clang++-17
         run: |
           cd example
-          cmake -B build -DCMAKE_CXX_COMPILER=clang++-14
+          cmake -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
           cd build
           make
         continue-on-error: false

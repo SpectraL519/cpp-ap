@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if command -v clang-format-17 &>/dev/null; then
-    echo "clang-format-17 is already installed."
+if command -v clang-17 &>/dev/null && command -v clang-format-17 &>/dev/null; then
+    echo "clang-17 toolchain already installed!"
     exit 0
 fi
 
@@ -12,6 +12,6 @@ echo | sudo add-apt-repository "deb http://apt.llvm.org/$(lsb_release -sc)/ llvm
 echo "Updating package list"
 sudo apt update &>/dev/null 2>&1
 
-echo "Installing clang-format-17"
-sudo apt install clang-format-17 -y &>/dev/null 2>&1
+echo "Installing clang-17 toolchain"
+sudo apt install clang-17 clang-format-17 -y &>/dev/null 2>&1
 echo "Success!"
