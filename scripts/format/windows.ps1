@@ -18,7 +18,7 @@ function Run-Clang-Format {
 }
 
 # Get the list of files to format
-$files = Get-ChildItem -Recurse -Include *.hpp, *.cpp
+$files = Get-ChildItem -Recurse -Include *.hpp, *.cpp | Where-Object { $_.DirectoryName -notmatch "\\build\\" }
 
 # Count the number of files to format
 $fileCount = $files.Count

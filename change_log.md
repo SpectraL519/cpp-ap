@@ -21,6 +21,7 @@
 * Reorganized project folder strucure:
     * Renamed folders `src` to `source`
     * Moved formatting scripts to `scripts/format/`
-* Aligned the `.clang-format` configuration file and moved formatting scripts to a new directory `<project-root>/scripts`
+* Aligned the `.clang-format` configuration file
 * Added the `install_clang_format_17.sh` env script
 * Added the `format` workflow
+* Switched from the `<algorithm>` to the `<ranges>` library for all current container operations

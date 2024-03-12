@@ -36,7 +36,6 @@ SOFTWARE.
 
 #pragma once
 
-#include <algorithm>
 #include <any>
 #include <compare>
 #include <concepts>
@@ -45,6 +44,7 @@ SOFTWARE.
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <ranges>
 #include <sstream>
 #include <stdexcept>
 #include <string_view>
@@ -801,8 +801,7 @@ private:
      * @return True if the choice valid, false otherwise.
      */
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
-        return this->_choices.empty()
-            or std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+        return this->_choices.empty() or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
     /**
@@ -1102,8 +1101,7 @@ private:
      * @return True if choice is valid, false otherwise.
      */
     [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
-        return this->_choices.empty()
-            or std::find(this->_choices.begin(), this->_choices.end(), choice) != this->_choices.end();
+        return this->_choices.empty() or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
     /**
@@ -1380,14 +1378,12 @@ public:
             if (not arg.has_parsed_values() and arg.has_value())
                 return std::vector<T>{ std::any_cast<T>(arg.value()) };
 
-            const auto& arg_values = arg.values();
-
             std::vector<T> values;
-            std::transform(
-                std::begin(arg_values),
-                std::end(arg_values),
-                std::back_inserter(values),
-                [](const std::any& value) { return std::any_cast<T>(value); }
+            std::ranges::copy(
+                std::views::transform(
+                    arg.values(), [](const std::any& value) { return std::any_cast<T>(value); }
+                ),
+                std::back_inserter(values)
             );
             return values;
         }
@@ -1551,10 +1547,10 @@ private:
     [[nodiscard]] bool _is_arg_name_used(const std::string_view& name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
-        if (this->_const_find_positional(predicate) != this->_positional_args.end())
+        if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
             return true;
 
-        if (this->_const_find_optional(predicate) != this->_optional_args.end())
+        if (std::ranges::find_if(this->_optional_args, predicate) != this->_optional_args.end())
             return true;
 
         return false;
@@ -1569,10 +1565,10 @@ private:
     [[nodiscard]] bool _is_arg_name_used(const std::string_view& name, const std::string_view& short_name) const {
         const auto predicate = this->_name_eq_predicate(name, short_name);
 
-        if (this->_const_find_positional(predicate) != this->_positional_args.end())
+        if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
             return true;
 
-        if (this->_const_find_optional(predicate) != this->_optional_args.end())
+        if (std::ranges::find_if(this->_optional_args, predicate) != this->_optional_args.end())
             return true;
 
         return false;
@@ -1670,7 +1666,8 @@ private:
 
         while (cmd_it != cmd_args.end()) {
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
-                auto opt_arg_it = this->_find_optional(this->_name_eq_predicate(cmd_it->value));
+                auto opt_arg_it =
+                    std::ranges::find_if(this->_optional_args, this->_name_eq_predicate(cmd_it->value));
 
                 if (opt_arg_it == this->_optional_args.end())
                     throw error::argument_not_found_error(cmd_it->value);
@@ -1733,55 +1730,17 @@ private:
     argument_opt_type _get_argument(const std::string_view& name) const {
         const auto predicate = this->_name_eq_predicate(name);
 
-        if (auto pos_arg_it = this->_const_find_positional(predicate);
+        if (auto pos_arg_it = std::ranges::find_if(this->_positional_args, predicate);
             pos_arg_it != this->_positional_args.end()) {
             return std::ref(**pos_arg_it);
         }
 
-        if (auto opt_arg_it = this->_const_find_optional(predicate);
+        if (auto opt_arg_it = std::ranges::find_if(this->_optional_args, predicate);
             opt_arg_it != this->_optional_args.end()) {
             return std::ref(**opt_arg_it);
         }
 
         return std::nullopt;
-    }
-
-    /**
-     * @brief Find a positional argument based on the provided predicate.
-     * @param predicate The predicate for finding the argument.
-     * @return Iterator to the found positional argument.
-     */
-    [[nodiscard]] inline argument_list_iterator_type _find_positional(const argument_predicate_type& predicate) {
-        return std::find_if(std::begin(this->_positional_args), std::end(this->_positional_args), predicate);
-    }
-
-    /**
-     * @brief Find an optional argument based on the provided predicate.
-     * @param predicate The predicate for finding the argument.
-     * @return Iterator to the found optional argument.
-     */
-    [[nodiscard]] inline argument_list_iterator_type _find_optional(const argument_predicate_type& predicate) {
-        return std::find_if(std::begin(this->_optional_args), std::end(this->_optional_args), predicate);
-    }
-
-    /**
-     * @brief Find a positional argument based on the provided predicate (const version).
-     * @param predicate The predicate for finding the argument.
-     * @return Iterator to the found positional argument.
-     */
-    [[nodiscard]] inline argument_list_const_iterator_type _const_find_positional(const argument_predicate_type& predicate
-    ) const {
-        return std::find_if(std::cbegin(this->_positional_args), std::cend(this->_positional_args), predicate);
-    }
-
-    /**
-     * @brief Find an optional argument based on the provided predicate (const version).
-     * @param predicate The predicate for finding the argument.
-     * @return Iterator to the found optional argument.
-     */
-    [[nodiscard]] inline argument_list_const_iterator_type _const_find_optional(const argument_predicate_type& predicate
-    ) const {
-        return std::find_if(std::cbegin(this->_optional_args), std::cend(this->_optional_args), predicate);
     }
 
     std::optional<std::string> _program_name;
