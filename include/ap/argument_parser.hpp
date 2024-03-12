@@ -329,17 +329,17 @@ struct argument_name {
 
     /**
      * @brief Primary name constructor.
-     * @param name The primary name of the argument.
+     * @param primary The primary name of the argument.
      */
-    explicit argument_name(std::string_view name) : name(name) {}
+    argument_name(std::string_view primary) : primary(primary) {}
 
     /**
      * @brief Primary and secondary name constructor.
-     * @param name The primary name of the argument.
+     * @param primary The primary name of the argument.
      * @param short_name The secondary (short) name of the argument.
      */
-    explicit argument_name(std::string_view name, std::string_view short_name)
-    : name(name), short_name(short_name) {}
+    argument_name(std::string_view primary, std::string_view secondary)
+    : primary(primary), secondary(secondary) {}
 
     /// @brief Class destructor.
     ~argument_name() = default;
@@ -350,23 +350,23 @@ struct argument_name {
      * @return Equality of argument names.
      */
     inline bool operator==(const argument_name& other) const {
-        return this->name == other.name;
+        return this->primary == other.primary;
     }
 
     /**
      * @brief Equality comparison operator for string variables representing argument names.
      * @param name The string view to compare with.
-     * @return Equality of names comparison (either full or short name).
+     * @return Equality of names comparison (either primary or secondary name).
      */
     inline bool operator==(std::string_view name) const {
-        return name == this->name or (this->short_name and name == this->short_name.value());
+        return name == this->primary or (this->secondary and name == this->secondary.value());
     }
 
     /// @brief Get a string representation of the argument_name.
     [[nodiscard]] inline std::string str() const {
-        return this->short_name
-                 ? ("[" + this->name + "," + this->short_name.value() + "]")
-                 : ("[" + this->name + "]");
+        return this->secondary
+                 ? ("[" + this->primary + "," + this->secondary.value() + "]")
+                 : ("[" + this->primary + "]");
     }
 
     /**
@@ -380,11 +380,8 @@ struct argument_name {
         return os;
     }
 
-    // TODO: rename
-    // * name -> primary
-    // * short_name -> secondary
-    const std::string name; ///< The primary name of the argument.
-    const std::optional<std::string> short_name; ///< The optional short name of the argument.
+    const std::string primary; ///< The primary name of the argument.
+    const std::optional<std::string> secondary; ///< The optional secondary (short) name of the argument.
 };
 
 /// @brief Argument class interface
@@ -524,20 +521,10 @@ class argument_name_used_error : public argument_parser_error {
 public:
     /**
      * @brief Constructor for the argument_name_used_error class.
-     * @param given_arg_name The name of the argument causing the collision.
+     * @param arg_name The name of the argument causing the collision.
      */
-    explicit argument_name_used_error(const std::string_view& given_arg_name)
-    : argument_parser_error("Given name `" + std::string(given_arg_name) + "` already used") {}
-
-    /**
-     * @brief Constructor for the argument_name_used_error class with a short name.
-     * @param given_arg_name The name of the argument causing the collision.
-     * @param given_arg_name_short The short name of the argument causing the collision.
-     */
-    explicit argument_name_used_error(const std::string_view& given_arg_name, const std::string_view& given_arg_name_short)
-    : argument_parser_error(
-        "Given name " + argument::detail::argument_name(given_arg_name, given_arg_name_short).str() + " already used"
-    ) {}
+    explicit argument_name_used_error(const argument::detail::argument_name& arg_name)
+    : argument_parser_error("Given name `" + arg_name.str() + "` already used") {}
 };
 
 /// @brief Exception thrown when an argument with a specific name is not found.
@@ -630,18 +617,18 @@ public:
     positional_argument() = delete;
 
     /**
-     * @brief Constructor for positional_argument with a name.
+     * @brief Constructor for positional_argument with a primary name.
      * @param name The primary name of the positional argument.
      */
     positional_argument(std::string_view name) : _name(name) {}
 
     /**
-     * @brief Constructor for positional_argument with a name and a short name.
-     * @param name The primary name of the positional argument.
-     * @param short_name The short name of the positional argument (optional).
+     * @brief Constructor for positional_argument with a primary and secondary name.
+     * @param primary_name The primary name of the positional argument.
+     * @param secondary_name The secondary name of the positional argument.
      */
-    positional_argument(std::string_view name, std::string_view short_name)
-    : _name(name, short_name) {}
+    positional_argument(std::string_view primary_name, std::string_view secondary_name)
+    : _name(primary_name, secondary_name) {}
 
     /// @brief Destructor for positional argument.
     ~positional_argument() = default;
@@ -792,7 +779,7 @@ private:
 
     /// @return Reference to the vector of parsed values for the positional argument.
     [[nodiscard]] inline const std::vector<std::any>& values() const override {
-        throw std::logic_error("Positional argument " + this->_name.name + "has only 1 value.");
+        throw std::logic_error("Positional argument " + this->_name.primary + "has only 1 value.");
     }
 
     /**
@@ -847,18 +834,18 @@ public:
     optional_argument() = delete;
 
     /**
-     * @brief Constructor for optional_argument with a name.
+     * @brief Constructor for optional_argument with a primary name.
      * @param name The primary name of the optional argument.
      */
     optional_argument(std::string_view name) : _name(name) {}
 
     /**
-     * @brief Constructor for optional_argument with a name and a short name.
-     * @param name The primary name of the optional argument.
-     * @param short_name The short name of the optional argument (optional).
+     * @brief Constructor for optional_argument with a primary and secondary name.
+     * @param primary_name The primary name of the positional argument.
+     * @param secondary_name The secondary name of the positional argument.
      */
-    optional_argument(std::string_view name, std::string_view short_name)
-    : _name(name, short_name) {}
+    optional_argument(std::string_view primary_name, std::string_view secondary_name)
+    : _name(primary_name, secondary_name) {}
 
     /// @brief Destructor for optional_argument.
     ~optional_argument() = default;
@@ -1206,7 +1193,7 @@ public:
     }
 
     /**
-     * @brief Add a positional argument to the parser.
+     * @brief Add a positional argument to the parser configuration.
      * @tparam T Type of the argument value.
      * @param name The name of the argument.
      * @return Reference to the added positional argument.
@@ -1223,25 +1210,25 @@ public:
     }
 
     /**
-     * @brief Add a positional argument with a short name to the parser.
+     * @brief Add a positional argument to the parser configuration.
      * @tparam T Type of the argument value.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
+     * @param primary_name The name of the argument.
+     * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::positional_argument<T>& add_positional_argument(std::string_view name, std::string_view short_name) {
+    argument::positional_argument<T>& add_positional_argument(std::string_view primary_name, std::string_view secondary_name) {
         // TODO: check forbidden characters
 
-        if (this->_is_arg_name_used(name, short_name))
-            throw error::argument_name_used_error(name, short_name);
+        if (this->_is_arg_name_used(primary_name, secondary_name))
+            throw error::argument_name_used_error({primary_name, secondary_name});
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(name, short_name));
+        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(primary_name, secondary_name));
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
     /**
-     * @brief Add an optional argument to the parser.
+     * @brief Add an optional argument to the parser configuration.
      * @tparam T Type of the argument value.
      * @param name The name of the argument.
      * @return Reference to the added optional argument.
@@ -1258,25 +1245,25 @@ public:
     }
 
     /**
-     * @brief Add an optional argument with a short name to the parser.
+     * @brief Add an optional argument to the parser configuration.
      * @tparam T Type of the argument value.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
+     * @param primary_name The name of the argument.
+     * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
+    argument::optional_argument<T>& add_optional_argument(std::string_view primary_name, std::string_view secondary_name) {
         // TODO: check forbidden characters
 
-        if (this->_is_arg_name_used(name, short_name))
-            throw error::argument_name_used_error(name, short_name);
+        if (this->_is_arg_name_used(primary_name, secondary_name))
+            throw error::argument_name_used_error({primary_name, secondary_name});
 
-        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(name, short_name));
+        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(primary_name, secondary_name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
-     * @brief Add a boolean flag to the parser.
+     * @brief Add a boolean flag to the parser configuration.
      * @tparam StoreImplicitly Flag indicating whether to store implicitly.
      * @param name The name of the flag.
      * @return Reference to the added boolean flag argument.
@@ -1290,15 +1277,15 @@ public:
     }
 
     /**
-     * @brief Add a boolean flag with a short name to the parser.
+     * @brief Add a boolean flag to the parser configuration.
      * @tparam StoreImplicitly Flag indicating whether to store implicitly.
-     * @param name The name of the flag.
-     * @param short_name The short name of the flag.
+     * @param primary_name The name of the flag.
+     * @param secondary_name The secondary name of the flag.
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument::optional_argument<bool>& add_flag(std::string_view name, std::string_view short_name) {
-        return this->add_optional_argument<bool>(name, short_name)
+    argument::optional_argument<bool>& add_flag(std::string_view primary_name, std::string_view secondary_name) {
+        return this->add_optional_argument<bool>(primary_name, secondary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
             .nargs(0);
@@ -1517,7 +1504,7 @@ private:
     using argument_predicate_type = std::function<bool(const argument_ptr_type&)>;
 
     /**
-     * @brief Function to create a predicate for finding arguments by name.
+     * @brief Function to create a predicate for finding arguments by thename.
      * @param name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
@@ -1526,25 +1513,27 @@ private:
     }
 
     /**
-     * @brief Function to create a predicate for finding arguments by name and short name.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
-     * @return Argument predicate based on the provided name and short name.
+     * @brief Function to create a predicate for finding arguments by the name.
+     * @param primary_name The name of the argument.
+     * @param secondary_name The secondary name of the argument.
+     * @return Argument predicate based on the provided name and secondary name.
      */
     [[nodiscard]] inline argument_predicate_type _name_eq_predicate(
-        const std::string_view& name, const std::string_view& short_name
+        const std::string_view& primary_name, const std::string_view& secondary_name
     ) const {
-        return [&name, &short_name](const argument_ptr_type& arg) {
-            return name == arg->name() or short_name == arg->name();
+        return [&primary_name, &secondary_name](const argument_ptr_type& arg) {
+            return primary_name == arg->name() or secondary_name == arg->name();
         };
     }
 
     /**
      * @brief Check if an argument name is already used.
      * @param name The name of the argument.
-     * @return True if the argument name is already used, false otherwise.
+     * @return True if the argument name is already used.
      */
     [[nodiscard]] bool _is_arg_name_used(const std::string_view& name) const {
+        // TODO: replace with a single function which takes the argument_name structure
+        // same for _name_eq_predicate
         const auto predicate = this->_name_eq_predicate(name);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
@@ -1557,13 +1546,13 @@ private:
     }
 
     /**
-     * @brief Check if an argument name and short name pair is already used.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
-     * @return True if the argument name or short name is already used, false otherwise.
+     * @brief Check if an argument name pair is already used.
+     * @param primary_name The name of the argument.
+     * @param secondary_name The secondary name of the argument.
+     * @return True if either the primary name or the secondary name is already used.
      */
-    [[nodiscard]] bool _is_arg_name_used(const std::string_view& name, const std::string_view& short_name) const {
-        const auto predicate = this->_name_eq_predicate(name, short_name);
+    [[nodiscard]] bool _is_arg_name_used(const std::string_view& primary_name, const std::string_view& secondary_name) const {
+        const auto predicate = this->_name_eq_predicate(primary_name, secondary_name);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
             return true;
