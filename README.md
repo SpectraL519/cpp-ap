@@ -485,7 +485,7 @@ Run the tests:
 
 > **NOTE:** The project uses `clang-format-17`.
 >
-> To install this tool on ubuntu run `sudo bash ./scripts/env/install_clang_format_17.sh`.
+> To install this tool on ubuntu run `sudo bash ./scripts/env/install_clang_17_toolchain.sh`.
 >
 > On windows you can download the LLVM package from the official LLVM [GitHub release page](https://github.com/llvm/llvm-project/releases/tag/llvmorg-17.0.1)
 
@@ -526,6 +526,8 @@ The documentation for this project can be generated using Doxygen:
 ## Compiler support
 
 As of now the project supports the **GNU G++** and **Clang++** compilers with `C++20` support on Linux and Windows.
+
+> **NOTE:** To build the project using clang you will need to install the `clang-17` toolchain using the script or website mentioned in the [Formatting](#formatting) section.
 
 <br />
 <br />
