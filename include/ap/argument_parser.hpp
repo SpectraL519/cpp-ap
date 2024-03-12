@@ -36,6 +36,7 @@ SOFTWARE.
 
 #pragma once
 
+#include <algorithm>
 #include <any>
 #include <compare>
 #include <concepts>
@@ -1221,9 +1222,11 @@ public:
         // TODO: check forbidden characters
 
         if (this->_is_arg_name_used(primary_name, secondary_name))
-            throw error::argument_name_used_error({primary_name, secondary_name});
+            throw error::argument_name_used_error({ primary_name, secondary_name });
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(primary_name, secondary_name));
+        this->_positional_args.push_back(
+            std::make_unique<argument::positional_argument<T>>(primary_name, secondary_name)
+        );
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
@@ -1256,9 +1259,10 @@ public:
         // TODO: check forbidden characters
 
         if (this->_is_arg_name_used(primary_name, secondary_name))
-            throw error::argument_name_used_error({primary_name, secondary_name});
+            throw error::argument_name_used_error({ primary_name, secondary_name });
 
-        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(primary_name, secondary_name));
+        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(primary_name, secondary_name)
+        );
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
@@ -1407,6 +1411,48 @@ public:
 #endif
 
 private:
+    /// @brief Structure representing a command-line argument.
+    struct cmd_argument {
+        enum class type_discriminator : bool { flag, value };
+
+        cmd_argument() = default;
+        cmd_argument(const cmd_argument&) = default;
+        cmd_argument(cmd_argument&&) = default;
+        cmd_argument& operator=(const cmd_argument&) = default;
+
+        /**
+         * @brief Constructor of a command-line argument.
+         * @param discriminator Type discriminator (flag or value).
+         * @param value The value of the argument.
+         */
+        cmd_argument(const type_discriminator discriminator, const std::string& value)
+        : discriminator(discriminator), value(value) {}
+
+        ~cmd_argument() = default;
+
+        /**
+         * @brief Equality operator for comparing cmd_argument instances.
+         * @param other Another cmd_argument to compare with.
+         * @return Boolean statement of equality comparison.
+         */
+        inline bool operator==(const cmd_argument& other) const {
+            return this->discriminator == other.discriminator and this->value == other.value;
+        }
+
+        type_discriminator discriminator;
+        std::string value;
+    };
+
+    using cmd_argument_list = std::vector<cmd_argument>;
+    using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
+
+    using argument_ptr_type = std::unique_ptr<argument::detail::argument_interface>;
+    using argument_opt_type = std::optional<std::reference_wrapper<argument::detail::argument_interface>>;
+    using argument_list_type = std::vector<argument_ptr_type>;
+    using argument_list_iterator_type = typename argument_list_type::iterator;
+    using argument_list_const_iterator_type = typename argument_list_type::const_iterator;
+    using argument_predicate_type = std::function<bool(const argument_ptr_type&)>;
+
     /**
      * @brief Add default positional argument based on the specified category.
      * @param arg The default positional argument category.
@@ -1461,48 +1507,6 @@ private:
         }
     }
 
-    /// @brief Structure representing a command-line argument.
-    struct cmd_argument {
-        enum class type_discriminator : bool { flag, value };
-
-        cmd_argument() = default;
-        cmd_argument(const cmd_argument&) = default;
-        cmd_argument(cmd_argument&&) = default;
-        cmd_argument& operator=(const cmd_argument&) = default;
-
-        /**
-         * @brief Constructor of a command-line argument.
-         * @param discriminator Type discriminator (flag or value).
-         * @param value The value of the argument.
-         */
-        cmd_argument(const type_discriminator discriminator, const std::string& value)
-        : discriminator(discriminator), value(value) {}
-
-        ~cmd_argument() = default;
-
-        /**
-         * @brief Equality operator for comparing cmd_argument instances.
-         * @param other Another cmd_argument to compare with.
-         * @return Boolean statement of equality comparison.
-         */
-        inline bool operator==(const cmd_argument& other) const {
-            return this->discriminator == other.discriminator and this->value == other.value;
-        }
-
-        type_discriminator discriminator;
-        std::string value;
-    };
-
-    using cmd_argument_list = std::vector<cmd_argument>;
-    using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
-
-    using argument_ptr_type = std::unique_ptr<argument::detail::argument_interface>;
-    using argument_opt_type = std::optional<std::reference_wrapper<argument::detail::argument_interface>>;
-    using argument_list_type = std::vector<argument_ptr_type>;
-    using argument_list_iterator_type = typename argument_list_type::iterator;
-    using argument_list_const_iterator_type = typename argument_list_type::const_iterator;
-    using argument_predicate_type = std::function<bool(const argument_ptr_type&)>;
-
     /**
      * @brief Function to create a predicate for finding arguments by thename.
      * @param name The name of the argument.
@@ -1532,7 +1536,6 @@ private:
      * @return True if the argument name is already used.
      */
     [[nodiscard]] bool _is_arg_name_used(const std::string_view& name) const {
-        // TODO: replace with a single function which takes the argument_name structure
         // same for _name_eq_predicate
         const auto predicate = this->_name_eq_predicate(name);
 
@@ -1680,7 +1683,7 @@ private:
      * @return True if optional arguments can bypass required arguments, false otherwise.
      */
     [[nodiscard]] inline bool _bypass_required_args() const {
-        return std::any_of(std::cbegin(this->_optional_args), std::cend(this->_optional_args), [](const argument_ptr_type& arg) {
+        return std::ranges::any_of(this->_optional_args, [](const argument_ptr_type& arg) {
             return arg->is_used() and arg->bypass_required_enabled();
         });
     }
