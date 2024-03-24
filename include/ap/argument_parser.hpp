@@ -1188,7 +1188,8 @@ public:
      * @param args Vector of default positional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_positional_arguments(const std::vector<default_argument::positional>& args) noexcept {
+    argument_parser& default_positional_arguments(const std::vector<default_argument::positional>& args
+    ) noexcept {
         for (const auto arg : args)
             this->_add_default_positional_argument(arg);
         return *this;
@@ -1435,8 +1436,6 @@ private:
         case default_argument::positional::output:
             this->add_positional_argument("output").help("Output file path");
             break;
-
-        // TODO: throw error when discriminator is invalid
         }
     }
 
@@ -1473,8 +1472,6 @@ private:
         case default_argument::optional::multi_output:
             this->add_optional_argument("output", "o").required().nargs(ap::nargs::at_least(1)).help("Output files paths");
             break;
-
-        // TODO: throw error when discriminator is invalid
         }
     }
 
@@ -1595,10 +1592,10 @@ private:
             std::string value = argv[i];
             if (this->_is_flag(value)) {
                 this->_strip_flag_prefix(value);
-                args.push_back(cmd_argument{cmd_argument::type_discriminator::flag, value});
+                args.push_back(cmd_argument{ cmd_argument::type_discriminator::flag, value });
             }
             else {
-                args.push_back(cmd_argument{cmd_argument::type_discriminator::value, value});
+                args.push_back(cmd_argument{ cmd_argument::type_discriminator::value, value });
             }
         }
 

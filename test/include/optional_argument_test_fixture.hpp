@@ -41,9 +41,7 @@ struct optional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    optional_argument<T>& sut_set_choices(
-        optional_argument<T>& sut, const std::vector<value_type<T>>& choices
-    ) const {
+    optional_argument<T>& sut_set_choices(optional_argument<T>& sut, const std::vector<value_type<T>>& choices) const {
         return sut.choices(choices);
     }
 

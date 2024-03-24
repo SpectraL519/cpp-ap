@@ -30,8 +30,7 @@ struct positional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] const std::optional<std::string>& sut_get_help(const positional_argument<T>& sut
-    ) const {
+    [[nodiscard]] const std::optional<std::string>& sut_get_help(const positional_argument<T>& sut) const {
         return sut.help();
     }
 
@@ -61,9 +60,7 @@ struct positional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    positional_argument<T>& sut_set_choices(
-        positional_argument<T>& sut, const std::vector<value_type<T>>& choices
-    ) const {
+    positional_argument<T>& sut_set_choices(positional_argument<T>& sut, const std::vector<value_type<T>>& choices) const {
         return sut.choices(choices);
     }
 
