@@ -6,8 +6,8 @@
 
 #include <limits>
 
+using namespace ap_testing;
 using namespace ap::nargs;
-
 
 namespace {
 
@@ -20,9 +20,6 @@ constexpr range::count_type nmin = std::numeric_limits<range::count_type>::min()
 constexpr range::count_type nmax = std::numeric_limits<range::count_type>::max();
 
 } // namespace
-
-
-namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_nargs_range");
 
@@ -115,5 +112,3 @@ TEST_CASE("range builders should return correct range objects") {
 }
 
 TEST_SUITE_END(); // test_nargs_range
-
-} // namespace ap_testing

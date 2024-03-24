@@ -1,17 +1,18 @@
 #include <ap/argument_parser.hpp>
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
-
 
 int main(int argc, char* argv[]) {
     ap::argument_parser parser;
     parser.program_name("merge files")
-          .program_description("shows the correct way of using default arguments")
-          .default_optional_arguments({ap::default_argument::optional::help,
-                                       ap::default_argument::optional::multi_input,
-                                       ap::default_argument::optional::output});
+        .program_description("shows the correct way of using default arguments")
+        .default_optional_arguments(
+            { ap::default_argument::optional::help,
+              ap::default_argument::optional::multi_input,
+              ap::default_argument::optional::output }
+        );
 
     try {
         parser.parse_args(argc, argv);
@@ -30,7 +31,7 @@ int main(int argc, char* argv[]) {
     const auto output_file_name = parser.value("output");
 
     std::ofstream output_file(output_file_name);
-    if (!output_file.is_open())
+    if (! output_file.is_open())
         throw std::runtime_error("Cannot open file: " + output_file_name);
 
     for (const auto& input_file_name : input_file_name_list) {

@@ -3,21 +3,18 @@
 #include <bitset>
 #include <iostream>
 
-
 int main(int argc, char* argv[]) {
     ap::argument_parser parser;
     parser.program_name("convert numbers")
-          .program_description("shows the correct way of using dthe choices parameter")
-          .default_optional_arguments({ap::default_argument::optional::help});
+        .program_description("shows the correct way of using dthe choices parameter")
+        .default_optional_arguments({ ap::default_argument::optional::help });
 
-    parser.add_optional_argument<std::size_t>("number", "n")
-          .nargs(ap::nargs::any())
-          .help("positive integer value");
+    parser.add_optional_argument<std::size_t>("number", "n").nargs(ap::nargs::any()).help("positive integer value");
     parser.add_optional_argument("base", "b")
-          .required()
-          .default_value("dec")
-          .choices({"bin", "dec", "hex"})
-          .help("output number format base");
+        .required()
+        .default_value("dec")
+        .choices({ "bin", "dec", "hex" })
+        .help("output number format base");
 
     try {
         parser.parse_args(argc, argv);

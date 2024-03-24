@@ -6,8 +6,8 @@
 
 #include <cstring>
 
-using ap::argument::detail::argument_name;
 using ap::argument::positional_argument;
+using ap::argument::detail::argument_name;
 using ap::utility::valid_argument_value_type;
 
 namespace ap_testing {
@@ -20,9 +20,7 @@ struct positional_argument_test_fixture {
     using value_type = typename positional_argument<T>::value_type;
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const argument_name& sut_get_name(
-        const positional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline const argument_name& sut_get_name(const positional_argument<T>& sut) const {
         return sut.name();
     }
 
@@ -32,8 +30,7 @@ struct positional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::optional<std::string>& sut_get_help(
-        const positional_argument<T>& sut
+    [[nodiscard]] inline const std::optional<std::string>& sut_get_help(const positional_argument<T>& sut
     ) const {
         return sut.help();
     }
@@ -59,9 +56,7 @@ struct positional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    inline positional_argument<T>& sut_set_value(
-        positional_argument<T>& sut, const std::string& str_value
-    ) const {
+    inline positional_argument<T>& sut_set_value(positional_argument<T>& sut, const std::string& str_value) const {
         return sut.set_value(str_value);
     }
 
@@ -73,16 +68,12 @@ struct positional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline std::weak_ordering sut_nvalues_in_range(
-        const positional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline std::weak_ordering sut_nvalues_in_range(const positional_argument<T>& sut) const {
         return sut.nvalues_in_range();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::any& sut_get_value(
-        const positional_argument<T>& sut
-    ) const {
+    [[nodiscard]] inline const std::any& sut_get_value(const positional_argument<T>& sut) const {
         return sut.value();
     }
 
