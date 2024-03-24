@@ -7,11 +7,16 @@
 * Formatting scripts:
     * Unix: `format/unix_like.sh`
     * Windows `format/win.ps1`
-* Examples:
+* Example programs:
     * convert_number
     * merge_files
     * power
     * verbosity
+* Github workflows:
+    * g++
+    * clang++
+    * test
+* MIT Licence
 
 <br />
 <br />
@@ -23,6 +28,6 @@
     * Renamed folders `src` to `source`
     * Moved formatting scripts to `scripts/format/`
 * Aligned the `.clang-format` configuration file
-* Added the `install_clang_format_17.sh` env script
+* Added the `install_clang17_toolchain.sh` env script
 * Added the `format` workflow
 * Switched from the `<algorithm>` to the `<ranges>` library for all current container operations

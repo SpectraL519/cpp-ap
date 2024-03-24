@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     const auto output_file_name = parser.value("output");
 
     std::ofstream output_file(output_file_name);
-    if (! output_file.is_open())
+    if (not output_file.is_open())
         throw std::runtime_error("Cannot open file: " + output_file_name);
 
     for (const auto& input_file_name : input_file_name_list) {
