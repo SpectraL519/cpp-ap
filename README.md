@@ -483,6 +483,11 @@ Run the tests:
 
 ### Formatting
 
+> **NOTE:** To ensure new line encoding compatibility the project uses unix new line encoding.
+>
+> This can be set using the `git config --global core.autocrlf true` command.
+> More details can be found [here](https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings)
+
 > **NOTE:** The project uses `clang-format-17`.
 >
 > To install this tool on ubuntu run `sudo bash ./scripts/env/install_clang17_toolchain.sh`.
