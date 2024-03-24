@@ -3,12 +3,9 @@
 #include <cstdint>
 #include <iostream>
 
-
 namespace {
 
-enum class verbosity_level : uint16_t {
-    low, mid, high
-};
+enum class verbosity_level : uint16_t { low, mid, high };
 
 std::istream& operator>>(std::istream& input, verbosity_level& v) {
     uint16_t value;
@@ -53,16 +50,13 @@ void print_msg(const verbosity_level verbosity) {
 
 } // namespace
 
-
 int main(int argc, char* argv[]) {
     ap::argument_parser parser;
-    parser
-        .program_name("verbosity level")
+    parser.program_name("verbosity level")
         .program_description("shows the correct way of using enums as a parser argument type")
-        .default_optional_arguments({ap::default_argument::optional::help});
+        .default_optional_arguments({ ap::default_argument::optional::help });
 
-    parser
-        .add_optional_argument<verbosity_level>("verbosity_level", "v")
+    parser.add_optional_argument<verbosity_level>("verbosity_level", "v")
         .default_value(verbosity_level::low)
         .implicit_value(verbosity_level::mid)
         .nargs(1);

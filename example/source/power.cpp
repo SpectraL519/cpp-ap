@@ -1,21 +1,18 @@
 #include <ap/argument_parser.hpp>
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     // create the parser class instance
     ap::argument_parser parser;
-    parser.program_name("power calculator")
-          .program_description("calculates the value of an expression: base & exponent");
+    parser.program_name("power calculator").program_description("calculates the value of an expression: base & exponent");
 
     // add arguments
     parser.add_positional_argument<double>("base").help("the exponentation base value");
-    parser.add_optional_argument<int>("exponent", "e")
-          .nargs(ap::nargs::any())
-          .help("the exponent value");
+    parser.add_optional_argument<int>("exponent", "e").nargs(ap::nargs::any()).help("the exponent value");
 
-    parser.default_optional_arguments({ap::default_argument::optional::help});
+    parser.default_optional_arguments({ ap::default_argument::optional::help });
 
     // parse command-line arguments
     try {

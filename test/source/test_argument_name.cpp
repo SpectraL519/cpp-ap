@@ -7,8 +7,8 @@
 #include <sstream>
 #include <string_view>
 
+using namespace ap_testing;
 using namespace ap::argument::detail;
-
 
 namespace {
 
@@ -27,9 +27,6 @@ argument_name default_argument_name_both_names() {
 }
 
 } // namespace
-
-
-namespace ap_testing {
 
 TEST_SUITE_BEGIN("test_argument_name");
 
@@ -123,5 +120,3 @@ TEST_CASE("operator<< should push correct data to the output stream") {
 }
 
 TEST_SUITE_END();
-
-} // namespace ap_testing
