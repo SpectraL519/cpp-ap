@@ -146,7 +146,7 @@ public:
     ~range() = default;
 
     /// @return True if the range is [1, 1].
-    [[nodiscard]] inline bool is_default() const {
+    [[nodiscard]] bool is_default() const {
         return this->_default;
     }
 
@@ -349,7 +349,7 @@ struct argument_name {
      * @param other The argument_name instance to compare with.
      * @return Equality of argument names.
      */
-    inline bool operator==(const argument_name& other) const {
+    bool operator==(const argument_name& other) const {
         return this->name == other.name;
     }
 
@@ -358,12 +358,12 @@ struct argument_name {
      * @param name The string view to compare with.
      * @return Equality of names comparison (either full or short name).
      */
-    inline bool operator==(std::string_view name) const {
+    bool operator==(std::string_view name) const {
         return name == this->name or (this->short_name and name == this->short_name.value());
     }
 
     /// @brief Get a string representation of the argument_name.
-    [[nodiscard]] inline std::string str() const {
+    [[nodiscard]] std::string str() const {
         return this->short_name
                  ? ("[" + this->name + "," + this->short_name.value() + "]")
                  : ("[" + this->name + "]");
@@ -651,7 +651,7 @@ public:
      * @param other Another positional_argument for comparison.
      * @return Result of equality
      */
-    inline bool operator==(const positional_argument& other) const {
+    bool operator==(const positional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -660,7 +660,7 @@ public:
      * @param help_msg The help message to set.
      * @return Reference to the positional_argument.
      */
-    inline positional_argument& help(std::string_view help_msg) override {
+    positional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
     }
@@ -671,7 +671,7 @@ public:
      * @return Reference to the positional_argument.
      * @note Requires T to be equality comparable.
      */
-    inline positional_argument& choices(const std::vector<value_type>& choices)
+    positional_argument& choices(const std::vector<value_type>& choices)
     requires(utility::equality_comparable<value_type>)
     {
         this->_choices = choices;
@@ -686,14 +686,14 @@ public:
      * @return Reference to the positional_argument.
      */
     template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
-    inline positional_argument& action(F&& action) {
+    positional_argument& action(F&& action) {
         using callable_type = ap::action::detail::callable_type<AS, value_type>;
         this->_action = std::forward<callable_type>(action);
         return *this;
     }
 
     /// @return True if the positional argument is optional., false if required.
-    [[nodiscard]] inline bool is_optional() const override {
+    [[nodiscard]] bool is_optional() const override {
         return this->_optional;
     }
 
@@ -710,22 +710,22 @@ public:
 
 private:
     /// @return Reference the name of the positional argument.
-    [[nodiscard]] inline const detail::argument_name& name() const override {
+    [[nodiscard]] const detail::argument_name& name() const override {
         return this->_name;
     }
 
     /// @return Optional help message for the positional argument.
-    [[nodiscard]] inline const std::optional<std::string>& help() const override {
+    [[nodiscard]] const std::optional<std::string>& help() const override {
         return this->_help_msg;
     }
 
     /// @return True if the positional argument is required, false otherwise
-    [[nodiscard]] inline bool is_required() const override {
+    [[nodiscard]] bool is_required() const override {
         return this->_required;
     }
 
     /// @return True if bypassing the required status is enabled for the positional argument, false otherwise.
-    [[nodiscard]] inline bool bypass_required_enabled() const override {
+    [[nodiscard]] bool bypass_required_enabled() const override {
         return this->_bypass_required;
     }
 
@@ -736,12 +736,12 @@ private:
     void set_used() override {}
 
     /// @return True if the positional argument is used, false otherwise.
-    [[nodiscard]] inline bool is_used() const override {
+    [[nodiscard]] bool is_used() const override {
         return this->_value.has_value();
     }
 
     /// @return The number of times the positional argument is used.
-    [[nodiscard]] inline std::size_t nused() const override {
+    [[nodiscard]] std::size_t nused() const override {
         return static_cast<std::size_t>(this->_value.has_value());
     }
 
@@ -771,27 +771,27 @@ private:
     }
 
     /// @return True if the positional argument has a value, false otherwise.
-    [[nodiscard]] inline bool has_value() const override {
+    [[nodiscard]] bool has_value() const override {
         return this->_value.has_value();
     }
 
     /// @return True if the positional argument has parsed values, false otherwise.
-    [[nodiscard]] inline bool has_parsed_values() const override {
+    [[nodiscard]] bool has_parsed_values() const override {
         return this->_value.has_value();
     }
 
     /// @return Ordering relationship of positional argument range.
-    [[nodiscard]] inline std::weak_ordering nvalues_in_range() const override {
+    [[nodiscard]] std::weak_ordering nvalues_in_range() const override {
         return this->_value.has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
     }
 
     /// @brief Get the stored value of the positional argument.
-    [[nodiscard]] inline const std::any& value() const override {
+    [[nodiscard]] const std::any& value() const override {
         return this->_value;
     }
 
     /// @return Reference to the vector of parsed values for the positional argument.
-    [[nodiscard]] inline const std::vector<std::any>& values() const override {
+    [[nodiscard]] const std::vector<std::any>& values() const override {
         throw std::logic_error("Positional argument " + this->_name.name + "has only 1 value.");
     }
 
@@ -800,7 +800,7 @@ private:
      * @param choice The value to check against choices.
      * @return True if the choice valid, false otherwise.
      */
-    [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
+    [[nodiscard]] bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
@@ -868,7 +868,7 @@ public:
      * @param other The optional_argument to compare with.
      * @return Equality of comparison.
      */
-    inline bool operator==(const optional_argument& other) const {
+    bool operator==(const optional_argument& other) const {
         return this->_name == other._name;
     }
 
@@ -877,7 +877,7 @@ public:
      * @param help_msg The help message to set.
      * @return Reference to the optional_argument.
      */
-    inline optional_argument& help(std::string_view help_msg) override {
+    optional_argument& help(std::string_view help_msg) override {
         this->_help_msg = help_msg;
         return *this;
     }
@@ -886,7 +886,7 @@ public:
      * @brief Mark the optional argument as required.
      * @return Reference to the optional_argument.
      */
-    inline optional_argument& required() {
+    optional_argument& required() {
         this->_required = true;
         return *this;
     }
@@ -895,7 +895,7 @@ public:
      * @brief Enable bypassing the required status for the optional argument.
      * @return Reference to the optional_argument.
      */
-    inline optional_argument& bypass_required() {
+    optional_argument& bypass_required() {
         this->_bypass_required = true;
         return *this;
     }
@@ -905,7 +905,7 @@ public:
      * @param range The nargs range to set.
      * @return Reference to the optional_argument.
      */
-    inline optional_argument& nargs(const ap::nargs::range& range) {
+    optional_argument& nargs(const ap::nargs::range& range) {
         this->_nargs_range = range;
         return *this;
     }
@@ -915,7 +915,7 @@ public:
      * @param count The count for nargs range.
      * @return Reference to the optional_argument.
      */
-    inline optional_argument& nargs(const count_type count) {
+    optional_argument& nargs(const count_type count) {
         this->_nargs_range = ap::nargs::range(count);
         return *this;
     }
@@ -926,7 +926,7 @@ public:
      * @param nhigh The upper bound for nargs range.
      * @return Reference to the optional_argument.
      */
-    inline optional_argument& nargs(const count_type nlow, const count_type nhigh) {
+    optional_argument& nargs(const count_type nlow, const count_type nhigh) {
         this->_nargs_range = ap::nargs::range(nlow, nhigh);
         return *this;
     }
@@ -939,7 +939,7 @@ public:
      * @return Reference to the optional_argument.
      */
     template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
-    inline optional_argument& action(F&& action) {
+    optional_argument& action(F&& action) {
         using callable_type = ap::action::detail::callable_type<AS, value_type>;
         this->_action = std::forward<callable_type>(action);
         return *this;
@@ -951,7 +951,7 @@ public:
      * @return Reference to the optional_argument.
      * @note Requires T to be equality comparable.
      */
-    inline optional_argument& choices(const std::vector<value_type>& choices)
+    optional_argument& choices(const std::vector<value_type>& choices)
     requires(utility::equality_comparable<value_type>)
     {
         this->_choices = choices;
@@ -979,7 +979,7 @@ public:
     }
 
     /// @return True if argument is optional, false otherwise.
-    [[nodiscard]] inline bool is_optional() const override {
+    [[nodiscard]] bool is_optional() const override {
         return this->_optional;
     }
 
@@ -995,22 +995,22 @@ public:
 
 private:
     /// @return Reference to the name of the optional argument.
-    [[nodiscard]] inline const detail::argument_name& name() const override {
+    [[nodiscard]] const detail::argument_name& name() const override {
         return this->_name;
     }
 
     /// @return Reference to the optional help message for the optional argument.
-    [[nodiscard]] inline const std::optional<std::string>& help() const override {
+    [[nodiscard]] const std::optional<std::string>& help() const override {
         return this->_help_msg;
     }
 
     /// @return True if the optional argument is required, false otherwise.
-    [[nodiscard]] inline bool is_required() const override {
+    [[nodiscard]] bool is_required() const override {
         return this->_required;
     }
 
     /// @return True if bypassing the required status is enabled for the optional argument, false otherwise.
-    [[nodiscard]] inline bool bypass_required_enabled() const override {
+    [[nodiscard]] bool bypass_required_enabled() const override {
         return this->_bypass_required;
     }
 
@@ -1020,12 +1020,12 @@ private:
     }
 
     /// @return True if the optional argument is used, false otherwise.
-    [[nodiscard]] inline bool is_used() const override {
+    [[nodiscard]] bool is_used() const override {
         return this->_nused > 0;
     }
 
     /// @return The number of times the optional argument is used.
-    [[nodiscard]] inline std::size_t nused() const override {
+    [[nodiscard]] std::size_t nused() const override {
         return this->_nused;
     }
 
@@ -1055,12 +1055,12 @@ private:
     }
 
     /// @return True if the optional argument has a value, false otherwise.
-    [[nodiscard]] inline bool has_value() const override {
+    [[nodiscard]] bool has_value() const override {
         return this->has_parsed_values() or this->_has_predefined_value();
     }
 
     /// @return True if parsed values are available for the optional argument, false otherwise.
-    [[nodiscard]] inline bool has_parsed_values() const override {
+    [[nodiscard]] bool has_parsed_values() const override {
         return not this->_values.empty();
     }
 
@@ -1076,22 +1076,22 @@ private:
     }
 
     /// @return Reference to the stored value of the optional argument.
-    [[nodiscard]] inline const std::any& value() const override {
+    [[nodiscard]] const std::any& value() const override {
         return this->_values.empty() ? this->_predefined_value() : this->_values.front();
     }
 
     /// @return Reference to the vector of parsed values for the optional argument.
-    [[nodiscard]] inline const std::vector<std::any>& values() const override {
+    [[nodiscard]] const std::vector<std::any>& values() const override {
         return this->_values;
     }
 
     /// @return True if the optional argument has a predefined value, false otherwise.
-    [[nodiscard]] inline bool _has_predefined_value() const {
+    [[nodiscard]] bool _has_predefined_value() const {
         return this->_default_value.has_value() or (this->is_used() and this->_implicit_value.has_value());
     }
 
     /// @return Reference to the predefined value of the optional argument.
-    [[nodiscard]] inline const std::any& _predefined_value() const {
+    [[nodiscard]] const std::any& _predefined_value() const {
         return this->is_used() ? this->_implicit_value : this->_default_value;
     }
 
@@ -1100,7 +1100,7 @@ private:
      * @param choice The value to check against choices.
      * @return True if choice is valid, false otherwise.
      */
-    [[nodiscard]] inline bool _is_valid_choice(const value_type& choice) const {
+    [[nodiscard]] bool _is_valid_choice(const value_type& choice) const {
         return this->_choices.empty() or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
@@ -1168,7 +1168,7 @@ public:
      * @param name The name of the program.
      * @return Reference to the argument parser.
      */
-    inline argument_parser& program_name(std::string_view name) {
+    argument_parser& program_name(std::string_view name) {
         this->_program_name = name;
         return *this;
     }
@@ -1178,7 +1178,7 @@ public:
      * @param description The description of the program.
      * @return Reference to the argument parser.
      */
-    inline argument_parser& program_description(std::string_view description) {
+    argument_parser& program_description(std::string_view description) {
         this->_program_description = description;
         return *this;
     }
@@ -1188,7 +1188,7 @@ public:
      * @param args Vector of default positional argument categories.
      * @return Reference to the argument parser.
      */
-    inline argument_parser& default_positional_arguments(const std::vector<default_argument::positional>& args) {
+    argument_parser& default_positional_arguments(const std::vector<default_argument::positional>& args) {
         for (const auto arg : args)
             this->_add_default_positional_argument(arg);
         return *this;
@@ -1199,7 +1199,7 @@ public:
      * @param args Vector of default optional argument categories.
      * @return Reference to the argument parser.
      */
-    inline argument_parser& default_optional_arguments(const std::vector<default_argument::optional>& args) {
+    argument_parser& default_optional_arguments(const std::vector<default_argument::optional>& args) {
         for (const auto arg : args)
             this->_add_default_optional_argument(arg);
         return *this;
@@ -1498,7 +1498,7 @@ private:
          * @param other Another cmd_argument to compare with.
          * @return Boolean statement of equality comparison.
          */
-        inline bool operator==(const cmd_argument& other) const {
+        bool operator==(const cmd_argument& other) const {
             return this->discriminator == other.discriminator and this->value == other.value;
         }
 
@@ -1521,7 +1521,7 @@ private:
      * @param name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] inline argument_predicate_type _name_eq_predicate(const std::string_view& name) const {
+    [[nodiscard]] argument_predicate_type _name_eq_predicate(const std::string_view& name) const {
         return [&name](const argument_ptr_type& arg) { return name == arg->name(); };
     }
 
@@ -1531,7 +1531,7 @@ private:
      * @param short_name The short name of the argument.
      * @return Argument predicate based on the provided name and short name.
      */
-    [[nodiscard]] inline argument_predicate_type _name_eq_predicate(
+    [[nodiscard]] argument_predicate_type _name_eq_predicate(
         const std::string_view& name, const std::string_view& short_name
     ) const {
         return [&name, &short_name](const argument_ptr_type& arg) {
@@ -1690,7 +1690,7 @@ private:
      * @brief Check if optional arguments can bypass the required arguments.
      * @return True if optional arguments can bypass required arguments, false otherwise.
      */
-    [[nodiscard]] inline bool _bypass_required_args() const {
+    [[nodiscard]] bool _bypass_required_args() const {
         return std::any_of(std::cbegin(this->_optional_args), std::cend(this->_optional_args), [](const argument_ptr_type& arg) {
             return arg->is_used() and arg->bypass_required_enabled();
         });

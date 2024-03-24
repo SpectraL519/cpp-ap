@@ -20,70 +20,70 @@ struct optional_argument_test_fixture {
     using value_type = typename optional_argument<T>::value_type;
 
     template <valid_argument_value_type T>
-    inline void sut_set_used(optional_argument<T>& sut) const {
+    void sut_set_used(optional_argument<T>& sut) const {
         return sut.set_used();
     }
 
     template <valid_argument_value_type T>
-    inline bool sut_is_used(const optional_argument<T>& sut) const {
+    bool sut_is_used(const optional_argument<T>& sut) const {
         return sut.is_used();
     }
 
     template <valid_argument_value_type T>
-    inline std::size_t sut_get_nused(const optional_argument<T>& sut) const {
+    std::size_t sut_get_nused(const optional_argument<T>& sut) const {
         return sut.nused();
     }
 
     template <valid_argument_value_type T>
-    inline optional_argument<T>& sut_set_value(optional_argument<T>& sut, const std::string& str_value) const {
+    optional_argument<T>& sut_set_value(optional_argument<T>& sut, const std::string& str_value) const {
         sut.set_used();
         return sut.set_value(str_value);
     }
 
     template <valid_argument_value_type T>
-    inline optional_argument<T>& sut_set_choices(
+    optional_argument<T>& sut_set_choices(
         optional_argument<T>& sut, const std::vector<value_type<T>>& choices
     ) const {
         return sut.choices(choices);
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline bool sut_has_value(const optional_argument<T>& sut) const {
+    [[nodiscard]] bool sut_has_value(const optional_argument<T>& sut) const {
         return sut.has_value();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline bool sut_has_parsed_values(const optional_argument<T>& sut) const {
+    [[nodiscard]] bool sut_has_parsed_values(const optional_argument<T>& sut) const {
         return sut.has_parsed_values();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline std::weak_ordering sut_nvalues_in_range(const optional_argument<T>& sut) const {
+    [[nodiscard]] std::weak_ordering sut_nvalues_in_range(const optional_argument<T>& sut) const {
         return sut.nvalues_in_range();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::any& sut_get_value(const optional_argument<T>& sut) const {
+    [[nodiscard]] const std::any& sut_get_value(const optional_argument<T>& sut) const {
         return sut.value();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::vector<std::any>& sut_get_values(const optional_argument<T>& sut) const {
+    [[nodiscard]] const std::vector<std::any>& sut_get_values(const optional_argument<T>& sut) const {
         return sut.values();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const argument_name& sut_get_name(const optional_argument<T>& sut) const {
+    [[nodiscard]] const argument_name& sut_get_name(const optional_argument<T>& sut) const {
         return sut.name();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline bool sut_is_required(const optional_argument<T>& sut) const {
+    [[nodiscard]] bool sut_is_required(const optional_argument<T>& sut) const {
         return sut.is_required();
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] inline const std::optional<std::string>& sut_get_help(const optional_argument<T>& sut) const {
+    [[nodiscard]] const std::optional<std::string>& sut_get_help(const optional_argument<T>& sut) const {
         return sut.help();
     }
 };
