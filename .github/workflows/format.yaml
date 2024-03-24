@@ -1,4 +1,4 @@
-name: clang++
+name: format
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build examples
+    name: Test code formatting
     runs-on: ubuntu-latest
 
     steps:
@@ -19,14 +19,7 @@ jobs:
           sudo bash ./scripts/env/install_clang17_toolchain.sh
         continue-on-error: false
 
-      - name: Build
+      - name: Test formatting
         shell: bash
-        env:
-          CC:  clang-17
-          CXX: clang++-17
         run: |
-          cd example
-          cmake -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
-          cd build
-          make
-        continue-on-error: false
+          bash ./scripts/format/unix.sh --check
