@@ -53,7 +53,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_optional() should return t
     REQUIRE(sut.is_optional());
 }
 
-TEST_CASE_FIXTURE(optional_argument_test_fixture, "name() should return value passed to the optional argument constructor for long name") {
+TEST_CASE_FIXTURE(optional_argument_test_fixture, "name() should return value passed to the optional argument constructor for primary name") {
     const auto sut = prepare_argument(long_name);
 
     const auto name = sut_get_name(sut);
@@ -65,7 +65,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "name() should return value pa
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "name() and short_name() should return value passed to the optional"
-    "argument constructor for both long and short names"
+    "argument constructor for both primary and secondary names"
 ) {
     const auto sut = prepare_argument(long_name, short_name);
 

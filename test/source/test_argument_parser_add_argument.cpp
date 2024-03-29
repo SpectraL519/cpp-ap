@@ -65,11 +65,11 @@ TEST_CASE_FIXTURE(
         REQUIRE_NOTHROW(sut.add_positional_argument(other_name, other_short_name));
     }
 
-    SUBCASE("adding argument with a previously used long name") {
+    SUBCASE("adding argument with a previously used primary name") {
         REQUIRE_THROWS_AS(sut.add_positional_argument(name, other_short_name), ap::error::argument_name_used_error);
     }
 
-    SUBCASE("adding argument with a previously used short name") {
+    SUBCASE("adding argument with a previously used secondary name") {
         REQUIRE_THROWS_AS(sut.add_positional_argument(other_name, short_name), ap::error::argument_name_used_error);
     }
 }
@@ -90,11 +90,11 @@ TEST_CASE_FIXTURE(
         REQUIRE_NOTHROW(sut.add_optional_argument(other_name, other_short_name));
     }
 
-    SUBCASE("adding argument with a previously used long name") {
+    SUBCASE("adding argument with a previously used primary name") {
         REQUIRE_THROWS_AS(sut.add_optional_argument(name, other_short_name), ap::error::argument_name_used_error);
     }
 
-    SUBCASE("adding argument with a previously used short name") {
+    SUBCASE("adding argument with a previously used secondary name") {
         REQUIRE_THROWS_AS(sut.add_optional_argument(other_name, short_name), ap::error::argument_name_used_error);
     }
 }
@@ -130,11 +130,11 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_flag should throw only when
         REQUIRE_NOTHROW(sut.add_flag(other_name, other_short_name));
     }
 
-    SUBCASE("adding argument with a previously used long name") {
+    SUBCASE("adding argument with a previously used primary name") {
         REQUIRE_THROWS_AS(sut.add_flag(name, other_short_name), ap::error::argument_name_used_error);
     }
 
-    SUBCASE("adding argument with a previously used short name") {
+    SUBCASE("adding argument with a previously used secondary name") {
         REQUIRE_THROWS_AS(sut.add_flag(other_name, short_name), ap::error::argument_name_used_error);
     }
 }

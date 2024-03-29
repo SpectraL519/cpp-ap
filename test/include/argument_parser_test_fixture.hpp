@@ -87,12 +87,12 @@ struct argument_parser_test_fixture {
     void add_arguments(ap::argument_parser& parser, std::size_t num_args, std::size_t args_split) const {
         for (std::size_t i = 0; i < args_split; i++) { // positional args
             const auto arg_name = prepare_arg_name(i);
-            parser.add_positional_argument(arg_name.name, arg_name.short_name.value());
+            parser.add_positional_argument(arg_name.primary, arg_name.secondary.value());
         }
 
         for (std::size_t i = args_split; i < num_args; i++) { // optional args
             const auto arg_name = prepare_arg_name(i);
-            parser.add_optional_argument(arg_name.name, arg_name.short_name.value());
+            parser.add_optional_argument(arg_name.primary, arg_name.secondary.value());
         }
     }
 
@@ -105,7 +105,7 @@ struct argument_parser_test_fixture {
         }
         for (std::size_t i = args_split; i < num_args; i++) { // optional args
             cmd_args.push_back(cmd_argument{
-                cmd_argument::type_discriminator::flag, prepare_arg_name(i).name });
+                cmd_argument::type_discriminator::flag, prepare_arg_name(i).primary });
             cmd_args.push_back(cmd_argument{ cmd_argument::type_discriminator::value, prepare_arg_value(i) });
         }
 

@@ -329,17 +329,17 @@ struct argument_name {
 
     /**
      * @brief Primary name constructor.
-     * @param name The primary name of the argument.
+     * @param primary The primary name of the argument.
      */
-    explicit argument_name(std::string_view name) : name(name) {}
+    explicit argument_name(std::string_view primary) : primary(primary) {}
 
     /**
      * @brief Primary and secondary name constructor.
-     * @param name The primary name of the argument.
-     * @param short_name The secondary (short) name of the argument.
+     * @param primary The primary name of the argument.
+     * @param secondary The secondary (short) name of the argument.
      */
-    explicit argument_name(std::string_view name, std::string_view short_name)
-    : name(name), short_name(short_name) {}
+    explicit argument_name(std::string_view primary, std::string_view secondary)
+    : primary(primary), secondary(secondary) {}
 
     /// @brief Class destructor.
     ~argument_name() = default;
@@ -350,23 +350,23 @@ struct argument_name {
      * @return Equality of argument names.
      */
     bool operator==(const argument_name& other) const noexcept {
-        return this->name == other.name;
+        return this->primary == other.primary;
     }
 
     /**
      * @brief Equality comparison operator for string variables representing argument names.
      * @param name The string view to compare with.
-     * @return Equality of names comparison (either full or short name).
+     * @return Equality of names comparison (either primary or secondary name).
      */
     bool operator==(std::string_view name) const noexcept {
-        return name == this->name or (this->short_name and name == this->short_name.value());
+        return name == this->primary or (this->secondary and name == this->secondary.value());
     }
 
     /// @brief Get a string representation of the argument_name.
     [[nodiscard]] std::string str() const noexcept {
-        return this->short_name
-                 ? ("[" + this->name + "," + this->short_name.value() + "]")
-                 : ("[" + this->name + "]");
+        return this->secondary
+                 ? ("[" + this->primary + "," + this->secondary.value() + "]")
+                 : ("[" + this->primary + "]");
     }
 
     /**
@@ -380,11 +380,8 @@ struct argument_name {
         return os;
     }
 
-    // TODO: rename
-    // * name -> primary
-    // * short_name -> secondary
-    const std::string name; ///< The primary name of the argument.
-    const std::optional<std::string> short_name; ///< The optional short name of the argument.
+    const std::string primary; ///< The primary name of the argument.
+    const std::optional<std::string> secondary; ///< The optional (short) name of the argument.
 };
 
 /// @brief Argument class interface
@@ -792,7 +789,7 @@ private:
 
     /// @return Reference to the vector of parsed values for the positional argument.
     [[nodiscard]] const std::vector<std::any>& values() const override {
-        throw std::logic_error("Positional argument " + this->_name.name + "has only 1 value.");
+        throw std::logic_error("Positional argument " + this->_name.primary + "has only 1 value.");
     }
 
     /**
