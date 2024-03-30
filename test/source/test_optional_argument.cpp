@@ -12,22 +12,23 @@ using namespace ap_testing;
 using namespace ap::nargs;
 
 using ap::argument::optional_argument;
+using ap::argument::detail::argument_name;
 
 namespace {
 
-constexpr std::string_view long_name = "test";
-constexpr std::string_view short_name = "t";
+constexpr std::string_view primary_name = "test";
+constexpr std::string_view secondary_name = "t";
 
 using test_value_type = int;
 using invalid_value_type = double;
 using sut_type = optional_argument<test_value_type>;
 
-sut_type prepare_argument(std::string_view name) {
-    return sut_type(name);
+sut_type prepare_argument(std::string_view primary_name) {
+    return sut_type(argument_name{primary_name});
 }
 
-sut_type prepare_argument(std::string_view name, std::string_view long_name) {
-    return sut_type(name, long_name);
+sut_type prepare_argument(std::string_view primary_name, std::string_view secondary_name) {
+    return sut_type(argument_name{primary_name, secondary_name});
 }
 
 const std::string empty_str = "";
@@ -48,41 +49,41 @@ const range non_default_range = range(1u, default_choices.size());
 TEST_SUITE_BEGIN("test_optional_argument");
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_optional() should return true") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     REQUIRE(sut.is_optional());
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "name() should return value passed to the optional argument constructor for primary name") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     const auto name = sut_get_name(sut);
 
-    REQUIRE_EQ(name, long_name);
-    REQUIRE_NE(name, short_name);
+    REQUIRE_EQ(name, primary_name);
+    REQUIRE_NE(name, secondary_name);
 }
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "name() and short_name() should return value passed to the optional"
+    "name() and secondary_name() should return value passed to the optional"
     "argument constructor for both primary and secondary names"
 ) {
-    const auto sut = prepare_argument(long_name, short_name);
+    const auto sut = prepare_argument(primary_name, secondary_name);
 
     const auto name = sut_get_name(sut);
 
-    REQUIRE_EQ(name, long_name);
-    REQUIRE_EQ(name, short_name);
+    REQUIRE_EQ(name, primary_name);
+    REQUIRE_EQ(name, secondary_name);
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "help() should return nullopt by default") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     REQUIRE_FALSE(sut_get_help(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "help() should return message if one has been provided") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     constexpr std::string_view help_msg = "test help msg";
     sut.help(help_msg);
@@ -94,13 +95,13 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "help() should return message 
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_required() should return false by default") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     REQUIRE_FALSE(sut_is_required(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_required() should return true is argument is set to be required") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     sut.required();
 
@@ -108,20 +109,20 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_required() should return t
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_used() should return false by default") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     REQUIRE_FALSE(sut_is_used(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_used() should return true when argument contains value") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut_set_value(sut, std::to_string(value_1));
 
     REQUIRE(sut_is_used(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "nused() should return 0 by default") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     REQUIRE_EQ(sut_get_nused(sut), 0u);
 }
@@ -131,7 +132,7 @@ TEST_CASE_FIXTURE(
     "is_used() should return the number of times the argument's flag has been used "
     "[number of set_used() function calls]"
 ) {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     constexpr std::size_t nused = 5u;
     for (std::size_t n = 0; n < nused; n++)
@@ -141,13 +142,13 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return false by default") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     REQUIRE_FALSE(sut_has_value(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return true if value is set") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     sut_set_value(sut, std::to_string(value_1));
 
@@ -155,7 +156,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return tru
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return true if a default value is set") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.default_value(default_value);
 
     REQUIRE(sut_has_value(sut));
@@ -163,14 +164,14 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return tru
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return false if an implicit value is set but the argument is not used") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.implicit_value(implicit_value);
 
     REQUIRE_FALSE(sut_has_value(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return true if an implicit value is set and the agument is used") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.implicit_value(implicit_value);
 
     sut_set_used(sut);
@@ -180,7 +181,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return tru
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_parsed_values() should return false by default") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     REQUIRE_FALSE(sut_has_parsed_values(sut));
 }
@@ -190,7 +191,7 @@ TEST_CASE_FIXTURE(
     "has_parsed_values() should return false regardles of the "
     "default_value and implicit_value parameters"
 ) {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     SUBCASE("default_value") {
         sut.default_value(default_value);
@@ -210,7 +211,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_parsed_values() should true if the value is set") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     sut_set_value(sut, std::to_string(value_1));
 
@@ -218,13 +219,13 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_parsed_values() should tr
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "value() should return default any object if argument's value has not been set") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     REQUIRE_FALSE(sut_get_value(sut).has_value());
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "value() should return the argument's value if it has been set") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     sut_set_value(sut, std::to_string(value_1));
 
@@ -233,7 +234,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "value() should return the arg
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "value() should return the default value if one has been provided and argument is not used") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.default_value(value_1);
 
     REQUIRE(sut_has_value(sut));
@@ -241,7 +242,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "value() should return the def
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "value() should return the implicit value if one has been provided and argument is used") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.implicit_value(implicit_value);
 
     sut_set_used(sut);
@@ -251,7 +252,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "value() should return the imp
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should throw when value_type cannot be obtained from given string") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     SUBCASE("given string is empty") {
         REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), ap::error::invalid_value_error);
@@ -268,7 +269,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should throw w
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "set_value(any) should throw when parameter passed to value() is not present in the choices set"
 ) {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     sut_set_choices(sut, default_choices);
 
@@ -278,7 +279,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should accept the given value when it's present in the choices set") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut_set_choices(sut, default_choices);
 
     const std::vector<test_value_type> correct_values = default_choices;
@@ -298,7 +299,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should accept 
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should throw when a value has already been set when nargs is default") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
     REQUIRE(sut_has_value(sut));
@@ -307,7 +308,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should throw w
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should accept multiple values if nargs is not detault") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.nargs(non_default_range);
 
     for (const auto value : default_choices) {
@@ -323,7 +324,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should accept 
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should perform the specified action") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
 
     SUBCASE("valued action") {
         const auto double_valued_action = [](const test_value_type& value) { return 2 * value; };
@@ -348,13 +349,13 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "set_value(any) should perform
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "nvalues_in_range() should return equivalent if nargs has not been set") {
-    const auto sut = prepare_argument(long_name);
+    const auto sut = prepare_argument(primary_name);
 
     REQUIRE(std::is_eq(sut_nvalues_in_range(sut)));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "nvalues_in_range() should return equivalent if a default value has been set") {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.nargs(non_default_range);
 
     sut.default_value(default_value);
@@ -367,7 +368,7 @@ TEST_CASE_FIXTURE(
     "nvalues_in_range() should return equivalent only when the number of values "
     "is in the specified range"
 ) {
-    auto sut = prepare_argument(long_name);
+    auto sut = prepare_argument(primary_name);
     sut.nargs(non_default_range);
 
     REQUIRE(std::is_lt(sut_nvalues_in_range(sut)));

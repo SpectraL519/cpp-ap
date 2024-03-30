@@ -23,11 +23,11 @@ struct argument_parser_test_fixture {
     using invalid_argument_value_type = int;
 
     // test utility functions
-    [[nodiscard]] std::string prepare_arg_flag(std::size_t i) const {
+    [[nodiscard]] std::string prepare_arg_flag_primary(std::size_t i) const {
         return "--test_arg_" + std::to_string(i);
     }
 
-    [[nodiscard]] std::string prepare_arg_flag_short(std::size_t i) const {
+    [[nodiscard]] std::string prepare_arg_flag_secondary(std::size_t i) const {
         return "-ta_" + std::to_string(i);
     }
 
@@ -58,7 +58,7 @@ struct argument_parser_test_fixture {
         }
 
         for (std::size_t i = args_split; i < num_args; i++) { // optional args
-            std::string arg = prepare_arg_flag(i);
+            std::string arg = prepare_arg_flag_primary(i);
             std::string arg_v = prepare_arg_value(i);
 
             const std::size_t arg_i = 2 * i - args_split + 1;
