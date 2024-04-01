@@ -47,54 +47,54 @@ TEST_CASE("argument_name members should be correctly "
     REQUIRE_EQ(arg_name.secondary.value(), secondary_name);
 }
 
-TEST_CASE("argument_name::operator==(argument_name) should "
-          "return true if primary names are equal") {
+TEST_CASE("argument_name::operator==(argument_name) should return false if primary names are not equal") {
     const auto arg_name_a = default_argument_name_primary();
-    const auto arg_name_b = default_argument_name_primary_and_secondary();
-
-    REQUIRE_EQ(arg_name_a, arg_name_b);
-}
-
-TEST_CASE("argument_name::operator==(argument_name) should "
-          "return false if primary names are not equal") {
-    const auto arg_name_a = default_argument_name_primary();
-    const auto arg_name_b = argument_name{other_primary_name, other_secondary_name};
+    const auto arg_name_b = argument_name{other_primary_name};
 
     REQUIRE_NE(arg_name_a, arg_name_b);
 }
 
-TEST_CASE("argument_name::operator==(string_view) should "
-          "return true if at least one primary name matches") {
+TEST_CASE("argument_name::operator==(argument_name) should return false if only one argument has both primary and secondary values") {
+    const auto arg_name_a = default_argument_name_primary();
+    const auto arg_name_b = default_argument_name_primary_and_secondary();
+
+    REQUIRE_NE(arg_name_a, arg_name_b);
+    REQUIRE_NE(arg_name_b, arg_name_a);
+}
+
+TEST_CASE("argument_name::match(string_view) should return true if the given string matches at least one name") {
     SUBCASE("argument_name with primary name only") {
         const auto arg_name = default_argument_name_primary();
 
-        REQUIRE_EQ(arg_name, primary_name);
+        REQUIRE(arg_name.match(primary_name));
     }
 
     SUBCASE("argument_name with both names") {
         const auto arg_name = default_argument_name_primary_and_secondary();
 
-        REQUIRE_EQ(arg_name, primary_name);
-        REQUIRE_EQ(arg_name, secondary_name);
+        REQUIRE(arg_name.match(primary_name));
+        REQUIRE(arg_name.match(secondary_name));
     }
 }
 
-TEST_CASE("argument_name::operator==(string_view) should "
+TEST_CASE("argument_name::match(string_view) should "
           "return false if no primary name matches") {
     SUBCASE("argument_name with primary name only") {
         const auto arg_name = default_argument_name_primary();
 
-        REQUIRE_NE(arg_name, other_primary_name);
-        REQUIRE_NE(arg_name, other_secondary_name);
+        REQUIRE_FALSE(arg_name.match(other_primary_name));
+        REQUIRE_FALSE(arg_name.match(other_secondary_name));
     }
 
     SUBCASE("argument_name with both names") {
         const auto arg_name = default_argument_name_primary_and_secondary();
 
-        REQUIRE_NE(arg_name, other_primary_name);
-        REQUIRE_NE(arg_name, other_secondary_name);
+        REQUIRE_FALSE(arg_name.match(other_primary_name));
+        REQUIRE_FALSE(arg_name.match(other_secondary_name));
     }
 }
+
+// TODO: match for argument_name
 
 TEST_CASE("operator<< should push correct data to the output stream") {
     std::stringstream ss, expected_ss;

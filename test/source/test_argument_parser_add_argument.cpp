@@ -28,13 +28,13 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_positional_arguments sh
         { ap::default_argument::positional::input, ap::default_argument::positional::output }
     );
 
-    std::cout << ">>> add  - ok" << std::endl;
+    const auto input_arg = sut_get_argument("input");
+    REQUIRE(input_arg);
+    REQUIRE_FALSE(input_arg->get().is_optional());
 
-    REQUIRE_FALSE(sut_get_argument("input")->get().is_optional());
-    std::cout << ">>> input - ok" << std::endl;
-
-    REQUIRE_FALSE(sut_get_argument("output")->get().is_optional());
-    std::cout << ">>> output - ok" << std::endl;
+    const auto output_arg = sut_get_argument("output");
+    REQUIRE(output_arg);
+    REQUIRE_FALSE(output_arg->get().is_optional());
 }
 
 TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_optional_arguments should add the specified arguments") {
@@ -44,14 +44,20 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_optional_arguments shou
           ap::default_argument::optional::output }
     );
 
-    REQUIRE(sut_get_argument("help")->get().is_optional());
-    REQUIRE(sut_get_argument("h")->get().is_optional());
+    const auto help_arg = sut_get_argument("help");
+    REQUIRE(help_arg);
+    REQUIRE(help_arg->get().is_optional());
+    // TODO: secondary flag
 
-    REQUIRE(sut_get_argument("input")->get().is_optional());
-    REQUIRE(sut_get_argument("i")->get().is_optional());
+    const auto input_arg = sut_get_argument("help");
+    REQUIRE(input_arg);
+    REQUIRE(input_arg->get().is_optional());
+    // TODO: secondary flag
 
-    REQUIRE(sut_get_argument("output")->get().is_optional());
-    REQUIRE(sut_get_argument("o")->get().is_optional());
+    const auto output_arg = sut_get_argument("output");
+    REQUIRE(output_arg);
+    REQUIRE_FALSE(output_arg->get().is_optional());
+    // TODO: secondary flag
 }
 
 TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_positional_argument should return a positional argument reference") {

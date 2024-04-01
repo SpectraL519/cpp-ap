@@ -351,7 +351,37 @@ struct argument_name {
      * @return Equality of argument names.
      */
     bool operator==(const argument_name& other) const noexcept {
-        return this->primary == other.primary;
+        if (not (this->secondary and other.secondary) and (this->secondary or other.secondary))
+            return false;
+
+        if (this->primary != other.primary)
+            return false;
+
+        return this->secondary ? this->secondary.value() == other.secondary.value() : true;
+    }
+
+    /**
+     * @brief Matches the given string to the argument_name instance.
+     * @param arg_name The name string to match.
+     * @return True if name is equal to either the primary or the secondary name of the argument_name instance.
+     */
+    [[nodiscard]] bool match(std::string_view arg_name) const noexcept {
+        return arg_name == this->primary or (this->secondary and arg_name == this->secondary.value());
+    }
+
+    /**
+     * @brief Matches the given argument name to the argument_name instance.
+     * @param arg_name The name string to match.
+     * @return True if arg_name's primary or secondary value matches the argument_name instance.
+     */
+    [[nodiscard]] bool match(const argument_name arg_name) const noexcept {
+        if (not this->match(arg_name.primary))
+            return false;
+
+        if (arg_name.secondary)
+            return this->match(arg_name.secondary.value());
+
+        return true;
     }
 
     /**
@@ -1162,7 +1192,6 @@ public:
      */
     argument_parser& default_positional_arguments(const std::vector<default_argument::positional>& arg_discriminator_list
     ) noexcept {
-        std::cout << ">>> default_positional_arguments" << std::endl;
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_positional_argument(arg_discriminator);
         return *this;
@@ -1189,13 +1218,9 @@ public:
     argument::positional_argument<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        std::cout << ">>> add_positional_argument(" << primary_name << ")" << std::endl;
-
         const argument::detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
-
-        std::cout << ">>> arg name not used" << std::endl;
 
         this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name));
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
@@ -1408,17 +1433,14 @@ private:
      * @param arg_discriminator The default positional argument discriminator.
      */
     void _add_default_positional_argument(const default_argument::positional arg_discriminator) noexcept {
-        std::cout << ">>> _add_default_positional_argument" << std::endl;
         switch (arg_discriminator) {
         case default_argument::positional::input:
-            std::cout << "\tinput" << std::endl;
             this->add_positional_argument("input")
                 .action<ap::void_action>(ap::action::check_file_exists_action())
                 .help("Input file path");
             break;
 
         case default_argument::positional::output:
-            std::cout << "\toutput" << std::endl;
             this->add_positional_argument("output").help("Output file path");
             break;
         }
@@ -1503,12 +1525,21 @@ private:
     using argument_predicate_type = std::function<bool(const argument_ptr_type&)>;
 
     /**
-     * @brief Function to create a predicate for finding arguments by name.
+     * @brief Returns an unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] argument_predicate_type _name_eq_predicate(const argument::detail::argument_name& arg_name) const noexcept {
-        return [&arg_name](const argument_ptr_type& arg) { return arg_name == arg->name(); };
+    [[nodiscard]] argument_predicate_type _name_match_predicate(std::string_view arg_name) const noexcept {
+        return [&arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
+    }
+
+    /**
+     * @brief Returns an unary predicate function which checks if the given name matches the argument's name
+     * @param arg_name The name of the argument.
+     * @return Argument predicate based on the provided name.
+     */
+    [[nodiscard]] argument_predicate_type _name_match_predicate(const argument::detail::argument_name& arg_name) const noexcept {
+        return [&arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
 
     /**
@@ -1517,7 +1548,7 @@ private:
      * @return True if the argument name is already used, false otherwise.
      */
     [[nodiscard]] bool _is_arg_name_used(const argument::detail::argument_name& arg_name) const noexcept {
-        const auto predicate = this->_name_eq_predicate(arg_name);
+        const auto predicate = this->_name_match_predicate(arg_name);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
             return true;
@@ -1621,7 +1652,7 @@ private:
         while (cmd_it != cmd_args.end()) {
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
                 auto opt_arg_it =
-                    std::ranges::find_if(this->_optional_args, this->_name_eq_predicate({cmd_it->value}));
+                    std::ranges::find_if(this->_optional_args, this->_name_match_predicate(cmd_it->value));
 
                 if (opt_arg_it == this->_optional_args.end())
                     throw error::argument_not_found_error(cmd_it->value);
@@ -1682,7 +1713,7 @@ private:
      * @return The argument with the specified name, if found; otherwise, std::nullopt.
      */
     argument_opt_type _get_argument(const std::string_view& arg_name) const noexcept {
-        const auto predicate = this->_name_eq_predicate({arg_name});
+        const auto predicate = this->_name_match_predicate(arg_name);
 
         if (auto pos_arg_it = std::ranges::find_if(this->_positional_args, predicate);
             pos_arg_it != this->_positional_args.end()) {
@@ -1693,8 +1724,6 @@ private:
             opt_arg_it != this->_optional_args.end()) {
             return std::ref(**opt_arg_it);
         }
-
-        std::cout << ">>> _get_argument(" << arg_name << ") - nullopt" << std::endl;
 
         return std::nullopt;
     }
