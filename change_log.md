@@ -31,3 +31,7 @@
 * Added the `install_clang17_toolchain.sh` env script
 * Added the `format` workflow
 * Switched from the `<algorithm>` to the `<ranges>` library for all current container operations
+* Modified the `argument_name` structure - renamed members: `name` to `primary`, `short_name` to `secondary`
+* Added aliases for default argument enum classes:
+    * `ap::default_argument::positional` = `ap::default_posarg`
+    * `ap::default_argument::optional` = `ap::default_optarg`

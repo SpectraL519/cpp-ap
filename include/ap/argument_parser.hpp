@@ -1151,6 +1151,9 @@ enum class optional : uint8_t { help, input, output, multi_input, multi_output }
 
 } // namespace default_argument
 
+using default_posarg = default_argument::positional;
+using default_optarg = default_argument::optional;
+
 /// @brief Main argument parser class.
 class argument_parser {
 public:
@@ -1190,7 +1193,7 @@ public:
      * @param arg_discriminator_list Vector of default positional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_positional_arguments(const std::vector<default_argument::positional>& arg_discriminator_list
+    argument_parser& default_positional_arguments(const std::vector<default_posarg>& arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_positional_argument(arg_discriminator);
@@ -1202,7 +1205,7 @@ public:
      * @param arg_discriminator_list Vector of default optional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_optional_arguments(const std::vector<default_argument::optional>& arg_discriminator_list
+    argument_parser& default_optional_arguments(const std::vector<default_optarg>& arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_optional_argument(arg_discriminator);
@@ -1433,15 +1436,15 @@ private:
      * @brief Add default positional argument based on the specified discriminator.
      * @param arg_discriminator The default positional argument discriminator.
      */
-    void _add_default_positional_argument(const default_argument::positional arg_discriminator) noexcept {
+    void _add_default_positional_argument(const default_posarg arg_discriminator) noexcept {
         switch (arg_discriminator) {
-        case default_argument::positional::input:
+        case default_posarg::input:
             this->add_positional_argument("input")
                 .action<ap::void_action>(ap::action::check_file_exists_action())
                 .help("Input file path");
             break;
 
-        case default_argument::positional::output:
+        case default_posarg::output:
             this->add_positional_argument("output").help("Output file path");
             break;
         }
@@ -1451,13 +1454,13 @@ private:
      * @brief Add default optional argument based on the specified discriminator.
      * @param arg_discriminator The default optional argument discriminator.
      */
-    void _add_default_optional_argument(const default_argument::optional arg_discriminator) noexcept {
+    void _add_default_optional_argument(const default_optarg arg_discriminator) noexcept {
         switch (arg_discriminator) {
-        case default_argument::optional::help:
+        case default_optarg::help:
             this->add_flag("help", "h").bypass_required().help("Display help message");
             break;
 
-        case default_argument::optional::input:
+        case default_optarg::input:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(1)
@@ -1465,11 +1468,11 @@ private:
                 .help("Input file path");
             break;
 
-        case default_argument::optional::output:
+        case default_optarg::output:
             this->add_optional_argument("output", "o").required().nargs(1).help("Output file path");
             break;
 
-        case default_argument::optional::multi_input:
+        case default_optarg::multi_input:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(ap::nargs::at_least(1))
@@ -1477,7 +1480,7 @@ private:
                 .help("Input files paths");
             break;
 
-        case default_argument::optional::multi_output:
+        case default_optarg::multi_output:
             this->add_optional_argument("output", "o").required().nargs(ap::nargs::at_least(1)).help("Output files paths");
             break;
         }
