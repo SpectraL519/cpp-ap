@@ -36,6 +36,7 @@ SOFTWARE.
 
 #pragma once
 
+#include <algorithm>
 #include <any>
 #include <compare>
 #include <concepts>
@@ -329,17 +330,17 @@ struct argument_name {
 
     /**
      * @brief Primary name constructor.
-     * @param name The primary name of the argument.
+     * @param primary The primary name of the argument.
      */
-    explicit argument_name(std::string_view name) : name(name) {}
+    argument_name(std::string_view primary) : primary(primary) {}
 
     /**
      * @brief Primary and secondary name constructor.
-     * @param name The primary name of the argument.
-     * @param short_name The secondary (short) name of the argument.
+     * @param primary The primary name of the argument.
+     * @param secondary The secondary (short) name of the argument.
      */
-    explicit argument_name(std::string_view name, std::string_view short_name)
-    : name(name), short_name(short_name) {}
+    argument_name(std::string_view primary, std::string_view secondary)
+    : primary(primary), secondary(secondary) {}
 
     /// @brief Class destructor.
     ~argument_name() = default;
@@ -350,23 +351,44 @@ struct argument_name {
      * @return Equality of argument names.
      */
     bool operator==(const argument_name& other) const noexcept {
-        return this->name == other.name;
+        if (not (this->secondary and other.secondary) and (this->secondary or other.secondary))
+            return false;
+
+        if (this->primary != other.primary)
+            return false;
+
+        return this->secondary ? this->secondary.value() == other.secondary.value() : true;
     }
 
     /**
-     * @brief Equality comparison operator for string variables representing argument names.
-     * @param name The string view to compare with.
-     * @return Equality of names comparison (either full or short name).
+     * @brief Matches the given string to the argument_name instance.
+     * @param arg_name The name string to match.
+     * @return True if name is equal to either the primary or the secondary name of the argument_name instance.
      */
-    bool operator==(std::string_view name) const noexcept {
-        return name == this->name or (this->short_name and name == this->short_name.value());
+    [[nodiscard]] bool match(std::string_view arg_name) const noexcept {
+        return arg_name == this->primary or (this->secondary and arg_name == this->secondary.value());
+    }
+
+    /**
+     * @brief Matches the given argument name to the argument_name instance.
+     * @param arg_name The argument_name instance to match.
+     * @return True if arg_name's primary or secondary value matches the argument_name instance.
+     */
+    [[nodiscard]] bool match(const argument_name& arg_name) const noexcept {
+        if (this->match(arg_name.primary))
+            return true;
+
+        if (arg_name.secondary)
+            return this->match(arg_name.secondary.value());
+
+        return false;
     }
 
     /// @brief Get a string representation of the argument_name.
     [[nodiscard]] std::string str() const noexcept {
-        return this->short_name
-                 ? ("[" + this->name + "," + this->short_name.value() + "]")
-                 : ("[" + this->name + "]");
+        return this->secondary
+                 ? ("[" + this->primary + "," + this->secondary.value() + "]")
+                 : ("[" + this->primary + "]");
     }
 
     /**
@@ -380,11 +402,8 @@ struct argument_name {
         return os;
     }
 
-    // TODO: rename
-    // * name -> primary
-    // * short_name -> secondary
-    const std::string name; ///< The primary name of the argument.
-    const std::optional<std::string> short_name; ///< The optional short name of the argument.
+    const std::string primary; ///< The primary name of the argument.
+    const std::optional<std::string> secondary; ///< The optional (short) name of the argument.
 };
 
 /// @brief Argument class interface
@@ -524,20 +543,10 @@ class argument_name_used_error : public argument_parser_error {
 public:
     /**
      * @brief Constructor for the argument_name_used_error class.
-     * @param given_arg_name The name of the argument causing the collision.
+     * @param arg_name The name of the argument causing the collision.
      */
-    explicit argument_name_used_error(const std::string_view& given_arg_name)
-    : argument_parser_error("Given name `" + std::string(given_arg_name) + "` already used") {}
-
-    /**
-     * @brief Constructor for the argument_name_used_error class with a short name.
-     * @param given_arg_name The name of the argument causing the collision.
-     * @param given_arg_name_short The short name of the argument causing the collision.
-     */
-    explicit argument_name_used_error(const std::string_view& given_arg_name, const std::string_view& given_arg_name_short)
-    : argument_parser_error(
-        "Given name " + argument::detail::argument_name(given_arg_name, given_arg_name_short).str() + " already used"
-    ) {}
+    explicit argument_name_used_error(const argument::detail::argument_name& arg_name)
+    : argument_parser_error("Given name `" + arg_name.str() + "` already used") {}
 };
 
 /// @brief Exception thrown when an argument with a specific name is not found.
@@ -557,11 +566,11 @@ public:
     /**
      * @brief Constructor for the invalid_value_type_error class.
      * @param arg_name The name of the argument that had invalid value type.
-     * @param given_arg_type The type information that failed to cast.
+     * @param value_type The type information that failed to cast.
      */
-    explicit invalid_value_type_error(const argument::detail::argument_name& arg_name, const std::type_info& given_arg_type)
+    explicit invalid_value_type_error(const argument::detail::argument_name& arg_name, const std::type_info& value_type)
     : argument_parser_error(
-        "Invalid value type specified for argument " + arg_name.str() + " - " + given_arg_type.name()
+        "Invalid value type specified for argument " + arg_name.str() + " - " + value_type.name()
     ) {}
 };
 
@@ -630,18 +639,10 @@ public:
     positional_argument() = delete;
 
     /**
-     * @brief Constructor for positional_argument with a name.
-     * @param name The primary name of the positional argument.
+     * @brief Constructor for positional_argument with the `name` identifier.
+     * @param name The `name` identifier of the positional argument.
      */
-    positional_argument(std::string_view name) : _name(name) {}
-
-    /**
-     * @brief Constructor for positional_argument with a name and a short name.
-     * @param name The primary name of the positional argument.
-     * @param short_name The short name of the positional argument (optional).
-     */
-    positional_argument(std::string_view name, std::string_view short_name)
-    : _name(name, short_name) {}
+    positional_argument(const detail::argument_name& name) : _name(name) {}
 
     /// @brief Destructor for positional argument.
     ~positional_argument() = default;
@@ -792,7 +793,7 @@ private:
 
     /// @return Reference to the vector of parsed values for the positional argument.
     [[nodiscard]] const std::vector<std::any>& values() const override {
-        throw std::logic_error("Positional argument " + this->_name.name + "has only 1 value.");
+        throw std::logic_error("Positional argument " + this->_name.primary + "has only 1 value.");
     }
 
     /**
@@ -847,18 +848,10 @@ public:
     optional_argument() = delete;
 
     /**
-     * @brief Constructor for optional_argument with a name.
-     * @param name The primary name of the optional argument.
+     * @brief Constructor for optional_argument with the `name` identifier.
+     * @param name The `name` identifier of the optional argument.
      */
-    optional_argument(std::string_view name) : _name(name) {}
-
-    /**
-     * @brief Constructor for optional_argument with a name and a short name.
-     * @param name The primary name of the optional argument.
-     * @param short_name The short name of the optional argument (optional).
-     */
-    optional_argument(std::string_view name, std::string_view short_name)
-    : _name(name, short_name) {}
+    optional_argument(const detail::argument_name& name) : _name(name) {}
 
     /// @brief Destructor for optional_argument.
     ~optional_argument() = default;
@@ -1149,6 +1142,9 @@ enum class optional : uint8_t { help, input, output, multi_input, multi_output }
 
 } // namespace default_argument
 
+using default_posarg = default_argument::positional;
+using default_optarg = default_argument::optional;
+
 /// @brief Main argument parser class.
 class argument_parser {
 public:
@@ -1185,121 +1181,126 @@ public:
 
     /**
      * @brief Set default positional arguments.
-     * @param args Vector of default positional argument categories.
+     * @param arg_discriminator_list Vector of default positional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_positional_arguments(const std::vector<default_argument::positional>& args
+    argument_parser& default_positional_arguments(const std::vector<default_posarg>& arg_discriminator_list
     ) noexcept {
-        for (const auto arg : args)
-            this->_add_default_positional_argument(arg);
+        for (const auto arg_discriminator : arg_discriminator_list)
+            this->_add_default_positional_argument(arg_discriminator);
         return *this;
     }
 
     /**
      * @brief Set default optional arguments.
-     * @param args Vector of default optional argument categories.
+     * @param arg_discriminator_list Vector of default optional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_optional_arguments(const std::vector<default_argument::optional>& args) noexcept {
-        for (const auto arg : args)
-            this->_add_default_optional_argument(arg);
+    argument_parser& default_optional_arguments(const std::vector<default_optarg>& arg_discriminator_list
+    ) noexcept {
+        for (const auto arg_discriminator : arg_discriminator_list)
+            this->_add_default_optional_argument(arg_discriminator);
         return *this;
     }
 
     /**
-     * @brief Add a positional argument to the parser.
+     * @brief Adds a positional argument to the parser's configuration.
      * @tparam T Type of the argument value.
-     * @param name The name of the argument.
+     * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::positional_argument<T>& add_positional_argument(std::string_view name) {
+    argument::positional_argument<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        if (this->_is_arg_name_used(name))
-            throw error::argument_name_used_error(name);
+        const argument::detail::argument_name arg_name = { primary_name };
+        if (this->_is_arg_name_used(arg_name))
+            throw error::argument_name_used_error(arg_name);
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(name));
+        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name));
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
     /**
-     * @brief Add a positional argument with a short name to the parser.
+     * @brief Adds a positional argument to the parser's configuration.
      * @tparam T Type of the argument value.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
+     * @param primary_name The primary name of the argument.
+     * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::positional_argument<T>& add_positional_argument(std::string_view name, std::string_view short_name) {
+    argument::positional_argument<T>& add_positional_argument(std::string_view primary_name, std::string_view secondary_name) {
         // TODO: check forbidden characters
 
-        if (this->_is_arg_name_used(name, short_name))
-            throw error::argument_name_used_error(name, short_name);
+        const argument::detail::argument_name arg_name = { primary_name, secondary_name };
+        if (this->_is_arg_name_used(arg_name))
+            throw error::argument_name_used_error(arg_name);
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(name, short_name));
+        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name));
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
     /**
-     * @brief Add an optional argument to the parser.
+     * @brief Adds a positional argument to the parser's configuration.
      * @tparam T Type of the argument value.
-     * @param name The name of the argument.
+     * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::optional_argument<T>& add_optional_argument(std::string_view name) {
+    argument::optional_argument<T>& add_optional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        if (this->_is_arg_name_used(name))
-            throw error::argument_name_used_error(name);
+        const argument::detail::argument_name arg_name = { primary_name };
+        if (this->_is_arg_name_used(arg_name))
+            throw error::argument_name_used_error(arg_name);
 
-        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(name));
+        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(arg_name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
-     * @brief Add an optional argument with a short name to the parser.
+     * @brief Adds a positional argument to the parser's configuration.
      * @tparam T Type of the argument value.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
+     * @param primary_name The primary name of the argument.
+     * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::optional_argument<T>& add_optional_argument(std::string_view name, std::string_view short_name) {
+    argument::optional_argument<T>& add_optional_argument(std::string_view primary_name, std::string_view secondary_name) {
         // TODO: check forbidden characters
 
-        if (this->_is_arg_name_used(name, short_name))
-            throw error::argument_name_used_error(name, short_name);
+        const argument::detail::argument_name arg_name = { primary_name, secondary_name };
+        if (this->_is_arg_name_used(arg_name))
+            throw error::argument_name_used_error(arg_name);
 
-        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(name, short_name));
+        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(arg_name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
-     * @brief Add a boolean flag to the parser.
+     * @brief Adds a boolean flag argument to the parser's configuration.
      * @tparam StoreImplicitly Flag indicating whether to store implicitly.
-     * @param name The name of the flag.
+     * @param primary_name The primary name of the flag.
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument::optional_argument<bool>& add_flag(std::string_view name) {
-        return this->add_optional_argument<bool>(name)
+    argument::optional_argument<bool>& add_flag(std::string_view primary_name) {
+        return this->add_optional_argument<bool>(primary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
             .nargs(0);
     }
 
     /**
-     * @brief Add a boolean flag with a short name to the parser.
+     * @brief Adds a boolean flag argument to the parser's configuration.
      * @tparam StoreImplicitly Flag indicating whether to store implicitly.
-     * @param name The name of the flag.
-     * @param short_name The short name of the flag.
+     * @param primary_name The primary name of the flag.
+     * @param secondary_name The secondary name of the flag.
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument::optional_argument<bool>& add_flag(std::string_view name, std::string_view short_name) {
-        return this->add_optional_argument<bool>(name, short_name)
+    argument::optional_argument<bool>& add_flag(std::string_view primary_name, std::string_view secondary_name) {
+        return this->add_optional_argument<bool>(primary_name, secondary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
             .nargs(0);
@@ -1327,7 +1328,7 @@ public:
      */
     bool has_value(std::string_view arg_name) const noexcept {
         const auto arg_opt = this->_get_argument(arg_name);
-        return arg_opt ? arg_opt->get().has_value() : false; // TODO: throw
+        return arg_opt ? arg_opt->get().has_value() : false;
     }
 
     /**
@@ -1337,7 +1338,7 @@ public:
      */
     std::size_t count(std::string_view arg_name) const noexcept {
         const auto arg_opt = this->_get_argument(arg_name);
-        return arg_opt ? arg_opt->get().nused() : 0ull; // TODO: throw
+        return arg_opt ? arg_opt->get().nused() : 0ull;
     }
 
     /**
@@ -1380,6 +1381,7 @@ public:
                 return std::vector<T>{ std::any_cast<T>(arg.value()) };
 
             std::vector<T> values;
+            // TODO: use std::ranges::to after transition to C++23
             std::ranges::copy(
                 std::views::transform(
                     arg.values(), [](const std::any& value) { return std::any_cast<T>(value); }
@@ -1422,34 +1424,34 @@ public:
 
 private:
     /**
-     * @brief Add default positional argument based on the specified category.
-     * @param arg The default positional argument category.
+     * @brief Add default positional argument based on the specified discriminator.
+     * @param arg_discriminator The default positional argument discriminator.
      */
-    void _add_default_positional_argument(const default_argument::positional arg) noexcept {
-        switch (arg) {
-        case default_argument::positional::input:
+    void _add_default_positional_argument(const default_posarg arg_discriminator) noexcept {
+        switch (arg_discriminator) {
+        case default_posarg::input:
             this->add_positional_argument("input")
                 .action<ap::void_action>(ap::action::check_file_exists_action())
                 .help("Input file path");
             break;
 
-        case default_argument::positional::output:
+        case default_posarg::output:
             this->add_positional_argument("output").help("Output file path");
             break;
         }
     }
 
     /**
-     * @brief Add default optional argument based on the specified category.
-     * @param arg The default optional argument category.
+     * @brief Add default optional argument based on the specified discriminator.
+     * @param arg_discriminator The default optional argument discriminator.
      */
-    void _add_default_optional_argument(const default_argument::optional arg) noexcept {
-        switch (arg) {
-        case default_argument::optional::help:
+    void _add_default_optional_argument(const default_optarg arg_discriminator) noexcept {
+        switch (arg_discriminator) {
+        case default_optarg::help:
             this->add_flag("help", "h").bypass_required().help("Display help message");
             break;
 
-        case default_argument::optional::input:
+        case default_optarg::input:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(1)
@@ -1457,11 +1459,11 @@ private:
                 .help("Input file path");
             break;
 
-        case default_argument::optional::output:
+        case default_optarg::output:
             this->add_optional_argument("output", "o").required().nargs(1).help("Output file path");
             break;
 
-        case default_argument::optional::multi_input:
+        case default_optarg::multi_input:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(ap::nargs::at_least(1))
@@ -1469,7 +1471,7 @@ private:
                 .help("Input files paths");
             break;
 
-        case default_argument::optional::multi_output:
+        case default_optarg::multi_output:
             this->add_optional_argument("output", "o").required().nargs(ap::nargs::at_least(1)).help("Output files paths");
             break;
         }
@@ -1483,6 +1485,7 @@ private:
         cmd_argument(const cmd_argument&) = default;
         cmd_argument(cmd_argument&&) = default;
         cmd_argument& operator=(const cmd_argument&) = default;
+        cmd_argument& operator=(cmd_argument&&) = default;
 
         /**
          * @brief Constructor of a command-line argument.
@@ -1518,53 +1521,31 @@ private:
     using argument_predicate_type = std::function<bool(const argument_ptr_type&)>;
 
     /**
-     * @brief Function to create a predicate for finding arguments by name.
-     * @param name The name of the argument.
+     * @brief Returns an unary predicate function which checks if the given name matches the argument's name
+     * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] argument_predicate_type _name_eq_predicate(const std::string_view& name) const noexcept {
-        return [&name](const argument_ptr_type& arg) { return name == arg->name(); };
+    [[nodiscard]] argument_predicate_type _name_match_predicate(std::string_view arg_name) const noexcept {
+        return [arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
 
     /**
-     * @brief Function to create a predicate for finding arguments by name and short name.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
-     * @return Argument predicate based on the provided name and short name.
+     * @brief Returns an unary predicate function which checks if the given name matches the argument's name
+     * @param arg_name The name of the argument.
+     * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] argument_predicate_type _name_eq_predicate(
-        const std::string_view& name, const std::string_view& short_name
+    [[nodiscard]] argument_predicate_type _name_match_predicate(const argument::detail::argument_name& arg_name
     ) const noexcept {
-        return [&name, &short_name](const argument_ptr_type& arg) {
-            return name == arg->name() or short_name == arg->name();
-        };
+        return [&arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
 
     /**
      * @brief Check if an argument name is already used.
-     * @param name The name of the argument.
+     * @param arg_name The name of the argument.
      * @return True if the argument name is already used, false otherwise.
      */
-    [[nodiscard]] bool _is_arg_name_used(const std::string_view& name) const noexcept {
-        const auto predicate = this->_name_eq_predicate(name);
-
-        if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
-            return true;
-
-        if (std::ranges::find_if(this->_optional_args, predicate) != this->_optional_args.end())
-            return true;
-
-        return false;
-    }
-
-    /**
-     * @brief Check if an argument name and short name pair is already used.
-     * @param name The name of the argument.
-     * @param short_name The short name of the argument.
-     * @return True if the argument name or short name is already used, false otherwise.
-     */
-    [[nodiscard]] bool _is_arg_name_used(const std::string_view& name, const std::string_view& short_name) const noexcept {
-        const auto predicate = this->_name_eq_predicate(name, short_name);
+    [[nodiscard]] bool _is_arg_name_used(const argument::detail::argument_name& arg_name) const noexcept {
+        const auto predicate = this->_name_match_predicate(arg_name);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
             return true;
@@ -1604,28 +1585,28 @@ private:
 
     /**
      * @brief Check if an argument is a flag based on its value.
-     * @param arg The argument value.
+     * @param arg The cmd argument's value.
      * @return True if the argument is a flag, false otherwise.
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used(arg.substr(this->_flag_prefix_length));
+            return this->_is_arg_name_used({ arg.substr(this->_flag_prefix_length) });
 
         if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used(arg.substr(this->_flag_prefix_char_length));
+            return this->_is_arg_name_used({ arg.substr(this->_flag_prefix_char_length) });
 
         return false;
     }
 
     /**
      * @brief Remove the flag prefix from the argument.
-     * @param arg The argument to strip the prefix from.
+     * @param arg_flag The argument flag to strip the prefix from.
      */
-    void _strip_flag_prefix(std::string& arg) const noexcept {
-        if (arg.starts_with(this->_flag_prefix))
-            arg.erase(0, this->_flag_prefix_length);
+    void _strip_flag_prefix(std::string& arg_flag) const noexcept {
+        if (arg_flag.starts_with(this->_flag_prefix))
+            arg_flag.erase(0, this->_flag_prefix_length);
         else
-            arg.erase(0, this->_flag_prefix_char_length);
+            arg_flag.erase(0, this->_flag_prefix_char_length);
     }
 
     /**
@@ -1668,7 +1649,7 @@ private:
         while (cmd_it != cmd_args.end()) {
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
                 auto opt_arg_it =
-                    std::ranges::find_if(this->_optional_args, this->_name_eq_predicate(cmd_it->value));
+                    std::ranges::find_if(this->_optional_args, this->_name_match_predicate(cmd_it->value));
 
                 if (opt_arg_it == this->_optional_args.end())
                     throw error::argument_not_found_error(cmd_it->value);
@@ -1692,7 +1673,7 @@ private:
      * @return True if optional arguments can bypass required arguments, false otherwise.
      */
     [[nodiscard]] bool _bypass_required_args() const noexcept {
-        return std::any_of(std::cbegin(this->_optional_args), std::cend(this->_optional_args), [](const argument_ptr_type& arg) {
+        return std::ranges::any_of(this->_optional_args, [](const argument_ptr_type& arg) {
             return arg->is_used() and arg->bypass_required_enabled();
         });
     }
@@ -1725,11 +1706,11 @@ private:
 
     /**
      * @brief Get the argument with the specified name.
-     * @param name The name of the argument.
+     * @param arg_name The name of the argument.
      * @return The argument with the specified name, if found; otherwise, std::nullopt.
      */
-    argument_opt_type _get_argument(const std::string_view& name) const noexcept {
-        const auto predicate = this->_name_eq_predicate(name);
+    argument_opt_type _get_argument(std::string_view arg_name) const noexcept {
+        const auto predicate = this->_name_match_predicate(arg_name);
 
         if (auto pos_arg_it = std::ranges::find_if(this->_positional_args, predicate);
             pos_arg_it != this->_positional_args.end()) {
