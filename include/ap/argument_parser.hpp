@@ -1202,7 +1202,8 @@ public:
      * @param arg_discriminator_list Vector of default optional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_optional_arguments(const std::vector<default_argument::optional>& arg_discriminator_list) noexcept {
+    argument_parser& default_optional_arguments(const std::vector<default_argument::optional>& arg_discriminator_list
+    ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_optional_argument(arg_discriminator);
         return *this;
@@ -1218,7 +1219,7 @@ public:
     argument::positional_argument<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name};
+        const argument::detail::argument_name arg_name = { primary_name };
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1237,7 +1238,7 @@ public:
     argument::positional_argument<T>& add_positional_argument(std::string_view primary_name, std::string_view secondary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name, secondary_name};
+        const argument::detail::argument_name arg_name = { primary_name, secondary_name };
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1255,7 +1256,7 @@ public:
     argument::optional_argument<T>& add_optional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name};
+        const argument::detail::argument_name arg_name = { primary_name };
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1274,7 +1275,7 @@ public:
     argument::optional_argument<T>& add_optional_argument(std::string_view primary_name, std::string_view secondary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name, secondary_name};
+        const argument::detail::argument_name arg_name = { primary_name, secondary_name };
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1539,7 +1540,8 @@ private:
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] argument_predicate_type _name_match_predicate(const argument::detail::argument_name& arg_name) const noexcept {
+    [[nodiscard]] argument_predicate_type _name_match_predicate(const argument::detail::argument_name& arg_name
+    ) const noexcept {
         return [&arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
 
@@ -1594,10 +1596,10 @@ private:
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_length)});
+            return this->_is_arg_name_used({ arg.substr(this->_flag_prefix_length) });
 
         if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_char_length)});
+            return this->_is_arg_name_used({ arg.substr(this->_flag_prefix_char_length) });
 
         return false;
     }

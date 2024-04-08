@@ -92,11 +92,15 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("adding argument with a previously used primary name") {
-        REQUIRE_THROWS_AS(sut.add_positional_argument(primary_name, other_secondary_name), ap::error::argument_name_used_error);
+        REQUIRE_THROWS_AS(
+            sut.add_positional_argument(primary_name, other_secondary_name), ap::error::argument_name_used_error
+        );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
-        REQUIRE_THROWS_AS(sut.add_positional_argument(other_primary_name, secondary_name), ap::error::argument_name_used_error);
+        REQUIRE_THROWS_AS(
+            sut.add_positional_argument(other_primary_name, secondary_name), ap::error::argument_name_used_error
+        );
     }
 }
 
@@ -117,11 +121,15 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("adding argument with a previously used primary name") {
-        REQUIRE_THROWS_AS(sut.add_optional_argument(primary_name, other_secondary_name), ap::error::argument_name_used_error);
+        REQUIRE_THROWS_AS(
+            sut.add_optional_argument(primary_name, other_secondary_name), ap::error::argument_name_used_error
+        );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
-        REQUIRE_THROWS_AS(sut.add_optional_argument(other_primary_name, secondary_name), ap::error::argument_name_used_error);
+        REQUIRE_THROWS_AS(
+            sut.add_optional_argument(other_primary_name, secondary_name), ap::error::argument_name_used_error
+        );
     }
 }
 

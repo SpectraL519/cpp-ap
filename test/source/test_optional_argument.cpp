@@ -24,11 +24,11 @@ using invalid_value_type = double;
 using sut_type = optional_argument<test_value_type>;
 
 sut_type prepare_argument(std::string_view primary_name) {
-    return sut_type(argument_name{primary_name});
+    return sut_type(argument_name{ primary_name });
 }
 
 sut_type prepare_argument(std::string_view primary_name, std::string_view secondary_name) {
-    return sut_type(argument_name{primary_name, secondary_name});
+    return sut_type(argument_name{ primary_name, secondary_name });
 }
 
 const std::string empty_str = "";

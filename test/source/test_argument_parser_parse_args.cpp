@@ -68,7 +68,6 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "_preprocess_input should return
     free_argv(argc, argv);
 }
 
-
 // _parse_args_impl
 
 TEST_CASE_FIXTURE(
@@ -91,7 +90,6 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "_parse_args_impl should not thr
 
     REQUIRE_NOTHROW(sut_parse_args_impl(cmd_args));
 }
-
 
 // _get_argument
 
@@ -118,7 +116,6 @@ TEST_CASE_FIXTURE(
         REQUIRE(sut_get_argument(arg_name.secondary.value()));
     }
 }
-
 
 // parse_args
 
@@ -228,7 +225,6 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
-
 // has_value
 
 TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false if there is no argument with given name present") {
@@ -301,7 +297,6 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false w
 
     free_argv(argc, argv);
 }
-
 
 // value
 
@@ -418,7 +413,6 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
-
 // count
 
 TEST_CASE_FIXTURE(argument_parser_test_fixture, "count should return 0 before calling parse_args") {
@@ -489,7 +483,6 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "count should return the number 
     // free argv
     free_argv(argc, argv);
 }
-
 
 // values
 
