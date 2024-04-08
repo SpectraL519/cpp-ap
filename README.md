@@ -219,9 +219,11 @@ The `CPP-AP` library has a few default arguments defined. To add a default argum
 ```c++
 // add positional arguments - pass a std::vector of default positional arguments
 parser.default_positional_arguments({...});
+// here ... represents a list of ap::default_argument::positional values (or alternatively ap::default_posarg)
 
 // add optional arguments - pass a std::vector of default optional arguments
 parser.default_positional_arguments({...});
+// here ... represents a list of ap::default_argument::optional values (or alternatively ap::default_optarg)
 ```
 
 The supported default arguments are:
@@ -263,7 +265,7 @@ The supported default arguments are:
           .action<ap::void_action>(ap::action::check_file_exists_action)
           .help("Input file path");
 
-    // multi_input - equivalen to:
+    // multi_input - equivalent to:
     parser.add_optional_argument("input", "i")
           .required()
           .nargs(ap::nargs::at_least(1))
