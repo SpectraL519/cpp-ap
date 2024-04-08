@@ -56,11 +56,10 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_optional() should return t
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "name() should return value passed to the optional argument constructor for primary name") {
     const auto sut = prepare_argument(primary_name);
-
     const auto name = sut_get_name(sut);
 
-    REQUIRE_EQ(name, primary_name);
-    REQUIRE_NE(name, secondary_name);
+    REQUIRE(name.match(primary_name));
+    REQUIRE_FALSE(name.match(secondary_name));
 }
 
 TEST_CASE_FIXTURE(
@@ -69,11 +68,10 @@ TEST_CASE_FIXTURE(
     "argument constructor for both primary and secondary names"
 ) {
     const auto sut = prepare_argument(primary_name, secondary_name);
-
     const auto name = sut_get_name(sut);
 
-    REQUIRE_EQ(name, primary_name);
-    REQUIRE_EQ(name, secondary_name);
+    REQUIRE(name.match(primary_name));
+    REQUIRE(name.match(secondary_name));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "help() should return nullopt by default") {

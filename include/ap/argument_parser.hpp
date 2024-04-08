@@ -384,15 +384,6 @@ struct argument_name {
         return false;
     }
 
-    /**
-     * @brief Equality comparison operator for string variables representing argument names.
-     * @param name The string view to compare with.
-     * @return Equality of names comparison (either primary or secondary name).
-     */
-    bool operator==(std::string_view name) const noexcept {
-        return name == this->primary or (this->secondary and name == this->secondary.value());
-    }
-
     /// @brief Get a string representation of the argument_name.
     [[nodiscard]] std::string str() const noexcept {
         return this->secondary

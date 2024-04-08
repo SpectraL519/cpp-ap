@@ -30,21 +30,28 @@ argument_name default_argument_name_primary_and_secondary() {
 
 TEST_SUITE_BEGIN("test_argument_name");
 
-TEST_CASE("argument_name.primary member should be correctly "
-          "initialized") {
+TEST_CASE("argument_name.primary member should be correctly initialized") {
     const auto arg_name = default_argument_name_primary();
 
     REQUIRE_EQ(arg_name.primary, primary_name);
 }
 
-TEST_CASE("argument_name members should be correctly "
-          "initialized") {
+TEST_CASE("argument_name members should be correctly initialized") {
     const auto arg_name = default_argument_name_primary_and_secondary();
 
     REQUIRE_EQ(arg_name.primary, primary_name);
 
     REQUIRE(arg_name.secondary);
     REQUIRE_EQ(arg_name.secondary.value(), secondary_name);
+}
+
+TEST_CASE("argument_name::operator==(argument_name) should return false if only one argument has "
+          "both primary and secondary values") {
+    const auto arg_name_a = default_argument_name_primary();
+    const auto arg_name_b = default_argument_name_primary_and_secondary();
+
+    REQUIRE_NE(arg_name_a, arg_name_b);
+    REQUIRE_NE(arg_name_b, arg_name_a);
 }
 
 TEST_CASE("argument_name::operator==(argument_name) should return false if primary names are not "
@@ -55,13 +62,28 @@ TEST_CASE("argument_name::operator==(argument_name) should return false if prima
     REQUIRE_NE(arg_name_a, arg_name_b);
 }
 
-TEST_CASE("argument_name::operator==(argument_name) should return false if only one argument has "
-          "both primary and secondary values") {
-    const auto arg_name_a = default_argument_name_primary();
-    const auto arg_name_b = default_argument_name_primary_and_secondary();
+TEST_CASE("argument_name::operator==(argument_name) should return false if secondary names are not "
+          "equal") {
+    const auto arg_name_a = default_argument_name_primary_and_secondary();
+    const auto arg_name_b = argument_name{ primary_name, other_primary_name };
 
     REQUIRE_NE(arg_name_a, arg_name_b);
-    REQUIRE_NE(arg_name_b, arg_name_a);
+}
+
+TEST_CASE("argument_name::operator==(argument_name) should return true if primary names are equal "
+          "and secondary names are null") {
+    const auto arg_name_a = default_argument_name_primary();
+    const auto arg_name_b = default_argument_name_primary();
+
+    REQUIRE_EQ(arg_name_a, arg_name_b);
+}
+
+TEST_CASE("argument_name::operator==(argument_name) should return true if both primary and "
+          "secondary names are equal") {
+    const auto arg_name_a = default_argument_name_primary_and_secondary();
+    const auto arg_name_b = default_argument_name_primary_and_secondary();
+
+    REQUIRE_EQ(arg_name_a, arg_name_b);
 }
 
 TEST_CASE("argument_name::match(string_view) should return true if the given string matches at "
