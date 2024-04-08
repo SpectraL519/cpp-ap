@@ -371,17 +371,17 @@ struct argument_name {
 
     /**
      * @brief Matches the given argument name to the argument_name instance.
-     * @param arg_name The name string to match.
+     * @param arg_name The argument_name instance to match.
      * @return True if arg_name's primary or secondary value matches the argument_name instance.
      */
-    [[nodiscard]] bool match(const argument_name arg_name) const noexcept {
-        if (not this->match(arg_name.primary))
-            return false;
+    [[nodiscard]] bool match(const argument_name& arg_name) const noexcept {
+        if (this->match(arg_name.primary))
+            return true;
 
         if (arg_name.secondary)
             return this->match(arg_name.secondary.value());
 
-        return true;
+        return false;
     }
 
     /**
@@ -1490,6 +1490,7 @@ private:
         cmd_argument(const cmd_argument&) = default;
         cmd_argument(cmd_argument&&) = default;
         cmd_argument& operator=(const cmd_argument&) = default;
+        cmd_argument& operator=(cmd_argument&&) = default;
 
         /**
          * @brief Constructor of a command-line argument.
@@ -1530,7 +1531,7 @@ private:
      * @return Argument predicate based on the provided name.
      */
     [[nodiscard]] argument_predicate_type _name_match_predicate(std::string_view arg_name) const noexcept {
-        return [&arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
+        return [arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
 
     /**
@@ -1712,7 +1713,7 @@ private:
      * @param arg_name The name of the argument.
      * @return The argument with the specified name, if found; otherwise, std::nullopt.
      */
-    argument_opt_type _get_argument(const std::string_view& arg_name) const noexcept {
+    argument_opt_type _get_argument(std::string_view arg_name) const noexcept {
         const auto predicate = this->_name_match_predicate(arg_name);
 
         if (auto pos_arg_it = std::ranges::find_if(this->_positional_args, predicate);

@@ -6,8 +6,6 @@
 
 #include <ap/argument_parser.hpp>
 
-#include <iostream>
-
 using namespace ap_testing;
 using namespace ap::argument;
 
@@ -44,20 +42,37 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_optional_arguments shou
           ap::default_argument::optional::output }
     );
 
-    const auto help_arg = sut_get_argument("help");
+    std::string help_flag;
+    std::string input_flag;
+    std::string output_flag;
+
+    SUBCASE("using primary flags") {
+        help_flag = "help";
+        input_flag = "input";
+        output_flag = "output";
+    }
+
+    SUBCASE("using secondary flags") {
+        help_flag = "h";
+        input_flag = "i";
+        output_flag = "o";
+    }
+
+    CAPTURE(help_flag);
+    CAPTURE(input_flag);
+    CAPTURE(output_flag);
+
+    const auto help_arg = sut_get_argument(help_flag);
     REQUIRE(help_arg);
     REQUIRE(help_arg->get().is_optional());
-    // TODO: secondary flag
 
-    const auto input_arg = sut_get_argument("help");
+    const auto input_arg = sut_get_argument(input_flag);
     REQUIRE(input_arg);
     REQUIRE(input_arg->get().is_optional());
-    // TODO: secondary flag
 
-    const auto output_arg = sut_get_argument("output");
+    const auto output_arg = sut_get_argument(output_flag);
     REQUIRE(output_arg);
-    REQUIRE_FALSE(output_arg->get().is_optional());
-    // TODO: secondary flag
+    REQUIRE(output_arg->get().is_optional());
 }
 
 TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_positional_argument should return a positional argument reference") {
