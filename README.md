@@ -160,10 +160,10 @@ Parameters which can be specified for both positional and optional arguments inc
           .action<ap::valued_action>([](const double& value) { return 1. / value; });
     ```
 
-    Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists_action` which checks if a file with a given name exists:
+    Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists` which checks if a file with a given name exists:
     ```c++
     parser.add_optional_argument("input", "i")
-          .action<ap::void_action>(ap::action::check_file_exists_action);
+          .action<ap::void_action>(ap::action::check_file_exists());
     ```
 
 **Optional argument specific parameters**
@@ -231,7 +231,7 @@ The supported default arguments are:
     ```c++
     // equivalent to:
     parser.add_positional_argument<std::string>("input")
-          .action<ap::void_action>(ap::action::check_file_exists_action)
+          .action<ap::void_action>(ap::action::check_file_exists())
           .help("Input file path");
     ```
 
@@ -262,14 +262,14 @@ The supported default arguments are:
     parser.add_optional_argument("input", "i")
           .required()
           .nargs(1)
-          .action<ap::void_action>(ap::action::check_file_exists_action)
+          .action<ap::void_action>(ap::action::check_file_exists())
           .help("Input file path");
 
     // multi_input - equivalent to:
     parser.add_optional_argument("input", "i")
           .required()
           .nargs(ap::nargs::at_least(1))
-          .action<ap::void_action>(ap::action::check_file_exists_action)
+          .action<ap::void_action>(ap::action::check_file_exists())
           .help("Input files paths");
     ```
 
@@ -298,14 +298,14 @@ To parse the command-line arguments use the `argument_parser::parse_args` method
 // power.cpp
 #include <ap/argument_parser.hpp>
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     // create the parser class instance
     ap::argument_parser parser;
     parser.program_name("power calculator")
-          .program_description("calculates the value of an expression: base & exponent");
+          .program_description("calculates the value of an expression: base ^ exponent");
 
     // add arguments
     parser.add_positional_argument<double>("base").help("the exponentation base value");
@@ -363,11 +363,11 @@ int main(int argc, char* argv[]) {
 
     **NOTE:** For each positional argument there must be **exactly one value**.
     ```shell
-    ./test_program
+    ./power
     # out:
     # [ERROR] : No values parsed for a required argument [base]
     # power calculator
-    # calculates the value of an expression: base & exponent
+    # calculates the value of an expression: base ^ exponent
     #         [base] : the exponentation base value
     #         [exponent,e] : the exponent value
     #         [help,h] : Display help message
