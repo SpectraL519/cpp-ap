@@ -30,9 +30,10 @@
 * Aligned the `.clang-format` configuration file
 * Added the `install_clang17_toolchain.sh` env script
 * Added the `format` workflow
-* Switched from the `<algorithm>` to the `<ranges>` library for all current container operations
+* Switched to the `std::ranges` and `std::views` algorithms for all current container operations
 * Modified the `argument_name` structure - renamed members: `name` to `primary`, `short_name` to `secondary`
 * Added `argument_name::match(string_view)` and `argument_name::match(argument_name)` functions
 * Added aliases for default argument enum classes:
     * `ap::default_argument::positional` = `ap::default_posarg`
     * `ap::default_argument::optional` = `ap::default_optarg`
+* Renamed the predefined: `ap::action::check_file_exists_action` -> `ap::action::check_file_exists`

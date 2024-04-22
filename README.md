@@ -10,17 +10,18 @@ Command-line argument parser for C++20
 
 ## Overview
 
-The `CPP-AP` library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
-
-Faculty: *W04N - Faculty of Information and Communication Technology*
-
-Field of study: *Algorithmic Computer Science*
-
-<br />
-
 The goal of the project was to create a light,  intuitive and simple to use command-line argument parser library for the `C++20` and newer standards.
 
 The `CPP-AP` library does not require installing any additional tools or heavy libraries, like with `boost::program_options`. Much like with the `Doctest` framework - the only thing you need to do is copy the `argument_parser.hpp` file into the include directory of your project and you're set to go.
+
+> [!NOTE]
+> [v1.0](https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
+>
+> Faculty: *W04N - Faculty of Information and Communication Technology*
+>
+> Field of study: *Algorithmic Computer Science*
+>
+> The project has received the 1st place at the 2024 CreatiWITy competition organized by the faculty. The article in Polish can be found on the [faculty website](https://wit.pwr.edu.pl/aktualnosci/oto-laureaci-konkursu-creatiwity-273.html). Please note that this is not a technical article :)
 
 <br />
 <br />
@@ -46,6 +47,8 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
 <br />
 
 ## Tutorial
+
+<!-- TODO: download project release and add include directory to the project -->
 
 To use the `CPP-AP` library in your project, copy the [argument_parser.hpp](include/ap/argument_parser.hpp) file into your include directory, e.g. `include/ap`. No other setup is necessary - you only need to include this header in your code:
 
@@ -74,25 +77,28 @@ parser.program_name("Name of the program")
 
 The parser supports both positional and optional arguments. Both argument types are identified by their names represented as strings. Arguments can be defined with only a primary name or with a primary and a secondary (short) name.
 
-**NOTE:** The basic rules of parsing positional and optional arguments are described in the [Parsing arguments](#parsing-arguments) section.
+> [!NOTE]
+>  The basic rules of parsing positional and optional arguments are described in the [Parsing arguments](#parsing-arguments) section.
 
 To add an argument to the parameter's configurations use the following syntax:
 
 ```c++
-parser.add_<positional/optional>_argument<value_type>("argument_name");
+parser.add_<positional/optional>_argument<value_type>("argument");
 ```
 
 or
 
 ```c++
-parser.add_<positional/optional>_argument<value_type>("argument_name", "a");
+parser.add_<positional/optional>_argument<value_type>("argument", "a");
 ```
 
-**NOTE:** The library supports any argument value types which meet the following requirements:
-* The `std::ostream& operator<<` must be overloaded for a value type
-* The type must have a copy constructor and an assignment operator
+> [!NOTE]
+>  The library supports any argument value types which meet the following requirements:
+* The `std::ostream& operator<<` is overloaded for the value type
+* The value type has a copy constructor and an assignment operator
 
-**NOTE:** If the `value_type` is not provided, `std::string` will be used.
+> [!IMPORTANT]
+>  If the `value_type` is not provided, `std::string` will be used.
 
 You can also add boolean flags:
 
@@ -135,11 +141,12 @@ Parameters which can be specified for both positional and optional arguments inc
 * `choices` - a list of valid argument values.
     The `choices` parameter takes a `const std::vector<value_type>&` as an argument.
 
-    **NOTE:** To use the `choices` the `value_type` must overload the equaility comparison operator: `==`;
-
     ```c++
     parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
     ```
+
+> [!IMPORTANT]
+> To use the `choices` the `value_type` must overload the equaility comparison operator: `==`;
 
 * `action` - a function performed after reading an argument's value.
 
@@ -160,10 +167,10 @@ Parameters which can be specified for both positional and optional arguments inc
           .action<ap::valued_action>([](const double& value) { return 1. / value; });
     ```
 
-    Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists_action` which checks if a file with a given name exists:
+    Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists` which checks if a file with a given name exists:
     ```c++
     parser.add_optional_argument("input", "i")
-          .action<ap::void_action>(ap::action::check_file_exists_action);
+          .action<ap::void_action>(ap::action::check_file_exists());
     ```
 
 **Optional argument specific parameters**
@@ -196,7 +203,8 @@ Parameters which can be specified for both positional and optional arguments inc
         parser.add_optional_argument("input", "i").nargs(ap::nargs::any());
         ```
 
-    **NOTE:** The default nargs value is `1`.
+> [!NOTE]
+> The default nargs value is `1`.
 
 * `default_value` - the default value for an argument which will be used if no values for this argument are parsed
     ```c++
@@ -231,7 +239,7 @@ The supported default arguments are:
     ```c++
     // equivalent to:
     parser.add_positional_argument<std::string>("input")
-          .action<ap::void_action>(ap::action::check_file_exists_action)
+          .action<ap::void_action>(ap::action::check_file_exists())
           .help("Input file path");
     ```
 
@@ -247,14 +255,15 @@ The supported default arguments are:
     parser.add_flag("help", "h").bypass_required().help("Display help message");
     ```
 
-    **Note:** As of now the *on flag action* functionality is not implemented in the library - this will be added in a future release.
-    To properly use the help argument in the current release add the following right beneath the `parser.parse_args(argc, argv)` try-catch block:
-    ```c++
-    if (parser.has_value("help")) {
-        std::cout << parser << std::endl;
-        std::exit(EXIT_SUCCESS);
-    }
-    ```
+> [!NOTE]
+> As of now the *on flag action* functionality is not implemented in the library - this will be added in a future release.
+> To properly use the help argument in the current release add the following right beneath the `parser.parse_args(argc, argv)` try-catch block:
+> ```c++
+> if (parser.value<bool>("help")) {
+>     std::cout << parser << std::endl;
+>     std::exit(EXIT_SUCCESS);
+> }
+> ```
 
 * `optional::input` and `optional::multi_input`:
     ```c++
@@ -262,14 +271,14 @@ The supported default arguments are:
     parser.add_optional_argument("input", "i")
           .required()
           .nargs(1)
-          .action<ap::void_action>(ap::action::check_file_exists_action)
+          .action<ap::void_action>(ap::action::check_file_exists())
           .help("Input file path");
 
     // multi_input - equivalent to:
     parser.add_optional_argument("input", "i")
           .required()
           .nargs(ap::nargs::at_least(1))
-          .action<ap::void_action>(ap::action::check_file_exists_action)
+          .action<ap::void_action>(ap::action::check_file_exists())
           .help("Input files paths");
     ```
 
@@ -288,7 +297,8 @@ The supported default arguments are:
           .help("Output files paths");
     ```
 
-**NOTE:** The `argument_parser::default_<positional/optional>_arguments` functions will be modified to use a variadic argument list instead of a `std::vector` in a future release.
+> [!NOTE]
+> The `argument_parser::default_<positional/optional>_arguments` functions will be modified to use a variadic argument list instead of a `std::vector` in a future release.
 
 ### Parsing arguments
 
@@ -298,14 +308,14 @@ To parse the command-line arguments use the `argument_parser::parse_args` method
 // power.cpp
 #include <ap/argument_parser.hpp>
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     // create the parser class instance
     ap::argument_parser parser;
     parser.program_name("power calculator")
-          .program_description("calculates the value of an expression: base & exponent");
+          .program_description("calculates the value of an expression: base ^ exponent");
 
     // add arguments
     parser.add_positional_argument<double>("base").help("the exponentation base value");
@@ -325,7 +335,7 @@ int main(int argc, char* argv[]) {
     }
 
     // check for the help argument presence
-    if (parser.has_value("help")) {
+    if (parser.value<bool>("help")) {
         std::cout << parser << std::endl;
         std::exit(EXIT_SUCCESS);
     }
@@ -361,17 +371,19 @@ int main(int argc, char* argv[]) {
     # no exponent values given
     ```
 
-    **NOTE:** For each positional argument there must be **exactly one value**.
     ```shell
-    ./test_program
+    ./power
     # out:
     # [ERROR] : No values parsed for a required argument [base]
     # power calculator
-    # calculates the value of an expression: base & exponent
+    # calculates the value of an expression: base ^ exponent
     #         [base] : the exponentation base value
     #         [exponent,e] : the exponent value
     #         [help,h] : Display help message
     ```
+
+> [!IMPORTANT]
+> For each positional argument there must be **exactly one value**.
 
 * Optional arguments are parsed only with a flag:
     ```shell
@@ -400,7 +412,8 @@ int main(int argc, char* argv[]) {
     #         [help,h] : Display help message
     ```
 
-**NOTE:** The parser behaviour depends on the argument definitions. The argument parameters are described int the [Argument parameters](#argument-parameters) section.
+> [!IMPORTANT]
+> The parser behaviour depends on the argument definitions. The argument parameters are described int the [Argument parameters](#argument-parameters) section.
 
 <br />
 <br />
@@ -416,7 +429,8 @@ cd <project-root>/example
 
 The examples' source files are in the `<project-root>/example/source` directory.
 
-> **Note:** Each source file is a sepparate example.
+> [!NOTE]
+> Each source file is a sepparate example.
 
 Building the examples:
 
@@ -461,11 +475,13 @@ cmake ..
 make
 ```
 
-> **NOTE:** Building on Windows -  use the `-G "Unix Makefiles"` option when running CMake to build a GNU Make project instead of a default Visual Studio project.
+> [!TIP]
+> Building on Windows -  use the `-G "Unix Makefiles"` option when running CMake to build a GNU Make project instead of a default Visual Studio project.
 
 Run the tests:
 
-> **NOTE:** The test executable is generated in the `<project-root>/test/build` directory.
+> [!NOTE]
+> The test executable is generated in the `<project-root>/test/build` directory.
 
 * All tests:
 
@@ -479,18 +495,21 @@ Run the tests:
     ./test -ts="<test-suite-name>"
     ```
 
-    > **Note**: Test suites in the project have the same name as the files they're in.
+    > [!NOTE]
+    > Test suites in the project have the same names as the files they're in.
 
 <br />
 
 ### Formatting
 
-> **NOTE:** To ensure new line encoding compatibility the project uses unix new line encoding.
+> [!IMPORTANT]
+> To ensure new line encoding compatibility the project uses unix new line encoding.
 >
 > This can be set using the `git config --global core.autocrlf true` command.
 > More details can be found [here](https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings)
 
-> **NOTE:** The project uses `clang-format-17`.
+> [!NOTE]
+> The project uses `clang-format-17`.
 >
 > To install this tool on ubuntu run `sudo bash ./scripts/env/install_clang17_toolchain.sh`.
 >
@@ -534,7 +553,8 @@ The documentation for this project can be generated using Doxygen:
 
 As of now the project supports the **GNU G++** and **Clang++** compilers with `C++20` support on Linux and Windows.
 
-> **NOTE:** To build the project using clang you will need to install the `clang-17` toolchain using the script or website mentioned in the [Formatting](#formatting) section.
+> [!NOTE]
+> To build the project using clang you will need to install the `clang-17` toolchain using the script or website mentioned in the [Formatting](#formatting) section.
 
 <br />
 <br />
