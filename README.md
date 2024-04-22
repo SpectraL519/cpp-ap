@@ -10,17 +10,17 @@ Command-line argument parser for C++20
 
 ## Overview
 
-The `CPP-AP` library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
-
-Faculty: *W04N - Faculty of Information and Communication Technology*
-
-Field of study: *Algorithmic Computer Science*
-
-<br />
-
 The goal of the project was to create a light,  intuitive and simple to use command-line argument parser library for the `C++20` and newer standards.
 
 The `CPP-AP` library does not require installing any additional tools or heavy libraries, like with `boost::program_options`. Much like with the `Doctest` framework - the only thing you need to do is copy the `argument_parser.hpp` file into the include directory of your project and you're set to go.
+
+> **NOTE:** [v1.0](https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
+>
+> Faculty: *W04N - Faculty of Information and Communication Technology*
+>
+> Field of study: *Algorithmic Computer Science*
+>
+> The project has received the 1st place at the 2024 CreatiWITy competition organized by the faculty. The article in Polish can be found on the [faculty website](https://wit.pwr.edu.pl/aktualnosci/oto-laureaci-konkursu-creatiwity-273.html). Please note that this is not a technical article :)
 
 <br />
 <br />
@@ -79,18 +79,18 @@ The parser supports both positional and optional arguments. Both argument types 
 To add an argument to the parameter's configurations use the following syntax:
 
 ```c++
-parser.add_<positional/optional>_argument<value_type>("argument_name");
+parser.add_<positional/optional>_argument<value_type>("argument");
 ```
 
 or
 
 ```c++
-parser.add_<positional/optional>_argument<value_type>("argument_name", "a");
+parser.add_<positional/optional>_argument<value_type>("argument", "a");
 ```
 
 **NOTE:** The library supports any argument value types which meet the following requirements:
-* The `std::ostream& operator<<` must be overloaded for a value type
-* The type must have a copy constructor and an assignment operator
+* The `std::ostream& operator<<` is overloaded for the value type
+* The value type has a copy constructor and an assignment operator
 
 **NOTE:** If the `value_type` is not provided, `std::string` will be used.
 
