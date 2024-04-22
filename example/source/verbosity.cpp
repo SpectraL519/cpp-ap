@@ -6,32 +6,22 @@
 namespace {
 
 enum class verbosity_level : uint16_t { low, mid, high };
+constexpr verbosity_level max_verbosity_level = verbosity_level::high;
 
-std::istream& operator>>(std::istream& input, verbosity_level& v) {
+std::istream& operator>>(std::istream& input, verbosity_level& verbosity) {
     uint16_t value;
     input >> value;
 
-    // Map the integer input to the corresponding enum value
-    switch (value) {
-    case 0u:
-        v = verbosity_level::low;
-        break;
-
-    case 1u:
-        v = verbosity_level::mid;
-        break;
-
-    case 2u:
-        v = verbosity_level::high;
-        break;
-
-    default:
+    if (value > static_cast<uint16_t>(max_verbosity_level)) {
         std::cerr << "[ERROR] : Invalid verbosity_level value - " << value << std::endl;
         std::exit(EXIT_FAILURE);
     }
 
+    verbosity = static_cast<verbosity_level>(value);
+
     return input;
 }
+
 
 void print_msg(const verbosity_level verbosity) {
     switch (verbosity) {
