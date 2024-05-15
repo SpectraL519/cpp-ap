@@ -1,9 +1,7 @@
 @PACKAGE_INIT@
 
-# avoid repeatedly including the targets
-if(NOT TARGET cpp-ap::cpp-ap)
-    # Provide path for scripts
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+include(CMakeFindDependencyMacro)
 
-    include(${CMAKE_CURRENT_LIST_DIR}/cpp-ap-targets.cmake)
-endif()
+set_and_check(CPP_AP_INCLUDE_DIR "@PACKAGE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@")
+
+include("${CMAKE_CURRENT_LIST_DIR}/cpp-ap-targets.cmake")
