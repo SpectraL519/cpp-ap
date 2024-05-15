@@ -3,7 +3,6 @@ Command-line argument parser for C++20
 
 [![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
 [![clang++](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang++)
-[![test](https://github.com/SpectraL519/cpp-ap/actions/workflows/test.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/test)
 [![format](https://github.com/SpectraL519/cpp-ap/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/format)
 
 <br />
@@ -467,35 +466,7 @@ int main(int argc, char* argv[]) {
 
 ## Examples
 
-If you wish to test the parser functionality with some real examples then follow these steps:
-
-Open your terminal in the project's example directory:
-```shell
-cd <project-root>/example
-```
-
-The examples' source files are in the `<project-root>/example/source` directory.
-
-> [!NOTE]
-> Each source file is a sepparate example.
-
-Building the examples:
-
-```shell
-cmake -B build
-cd build
-make
-```
-
-or
-
-```shell
-mkdir build && cd build
-cmake ..
-make
-```
-
-The compiled binaries will appear in the `<project-root>/example/build/bin` directory.
+The library usage examples / demo projects can be found in the [cpp-ap-demo](https://github.com/SpectraL519/cpp-ap-demo) repository.
 
 <br />
 <br />
@@ -538,8 +509,8 @@ Run the tests:
     ./run_tests -ts="<test-suite-name>"
     ```
 
-    > [!NOTE]
-    > Test suites in the project have the same names as the files they're in.
+> [!NOTE]
+> Test suites in the project have the same names as the files they're in.
 
 <br />
 

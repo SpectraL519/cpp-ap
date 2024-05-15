@@ -6,27 +6,32 @@ on:
 
 jobs:
   build:
-    name: Build examples
+    name: Build and run tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Prepare
-        shell: bash
+      - name: Prepare env
         run: |
           sudo bash ./scripts/env/install_clang17_toolchain.sh
         continue-on-error: false
 
-      - name: Build
-        shell: bash
+      - name: Prepare
         env:
           CC:  clang-17
           CXX: clang++-17
         run: |
-          cd example
           cmake -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
-          cd build
-          make
+        continue-on-error: false
+
+      - name: Build test executable
+        run: |
+          cd build && make
+        continue-on-error: false
+
+      - name: Run tests
+        run: |
+          ./build/test/run_tests
         continue-on-error: false
