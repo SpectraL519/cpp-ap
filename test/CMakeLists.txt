@@ -6,9 +6,8 @@ project(cpp-ap-test)
 
 # Structure
 set(SOURCE_DIRS "source" "app")
-set(INCLUDE_DIRS "include" "../include")
-set(BINARY_DIR ".")
-set(EXECUTABLE_DIR ".")
+set(INCLUDE_DIRS "include")
+set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Source files
 file(GLOB_RECURSE SOURCES "")
@@ -17,33 +16,28 @@ foreach(SOURCE_DIR ${SOURCE_DIRS})
     list(APPEND SOURCES ${CURRENT_SOURCES})
 endforeach()
 
-# Include dirs
-include_directories(${INCLUDE_DIRS})
-
-# Default compile options
-set(DEFAULT_CXX_FLAGS "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3")
-
 # Set compile options
 if(NOT DEFINED CMAKE_CXX_FLAGS)
-    set(CMAKE_CXX_FLAGS ${DEFAULT_CXX_FLAGS} CACHE STRING "Default C++ compile flags" FORCE)
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3"
+        CACHE STRING "Default C++ compile flags" FORCE)
 endif()
 
 # Executable
-add_executable(test ${SOURCES})
+add_executable(run_tests ${SOURCES})
 
-# Target properties
-set_target_properties(test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${BINARY_DIR}"
+set_target_properties(run_tests PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_DIR}"
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
 )
-target_compile_options(test PRIVATE ${CMAKE_CXX_FLAGS})
 
-# Executable path
-set(EXECUTABLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${EXECUTABLE_DIR}")
+target_include_directories(run_tests PRIVATE ${INCLUDE_DIRS})
+target_compile_options(run_tests PRIVATE ${CMAKE_CXX_FLAGS})
+target_link_libraries(run_tests PRIVATE cpp-ap)
 
-# Symbolic links
+# Create symbolic links in the build_ut directory
+set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 foreach(config ${CMAKE_CONFIGURATION_TYPES})
-    file(CREATE_LINK "${BINARY_DIR}/test" "${EXECUTABLE_PATH}/test_${config}" SYMBOLIC)
+    file(CREATE_LINK "${EXECUTABLE_DIR}/run_tests" "${EXECUTABLE_DIR}/test_${config}" SYMBOLIC)
 endforeach(config)

@@ -18,22 +18,15 @@ jobs:
           CC:  gcc-11
           CXX: g++-11
         run: |
-          cd test
           cmake -B build -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_C_COMPILER=gcc-11
         continue-on-error: false
 
       - name: Build test executable
-        shell: bash
-        env:
-          CC:  gcc-11
-          CXX: g++-11
         run: |
-          cd test/build
-          make
+          cd build && make
         continue-on-error: false
 
       - name: Run tests
         run: |
-          cd test/build
-          ./test
+          ./build/test/run_test
         continue-on-error: false

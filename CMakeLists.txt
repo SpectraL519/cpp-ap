@@ -7,13 +7,14 @@ else()
     set(CPP_AP_IS_TOP_LEVEL_PROJECT OFF)
 endif()
 
-project(
-    cpp-ap
+project(cpp-ap
     VERSION 1.0
     DESCRIPTION "Command-line argument parser for C++20"
     HOMEPAGE_URL "https://github.com/SpectraL519/cpp-ap"
     LANGUAGES CXX
 )
+
+option(BUILD_TESTS "Build project tests" ON)
 
 # Define the library target
 add_library(cpp-ap INTERFACE)
@@ -47,7 +48,7 @@ configure_package_config_file(
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config-version.cmake
     VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
+    COMPATIBILITY ExactVersion
 )
 
 install(FILES
@@ -63,11 +64,8 @@ install(EXPORT cpp-ap-targets
 )
 
 # For FetchContent usage
-if (CPP_AP_IS_TOP_LEVEL_PROJECT)
-    include(CTest)
-    if (BUILD_TESTING)
-        add_subdirectory(test)
-    endif()
+if (CPP_AP_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
+    add_subdirectory(test)
 endif()
 
 # Exporting from the build tree
