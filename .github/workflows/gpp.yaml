@@ -6,21 +6,27 @@ on:
 
 jobs:
   build:
-    name: Build examples
+    name: Build and run tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build
-        shell: bash
+      - name: Prepare
         env:
           CC:  gcc-11
           CXX: g++-11
         run: |
-          cd example
           cmake -B build -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_C_COMPILER=gcc-11
-          cd build
-          make
+        continue-on-error: false
+
+      - name: Build test executable
+        run: |
+          cd build && make
+        continue-on-error: false
+
+      - name: Run tests
+        run: |
+          ./build/test/run_tests
         continue-on-error: false
