@@ -3,7 +3,6 @@ Command-line argument parser for C++20
 
 [![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
 [![clang++](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang++)
-[![test](https://github.com/SpectraL519/cpp-ap/actions/workflows/test.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/test)
 [![format](https://github.com/SpectraL519/cpp-ap/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/format)
 
 <br />
@@ -29,6 +28,10 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
 ## Table of contents
 
 * [Tutorial](#tutorial)
+    * [Including CPP-AP into a project](#including-cpp-ap-into-a-project)
+        * [CMake integration](#cmake-integration)
+        * [Downloading the library](#downloading-the-library)
+        * [Downloading the single header](#downloading-the-single-header)
     * [The parser class](#the-parser-class)
     * [Adding arguments](#adding-arguments)
     * [Argument parameters](#argument-parameters)
@@ -48,13 +51,58 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
 
 ## Tutorial
 
-To use the `CPP-AP` library in your project, copy the [argument_parser.hpp](include/ap/argument_parser.hpp) file into your include directory, e.g. `include/ap`. No other setup is necessary - you only need to include this header in your code:
+### Including CPP-AP into a project
 
-```c++
-#include <ap/argument_parser.hpp>
+There are 3 main ways to include the CPP-AP library into a C++ project:
+
+#### CMake integration:
+
+For CMake projects you can simply fetch the library in your `CMakeLists.txt` file:
+
+```cmake
+cmake_minimum_required(VERSION 3.12)
+
+project(my_project LANGUAGES CXX)
+
+# Include FetchContent module
+include(FetchContent)
+
+# Fetch CPP-AP library
+FetchContent_Declare(
+    cpp-ap
+    GIT_REPOSITORY https://github.com/SpectraL519/cpp-ap.git
+    GIT_TAG master # here you can specify the desired tag or branch
+)
+
+FetchContent_MakeAvailable(cpp-ap)
+
+# Define the executable for the project
+add_executable(my_project main.cpp)
+
+set_target_properties(my_project PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+)
+
+# Link against the cpp-ap library
+target_link_libraries(my_project PRIVATE cpp-ap)
 ```
 
-If you wish to use the library across multiple projects without copying the header into each one, you can copy it into a common directory and add the `-I <argument-parser-dir>` option when compiling your project.
+#### Downloading the library
+
+If you do not use CMake you can dowload the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add the `<cpp-ap-dir>/include` to the include paths of your project.
+
+#### Downloading the single header
+
+The core of the library is a [single header file](https://github.com/SpectraL519/cpp-ap/blob/master/include/ap/argument_parser.hpp) so to be able to use the library you can simply download the `argument_parser.hpp` header and paste it into the include directory of your project.
+
+> [!IMPORTANT]
+> To actually use the library in your project simply include the single header in you `main.cpp` file:
+> ```c++
+> #include <ap/argument_parser.hpp>
+> ```
+
+<br />
 
 ### The parser class
 
@@ -418,35 +466,7 @@ int main(int argc, char* argv[]) {
 
 ## Examples
 
-If you wish to test the parser functionality with some real examples then follow these steps:
-
-Open your terminal in the project's example directory:
-```shell
-cd <project-root>/example
-```
-
-The examples' source files are in the `<project-root>/example/source` directory.
-
-> [!NOTE]
-> Each source file is a sepparate example.
-
-Building the examples:
-
-```shell
-cmake -B build
-cd build
-make
-```
-
-or
-
-```shell
-mkdir build && cd build
-cmake ..
-make
-```
-
-The compiled binaries will appear in the `<project-root>/example/build/bin` directory.
+The library usage examples / demo projects can be found in the [cpp-ap-demo](https://github.com/SpectraL519/cpp-ap-demo) repository.
 
 <br />
 <br />
@@ -458,43 +478,39 @@ The compiled binaries will appear in the `<project-root>/example/build/bin` dire
 First build the testing executable:
 
 ```shell
-cd <project-root>/test/
 cmake -B build
-cd build
-make
+cd build && make
 ```
 
 or alternatively:
 
 ```shell
-cd <project-root>/test/
 mkdir build && cd build
 cmake ..
 make
 ```
+
+This will build the test executable `run_tests` in the `<project-root>/build/test` directory.
 
 > [!TIP]
 > Building on Windows -  use the `-G "Unix Makefiles"` option when running CMake to build a GNU Make project instead of a default Visual Studio project.
 
 Run the tests:
 
-> [!NOTE]
-> The test executable is generated in the `<project-root>/test/build` directory.
-
 * All tests:
 
     ```shell
-    ./test
+    ./run_tests
     ```
 
 * A single test suite:
 
     ```shell
-    ./test -ts="<test-suite-name>"
+    ./run_tests -ts="<test-suite-name>"
     ```
 
-    > [!NOTE]
-    > Test suites in the project have the same names as the files they're in.
+> [!NOTE]
+> Test suites in the project have the same names as the files they're in.
 
 <br />
 
