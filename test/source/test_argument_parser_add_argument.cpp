@@ -22,9 +22,7 @@ constexpr std::string_view other_secondary_name = "o";
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
 TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_positional_arguments should add the specified arguments") {
-    sut.default_positional_arguments(
-        { ap::default_argument::positional::input, ap::default_argument::positional::output }
-    );
+    sut.default_positional_arguments({ ap::default_posarg::input, ap::default_posarg::output });
 
     const auto input_arg = sut_get_argument("input");
     REQUIRE(input_arg);
@@ -37,9 +35,9 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_positional_arguments sh
 
 TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_optional_arguments should add the specified arguments") {
     sut.default_optional_arguments(
-        { ap::default_argument::optional::help,
-          ap::default_argument::optional::input,
-          ap::default_argument::optional::output }
+        { ap::default_optarg::help,
+          ap::default_optarg::input,
+          ap::default_optarg::output }
     );
 
     std::string help_flag;
