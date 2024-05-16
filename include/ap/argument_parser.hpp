@@ -31,7 +31,7 @@ SOFTWARE.
  *
  * This header file contians the entire CPP-AP library implementation.
  *
- * @version 1.0
+ * @version 1.1
  */
 
 #pragma once
