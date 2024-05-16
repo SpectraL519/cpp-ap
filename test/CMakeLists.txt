@@ -36,7 +36,7 @@ target_include_directories(run_tests PRIVATE ${INCLUDE_DIRS})
 target_compile_options(run_tests PRIVATE ${CMAKE_CXX_FLAGS})
 target_link_libraries(run_tests PRIVATE cpp-ap)
 
-# Create symbolic links in the build_ut directory
+# Create symbolic links in the build directory
 set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 foreach(config ${CMAKE_CONFIGURATION_TYPES})
     file(CREATE_LINK "${EXECUTABLE_DIR}/run_tests" "${EXECUTABLE_DIR}/test_${config}" SYMBOLIC)
