@@ -507,63 +507,51 @@ The library usage examples / demo projects can be found in the [cpp-ap-demo](htt
 ### Building and testing
 
 > [!NOTE]
->
-> - The unit tests are built using the [Doctest](https://github.com/doctest/doctest) framework.
-> - Test suites in the project have the same names as the files they're in.
+> The project uses [doctest](https://github.com/doctest/doctest) framework for unit testing, however it is already installed in the [tests/external](/tests/external/) directory, so there is no need to install it sepparately.
 
-First build the testing executable:
+#### Build the testing executable
 
 ```shell
 cmake -B build
-cd build && make
+cd build
+make # -j <n>
 ```
 
 This will build the test executable `run` in the `<project-root>/build/tests` directory.
 
-Run the tests:
+#### Run the tests
 
-- All tests:
+```shell
+cd build
+./tests/run # -ts=<test-suite-name>
+```
 
-  ```shell
-  ./tests/run
-  ```
-
-- A single test suite:
-
-  ```shell
-  ./run_tests -ts="<test-suite-name>"
-  ```
+> [!NOTE]
+> Test suites in the project have the same names as the files they're in except for the `test_extarnal_libs_config.cpp` file which defines the `test_doctest_config` test suite.
 
 <br />
 
 ### Formatting
 
-> [!IMPORTANT]
-> To ensure new line encoding compatibility the project uses unix new line encoding.
+> [!NOTE]
+> The project uses `clang-format-18` which is natively available on the `Ubuntu-24.04 LTS` system.
 >
-> This can be set using the `git config --global core.autocrlf true` command.
-> More details can be found [here](https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings)
+> If the `llvm-18` toolchain isn't available on your system, the installation instructions can be found on the [llvm apt](https://apt.llvm.org/) page. After installing the toolchain run `sudo apt install clang-format-18`.
+
+You can format the code manually using `clang-format-18` or you can use the prepared python script:
+
+```shell
+python scripts/format.py
+```
+
+To inspect the all script's options and usage run:
+
+```shell
+python scripts/format.py --help
+```
 
 > [!NOTE]
-> The project uses `clang-format-17`.
->
-> To install this tool on ubuntu run `sudo bash ./scripts/env/install_clang17_toolchain.sh`.
->
-> On windows you can download the LLVM package from the official LLVM [GitHub release page](https://github.com/llvm/llvm-project/releases/tag/llvmorg-17.0.1)
-
-To format the code use run the following:
-
-```shell
-# Unix platforms
-./scripts/format/unix.sh
-```
-
-```shell
-# Windows: powershell
-./scripts/format/windows.ps1
-```
-
-To run a forrmat check use the scripts mentioned above with a `--check` flag.
+> The script requires `python >= 3.9`
 
 <br />
 <br />
@@ -588,14 +576,17 @@ The documentation for this project can be generated using Doxygen:
 
 ## Compiler support
 
-As of now the project supports the **GNU G++** and **Clang++** compilers with `C++20` support on Linux and Windows.
+| Compiler | Min version |
+| :-: | :-: |
+| GNU G++ | 13 |
+| Clang | 17 |
 
 > [!NOTE]
-> To build the project using clang you will need to install the `clang-17` toolchain using the script or website mentioned in the [Formatting](#formatting) section.
+> Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++20 support like MSVC.
 
 <br />
 <br />
 
 ## Licence
 
-The `CPP-AP` project uses the [MIT Licence](https://opensource.org/license/mit/)
+The `CPP-AP` project uses the [MIT Licence](https://mit-license.org/) which can be found in the [LICENCE](/LICENSE) file
