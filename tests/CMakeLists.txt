@@ -6,7 +6,7 @@ project(cpp-ap-test)
 
 # Structure
 set(SOURCE_DIRS "source" "app")
-set(INCLUDE_DIRS "include")
+set(INCLUDE_DIRS "include" "external")
 set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Source files
