@@ -21,8 +21,10 @@ constexpr std::string_view other_secondary_name = "o";
 
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_positional_arguments should add the specified arguments") {
-    sut.default_positional_arguments({ ap::default_posarg::input, ap::default_posarg::output });
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture, "default_positional_arguments should add the specified arguments"
+) {
+    sut.default_positional_arguments({ap::default_posarg::input, ap::default_posarg::output});
 
     const auto input_arg = sut_get_argument("input");
     REQUIRE(input_arg);
@@ -33,11 +35,11 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_positional_arguments sh
     REQUIRE_FALSE(output_arg->get().is_optional());
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_optional_arguments should add the specified arguments") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture, "default_optional_arguments should add the specified arguments"
+) {
     sut.default_optional_arguments(
-        { ap::default_optarg::help,
-          ap::default_optarg::input,
-          ap::default_optarg::output }
+        {ap::default_optarg::help, ap::default_optarg::input, ap::default_optarg::output}
     );
 
     std::string help_flag;
@@ -73,7 +75,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "default_optional_arguments shou
     REQUIRE(output_arg->get().is_optional());
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_positional_argument should return a positional argument reference") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "add_positional_argument should return a positional argument reference"
+) {
     const auto& argument = sut.add_positional_argument(primary_name, secondary_name);
     REQUIRE_FALSE(argument.is_optional());
 }
@@ -91,18 +96,23 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("adding argument with a previously used primary name") {
         REQUIRE_THROWS_AS(
-            sut.add_positional_argument(primary_name, other_secondary_name), ap::error::argument_name_used_error
+            sut.add_positional_argument(primary_name, other_secondary_name),
+            ap::error::argument_name_used_error
         );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
         REQUIRE_THROWS_AS(
-            sut.add_positional_argument(other_primary_name, secondary_name), ap::error::argument_name_used_error
+            sut.add_positional_argument(other_primary_name, secondary_name),
+            ap::error::argument_name_used_error
         );
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_optional_argument should return an optional argument reference") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "add_optional_argument should return an optional argument reference"
+) {
     const auto& argument = sut.add_optional_argument(primary_name, secondary_name);
     REQUIRE(argument.is_optional());
 }
@@ -120,18 +130,23 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("adding argument with a previously used primary name") {
         REQUIRE_THROWS_AS(
-            sut.add_optional_argument(primary_name, other_secondary_name), ap::error::argument_name_used_error
+            sut.add_optional_argument(primary_name, other_secondary_name),
+            ap::error::argument_name_used_error
         );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
         REQUIRE_THROWS_AS(
-            sut.add_optional_argument(other_primary_name, secondary_name), ap::error::argument_name_used_error
+            sut.add_optional_argument(other_primary_name, secondary_name),
+            ap::error::argument_name_used_error
         );
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_flag should return an optional argument reference with flag parameters") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "add_flag should return an optional argument reference with flag parameters"
+) {
     const optional_argument_test_fixture opt_arg_fixture;
 
     SUBCASE("StoreImplicitly = true") {
@@ -155,7 +170,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_flag should return an optio
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_flag should throw only when adding and argument with a previously used name") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "add_flag should throw only when adding and argument with a previously used name"
+) {
     sut.add_flag(primary_name, secondary_name);
 
     SUBCASE("adding argument with a unique name") {
@@ -163,11 +181,15 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "add_flag should throw only when
     }
 
     SUBCASE("adding argument with a previously used primary name") {
-        REQUIRE_THROWS_AS(sut.add_flag(primary_name, other_secondary_name), ap::error::argument_name_used_error);
+        REQUIRE_THROWS_AS(
+            sut.add_flag(primary_name, other_secondary_name), ap::error::argument_name_used_error
+        );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
-        REQUIRE_THROWS_AS(sut.add_flag(other_primary_name, secondary_name), ap::error::argument_name_used_error);
+        REQUIRE_THROWS_AS(
+            sut.add_flag(other_primary_name, secondary_name), ap::error::argument_name_used_error
+        );
     }
 }
 

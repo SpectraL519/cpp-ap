@@ -1,15 +1,13 @@
-name: format
+name: licence
 on:
   push:
     branches:
       - '*'
     paths:
-      - .github/workflows/format.yaml
-      - scripts/format.py
+      - .github/workflows/licence.yaml
+      - scripts/check_licence.py
       - include/**
-      - tests/include/**
-      - tests/source/**
-      - tests/app/**
+
 
 jobs:
   build:
@@ -25,7 +23,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Test formatting
+      - name: Test licence
         shell: bash
         run: |
-          python3 scripts/format.py --check
+          python3 scripts/check_licence.py
