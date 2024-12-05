@@ -2,8 +2,14 @@
 .vscode/
 
 # build files
+*build*/
 *.exe
-build/
 
 # documentation files
 /documentation
+
+# python temporary files
+**/__pycache__/
+
+# other
+*tmp*/
