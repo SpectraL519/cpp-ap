@@ -1,29 +1,6 @@
-/*
-[cpp-ap] Command-line argument parser for C++20
-
-MIT License
-
-Copyright (c) 2023-2024 Jakub Musiał and other contributors
-https://github.com/SpectraL519/cpp-ap
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+// Copyright (c) 2023-2024 Jakub Musiał
+// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /*!
  * @file argument_parser.hpp
@@ -159,7 +136,8 @@ struct argument_name {
      * @return True if name is equal to either the primary or the secondary name of the argument_name instance.
      */
     [[nodiscard]] bool match(std::string_view arg_name) const noexcept {
-        return arg_name == this->primary or (this->secondary and arg_name == this->secondary.value());
+        return arg_name == this->primary
+            or (this->secondary and arg_name == this->secondary.value());
     }
 
     /**
@@ -314,7 +292,9 @@ public:
      * @param arg_name The name of the argument for which the value parsing failed.
      * @param value The value that failed to parse.
      */
-    explicit invalid_value_error(const argument::detail::argument_name& arg_name, const std::string& value)
+    explicit invalid_value_error(
+        const argument::detail::argument_name& arg_name, const std::string& value
+    )
     : argument_parser_error("Cannot parse value `" + value + "` for argument " + arg_name.str()) {}
 };
 
@@ -326,9 +306,12 @@ public:
      * @param arg_name The name of the argument for which the value is not in choices.
      * @param value The value that is not in the allowed choices.
      */
-    explicit invalid_choice_error(const argument::detail::argument_name& arg_name, const std::string& value)
-    : argument_parser_error("Value `" + value + "` is not a valid choice for argument " + arg_name.str()) {
-    }
+    explicit invalid_choice_error(
+        const argument::detail::argument_name& arg_name, const std::string& value
+    )
+    : argument_parser_error(
+          "Value `" + value + "` is not a valid choice for argument " + arg_name.str()
+      ) {}
 };
 
 /// @brief Exception thrown when there is a collision in argument names.
@@ -350,7 +333,8 @@ public:
      * @param arg_name The name of the argument that was not found.
      */
     explicit argument_not_found_error(const std::string_view& arg_name)
-    : argument_parser_error("Argument with given name `" + std::string(arg_name) + "` not found.") {}
+    : argument_parser_error("Argument with given name `" + std::string(arg_name) + "` not found.") {
+    }
 };
 
 /// @brief Exception thrown when there is an attempt to cast to an invalid type.
@@ -361,10 +345,12 @@ public:
      * @param arg_name The name of the argument that had invalid value type.
      * @param value_type The type information that failed to cast.
      */
-    explicit invalid_value_type_error(const argument::detail::argument_name& arg_name, const std::type_info& value_type)
+    explicit invalid_value_type_error(
+        const argument::detail::argument_name& arg_name, const std::type_info& value_type
+    )
     : argument_parser_error(
-        "Invalid value type specified for argument " + arg_name.str() + " - " + value_type.name()
-    ) {}
+          "Invalid value type specified for argument " + arg_name.str() + " - " + value_type.name()
+      ) {}
 };
 
 /// @brief Exception thrown when a required argument is not parsed.
@@ -398,7 +384,9 @@ public:
      * @param arg_name The name of the argument for which the error occurred.
      * @return The error message.
      */
-    [[nodiscard]] static std::string msg(const std::weak_ordering ordering, const argument::detail::argument_name& arg_name) {
+    [[nodiscard]] static std::string msg(
+        const std::weak_ordering ordering, const argument::detail::argument_name& arg_name
+    ) {
         if (std::is_lt(ordering))
             return "Too few values provided for optional argument " + arg_name.str();
         else
@@ -410,7 +398,9 @@ public:
      * @param ordering The result of the weak_ordering comparison.
      * @param arg_name The name of the argument for which the error occurred.
      */
-    explicit invalid_nvalues_error(const std::weak_ordering ordering, const argument::detail::argument_name& arg_name)
+    explicit invalid_nvalues_error(
+        const std::weak_ordering ordering, const argument::detail::argument_name& arg_name
+    )
     : argument_parser_error(invalid_nvalues_error::msg(ordering, arg_name)) {}
 };
 
@@ -481,9 +471,13 @@ public:
         }
 
         if (this->_nlow.has_value())
-            return (n < this->_nlow.value()) ? std::weak_ordering::less : std::weak_ordering::equivalent;
+            return (n < this->_nlow.value())
+                     ? std::weak_ordering::less
+                     : std::weak_ordering::equivalent;
 
-        return (n > this->_nhigh.value()) ? std::weak_ordering::greater : std::weak_ordering::equivalent;
+        return (n > this->_nhigh.value())
+                 ? std::weak_ordering::greater
+                 : std::weak_ordering::equivalent;
     }
 
     friend range at_least(const count_type) noexcept;
@@ -581,7 +575,8 @@ namespace detail {
  * @tparam AS The action specifier type.
  */
 template <typename AS>
-concept valid_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
+concept valid_action_specifier =
+    ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
 /// @brief Template argument action callable type alias.
 template <valid_action_specifier AS, ap::utility::valid_argument_value_type T>
@@ -620,7 +615,6 @@ inline detail::callable_type<ap::void_action, std::string> check_file_exists() n
 }
 
 } // namespace action
-
 
 /// @brief Namespace containing classes and utilities for handling command-line arguments.
 namespace argument {
@@ -801,7 +795,8 @@ private:
      * @return True if the choice valid, false otherwise.
      */
     [[nodiscard]] bool _is_valid_choice(const value_type& choice) const noexcept {
-        return this->_choices.empty() or std::ranges::find(this->_choices, choice) != this->_choices.end();
+        return this->_choices.empty()
+            or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
     /**
@@ -813,7 +808,9 @@ private:
         if (action::is_void_action(this->_action))
             std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
         else
-            value = std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value);
+            value =
+                std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value
+                );
     }
 
     using action_type = ap::action::detail::action_variant_type<T>;
@@ -826,7 +823,8 @@ private:
     static constexpr bool _bypass_required =
         false; ///< Bypassing required status is defaultly not allowed for positional arguments.
     std::vector<value_type> _choices; ///< Vector of valid choices for the positional argument.
-    action_type _action = ap::action::default_action<value_type>(); ///< Action associated with the positional argument.
+    action_type _action = ap::action::default_action<value_type>(
+    ); ///< Action associated with the positional argument.
 
     std::any _value; ///< Stored value of the positional argument.
 
@@ -1079,7 +1077,8 @@ private:
 
     /// @return True if the optional argument has a predefined value, false otherwise.
     [[nodiscard]] bool _has_predefined_value() const noexcept {
-        return this->_default_value.has_value() or (this->is_used() and this->_implicit_value.has_value());
+        return this->_default_value.has_value()
+            or (this->is_used() and this->_implicit_value.has_value());
     }
 
     /// @return Reference to the predefined value of the optional argument.
@@ -1093,7 +1092,8 @@ private:
      * @return True if choice is valid, false otherwise.
      */
     [[nodiscard]] bool _is_valid_choice(const value_type& choice) const noexcept {
-        return this->_choices.empty() or std::ranges::find(this->_choices, choice) != this->_choices.end();
+        return this->_choices.empty()
+            or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
     /**
@@ -1105,7 +1105,9 @@ private:
         if (action::is_void_action(this->_action))
             std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
         else
-            value = std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value);
+            value =
+                std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value
+                );
     }
 
     using action_type = ap::action::detail::action_variant_type<T>;
@@ -1117,7 +1119,8 @@ private:
     bool _required = false;
     bool _bypass_required = false;
     std::optional<ap::nargs::range> _nargs_range;
-    action_type _action = ap::action::default_action<value_type>(); ///< Action associated with the opitonal argument.
+    action_type _action =
+        ap::action::default_action<value_type>(); ///< Action associated with the opitonal argument.
     std::vector<value_type> _choices; ///< Vector of valid choices for the optional argument.
     std::any _default_value;
     std::any _implicit_value;
@@ -1183,7 +1186,8 @@ public:
      * @param arg_discriminator_list Vector of default positional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_positional_arguments(const std::vector<default_posarg>& arg_discriminator_list
+    argument_parser& default_positional_arguments(
+        const std::vector<default_posarg>& arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_positional_argument(arg_discriminator);
@@ -1195,7 +1199,8 @@ public:
      * @param arg_discriminator_list Vector of default optional argument categories.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_optional_arguments(const std::vector<default_optarg>& arg_discriminator_list
+    argument_parser& default_optional_arguments(
+        const std::vector<default_optarg>& arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_optional_argument(arg_discriminator);
@@ -1212,11 +1217,12 @@ public:
     argument::positional_argument<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = { primary_name };
+        const argument::detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name));
+        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name
+        ));
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
@@ -1228,14 +1234,17 @@ public:
      * @return Reference to the added positional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::positional_argument<T>& add_positional_argument(std::string_view primary_name, std::string_view secondary_name) {
+    argument::positional_argument<T>& add_positional_argument(
+        std::string_view primary_name, std::string_view secondary_name
+    ) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = { primary_name, secondary_name };
+        const argument::detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name));
+        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name
+        ));
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
@@ -1249,7 +1258,7 @@ public:
     argument::optional_argument<T>& add_optional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = { primary_name };
+        const argument::detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1265,10 +1274,12 @@ public:
      * @return Reference to the added optional argument.
      */
     template <utility::valid_argument_value_type T = std::string>
-    argument::optional_argument<T>& add_optional_argument(std::string_view primary_name, std::string_view secondary_name) {
+    argument::optional_argument<T>& add_optional_argument(
+        std::string_view primary_name, std::string_view secondary_name
+    ) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = { primary_name, secondary_name };
+        const argument::detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1298,7 +1309,9 @@ public:
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument::optional_argument<bool>& add_flag(std::string_view primary_name, std::string_view secondary_name) {
+    argument::optional_argument<bool>& add_flag(
+        std::string_view primary_name, std::string_view secondary_name
+    ) {
         return this->add_optional_argument<bool>(primary_name, secondary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
@@ -1377,7 +1390,7 @@ public:
 
         try {
             if (not arg.has_parsed_values() and arg.has_value())
-                return std::vector<T>{ std::any_cast<T>(arg.value()) };
+                return std::vector<T>{std::any_cast<T>(arg.value())};
 
             std::vector<T> values;
             // TODO: use std::ranges::to after transition to C++23
@@ -1471,7 +1484,10 @@ private:
             break;
 
         case default_optarg::multi_output:
-            this->add_optional_argument("output", "o").required().nargs(ap::nargs::at_least(1)).help("Output files paths");
+            this->add_optional_argument("output", "o")
+                .required()
+                .nargs(ap::nargs::at_least(1))
+                .help("Output files paths");
             break;
         }
     }
@@ -1513,7 +1529,8 @@ private:
     using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
 
     using argument_ptr_type = std::unique_ptr<argument::detail::argument_interface>;
-    using argument_opt_type = std::optional<std::reference_wrapper<argument::detail::argument_interface>>;
+    using argument_opt_type =
+        std::optional<std::reference_wrapper<argument::detail::argument_interface>>;
     using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator_type = typename argument_list_type::iterator;
     using argument_list_const_iterator_type = typename argument_list_type::const_iterator;
@@ -1524,7 +1541,8 @@ private:
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] argument_predicate_type _name_match_predicate(std::string_view arg_name) const noexcept {
+    [[nodiscard]] argument_predicate_type _name_match_predicate(std::string_view arg_name
+    ) const noexcept {
         return [arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
 
@@ -1533,7 +1551,8 @@ private:
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] argument_predicate_type _name_match_predicate(const argument::detail::argument_name& arg_name
+    [[nodiscard]] argument_predicate_type _name_match_predicate(
+        const argument::detail::argument_name& arg_name
     ) const noexcept {
         return [&arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
@@ -1543,7 +1562,8 @@ private:
      * @param arg_name The name of the argument.
      * @return True if the argument name is already used, false otherwise.
      */
-    [[nodiscard]] bool _is_arg_name_used(const argument::detail::argument_name& arg_name) const noexcept {
+    [[nodiscard]] bool _is_arg_name_used(const argument::detail::argument_name& arg_name
+    ) const noexcept {
         const auto predicate = this->_name_match_predicate(arg_name);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
@@ -1572,10 +1592,10 @@ private:
             std::string value = argv[i];
             if (this->_is_flag(value)) {
                 this->_strip_flag_prefix(value);
-                args.push_back(cmd_argument{ cmd_argument::type_discriminator::flag, value });
+                args.push_back(cmd_argument{cmd_argument::type_discriminator::flag, value});
             }
             else {
-                args.push_back(cmd_argument{ cmd_argument::type_discriminator::value, value });
+                args.push_back(cmd_argument{cmd_argument::type_discriminator::value, value});
             }
         }
 
@@ -1589,10 +1609,10 @@ private:
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used({ arg.substr(this->_flag_prefix_length) });
+            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_length)});
 
         if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used({ arg.substr(this->_flag_prefix_char_length) });
+            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_char_length)});
 
         return false;
     }
@@ -1623,7 +1643,9 @@ private:
      * @param cmd_args The list of command-line arguments.
      * @param cmd_it Iterator for iterating through command-line arguments.
      */
-    void _parse_positional_args(const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it) noexcept {
+    void _parse_positional_args(
+        const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
+    ) noexcept {
         // TODO: align tests
         for (const auto& pos_arg : this->_positional_args) {
             if (cmd_it == cmd_args.end())
@@ -1642,13 +1664,16 @@ private:
      * @param cmd_args The list of command-line arguments.
      * @param cmd_it Iterator for iterating through command-line arguments.
      */
-    void _parse_optional_args(const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it) {
+    void _parse_optional_args(
+        const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
+    ) {
         std::optional<std::reference_wrapper<argument_ptr_type>> curr_opt_arg;
 
         while (cmd_it != cmd_args.end()) {
             if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
-                auto opt_arg_it =
-                    std::ranges::find_if(this->_optional_args, this->_name_match_predicate(cmd_it->value));
+                auto opt_arg_it = std::ranges::find_if(
+                    this->_optional_args, this->_name_match_predicate(cmd_it->value)
+                );
 
                 if (opt_arg_it == this->_optional_args.end())
                     throw error::argument_not_found_error(cmd_it->value);
@@ -1733,7 +1758,8 @@ private:
     static constexpr uint8_t _flag_prefix_char_length = 1u;
     static constexpr uint8_t _flag_prefix_length = 2u;
     static constexpr char _flag_prefix_char = '-';
-    const std::string _flag_prefix = "--"; // not static constexpr because of ubuntu gcc implementation :(
+    const std::string _flag_prefix =
+        "--"; // not static constexpr because of ubuntu gcc implementation :(
 };
 
 } // namespace ap
