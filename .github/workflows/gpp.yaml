@@ -31,10 +31,6 @@ jobs:
           cd build && make -j 4
         continue-on-error: false
 
-      - name: tmp check
-        run: |
-          pwd && tree
-
       - name: Run tests
         run: |
           ./build/tests/run

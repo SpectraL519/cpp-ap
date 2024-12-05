@@ -63,9 +63,9 @@ install(EXPORT cpp-ap-targets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-ap
 )
 
-# Include test directory if CPP-AP is a top level project
+# Include the tests directory if CPP-AP is a top level project
 if (CPP_AP_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(tests)
 endif()
 
 # Exporting from the build tree
