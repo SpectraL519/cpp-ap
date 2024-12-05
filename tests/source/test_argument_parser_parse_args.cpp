@@ -30,7 +30,10 @@ TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
 // _preprocess_input
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "_preprocess_input should return an empty vector for no command-line arguments") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "_preprocess_input should return an empty vector for no command-line arguments"
+) {
     const auto argc = get_argc(default_num_args, default_num_args);
     auto argv = prepare_argv(default_num_args, default_num_args);
 
@@ -41,7 +44,9 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "_preprocess_input should return
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "_preprocess_input should return a vector of correct arguments") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture, "_preprocess_input should return a vector of correct arguments"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
@@ -83,7 +88,9 @@ TEST_CASE_FIXTURE(
     REQUIRE_THROWS_AS(sut_parse_args_impl(cmd_args), ap::error::free_value_error);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "_parse_args_impl should not throw when the arguments are correct") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture, "_parse_args_impl should not throw when the arguments are correct"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
@@ -119,11 +126,15 @@ TEST_CASE_FIXTURE(
 
 // parse_args
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "parse_args should throw when there is no value specified for a required optional argument") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "parse_args should throw when there is no value specified for a required optional argument"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
-    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value()).required();
+    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
+        .required();
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
@@ -133,14 +144,18 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "parse_args should throw when th
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "parse_args should throw when an optional argument's nvalues is not in a specified range") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "parse_args should throw when an optional argument's nvalues is not in a specified range"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
     const auto range_arg_name = prepare_arg_name(non_default_num_args);
-    sut.add_optional_argument(range_arg_name.primary, range_arg_name.secondary.value()).nargs(at_least(1));
+    sut.add_optional_argument(range_arg_name.primary, range_arg_name.secondary.value())
+        .nargs(at_least(1));
 
     REQUIRE_THROWS_AS(sut.parse_args(argc, argv), ap::error::invalid_nvalues_error);
 
@@ -155,7 +170,8 @@ TEST_CASE_FIXTURE(
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
-    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value()).required();
+    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
+        .required();
 
     int argc;
     char** argv;
@@ -227,7 +243,10 @@ TEST_CASE_FIXTURE(
 
 // has_value
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false if there is no argument with given name present") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "has_value should return false if there is no argument with given name present"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
@@ -239,12 +258,15 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false i
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false when an argument has no values") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture, "has_value should return false when an argument has no values"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
-    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value()).required();
+    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
+        .required();
 
     const auto num_args = non_default_num_args + 1;
 
@@ -300,7 +322,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "has_value should return false w
 
 // value
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "value() should throw if there is no argument with given name present") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "value() should throw if there is no argument with given name present"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
@@ -319,16 +344,21 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value() should throw before cal
     for (std::size_t i = 0; i < non_default_num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
         REQUIRE_THROWS_AS(sut.value(arg_name.primary), ap::error::invalid_value_type_error);
-        REQUIRE_THROWS_AS(sut.value(arg_name.secondary.value()), ap::error::invalid_value_type_error);
+        REQUIRE_THROWS_AS(
+            sut.value(arg_name.secondary.value()), ap::error::invalid_value_type_error
+        );
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "value() should throw if the given argument doesn't have a value") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture, "value() should throw if the given argument doesn't have a value"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
-    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value()).required();
+    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
+        .required();
 
     const auto num_args = non_default_num_args + 1;
 
@@ -350,7 +380,9 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value() should throw if the giv
     for (std::size_t i = non_default_args_split; i < non_default_num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
         REQUIRE_THROWS_AS(sut.value(arg_name.primary), ap::error::invalid_value_type_error);
-        REQUIRE_THROWS_AS(sut.value(arg_name.secondary.value()), ap::error::invalid_value_type_error);
+        REQUIRE_THROWS_AS(
+            sut.value(arg_name.secondary.value()), ap::error::invalid_value_type_error
+        );
     }
     for (std::size_t i = non_default_num_args; i < num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
@@ -361,7 +393,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value() should throw if the giv
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "value() should throw if an argument has a value but the given type is invalid") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "value() should throw if an argument has a value but the given type is invalid"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
@@ -377,7 +412,9 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "value() should throw if an argu
         const auto arg_name = prepare_arg_name(i);
 
         REQUIRE(sut.has_value(arg_name.primary));
-        REQUIRE_THROWS_AS(sut.value<invalid_value_type>(arg_name.primary), ap::error::invalid_value_type_error);
+        REQUIRE_THROWS_AS(
+            sut.value<invalid_value_type>(arg_name.primary), ap::error::invalid_value_type_error
+        );
     }
 
     free_argv(argc, argv);
@@ -392,7 +429,8 @@ TEST_CASE_FIXTURE(
 
     const auto required_arg_name = prepare_arg_name(non_default_num_args);
 
-    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value()).required();
+    sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
+        .required();
 
     const auto num_args = non_default_num_args + 1;
 
@@ -425,7 +463,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "count should return 0 before ca
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "count should return 0 if there is no argument with given name present") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "count should return 0 if there is no argument with given name present"
+) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
@@ -437,10 +478,13 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "count should return 0 if there 
     free_argv(argc, argv);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "count should return the number of argument's flag usage") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture, "count should return the number of argument's flag usage"
+) {
     // prepare sut
     sut.add_positional_argument(positional_primary_name, positional_secondary_name);
-    sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(ap::nargs::any());
+    sut.add_optional_argument(optional_primary_name, optional_secondary_name)
+        .nargs(ap::nargs::any());
 
     // expected values
     const std::size_t positional_count = 1u;
@@ -486,14 +530,20 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "count should return the number 
 
 // values
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "values() should throw when calling with a positional argument's name") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "values() should throw when calling with a positional argument's name"
+) {
     sut.add_positional_argument(positional_primary_name, positional_secondary_name);
 
     REQUIRE_THROWS_AS(sut.values(positional_primary_name), std::logic_error);
     REQUIRE_THROWS_AS(sut.values(positional_secondary_name), std::logic_error);
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "values() should return an empty vector if an argument has no values") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "values() should return an empty vector if an argument has no values"
+) {
     sut.add_optional_argument(optional_primary_name, optional_secondary_name);
 
     SUBCASE("calling with argument's primary name") {
@@ -507,7 +557,10 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "values() should return an empty
     }
 }
 
-TEST_CASE_FIXTURE(argument_parser_test_fixture, "values() should throw when an argument has values but the given type is invalid") {
+TEST_CASE_FIXTURE(
+    argument_parser_test_fixture,
+    "values() should throw when an argument has values but the given type is invalid"
+) {
     sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(at_least(1));
 
     // prepare argc & argv
@@ -529,9 +582,13 @@ TEST_CASE_FIXTURE(argument_parser_test_fixture, "values() should throw when an a
     // parse args
     sut.parse_args(argc, argv);
 
-    REQUIRE_THROWS_AS(sut.values<invalid_argument_value_type>(optional_primary_name), ap::error::invalid_value_type_error);
     REQUIRE_THROWS_AS(
-        sut.values<invalid_argument_value_type>(optional_secondary_name), ap::error::invalid_value_type_error
+        sut.values<invalid_argument_value_type>(optional_primary_name),
+        ap::error::invalid_value_type_error
+    );
+    REQUIRE_THROWS_AS(
+        sut.values<invalid_argument_value_type>(optional_secondary_name),
+        ap::error::invalid_value_type_error
     );
 
     free_argv(argc, argv);

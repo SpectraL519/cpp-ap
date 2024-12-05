@@ -35,13 +35,16 @@ struct optional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    optional_argument<T>& sut_set_value(optional_argument<T>& sut, const std::string& str_value) const {
+    optional_argument<T>& sut_set_value(optional_argument<T>& sut, const std::string& str_value)
+        const {
         sut.set_used();
         return sut.set_value(str_value);
     }
 
     template <valid_argument_value_type T>
-    optional_argument<T>& sut_set_choices(optional_argument<T>& sut, const std::vector<value_type<T>>& choices) const {
+    optional_argument<T>& sut_set_choices(
+        optional_argument<T>& sut, const std::vector<value_type<T>>& choices
+    ) const {
         return sut.choices(choices);
     }
 
@@ -66,7 +69,8 @@ struct optional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] const std::vector<std::any>& sut_get_values(const optional_argument<T>& sut) const {
+    [[nodiscard]] const std::vector<std::any>& sut_get_values(const optional_argument<T>& sut
+    ) const {
         return sut.values();
     }
 
@@ -81,7 +85,8 @@ struct optional_argument_test_fixture {
     }
 
     template <valid_argument_value_type T>
-    [[nodiscard]] const std::optional<std::string>& sut_get_help(const optional_argument<T>& sut) const {
+    [[nodiscard]] const std::optional<std::string>& sut_get_help(const optional_argument<T>& sut
+    ) const {
         return sut.help();
     }
 };

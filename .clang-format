@@ -25,15 +25,16 @@ AlignEscapedNewlines: Left
 AlignOperands:        AlignAfterOperator
 AlignTrailingComments: false
 
-AllowAllArgumentsOnNextLine:               true
-AllowAllParametersOfDeclarationOnNextLine: true
-AllowShortBlocksOnASingleLine:             Empty
-AllowShortCaseLabelsOnASingleLine:         false
-AllowShortEnumsOnASingleLine:              true
-AllowShortFunctionsOnASingleLine:          Empty
-AllowShortIfStatementsOnASingleLine:       Never
-AllowShortLambdasOnASingleLine:            All
-AllowShortLoopsOnASingleLine:              false
+AllowAllArgumentsOnNextLine:                true
+AllowAllParametersOfDeclarationOnNextLine:  true
+AllowShortBlocksOnASingleLine:              Empty
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine:          false
+AllowShortEnumsOnASingleLine:               true
+AllowShortFunctionsOnASingleLine:           Empty
+AllowShortIfStatementsOnASingleLine:        Never
+AllowShortLambdasOnASingleLine:             All
+AllowShortLoopsOnASingleLine:               false
 
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType:           None
@@ -77,13 +78,13 @@ BracedInitializerIndentWidth: 4
 
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: '^".*"'            # Internal includes inside double quotes
+  - Regex: '^".*"'                # Internal includes inside double quotes
     Priority: 1
-  - Regex: '^<[^>]+\.h(pp)?>' # Internal includes inside angle brackets
+  - Regex: '^<gl/[^>]+\.h(pp)?>'  # Internal includes inside angle brackets
     Priority: 2
-  - Regex: '^(?!<|").*'       # External non-standard includes
+  - Regex: '<.*\.h(pp)?>'         # External non-standard includes
     Priority: 3
-  - Regex: '<.*>'             # Standard library includes
+  - Regex: '<.*>'                 # Standard library includes
     Priority: 4
 SortIncludes:          CaseSensitive
 SortUsingDeclarations: LexicographicNumeric
@@ -119,7 +120,7 @@ InsertNewlineAtEOF:               true
 InsertTrailingCommas:             None
 KeepEmptyLinesAtEOF:              false
 KeepEmptyLinesAtTheStartOfBlocks: false
-MaxEmptyLinesToKeep:              3
+MaxEmptyLinesToKeep:              2
 
 SpaceAfterCStyleCast:              false
 SpaceAfterLogicalNot:              true
@@ -160,7 +161,7 @@ PenaltyBreakFirstLessLess:            0
 PenaltyBreakOpenParenthesis:          0
 PenaltyBreakString:                   100
 PenaltyBreakTemplateDeclaration:      0
-PenaltyExcessCharacter:               2
+PenaltyExcessCharacter:               200
 PenaltyReturnTypeOnItsOwnLine:        500
 PenaltyIndentedWhitespace:            5
 
@@ -174,11 +175,11 @@ IntegerLiteralSeparator:
   Binary:           4
   BinaryMinDigits:  6
   Decimal:          3
-  DecimalMinDigits: 5
-  Hex:              2
+  DecimalMinDigits: 7
+  Hex:              4
   HexMinDigits:     6
 
-Cpp11BracedListStyle: false
+Cpp11BracedListStyle: true
 
 ReflowComments: false
 
