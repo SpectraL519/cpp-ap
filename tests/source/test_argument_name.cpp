@@ -13,14 +13,14 @@ using namespace ap::argument::detail;
 TEST_SUITE_BEGIN("test_argument_name");
 
 struct test_argument_name {
-    const std::string_view primary_name_1 = "test";
-    const std::string_view secondary_name_1 = "t";
+    const std::string_view primary_name_1 = "primary_name_1";
+    const std::string_view secondary_name_1 = "s1";
 
     const argument_name arg_name_primary_1{primary_name_1};
     const argument_name arg_name_full_1{primary_name_1, secondary_name_1};
 
-    const std::string_view primary_name_2 = "other";
-    const std::string_view secondary_name_2 = "o";
+    const std::string_view primary_name_2 = "primary_name_2";
+    const std::string_view secondary_name_2 = "s2";
 
     const argument_name arg_name_primary_2{primary_name_2};
     const argument_name arg_name_full_2{primary_name_2, secondary_name_2};

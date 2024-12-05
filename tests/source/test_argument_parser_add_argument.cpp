@@ -9,20 +9,19 @@
 using namespace ap_testing;
 using namespace ap::argument;
 
-namespace {
-
-constexpr std::string_view primary_name = "test";
-constexpr std::string_view secondary_name = "t";
-
-constexpr std::string_view other_primary_name = "other";
-constexpr std::string_view other_secondary_name = "o";
-
-} // namespace
-
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
+struct test_argument_parser_add_argument : argument_parser_test_fixture {
+    const std::string_view primary_name_1 = "primary_name_1";
+    const std::string_view secondary_name_1 = "s1";
+
+    const std::string_view primary_name_2 = "primary_name_2";
+    const std::string_view secondary_name_2 = "s2";
+};
+
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture, "default_positional_arguments should add the specified arguments"
+    test_argument_parser_add_argument,
+    "default_positional_arguments should add the specified arguments"
 ) {
     sut.default_positional_arguments({ap::default_posarg::input, ap::default_posarg::output});
 
@@ -36,7 +35,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture, "default_optional_arguments should add the specified arguments"
+    test_argument_parser_add_argument,
+    "default_optional_arguments should add the specified arguments"
 ) {
     sut.default_optional_arguments(
         {ap::default_optarg::help, ap::default_optarg::input, ap::default_optarg::output}
@@ -64,131 +64,131 @@ TEST_CASE_FIXTURE(
 
     const auto help_arg = sut_get_argument(help_flag);
     REQUIRE(help_arg);
-    REQUIRE(help_arg->get().is_optional());
+    CHECK(help_arg->get().is_optional());
 
     const auto input_arg = sut_get_argument(input_flag);
     REQUIRE(input_arg);
-    REQUIRE(input_arg->get().is_optional());
+    CHECK(input_arg->get().is_optional());
 
     const auto output_arg = sut_get_argument(output_flag);
     REQUIRE(output_arg);
-    REQUIRE(output_arg->get().is_optional());
+    CHECK(output_arg->get().is_optional());
 }
 
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
+    test_argument_parser_add_argument,
     "add_positional_argument should return a positional argument reference"
 ) {
-    const auto& argument = sut.add_positional_argument(primary_name, secondary_name);
-    REQUIRE_FALSE(argument.is_optional());
+    const auto& argument = sut.add_positional_argument(primary_name_1, secondary_name_1);
+    CHECK_FALSE(argument.is_optional());
 }
 
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
+    test_argument_parser_add_argument,
     "add_positional_argument should throw only when adding an"
     "argument with a previously used name"
 ) {
-    sut.add_positional_argument(primary_name, secondary_name);
+    sut.add_positional_argument(primary_name_1, secondary_name_1);
 
     SUBCASE("adding argument with a unique name") {
-        REQUIRE_NOTHROW(sut.add_positional_argument(other_primary_name, other_secondary_name));
+        CHECK_NOTHROW(sut.add_positional_argument(primary_name_2, secondary_name_2));
     }
 
     SUBCASE("adding argument with a previously used primary name") {
-        REQUIRE_THROWS_AS(
-            sut.add_positional_argument(primary_name, other_secondary_name),
+        CHECK_THROWS_AS(
+            sut.add_positional_argument(primary_name_1, secondary_name_2),
             ap::error::argument_name_used_error
         );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
-        REQUIRE_THROWS_AS(
-            sut.add_positional_argument(other_primary_name, secondary_name),
+        CHECK_THROWS_AS(
+            sut.add_positional_argument(primary_name_2, secondary_name_1),
             ap::error::argument_name_used_error
         );
     }
 }
 
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
+    test_argument_parser_add_argument,
     "add_optional_argument should return an optional argument reference"
 ) {
-    const auto& argument = sut.add_optional_argument(primary_name, secondary_name);
-    REQUIRE(argument.is_optional());
+    const auto& argument = sut.add_optional_argument(primary_name_1, secondary_name_1);
+    CHECK(argument.is_optional());
 }
 
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
+    test_argument_parser_add_argument,
     "add_optional_argument should throw only when adding an"
     "argument with a previously used name"
 ) {
-    sut.add_optional_argument(primary_name, secondary_name);
+    sut.add_optional_argument(primary_name_1, secondary_name_1);
 
     SUBCASE("adding argument with a unique name") {
-        REQUIRE_NOTHROW(sut.add_optional_argument(other_primary_name, other_secondary_name));
+        CHECK_NOTHROW(sut.add_optional_argument(primary_name_2, secondary_name_2));
     }
 
     SUBCASE("adding argument with a previously used primary name") {
-        REQUIRE_THROWS_AS(
-            sut.add_optional_argument(primary_name, other_secondary_name),
+        CHECK_THROWS_AS(
+            sut.add_optional_argument(primary_name_1, secondary_name_2),
             ap::error::argument_name_used_error
         );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
-        REQUIRE_THROWS_AS(
-            sut.add_optional_argument(other_primary_name, secondary_name),
+        CHECK_THROWS_AS(
+            sut.add_optional_argument(primary_name_2, secondary_name_1),
             ap::error::argument_name_used_error
         );
     }
 }
 
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
+    test_argument_parser_add_argument,
     "add_flag should return an optional argument reference with flag parameters"
 ) {
     const optional_argument_test_fixture opt_arg_fixture;
 
     SUBCASE("StoreImplicitly = true") {
-        auto& argument = sut.add_flag(primary_name, secondary_name);
+        auto& argument = sut.add_flag(primary_name_1, secondary_name_1);
 
         REQUIRE(argument.is_optional());
-        REQUIRE_FALSE(sut.value<bool>(primary_name));
+        CHECK_FALSE(sut.value<bool>(primary_name_1));
 
         opt_arg_fixture.sut_set_used(argument);
-        REQUIRE(sut.value<bool>(primary_name));
+        CHECK(sut.value<bool>(primary_name_1));
     }
 
     SUBCASE("StoreImplicitly = false") {
-        auto& argument = sut.add_flag<false>(primary_name, secondary_name);
+        auto& argument = sut.add_flag<false>(primary_name_1, secondary_name_1);
 
         REQUIRE(argument.is_optional());
-        REQUIRE(sut.value<bool>(primary_name));
+        CHECK(sut.value<bool>(primary_name_1));
 
         opt_arg_fixture.sut_set_used(argument);
-        REQUIRE_FALSE(sut.value<bool>(primary_name));
+        CHECK_FALSE(sut.value<bool>(primary_name_1));
     }
 }
 
 TEST_CASE_FIXTURE(
-    argument_parser_test_fixture,
+    test_argument_parser_add_argument,
     "add_flag should throw only when adding and argument with a previously used name"
 ) {
-    sut.add_flag(primary_name, secondary_name);
+    sut.add_flag(primary_name_1, secondary_name_1);
 
     SUBCASE("adding argument with a unique name") {
-        REQUIRE_NOTHROW(sut.add_flag(other_primary_name, other_secondary_name));
+        CHECK_NOTHROW(sut.add_flag(primary_name_2, secondary_name_2));
     }
 
     SUBCASE("adding argument with a previously used primary name") {
-        REQUIRE_THROWS_AS(
-            sut.add_flag(primary_name, other_secondary_name), ap::error::argument_name_used_error
+        CHECK_THROWS_AS(
+            sut.add_flag(primary_name_1, secondary_name_2), ap::error::argument_name_used_error
         );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
-        REQUIRE_THROWS_AS(
-            sut.add_flag(other_primary_name, secondary_name), ap::error::argument_name_used_error
+        CHECK_THROWS_AS(
+            sut.add_flag(primary_name_2, secondary_name_1), ap::error::argument_name_used_error
         );
     }
 }
