@@ -1,4 +1,5 @@
 # CPP-AP
+
 Command-line argument parser for C++20
 
 [![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
@@ -27,24 +28,24 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
 
 ## Table of contents
 
-* [Tutorial](#tutorial)
-    * [Including CPP-AP into a project](#including-cpp-ap-into-a-project)
-        * [CMake integration](#cmake-integration)
-        * [Downloading the library](#downloading-the-library)
-        * [Downloading the single header](#downloading-the-single-header)
-    * [The parser class](#the-parser-class)
-    * [Adding arguments](#adding-arguments)
-    * [Argument parameters](#argument-parameters)
-    * [Default arguments](#default-arguments)
-    * [Parsing arguments](#parsing-arguments)
-* [Examples](#examples)
-* [Dev notes](#dev-notes)
-    * [Building and testing](#building-and-testing)
-    * [Formatting](#formatting)
-* [Documentation](#documentation)
-* [Compiler support](#compiler-support)
-* [Licence](#licence)
-* [Change log](change_log.md)
+- [Tutorial](#tutorial)
+  - [Including CPP-AP into a project](#including-cpp-ap-into-a-project)
+    - [CMake integration](#cmake-integration)
+    - [Downloading the library](#downloading-the-library)
+    - [Downloading the single header](#downloading-the-single-header)
+  - [The parser class](#the-parser-class)
+  - [Adding arguments](#adding-arguments)
+  - [Argument parameters](#argument-parameters)
+  - [Default arguments](#default-arguments)
+  - [Parsing arguments](#parsing-arguments)
+- [Examples](#examples)
+- [Dev notes](#dev-notes)
+  - [Building and testing](#building-and-testing)
+  - [Formatting](#formatting)
+- [Documentation](#documentation)
+- [Compiler support](#compiler-support)
+- [Licence](#licence)
+- [Change log](change_log.md)
 
 <br />
 <br />
@@ -55,7 +56,7 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
 
 There are 3 main ways to include the CPP-AP library into a C++ project:
 
-#### CMake integration:
+#### CMake integration
 
 For CMake projects you can simply fetch the library in your `CMakeLists.txt` file:
 
@@ -98,6 +99,7 @@ The core of the library is a [single header file](https://github.com/SpectraL519
 
 > [!IMPORTANT]
 > To actually use the library in your project simply include the single header in you `main.cpp` file:
+>
 > ```c++
 > #include <ap/argument_parser.hpp>
 > ```
@@ -109,9 +111,10 @@ The core of the library is a [single header file](https://github.com/SpectraL519
 To use the argument parser in your code you need to use the `ap::argument_parser` class.
 
 The parameters you can specify for a parser's instance are:
-* Program name
-* Program description
-* [Arguments](#adding-arguments)
+
+- Program name
+- Program description
+- [Arguments](#adding-arguments)
 
 ```c++
 ap::argument_parser parser;
@@ -124,7 +127,7 @@ parser.program_name("Name of the program")
 The parser supports both positional and optional arguments. Both argument types are identified by their names represented as strings. Arguments can be defined with only a primary name or with a primary and a secondary (short) name.
 
 > [!NOTE]
->  The basic rules of parsing positional and optional arguments are described in the [Parsing arguments](#parsing-arguments) section.
+> The basic rules of parsing positional and optional arguments are described in the [Parsing arguments](#parsing-arguments) section.
 
 To add an argument to the parameter's configurations use the following syntax:
 
@@ -139,12 +142,13 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 ```
 
 > [!NOTE]
->  The library supports any argument value types which meet the following requirements:
-* The `std::ostream& operator<<` is overloaded for the value type
-* The value type has a copy constructor and an assignment operator
+> The library supports any argument value types which meet the following requirements:
+>
+> - The `std::ostream& operator<<` is overloaded for the value type
+> - The value type has a copy constructor and an assignment operator
 
 > [!IMPORTANT]
->  If the `value_type` is not provided, `std::string` will be used.
+> If the `value_type` is not provided, `std::string` will be used.
 
 You can also add boolean flags:
 
@@ -160,6 +164,7 @@ parser.add_optional_argument<bool>("enable_some_option", "eso")
 ```
 
 Boolean flags store `true` by default but you can specify whether the flag should store `true` or `false` when used:
+
 ```c++
 parser.add_flag<false>("disable_another_option", "dao").help("disables option: another option");
 /* equivalent to:
@@ -173,18 +178,18 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
 
 ### Argument parameters
 
-**Common parameters**
+#### Common parameters
 
 Parameters which can be specified for both positional and optional arguments include:
 
-* `help` - the argument's description which will be printed when printing the parser class instance.
+- `help` - the argument's description which will be printed when printing the parser class instance.
 
     ```c++
     parser.add_positional_argument<std::size_t>("number", "n")
           .help("a positive integer value");
     ```
 
-* `choices` - a list of valid argument values.
+- `choices` - a list of valid argument values.
     The `choices` parameter takes a `const std::vector<value_type>&` as an argument.
 
     ```c++
@@ -194,77 +199,92 @@ Parameters which can be specified for both positional and optional arguments inc
 > [!IMPORTANT]
 > To use the `choices` the `value_type` must overload the equaility comparison operator: `==`;
 
-* `action` - a function performed after reading an argument's value.
+- `action` - a function performed after reading an argument's value.
+  Actions are represented as functions, which take the argument's value as an argument. There are two types of actions:
+  - Void actions - `void(value_type&)`
+  - Valued actions - `value_type(const value_type&)`
 
-    Actions are represented as functions, which take the argument's value as an argument. There are two types of actions:
-    * Void actions - `void(value_type&)`
-    * Valued actions - `value_type(const value_type&)`
+  The default action is an empty void function.
 
-    The default action is an empty void function.
+  Actions can be used to modify a value parsed from the command-line:
 
-    Actions can be used to modify a value parsed from the command-line:
+  ```c++
+  parser.add_optional_argument<double>("denominator", "d")
+        .action<ap::void_action>([](double& value) { value = 1. / value; });
+  ```
+
+  or en equivalent valued action:
+
+  ```c++
+  parser.add_optional_argument<double>("denominator", "d")
+        .action<ap::valued_action>([](const double& value) { return 1. / value; });
+  ```
+
+  Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists` which checks if a file with a given name exists:
+
+  ```c++
+  parser.add_optional_argument("input", "i")
+        .action<ap::void_action>(ap::action::check_file_exists());
+  ```
+
+#### Optional argument specific parameters
+
+- `required` - if this option is set for an argument, failure of parsing it's value will result in an error.
+
+  ```c++
+  parser.add_optional_argument("output", "o").required();
+  ```
+
+- `bypass_required` - if this option is set for an argument, parsing it's value will overrite the `required` option for other optional arguments and all positional arguments.
+
+- `nargs` - sets the allowed number of values to be parsed for an argument. This can be set as a:
+
+  - Concrete number:
+
     ```c++
-    parser.add_optional_argument<double>("denominator", "d")
-          .action<ap::void_action>([](double& value) { value = 1. / value; });
+    parser.add_optional_argument("input", "i").nargs(1);
     ```
-    or en equivalent valued action:
+
+  - Bound range:
+
     ```c++
-    parser.add_optional_argument<double>("denominator", "d")
-          .action<ap::valued_action>([](const double& value) { return 1. / value; });
+    parser.add_optional_argument("input", "i").nargs(1, 3);
     ```
 
-    Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists` which checks if a file with a given name exists:
+  - Partially bound range:
+
     ```c++
-    parser.add_optional_argument("input", "i")
-          .action<ap::void_action>(ap::action::check_file_exists());
+    parser.add_optional_argument("input", "i").nargs(ap::nargs::at_least(1));  // n >= 1
+    parser.add_optional_argument("input", "i").nargs(ap::nargs::more_than(1)); // n > 1
+    parser.add_optional_argument("input", "i").nargs(ap::nargs::less_than(5)); // n < 5
+    parser.add_optional_argument("input", "i").nargs(ap::nargs::up_to(5));     // n <= 5
     ```
 
-**Optional argument specific parameters**
+  - Unbound range:
 
-* `required` - if this option is set for an argument, failure of parsing it's value will result in an error.
     ```c++
-    parser.add_optional_argument("output", "o").required();
+    parser.add_optional_argument("input", "i").nargs(ap::nargs::any());
     ```
-
-* `bypass_required` - if this option is set for an argument, parsing it's value will overrite the `required` option for other optional arguments and all positional arguments.
-
-* `nargs` - sets the allowed number of values to be parsed for an argument. This can be set as a:
-    * Concrete number:
-        ```c++
-        parser.add_optional_argument("input", "i").nargs(1);
-        ```
-    * Bound range:
-        ```c++
-        parser.add_optional_argument("input", "i").nargs(1, 3);
-        ```
-    * Partially bound range:
-        ```c++
-        parser.add_optional_argument("input", "i").nargs(ap::nargs::at_least(1));  // n >= 1
-        parser.add_optional_argument("input", "i").nargs(ap::nargs::more_than(1)); // n > 1
-        parser.add_optional_argument("input", "i").nargs(ap::nargs::less_than(5)); // n < 5
-        parser.add_optional_argument("input", "i").nargs(ap::nargs::up_to(5));     // n <= 5
-        ```
-    * Unbound range:
-        ```c++
-        parser.add_optional_argument("input", "i").nargs(ap::nargs::any());
-        ```
 
 > [!NOTE]
 > The default nargs value is `1`.
 
-* `default_value` - the default value for an argument which will be used if no values for this argument are parsed
-    ```c++
-    parser.add_opitonal_argument("output", "o").default_value("out.txt");
-    ```
+- `default_value` - the default value for an argument which will be used if no values for this argument are parsed
 
-* `implicit_value` - a value which will be set for an argument if only it's flag is parsed from the command-line but no value follows
-    ```c++
-    // program.cpp
-    parser.add_optional_argument("save", "s")
-          .implicit_value("out.txt")
-          .help("save the program's output to a file");
-    ```
-    In this example if you run the program with only a `-s` or `--save` flag and no value, the value will be set to `out.txt`.
+  ```c++
+  parser.add_opitonal_argument("output", "o").default_value("out.txt");
+  ```
+
+- `implicit_value` - a value which will be set for an argument if only it's flag is parsed from the command-line but no value follows
+
+  ```c++
+  // program.cpp
+  parser.add_optional_argument("save", "s")
+        .implicit_value("out.txt")
+        .help("save the program's output to a file");
+  ```
+
+  In this example if you run the program with only a `-s` or `--save` flag and no value, the value will be set to `out.txt`.
 
 ### Default arguments
 
@@ -281,29 +301,34 @@ parser.default_positional_arguments({...});
 ```
 
 The supported default arguments are:
-* `positional::input`:
-    ```c++
-    // equivalent to:
-    parser.add_positional_argument<std::string>("input")
-          .action<ap::void_action>(ap::action::check_file_exists())
-          .help("Input file path");
-    ```
 
-* `positional::output`:
-    ```c++
-    // equivalent to:
-    parser.add_positional_argument("output").help("Output file path");
-    ```
+- `positional::input`:
 
-* `optional::help`:
-    ```c++
-    // equivalent to:
-    parser.add_flag("help", "h").bypass_required().help("Display help message");
-    ```
+  ```c++
+  // equivalent to:
+  parser.add_positional_argument<std::string>("input")
+        .action<ap::void_action>(ap::action::check_file_exists())
+        .help("Input file path");
+  ```
+
+- `positional::output`:
+
+  ```c++
+  // equivalent to:
+  parser.add_positional_argument("output").help("Output file path");
+  ```
+
+- `optional::help`:
+
+  ```c++
+  // equivalent to:
+  parser.add_flag("help", "h").bypass_required().help("Display help message");
+  ```
 
 > [!NOTE]
 > As of now the *on flag action* functionality is not implemented in the library - this will be added in a future release.
 > To properly use the help argument in the current release add the following right beneath the `parser.parse_args(argc, argv)` try-catch block:
+>
 > ```c++
 > if (parser.value<bool>("help")) {
 >     std::cout << parser << std::endl;
@@ -311,37 +336,39 @@ The supported default arguments are:
 > }
 > ```
 
-* `optional::input` and `optional::multi_input`:
-    ```c++
-    // input - equivalent to:
-    parser.add_optional_argument("input", "i")
-          .required()
-          .nargs(1)
-          .action<ap::void_action>(ap::action::check_file_exists())
-          .help("Input file path");
+- `optional::input` and `optional::multi_input`:
 
-    // multi_input - equivalent to:
-    parser.add_optional_argument("input", "i")
-          .required()
-          .nargs(ap::nargs::at_least(1))
-          .action<ap::void_action>(ap::action::check_file_exists())
-          .help("Input files paths");
-    ```
+  ```c++
+  // input - equivalent to:
+  parser.add_optional_argument("input", "i")
+        .required()
+        .nargs(1)
+        .action<ap::void_action>(ap::action::check_file_exists())
+        .help("Input file path");
 
-* `optional::output` and `optional::multi_output`:
-    ```c++
-    // output - equivalent to:
-    parser.add_optional_argument("output", "o")
-          .required()
-          .nargs(1)
-          .help("Output file path");
+  // multi_input - equivalent to:
+  parser.add_optional_argument("input", "i")
+        .required()
+        .nargs(ap::nargs::at_least(1))
+        .action<ap::void_action>(ap::action::check_file_exists())
+        .help("Input files paths");
+  ```
 
-    // multi_otput - equivalent to:
-    parser.add_optional_argument("output", "o")
-          .required()
-          .nargs(ap::nargs::at_least(1))
-          .help("Output files paths");
-    ```
+- `optional::output` and `optional::multi_output`:
+
+  ```c++
+  // output - equivalent to:
+  parser.add_optional_argument("output", "o")
+        .required()
+        .nargs(1)
+        .help("Output file path");
+
+  // multi_otput - equivalent to:
+  parser.add_optional_argument("output", "o")
+        .required()
+        .nargs(ap::nargs::at_least(1))
+        .help("Output files paths");
+  ```
 
 > [!NOTE]
 > The `argument_parser::default_<positional/optional>_arguments` functions will be modified to use a variadic argument list instead of a `std::vector` in a future release.
@@ -408,55 +435,59 @@ int main(int argc, char* argv[]) {
 
 **Argument parsing rules:**
 
-* Positional arguments are parsed first, in the order they were defined in and without a flag.
+- Positional arguments are parsed first, in the order they were defined in and without a flag.
 
-    In the example above the first command-line argument must be the value for `positional_argument`:
-    ```shell
-    ./power 2
-    # out:
-    # no exponent values given
-    ```
+  In the example above the first command-line argument must be the value for `positional_argument`:
 
-    ```shell
-    ./power
-    # out:
-    # [ERROR] : No values parsed for a required argument [base]
-    # power calculator
-    # calculates the value of an expression: base ^ exponent
-    #         [base] : the exponentation base value
-    #         [exponent,e] : the exponent value
-    #         [help,h] : Display help message
-    ```
+  ```shell
+  ./power 2
+  # out:
+  # no exponent values given
+  ```
+
+  ```shell
+  ./power
+  # out:
+  # [ERROR] : No values parsed for a required argument [base]
+  # power calculator
+  # calculates the value of an expression: base ^ exponent
+  #         [base] : the exponentation base value
+  #         [exponent,e] : the exponent value
+  #         [help,h] : Display help message
+  ```
 
 > [!IMPORTANT]
 > For each positional argument there must be **exactly one value**.
 
-* Optional arguments are parsed only with a flag:
-    ```shell
-    ./power 2 --exponent 1 2 3
-    # equivalent to: ./power 2 -e 1 2 3
-    # out:
-    # 2 ^ 1 = 2
-    # 2 ^ 2 = 4
-    # 2 ^ 3 = 8
-    ```
+- Optional arguments are parsed only with a flag:
 
-    You can use the flag for each command-line value:
-    ```shell
-    ./power 2 -e 1 -e 2 -e 3
-    ```
+  ```shell
+  ./power 2 --exponent 1 2 3
+  # equivalent to: ./power 2 -e 1 2 3
+  # out:
+  # 2 ^ 1 = 2
+  # 2 ^ 2 = 4
+  # 2 ^ 3 = 8
+  ```
 
-    Not using a flag will result in an error:
-    ```shell
-    ./power 2 1 2 3
-    # out:
-    # [ERROR] : Failed to deduce the argument for the given value `1`
-    # power calculator
-    # calculates the value of an expression: base & exponent
-    #         [base] : the exponentation base value
-    #         [exponent,e] : the exponent value
-    #         [help,h] : Display help message
-    ```
+  You can use the flag for each command-line value:
+
+  ```shell
+  ./power 2 -e 1 -e 2 -e 3
+  ```
+
+  Not using a flag will result in an error:
+
+  ```shell
+  ./power 2 1 2 3
+  # out:
+  # [ERROR] : Failed to deduce the argument for the given value `1`
+  # power calculator
+  # calculates the value of an expression: base & exponent
+  #         [base] : the exponentation base value
+  #         [exponent,e] : the exponent value
+  #         [help,h] : Display help message
+  ```
 
 > [!IMPORTANT]
 > The parser behaviour depends on the argument definitions. The argument parameters are described int the [Argument parameters](#argument-parameters) section.
@@ -473,7 +504,12 @@ The library usage examples / demo projects can be found in the [cpp-ap-demo](htt
 
 ## Dev notes
 
-### Building and testing:
+### Building and testing
+
+> [!NOTE]
+>
+> - The unit tests are built using the [Doctest](https://github.com/doctest/doctest) framework.
+> - Test suites in the project have the same names as the files they're in.
 
 First build the testing executable:
 
@@ -482,35 +518,21 @@ cmake -B build
 cd build && make
 ```
 
-or alternatively:
-
-```shell
-mkdir build && cd build
-cmake ..
-make
-```
-
-This will build the test executable `run_tests` in the `<project-root>/build/test` directory.
-
-> [!TIP]
-> Building on Windows -  use the `-G "Unix Makefiles"` option when running CMake to build a GNU Make project instead of a default Visual Studio project.
+This will build the test executable `run` in the `<project-root>/build/tests` directory.
 
 Run the tests:
 
-* All tests:
+- All tests:
 
-    ```shell
-    ./run_tests
-    ```
+  ```shell
+  ./tests/run
+  ```
 
-* A single test suite:
+- A single test suite:
 
-    ```shell
-    ./run_tests -ts="<test-suite-name>"
-    ```
-
-> [!NOTE]
-> Test suites in the project have the same names as the files they're in.
+  ```shell
+  ./run_tests -ts="<test-suite-name>"
+  ```
 
 <br />
 
@@ -554,11 +576,12 @@ The documentation for this project can be generated using Doxygen:
 
 2. Generate the documentation:
 
-    Open your terminal and use the following instructions:
-    ```shell
-    cd <project-root>
-    doxygen Doxyfile
-    ```
+  Open your terminal and use the following instructions:
+
+  ```shell
+  cd <project-root>
+  doxygen Doxyfile
+  ```
 
 <br />
 <br />
