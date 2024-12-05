@@ -11,7 +11,7 @@ using namespace ap::argument;
 
 TEST_SUITE_BEGIN("test_argument_parser_add_argument");
 
-struct test_argument_parser_add_argument : argument_parser_test_fixture {
+struct test_argument_parser_add_argument : public argument_parser_test_fixture {
     const std::string_view primary_name_1 = "primary_name_1";
     const std::string_view secondary_name_1 = "s1";
 
