@@ -17,10 +17,9 @@ foreach(SOURCE_DIR ${SOURCE_DIRS})
 endforeach()
 
 # Set compile options
-if(NOT DEFINED CMAKE_CXX_FLAGS)
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O3"
-        CACHE STRING "Default C++ compile flags" FORCE)
-endif()
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O2")
+
+message(STATUS "[CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}]")
 
 # Executable
 add_executable(run ${SOURCES})
@@ -31,5 +30,4 @@ set_target_properties(run PROPERTIES
     CXX_EXTENSIONS NO
 )
 target_include_directories(run PRIVATE ${INCLUDE_DIRS})
-target_compile_options(run PRIVATE ${CMAKE_CXX_FLAGS})
 target_link_libraries(run PRIVATE cpp-ap)
