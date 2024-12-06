@@ -1079,23 +1079,7 @@ private:
 
     /// @return Reference to the stored value of the optional argument.
     [[nodiscard]] const std::any& value() const override {
-        std::cout << "> value - " << this->_name << std::endl;
-
-        if (not this->_values.empty()) {
-            std::cout << "> returning _values.front()" << std::endl;
-            return this->_values.front();
-        }
-
-        if (not this->_has_predefined_value()) {
-            std::cout << "> throwing no predefined value" << std::endl;
-            throw std::logic_error(std::format(
-                "No value parsed and no predefined value for the `{}` optional argument.",
-                this->_name.str()
-            ));
-        }
-
-        std::cout << "> returning _predefined_value()\n\n" << std::endl;
-        return this->_predefined_value();
+        return this->_values.empty() ? this->_predefined_value() : this->_values.front();
     }
 
     /// @return Reference to the vector of parsed values for the optional argument.
@@ -1105,24 +1089,27 @@ private:
 
     /// @return True if the optional argument has a predefined value, false otherwise.
     [[nodiscard]] bool _has_predefined_value() const noexcept {
-        std::cout
-            << std::boolalpha << "_has_predefined_value(): " << this->_name << "\n"
-            << "> dv = " << this->_default_value.has_value() << "\n"
-            << "> iu = " << this->is_used() << "\n"
-            << "> iv = " << this->_implicit_value.has_value() << "\n"
-            << "> (iu and iv) = " << (this->is_used() and this->_implicit_value.has_value()) << "\n"
-            << "> dv or (iu and iv) = "
-            << (this->_default_value.has_value()
-                or (this->is_used() and this->_implicit_value.has_value()))
-            << std::endl;
-
         return this->_default_value.has_value()
             or (this->is_used() and this->_implicit_value.has_value());
     }
 
     /// @return Reference to the predefined value of the optional argument.
-    [[nodiscard]] const std::any& _predefined_value() const noexcept {
-        return this->is_used() ? this->_implicit_value : this->_default_value;
+    [[nodiscard]] const std::any& _predefined_value() const {
+        if (this->is_used()) {
+            if (not this->_implicit_value.has_value())
+                throw(std::logic_error(
+                    std::format("No implicit value specified for argument `{}`.", this->_name.str())
+                ));
+
+            return this->_implicit_value;
+        }
+
+        if (not this->_default_value.has_value())
+            throw(std::logic_error(
+                std::format("No default value specified for argument `{}`.", this->_name.str())
+            ));
+
+        return this->_default_value;
     }
 
     /**
