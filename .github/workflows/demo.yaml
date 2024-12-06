@@ -1,0 +1,40 @@
+name: demo
+on:
+  push:
+    branches:
+      - '*'
+    paths:
+      - .github/workflows/demo.yaml
+      - .gitmodules
+      - cpp-ap-demo
+      - include/**
+
+
+jobs:
+  build-demo:
+    name: Build cpp-ap-demo
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out current branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Sync submodules to HTTPS
+        run: git submodule sync --recursive
+
+      - name: Update submodules
+        run: git submodule update --init --recursive
+
+      - name: Determine Current Branch
+        id: branch-name
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+
+      - name: Build cpp-ap-demo
+        run: |
+          cd cpp-ap-demo
+          cmake -B build -DAP_TAG=${{ steps.branch-name.outputs.branch }}
+          cd build
+          make -j 4
