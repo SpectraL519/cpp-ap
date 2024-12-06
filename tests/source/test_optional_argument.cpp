@@ -131,7 +131,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "nused() should return 0 by de
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "is_used() should return the number of times the argument's flag has been used "
-    "[number of set_used() function calls]"
+    "[number of mark_used() function calls]"
 ) {
     auto sut = prepare_argument(primary_name);
 

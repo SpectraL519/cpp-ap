@@ -222,7 +222,7 @@ protected:
     virtual const std::optional<std::string>& help() const noexcept = 0;
 
     /// @brief Mark the argument as used.
-    virtual void set_used() noexcept = 0;
+    virtual void mark_used() noexcept = 0;
 
     /// @return True if the argument has been used, false otherwise.
     virtual bool is_used() const noexcept = 0;
@@ -623,7 +623,7 @@ namespace argument {
  * @brief "Positional argument class of type T.
  * @tparam T The type of the argument value.
  */
-template <utility::valid_argument_value_type T>
+template <utility::valid_argument_value_type T = std::string>
 class positional_argument : public detail::argument_interface {
 public:
     using value_type = T; ///< Type of the argument value.
@@ -727,7 +727,7 @@ private:
      * @brief Mark the positional argument as used.
      * @note Not required for positional arguments.
      */
-    void set_used() noexcept override {}
+    void mark_used() noexcept override {}
 
     /// @return True if the positional argument is used, false otherwise.
     [[nodiscard]] bool is_used() const noexcept override {
@@ -835,7 +835,7 @@ private:
  * @brief Optional argument class of type T.
  * @tparam T The type of the argument value.
  */
-template <utility::valid_argument_value_type T>
+template <utility::valid_argument_value_type T = std::string>
 class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
@@ -1005,7 +1005,7 @@ private:
     }
 
     /// @brief Mark the optional argument as used.
-    void set_used() noexcept override {
+    void mark_used() noexcept override {
         this->_nused++;
     }
 
@@ -1067,6 +1067,7 @@ private:
 
     /// @return Reference to the stored value of the optional argument.
     [[nodiscard]] const std::any& value() const noexcept override {
+        std::cout << "> optional_argument::value()" << std::endl;
         return this->_values.empty() ? this->_predefined_value() : this->_values.front();
     }
 
@@ -1083,6 +1084,7 @@ private:
 
     /// @return Reference to the predefined value of the optional argument.
     [[nodiscard]] const std::any& _predefined_value() const noexcept {
+        std::cout << "> optional_argument::_predefined_value()" << std::endl;
         return this->is_used() ? this->_implicit_value : this->_default_value;
     }
 
@@ -1361,11 +1363,14 @@ public:
      */
     template <std::copy_constructible T = std::string>
     T value(std::string_view arg_name) const {
+        std::cout << "> parser::value(" << arg_name << ")" << std::endl;
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found_error(arg_name);
 
+
         try {
+            std::cout << "\t> trying to cast the value" << std::endl;
             T value = std::any_cast<T>(arg_opt->get().value());
             return value;
         }
@@ -1678,9 +1683,11 @@ private:
                     throw error::argument_not_found_error(cmd_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
-                curr_opt_arg->get()->set_used();
+                curr_opt_arg->get()->mark_used();
             }
             else {
+
+
                 if (not curr_opt_arg)
                     throw error::free_value_error(cmd_it->value);
 
