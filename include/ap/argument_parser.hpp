@@ -1079,7 +1079,16 @@ private:
 
     /// @return Reference to the stored value of the optional argument.
     [[nodiscard]] const std::any& value() const override {
-        return this->_values.empty() ? this->_predefined_value() : this->_values.front();
+        if (not this->_values.empty())
+            return this->_values.front();
+
+        if (not this->_has_predefined_value())
+            throw std::logic_error(std::format(
+                "No value parsed and no predefined value for the `{}` optional argument.",
+                this->_name.str()
+            ));
+
+        return this->_predefined_value();
     }
 
     /// @return Reference to the vector of parsed values for the optional argument.
@@ -1095,14 +1104,7 @@ private:
 
     /// @return Reference to the predefined value of the optional argument.
     [[nodiscard]] const std::any& _predefined_value() const {
-        const auto& predefined_value =
-            this->is_used() ? this->_implicit_value : this->_default_value;
-        if (not predefined_value.has_value())
-            throw std::logic_error(std::format(
-                "No value parsed and no predefined value for the `{}` optional argument.",
-                this->_name.str()
-            ));
-        return predefined_value;
+        return this->is_used() ? this->_implicit_value : this->_default_value;
     }
 
     /**
