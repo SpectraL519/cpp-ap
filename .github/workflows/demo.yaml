@@ -1,0 +1,32 @@
+name: demo
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build-demo:
+    name: Build cpp-ap-demo
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out current branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Determine Current Branch
+        id: branch-name
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+
+      - name: Build cpp-ap-demo
+        run: |
+          cd cpp-ap-demo
+          cmake -B build -DAP_TAG=${{ steps.branch-name.outputs.branch }}
+          cd build
+          make -j 4
