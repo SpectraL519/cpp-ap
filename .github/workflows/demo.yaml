@@ -20,6 +20,12 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Sync submodules to HTTPS
+        run: git submodule sync --recursive
+
+      - name: Update submodules
+        run: git submodule update --init --recursive
+
       - name: Determine Current Branch
         id: branch-name
         run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
