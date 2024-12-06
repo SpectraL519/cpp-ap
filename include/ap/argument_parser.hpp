@@ -1646,7 +1646,6 @@ private:
     void _parse_positional_args(
         const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
     ) noexcept {
-        // TODO: align tests
         for (const auto& pos_arg : this->_positional_args) {
             if (cmd_it == cmd_args.end())
                 return;

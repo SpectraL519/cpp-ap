@@ -43,35 +43,38 @@ struct argument_parser_test_fixture {
         return static_cast<int>(get_args_length(num_args, args_split) + 1);
     }
 
-    [[nodiscard]] char** prepare_argv(std::size_t num_args, std::size_t args_split) const {
-        char** argv = new char*[get_argc(num_args, args_split)];
+    [[nodiscard]] char** to_char_2d_array(const std::vector<std::string>& argv_vec) const {
+        char** argv = new char*[argv_vec.size()];
 
-        argv[0] = new char[8];
-        std::strcpy(argv[0], "program");
-
-        for (std::size_t i = 0; i < args_split; i++) { // positional args
-            std::string arg_v = prepare_arg_value(i);
-
-            const auto arg_i = i + 1;
-            argv[arg_i] = new char[arg_v.length() + 1];
-            std::strcpy(argv[arg_i], arg_v.c_str());
-        }
-
-        for (std::size_t i = args_split; i < num_args; i++) { // optional args
-            std::string arg = prepare_arg_flag_primary(i);
-            std::string arg_v = prepare_arg_value(i);
-
-            const std::size_t arg_i = 2 * i - args_split + 1;
-            const std::size_t arg_v_i = arg_i + 1;
-
-            argv[arg_i] = new char[arg.length() + 1];
-            argv[arg_v_i] = new char[arg_v.length() + 1];
-
-            std::strcpy(argv[arg_i], arg.c_str());
-            std::strcpy(argv[arg_v_i], arg_v.c_str());
+        for (size_t i = 0; i < argv_vec.size(); ++i) {
+            argv[i] = new char[argv_vec[i].size() + 1];
+            std::strcpy(argv[i], argv_vec[i].c_str());
         }
 
         return argv;
+    }
+
+    [[nodiscard]] std::vector<std::string> prepare_argv_vec(
+        std::size_t num_args, std::size_t args_split
+    ) const {
+        std::vector<std::string> argv_vec;
+        argv_vec.reserve(get_argc(num_args, args_split));
+
+        argv_vec.emplace_back("program");
+
+        for (std::size_t i = 0; i < args_split; i++) // positional args
+            argv_vec.emplace_back(prepare_arg_value(i));
+
+        for (std::size_t i = args_split; i < num_args; i++) { // optional args
+            argv_vec.emplace_back(prepare_arg_flag_primary(i));
+            argv_vec.emplace_back(prepare_arg_value(i));
+        }
+
+        return argv_vec;
+    }
+
+    [[nodiscard]] char** prepare_argv(std::size_t num_args, std::size_t args_split) const {
+        return to_char_2d_array(prepare_argv_vec(num_args, args_split));
     }
 
     void free_argv(std::size_t argc, char** argv) const {
