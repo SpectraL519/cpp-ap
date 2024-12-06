@@ -1083,9 +1083,13 @@ private:
     }
 
     /// @return Reference to the predefined value of the optional argument.
-    [[nodiscard]] const std::any& _predefined_value() const noexcept {
+    [[nodiscard]] const std::any& _predefined_value() const {
         std::cout << "> optional_argument::_predefined_value()" << std::endl;
-        return this->is_used() ? this->_implicit_value : this->_default_value;
+        const auto& predefined_value =
+            this->is_used() ? this->_implicit_value : this->_default_value;
+        if (not predefined_value.has_value())
+            throw std::logic_error("no prefefined value");
+        return predefined_value;
     }
 
     /**
@@ -1686,8 +1690,6 @@ private:
                 curr_opt_arg->get()->mark_used();
             }
             else {
-
-
                 if (not curr_opt_arg)
                     throw error::free_value_error(cmd_it->value);
 
