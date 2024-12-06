@@ -1079,15 +1079,22 @@ private:
 
     /// @return Reference to the stored value of the optional argument.
     [[nodiscard]] const std::any& value() const override {
-        if (not this->_values.empty())
-            return this->_values.front();
+        std::cout << "> value - " << this->_name << std::endl;
 
-        if (not this->_has_predefined_value())
+        if (not this->_values.empty()) {
+            std::cout << "> returning _values.front()" << std::endl;
+            return this->_values.front();
+        }
+
+        if (not this->_has_predefined_value()) {
+            std::cout << "> throwing no predefined value" << std::endl;
             throw std::logic_error(std::format(
                 "No value parsed and no predefined value for the `{}` optional argument.",
                 this->_name.str()
             ));
+        }
 
+        std::cout << "> returning _predefined_value()\n\n" << std::endl;
         return this->_predefined_value();
     }
 
@@ -1098,12 +1105,23 @@ private:
 
     /// @return True if the optional argument has a predefined value, false otherwise.
     [[nodiscard]] bool _has_predefined_value() const noexcept {
+        std::cout
+            << std::boolalpha << "_has_predefined_value(): " << this->_name << "\n"
+            << "> dv = " << this->_default_value.has_value() << "\n"
+            << "> iu = " << this->is_used() << "\n"
+            << "> iv = " << this->_implicit_value.has_value() << "\n"
+            << "> (iu and iv) = " << (this->is_used() and this->_implicit_value.has_value()) << "\n"
+            << "> dv or (iu and iv) = "
+            << (this->_default_value.has_value()
+                or (this->is_used() and this->_implicit_value.has_value()))
+            << std::endl;
+
         return this->_default_value.has_value()
             or (this->is_used() and this->_implicit_value.has_value());
     }
 
     /// @return Reference to the predefined value of the optional argument.
-    [[nodiscard]] const std::any& _predefined_value() const {
+    [[nodiscard]] const std::any& _predefined_value() const noexcept {
         return this->is_used() ? this->_implicit_value : this->_default_value;
     }
 
@@ -1386,9 +1404,9 @@ public:
         if (not arg_opt)
             throw error::argument_not_found_error(arg_name);
 
+        const auto& arg_value = arg_opt->get().value();
         try {
-            T value = std::any_cast<T>(arg_opt->get().value());
-            return value;
+            return std::any_cast<T>(arg_value);
         }
         catch (const std::bad_any_cast& err) {
             throw error::invalid_value_type_error(arg_opt->get().name(), typeid(T));
@@ -1403,6 +1421,8 @@ public:
      */
     template <std::copy_constructible T = std::string>
     std::vector<T> values(std::string_view arg_name) const {
+        // TODO: verify logic
+
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found_error(arg_name);
