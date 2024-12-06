@@ -18,6 +18,7 @@
 #include <compare>
 #include <concepts>
 #include <filesystem>
+#include <format>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -247,7 +248,7 @@ protected:
     virtual std::weak_ordering nvalues_in_range() const noexcept = 0;
 
     /// @return Reference to the stored value of the argument.
-    virtual const std::any& value() const noexcept = 0;
+    virtual const std::any& value() const = 0;
 
     /// @return Reference to the vector of parsed values of the argument.
     virtual const std::vector<std::any>& values() const = 0;
@@ -281,7 +282,9 @@ public:
      * @param arg_name The name of the argument that already has a value set.
      */
     explicit value_already_set_error(const argument::detail::argument_name& arg_name)
-    : argument_parser_error("Value for argument " + arg_name.str() + " has already been set") {}
+    : argument_parser_error(
+          std::format("Value for argument {} has already been set.", arg_name.str())
+      ) {}
 };
 
 /// @brief Exception thrown when the value provided for an argument cannot be parsed.
@@ -295,7 +298,9 @@ public:
     explicit invalid_value_error(
         const argument::detail::argument_name& arg_name, const std::string& value
     )
-    : argument_parser_error("Cannot parse value `" + value + "` for argument " + arg_name.str()) {}
+    : argument_parser_error(
+          std::format("Cannot parse value `{}` for argument {}.", value, arg_name.str())
+      ) {}
 };
 
 /// @brief Exception thrown when the provided value is not in the choices for an argument.
@@ -310,7 +315,7 @@ public:
         const argument::detail::argument_name& arg_name, const std::string& value
     )
     : argument_parser_error(
-          "Value `" + value + "` is not a valid choice for argument " + arg_name.str()
+          std::format("Value `{}` is not a valid choice for argument {}.", value, arg_name.str())
       ) {}
 };
 
@@ -322,7 +327,7 @@ public:
      * @param arg_name The name of the argument causing the collision.
      */
     explicit argument_name_used_error(const argument::detail::argument_name& arg_name)
-    : argument_parser_error("Given name `" + arg_name.str() + "` already used") {}
+    : argument_parser_error(std::format("Given name `{}` already used.", arg_name.str())) {}
 };
 
 /// @brief Exception thrown when an argument with a specific name is not found.
@@ -333,8 +338,7 @@ public:
      * @param arg_name The name of the argument that was not found.
      */
     explicit argument_not_found_error(const std::string_view& arg_name)
-    : argument_parser_error("Argument with given name `" + std::string(arg_name) + "` not found.") {
-    }
+    : argument_parser_error(std::format("Argument with given name `{}` not found.", arg_name)) {}
 };
 
 /// @brief Exception thrown when there is an attempt to cast to an invalid type.
@@ -348,9 +352,9 @@ public:
     explicit invalid_value_type_error(
         const argument::detail::argument_name& arg_name, const std::type_info& value_type
     )
-    : argument_parser_error(
-          "Invalid value type specified for argument " + arg_name.str() + " - " + value_type.name()
-      ) {}
+    : argument_parser_error(std::format(
+          "Invalid value type specified for argument {} = {}.", arg_name.str(), value_type.name()
+      )) {}
 };
 
 /// @brief Exception thrown when a required argument is not parsed.
@@ -372,7 +376,9 @@ public:
      * @param value The value for which the argument deduction failed.
      */
     explicit free_value_error(const std::string& value)
-    : argument_parser_error("Failed to deduce the argument for the given value `" + value + "`") {}
+    : argument_parser_error(
+          std::format("Failed to deduce the argument for the given value `{}`", value)
+      ) {}
 };
 
 /// @brief Exception thrown when an invalid number of values is provided for an argument.
@@ -610,7 +616,7 @@ detail::callable_type<ap::void_action, T> default_action() noexcept {
 inline detail::callable_type<ap::void_action, std::string> check_file_exists() noexcept {
     return [](std::string& file_path) {
         if (not std::filesystem::exists(file_path))
-            throw argument_parser_error("[ERROR] : File " + file_path + " does not exists!");
+            throw argument_parser_error(std::format("File `{}` does not exists!", file_path));
     };
 }
 
@@ -780,13 +786,19 @@ private:
     }
 
     /// @brief Get the stored value of the positional argument.
-    [[nodiscard]] const std::any& value() const noexcept override {
+    [[nodiscard]] const std::any& value() const override {
+        if (not this->_value.has_value())
+            throw std::logic_error(
+                std::format("No value parsed for the `{}` positional argument.", this->_name.str())
+            );
         return this->_value;
     }
 
     /// @return Reference to the vector of parsed values for the positional argument.
     [[nodiscard]] const std::vector<std::any>& values() const override {
-        throw std::logic_error("Positional argument " + this->_name.primary + "has only 1 value.");
+        throw std::logic_error(
+            std::format("Positional argument `{}` has only 1 value.", this->_name.primary)
+        );
     }
 
     /**
@@ -1066,8 +1078,7 @@ private:
     }
 
     /// @return Reference to the stored value of the optional argument.
-    [[nodiscard]] const std::any& value() const noexcept override {
-        std::cout << "> optional_argument::value()" << std::endl;
+    [[nodiscard]] const std::any& value() const override {
         return this->_values.empty() ? this->_predefined_value() : this->_values.front();
     }
 
@@ -1084,11 +1095,13 @@ private:
 
     /// @return Reference to the predefined value of the optional argument.
     [[nodiscard]] const std::any& _predefined_value() const {
-        std::cout << "> optional_argument::_predefined_value()" << std::endl;
         const auto& predefined_value =
             this->is_used() ? this->_implicit_value : this->_default_value;
         if (not predefined_value.has_value())
-            throw std::logic_error("no prefefined value");
+            throw std::logic_error(std::format(
+                "No value parsed and no predefined value for the `{}` optional argument.",
+                this->_name.str()
+            ));
         return predefined_value;
     }
 
@@ -1367,14 +1380,11 @@ public:
      */
     template <std::copy_constructible T = std::string>
     T value(std::string_view arg_name) const {
-        std::cout << "> parser::value(" << arg_name << ")" << std::endl;
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found_error(arg_name);
 
-
         try {
-            std::cout << "\t> trying to cast the value" << std::endl;
             T value = std::any_cast<T>(arg_opt->get().value());
             return value;
         }

@@ -226,11 +226,12 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
-    "value() should return default any object if argument's value has not been set"
+    optional_argument_test_fixture, "value() should throw if argument's value has not been set"
 ) {
     auto sut = prepare_argument(primary_name);
-    CHECK_FALSE(sut_get_value(sut).has_value());
+
+    REQUIRE_FALSE(sut_has_value(sut));
+    CHECK_THROWS_AS(static_cast<void>(sut_get_value(sut)), std::logic_error);
 }
 
 TEST_CASE_FIXTURE(

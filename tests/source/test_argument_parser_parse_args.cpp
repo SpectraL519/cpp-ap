@@ -382,8 +382,8 @@ TEST_CASE_FIXTURE(
 
     for (std::size_t i = 0; i < non_default_num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
-        CHECK_THROWS_AS(sut.value(arg_name.primary), ap::error::invalid_value_type_error);
-        CHECK_THROWS_AS(sut.value(arg_name.secondary.value()), ap::error::invalid_value_type_error);
+        CHECK_THROWS_AS(sut.value(arg_name.primary), std::logic_error);
+        CHECK_THROWS_AS(sut.value(arg_name.secondary.value()), std::logic_error);
     }
 }
 
@@ -417,8 +417,8 @@ TEST_CASE_FIXTURE(
     }
     for (std::size_t i = non_default_args_split; i < non_default_num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
-        CHECK_THROWS_AS(sut.value(arg_name.primary), ap::error::invalid_value_type_error);
-        CHECK_THROWS_AS(sut.value(arg_name.secondary.value()), ap::error::invalid_value_type_error);
+        CHECK_THROWS_AS(sut.value(arg_name.primary), std::logic_error);
+        CHECK_THROWS_AS(sut.value(arg_name.secondary.value()), std::logic_error);
     }
     for (std::size_t i = non_default_num_args; i < num_args; i++) {
         const auto arg_name = prepare_arg_name(i);
