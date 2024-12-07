@@ -10,7 +10,6 @@ on:
       - include/**
       - CMakeLists.txt
 
-
 jobs:
   build-demo:
     name: Build cpp-ap-demo

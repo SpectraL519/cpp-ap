@@ -9,7 +9,6 @@ on:
       - tests/**
       - CMakeLists.txt
 
-
 jobs:
   build:
     name: Build and run tests

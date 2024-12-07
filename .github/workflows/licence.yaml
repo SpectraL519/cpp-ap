@@ -7,8 +7,6 @@ on:
       - .github/workflows/licence.yaml
       - scripts/check_licence.py
       - include/**
-      - CMakeLists.txt
-
 
 jobs:
   build:
