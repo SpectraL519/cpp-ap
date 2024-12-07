@@ -1,14 +1,37 @@
-// Copyright (c) 2023-2024 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
-// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+/*
+CPP-AP: Command-line argument parser for C++20
+
+MIT License
+
+Copyright (c) 2023-2024 Jakub Musiał and other contributors
+https://github.com/SpectraL519/cpp-ap
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 /*!
  * @file argument_parser.hpp
- * @brief CPP-AP library header file.
+ * @brief CPP-AP library source file.
  *
  * This header file contians the entire CPP-AP library implementation.
  *
- * @version 1.1
+ * @version 1.2
  */
 
 #pragma once
@@ -55,22 +78,22 @@ namespace utility {
  * @tparam T Type to check.
  */
 template <typename T>
-concept readable = requires(T value, std::istream& input_stream) { input_stream >> value; };
+concept c_readable = requires(T value, std::istream& input_stream) { input_stream >> value; };
 
 /**
- * @brief The concept is satisfied when `T` is readable, copy constructible and assignable.
+ * @brief The concept is satisfied when `T` is c_readable, copy constructible and assignable.
  * @tparam T Type to check.
  */
 template <typename T>
-concept valid_argument_value_type =
-    readable<T> and std::copy_constructible<T> and std::assignable_from<T&, const T&>;
+concept c_argument_value_type =
+    c_readable<T> and std::copy_constructible<T> and std::assignable_from<T&, const T&>;
 
 /**
  * @brief The concept is satisfied when `T` is comparable using the equality operator `==`.
  * @tparam T Type to check.
  */
 template <typename T>
-concept equality_comparable = requires(T lhs, T rhs) {
+concept c_equality_comparable = requires(T lhs, T rhs) {
     { lhs == rhs } -> std::convertible_to<bool>;
 };
 
@@ -556,13 +579,13 @@ private:
 
 /// @brief Defines valued argument action traits.
 struct valued_action {
-    template <ap::utility::valid_argument_value_type T>
+    template <ap::utility::c_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
 /// @brief Defines void argument action traits.
 struct void_action {
-    template <ap::utility::valid_argument_value_type T>
+    template <ap::utility::c_argument_value_type T>
     using type = std::function<void(T&)>;
 };
 
@@ -581,15 +604,14 @@ namespace detail {
  * @tparam AS The action specifier type.
  */
 template <typename AS>
-concept valid_action_specifier =
-    ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
+concept c_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
 /// @brief Template argument action callable type alias.
-template <valid_action_specifier AS, ap::utility::valid_argument_value_type T>
+template <c_action_specifier AS, ap::utility::c_argument_value_type T>
 using callable_type = typename AS::template type<T>;
 
 /// @brief Template argument action callabla variant type alias.
-template <ap::utility::valid_argument_value_type T>
+template <ap::utility::c_argument_value_type T>
 using action_variant_type =
     std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
 
@@ -599,7 +621,7 @@ using action_variant_type =
  * @param action The action variant.
  * @return True if the held action is a void action.
  */
-template <ap::utility::valid_argument_value_type T>
+template <ap::utility::c_argument_value_type T>
 [[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) noexcept {
     return std::holds_alternative<callable_type<ap::void_action, T>>(action);
 }
@@ -607,7 +629,7 @@ template <ap::utility::valid_argument_value_type T>
 } // namespace detail
 
 /// @brief Returns a default argument action.
-template <ap::utility::valid_argument_value_type T>
+template <ap::utility::c_argument_value_type T>
 detail::callable_type<ap::void_action, T> default_action() noexcept {
     return [](T&) {};
 }
@@ -629,7 +651,7 @@ namespace argument {
  * @brief "Positional argument class of type T.
  * @tparam T The type of the argument value.
  */
-template <utility::valid_argument_value_type T = std::string>
+template <utility::c_argument_value_type T = std::string>
 class positional_argument : public detail::argument_interface {
 public:
     using value_type = T; ///< Type of the argument value.
@@ -672,7 +694,7 @@ public:
      * @note Requires T to be equality comparable.
      */
     positional_argument& choices(const std::vector<value_type>& choices) noexcept
-    requires(utility::equality_comparable<value_type>)
+    requires(utility::c_equality_comparable<value_type>)
     {
         this->_choices = choices;
         return *this;
@@ -685,7 +707,7 @@ public:
      * @param action The action function to set.
      * @return Reference to the positional_argument.
      */
-    template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
+    template <ap::action::detail::c_action_specifier AS, std::invocable<value_type&> F>
     positional_argument& action(F&& action) noexcept {
         using callable_type = ap::action::detail::callable_type<AS, value_type>;
         this->_action = std::forward<callable_type>(action);
@@ -847,7 +869,7 @@ private:
  * @brief Optional argument class of type T.
  * @tparam T The type of the argument value.
  */
-template <utility::valid_argument_value_type T = std::string>
+template <utility::c_argument_value_type T = std::string>
 class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
@@ -940,7 +962,7 @@ public:
      * @param action The action function to set.
      * @return Reference to the optional_argument.
      */
-    template <ap::action::detail::valid_action_specifier AS, std::invocable<value_type&> F>
+    template <ap::action::detail::c_action_specifier AS, std::invocable<value_type&> F>
     optional_argument& action(F&& action) noexcept {
         using callable_type = ap::action::detail::callable_type<AS, value_type>;
         this->_action = std::forward<callable_type>(action);
@@ -954,7 +976,7 @@ public:
      * @note Requires T to be equality comparable.
      */
     optional_argument& choices(const std::vector<value_type>& choices) noexcept
-    requires(utility::equality_comparable<value_type>)
+    requires(utility::c_equality_comparable<value_type>)
     {
         this->_choices = choices;
         return *this;
@@ -1239,7 +1261,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
      */
-    template <utility::valid_argument_value_type T = std::string>
+    template <utility::c_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
@@ -1259,7 +1281,7 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      */
-    template <utility::valid_argument_value_type T = std::string>
+    template <utility::c_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
@@ -1280,7 +1302,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
      */
-    template <utility::valid_argument_value_type T = std::string>
+    template <utility::c_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
@@ -1299,7 +1321,7 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      */
-    template <utility::valid_argument_value_type T = std::string>
+    template <utility::c_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
