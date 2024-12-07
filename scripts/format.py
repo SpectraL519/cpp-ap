@@ -1,6 +1,7 @@
 import argparse
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
 
 from common import find_files
@@ -8,9 +9,9 @@ from common import find_files
 
 class DefaultParameters:
     modified_files: bool = False
-    search_paths: list[str] = ["include", "tests"]
-    file_patterns: list[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
-    exclude_paths: list[str] = ["tests/external"]
+    search_paths: Iterable[str] = ["include", "tests"]
+    file_patterns: Iterable[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
+    exclude_paths: Iterable[str] = ["tests/external"]
     check: bool = False
 
 
@@ -103,9 +104,9 @@ def run_clang_format(files: set[Path], check: bool) -> int:
 
 def main(
     modified_files: bool,
-    search_paths: list[str],
-    file_patterns: list[str],
-    exclude_paths: list[str],
+    search_paths: Iterable[str],
+    file_patterns: Iterable[str],
+    exclude_paths: Iterable[str],
     check: bool
 ):
     files_to_format = find_files(search_paths, file_patterns, exclude_paths)

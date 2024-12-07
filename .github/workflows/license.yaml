@@ -1,10 +1,10 @@
-name: licence
+name: license
 on:
   push:
     branches:
       - '*'
     paths:
-      - .github/workflows/licence.yaml
+      - .github/workflows/license.yaml
       - scripts/check_licence.py
       - include/**
 
@@ -25,4 +25,4 @@ jobs:
       - name: Test licence
         shell: bash
         run: |
-          python3 scripts/check_licence.py
+          python3 scripts/check_license.py
