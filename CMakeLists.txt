@@ -14,7 +14,7 @@ project(cpp-ap
     LANGUAGES CXX
 )
 
-option(BUILD_TESTS "Build project tests" ON)
+option(BUILD_TESTS "Build project tests" OFF)
 
 # Define the library target
 add_library(cpp-ap INTERFACE)
