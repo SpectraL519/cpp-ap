@@ -45,7 +45,7 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
   - [Formatting](#formatting)
 - [Documentation](#documentation)
 - [Compiler support](#compiler-support)
-- [Licence](#licence)
+- [License](#license)
 
 <br />
 <br />
@@ -587,6 +587,6 @@ The documentation for this project can be generated using Doxygen:
 <br />
 <br />
 
-## Licence
+## License
 
-The `CPP-AP` project uses the [MIT Licence](https://mit-license.org/) which can be found in the [LICENCE](/LICENSE) file
+The `CPP-AP` project uses the [MIT License](https://mit-license.org/) which can be found in the [LICENSE](/LICENSE) file

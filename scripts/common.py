@@ -1,10 +1,11 @@
+from collections.abc import Iterable
 from pathlib import Path
 
 
 def find_files(
-    search_paths: list[str],
-    file_patterns: list[str],
-    exclude_paths: list[str]
+    search_paths: Iterable[str],
+    file_patterns: Iterable[str],
+    exclude_paths: Iterable[str]
 ) -> set[Path]:
     matching_files = []
     for search_path in search_paths:

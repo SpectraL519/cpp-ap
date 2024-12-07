@@ -1,19 +1,17 @@
 import argparse
 import sys
+from collections.abc import Iterable
 from enum import IntEnum
 from pathlib import Path
 
 from common import find_files
 
 
-LICENCE_INFO = [
-    "// Copyright (c) 2023-2024 Jakub Musiał",
-    "// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).",
-    "// Licensed under the MIT License. See the LICENSE file in the project root for full license information.",
-]
+ADDITIONAL_LICENCE_INFO = ["CPP-AP: Command-line argument parser for C++20"]
 
 
 class DefaultParameters:
+    licence_file: Path = Path("LICENSE")
     search_paths: list[str] = ["include"]
     file_patterns: list[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
     exclude_paths: list[str] = []
@@ -22,6 +20,13 @@ class DefaultParameters:
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-l", "--licence-file",
+        type=Path,
+        default=DefaultParameters.licence_file,
+        nargs="?",
+        help="path to the licence file"
+    )
     parser.add_argument(
         "-p", "--search-paths",
         type=str,
@@ -50,6 +55,20 @@ def parse_args():
     return vars(parser.parse_args())
 
 
+def expected_licence(licence_file: Path, pre: Iterable[str] = None, post: Iterable[str] = None) -> list[str]:
+    with licence_file.open("r", encoding="utf-8") as f:
+        licence_content = f.read().splitlines()
+
+    content = []
+    if pre:
+        content.extend([*pre, ""])
+    content.extend(licence_content)
+    if post:
+        content.extend(["", *post])
+
+    return ["/*", *content, "*/"]
+
+
 class ReturnCode(IntEnum):
     ok = 0
     file_to_short = -1
@@ -57,7 +76,7 @@ class ReturnCode(IntEnum):
     invalid_licence = -3
 
 
-def check_licence(files: set[Path]) -> int:
+def check_licence(expected_licence: Iterable[str], files: set[Path]) -> int:
     n_files = len(files)
     print(f"Files to check: {n_files}")
 
@@ -66,7 +85,7 @@ def check_licence(files: set[Path]) -> int:
         nonlocal return_code
         return_code = c if not return_code else return_code
 
-    n_licence_lines = len(LICENCE_INFO)
+    n_licence_lines = len(expected_licence)
 
     def _check_file(file: Path):
         with open(file, "r", encoding="utf-8") as f:
@@ -78,7 +97,7 @@ def check_licence(files: set[Path]) -> int:
                 print(f"[Licence error] File `{file}` to short")
                 return
 
-            matching_lines = [lines[i] == LICENCE_INFO[i] for i in range(n_licence_lines)]
+            matching_lines = [lines[i] == expected_licence[i] for i in range(n_licence_lines)]
             correct_licence = all(matching_lines)
             if not correct_licence:
                 missing_info = any(matching_lines)
@@ -94,16 +113,22 @@ def check_licence(files: set[Path]) -> int:
         print(f"[{i + 1}/{n_files}] {file}")
         _check_file(file)
 
+    print("Done!")
+
     return return_code
 
 
 def main(
-    search_paths: list[str],
-    file_patterns: list[str],
-    exclude_paths: list[str]
+    licence_file: Path,
+    search_paths: Iterable[str],
+    file_patterns: Iterable[str],
+    exclude_paths: Iterable[str]
 ):
     files_to_check = find_files(search_paths, file_patterns, exclude_paths)
-    sys.exit(check_licence(files_to_check))
+    sys.exit(check_licence(
+        expected_licence(licence_file, pre=ADDITIONAL_LICENCE_INFO),
+        files_to_check
+    ))
 
 
 if __name__ == "__main__":
