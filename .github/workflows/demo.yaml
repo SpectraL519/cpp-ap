@@ -8,7 +8,7 @@ on:
       - .gitmodules
       - cpp-ap-demo
       - include/**
-
+      - CMakeLists.txt
 
 jobs:
   build-demo:

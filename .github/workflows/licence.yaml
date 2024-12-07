@@ -8,7 +8,6 @@ on:
       - scripts/check_licence.py
       - include/**
 
-
 jobs:
   build:
     name: Test code formatting
