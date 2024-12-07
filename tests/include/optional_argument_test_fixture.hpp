@@ -21,7 +21,7 @@ struct optional_argument_test_fixture {
 
     template <valid_argument_value_type T>
     void sut_set_used(optional_argument<T>& sut) const {
-        return sut.set_used();
+        return sut.mark_used();
     }
 
     template <valid_argument_value_type T>
@@ -37,7 +37,7 @@ struct optional_argument_test_fixture {
     template <valid_argument_value_type T>
     optional_argument<T>& sut_set_value(optional_argument<T>& sut, const std::string& str_value)
         const {
-        sut.set_used();
+        sut.mark_used();
         return sut.set_value(str_value);
     }
 
