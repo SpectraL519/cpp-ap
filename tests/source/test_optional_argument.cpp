@@ -136,7 +136,7 @@ TEST_CASE_FIXTURE(
     auto sut = prepare_argument(primary_name);
 
     constexpr std::size_t nused = 5u;
-    for (std::size_t n = 0; n < nused; n++)
+    for (std::size_t n = 0; n < nused; ++n)
         sut_set_used(sut);
 
     CHECK_EQ(sut_get_nused(sut), nused);
@@ -348,7 +348,7 @@ TEST_CASE_FIXTURE(
     const auto stored_values = sut_get_values(sut);
 
     REQUIRE_EQ(stored_values.size(), default_choices.size());
-    for (std::size_t i = 0; i < stored_values.size(); i++) {
+    for (std::size_t i = 0; i < stored_values.size(); ++i) {
         REQUIRE_EQ(std::any_cast<test_value_type>(stored_values[i]), default_choices[i]);
     }
 }
