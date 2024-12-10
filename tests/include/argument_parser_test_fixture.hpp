@@ -62,10 +62,10 @@ struct argument_parser_test_fixture {
 
         argv_vec.emplace_back("program");
 
-        for (std::size_t i = 0; i < args_split; i++) // positional args
+        for (std::size_t i = 0; i < args_split; ++i) // positional args
             argv_vec.emplace_back(prepare_arg_value(i));
 
-        for (std::size_t i = args_split; i < num_args; i++) { // optional args
+        for (std::size_t i = args_split; i < num_args; ++i) { // optional args
             argv_vec.emplace_back(prepare_arg_flag_primary(i));
             argv_vec.emplace_back(prepare_arg_value(i));
         }
@@ -78,7 +78,7 @@ struct argument_parser_test_fixture {
     }
 
     void free_argv(std::size_t argc, char** argv) const {
-        for (std::size_t i = 0; i < argc; i++)
+        for (std::size_t i = 0; i < argc; ++i)
             delete[] argv[i];
         delete[] argv;
     }
@@ -89,12 +89,12 @@ struct argument_parser_test_fixture {
 
     void add_arguments(ap::argument_parser& parser, std::size_t num_args, std::size_t args_split)
         const {
-        for (std::size_t i = 0; i < args_split; i++) { // positional args
+        for (std::size_t i = 0; i < args_split; ++i) { // positional args
             const auto arg_name = prepare_arg_name(i);
             parser.add_positional_argument(arg_name.primary, arg_name.secondary.value());
         }
 
-        for (std::size_t i = args_split; i < num_args; i++) { // optional args
+        for (std::size_t i = args_split; i < num_args; ++i) { // optional args
             const auto arg_name = prepare_arg_name(i);
             parser.add_optional_argument(arg_name.primary, arg_name.secondary.value());
         }
@@ -106,12 +106,12 @@ struct argument_parser_test_fixture {
         cmd_argument_list cmd_args;
         cmd_args.reserve(get_args_length(num_args, args_split));
 
-        for (std::size_t i = 0; i < args_split; i++) { // positional args
+        for (std::size_t i = 0; i < args_split; ++i) { // positional args
             cmd_args.push_back(
                 cmd_argument{cmd_argument::type_discriminator::value, prepare_arg_value(i)}
             );
         }
-        for (std::size_t i = args_split; i < num_args; i++) { // optional args
+        for (std::size_t i = args_split; i < num_args; ++i) { // optional args
             cmd_args.push_back(
                 cmd_argument{cmd_argument::type_discriminator::flag, prepare_arg_name(i).primary}
             );

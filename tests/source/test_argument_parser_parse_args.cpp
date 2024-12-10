@@ -54,7 +54,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_EQ(cmd_args.size(), get_args_length(non_default_num_args, non_default_args_split));
 
-    for (std::size_t i = 0; i < non_default_args_split; i++) { // positional args
+    for (std::size_t i = 0; i < non_default_args_split; ++i) { // positional args
         REQUIRE_EQ(cmd_args.at(i).discriminator, cmd_argument::type_discriminator::value);
         CHECK_EQ(cmd_args.at(i).value, prepare_arg_value(i));
     }
@@ -67,7 +67,7 @@ TEST_CASE_FIXTURE(
         REQUIRE_EQ(cmd_args.at(i + 1).discriminator, cmd_argument::type_discriminator::value);
         CHECK_EQ(cmd_args.at(i + 1).value, prepare_arg_value(opt_arg_idx));
 
-        opt_arg_idx++;
+        ++opt_arg_idx;
     }
 
     free_argv(argc, argv);
@@ -115,7 +115,7 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
-    for (std::size_t i = 0; i < non_default_num_args; i++) {
+    for (std::size_t i = 0; i < non_default_num_args; ++i) {
         const auto arg_name = prepare_arg_name(i);
         CHECK(sut_get_argument(arg_name.primary));
         CHECK(sut_get_argument(arg_name.secondary.value()));
@@ -318,7 +318,7 @@ TEST_CASE_FIXTURE(
 
         REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-        for (std::size_t i = 0; i < non_default_num_args; i++) {
+        for (std::size_t i = 0; i < non_default_num_args; ++i) {
             const auto arg_name = prepare_arg_name(i);
             CHECK(sut.has_value(arg_name.primary));
             CHECK(sut.has_value(arg_name.secondary.value()));
@@ -335,17 +335,17 @@ TEST_CASE_FIXTURE(
 
         REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-        for (std::size_t i = 0; i < non_default_args_split; i++) {
+        for (std::size_t i = 0; i < non_default_args_split; ++i) {
             const auto arg_name = prepare_arg_name(i);
             CHECK(sut.has_value(arg_name.primary));
             CHECK(sut.has_value(arg_name.secondary.value()));
         }
-        for (std::size_t i = non_default_args_split; i < non_default_num_args; i++) {
+        for (std::size_t i = non_default_args_split; i < non_default_num_args; ++i) {
             const auto arg_name = prepare_arg_name(i);
             CHECK_FALSE(sut.has_value(arg_name.primary));
             CHECK_FALSE(sut.has_value(arg_name.secondary.value()));
         }
-        for (std::size_t i = non_default_num_args; i < num_args; i++) {
+        for (std::size_t i = non_default_num_args; i < num_args; ++i) {
             const auto arg_name = prepare_arg_name(i);
             CHECK(sut.has_value(arg_name.primary));
             CHECK(sut.has_value(arg_name.secondary.value()));
@@ -380,7 +380,7 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
-    for (std::size_t i = 0; i < non_default_num_args; i++) {
+    for (std::size_t i = 0; i < non_default_num_args; ++i) {
         const auto arg_name = prepare_arg_name(i);
         CHECK_THROWS_AS(sut.value(arg_name.primary), std::logic_error);
         CHECK_THROWS_AS(sut.value(arg_name.secondary.value()), std::logic_error);
@@ -410,17 +410,17 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-    for (std::size_t i = 0; i < non_default_args_split; i++) {
+    for (std::size_t i = 0; i < non_default_args_split; ++i) {
         const auto arg_name = prepare_arg_name(i);
         CHECK_NOTHROW(sut.value(arg_name.primary));
         CHECK_NOTHROW(sut.value(arg_name.secondary.value()));
     }
-    for (std::size_t i = non_default_args_split; i < non_default_num_args; i++) {
+    for (std::size_t i = non_default_args_split; i < non_default_num_args; ++i) {
         const auto arg_name = prepare_arg_name(i);
         CHECK_THROWS_AS(sut.value(arg_name.primary), std::logic_error);
         CHECK_THROWS_AS(sut.value(arg_name.secondary.value()), std::logic_error);
     }
-    for (std::size_t i = non_default_num_args; i < num_args; i++) {
+    for (std::size_t i = non_default_num_args; i < num_args; ++i) {
         const auto arg_name = prepare_arg_name(i);
         CHECK_NOTHROW(sut.value(arg_name.primary));
         CHECK_NOTHROW(sut.value(arg_name.secondary.value()));
@@ -444,7 +444,7 @@ TEST_CASE_FIXTURE(
 
     using invalid_value_type = int;
 
-    for (std::size_t i = 0; i < non_default_num_args; i++) {
+    for (std::size_t i = 0; i < non_default_num_args; ++i) {
         const auto arg_name = prepare_arg_name(i);
 
         REQUIRE(sut.has_value(arg_name.primary));
@@ -475,7 +475,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-    for (std::size_t i = 0; i < non_default_num_args; i++) {
+    for (std::size_t i = 0; i < non_default_num_args; ++i) {
         const auto arg_name = prepare_arg_name(i);
         const auto arg_value = prepare_arg_value(i);
 
@@ -494,7 +494,7 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
-    for (std::size_t i = 0; i < non_default_num_args; i++) {
+    for (std::size_t i = 0; i < non_default_num_args; ++i) {
         const auto arg_name = prepare_arg_name(i);
         CHECK_EQ(sut.count(arg_name.primary), 0u);
         CHECK_EQ(sut.count(arg_name.secondary.value()), 0u);
@@ -611,7 +611,7 @@ TEST_CASE_FIXTURE(
     const std::string flag = "--" + optional_primary_name;
     argv[1] = new char[flag.length() + 1];
     std::strcpy(argv[1], flag.c_str());
-    for (int i = 2; i < argc; i++) {
+    for (int i = 2; i < argc; ++i) {
         const auto value = prepare_arg_value(i - 1);
         argv[i] = new char[value.length() + 1];
         std::strcpy(argv[i], value.c_str());
@@ -703,7 +703,7 @@ TEST_CASE_FIXTURE(
 
     std::vector<std::string> values;
 
-    for (int i = 2; i < argc; i++) {
+    for (int i = 2; i < argc; ++i) {
         const auto value = prepare_arg_value(i - 1);
         argv[i] = new char[value.length() + 1];
         std::strcpy(argv[i], value.c_str());
@@ -716,7 +716,7 @@ TEST_CASE_FIXTURE(
     const auto& stored_values = sut.values(optional_primary_name);
 
     REQUIRE_EQ(stored_values.size(), values.size());
-    for (std::size_t i = 0; i < stored_values.size(); i++)
+    for (std::size_t i = 0; i < stored_values.size(); ++i)
         CHECK_EQ(stored_values[i], values[i]);
 
     free_argv(argc, argv);

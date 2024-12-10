@@ -81,21 +81,18 @@ template <typename T>
 concept c_readable = requires(T value, std::istream& input_stream) { input_stream >> value; };
 
 /**
- * @brief The concept is satisfied when `T` is c_readable, copy constructible and assignable.
+ * @brief The concept is satisfied when `T` overloads the std::ostream operator `<<`.
  * @tparam T Type to check.
  */
 template <typename T>
-concept c_argument_value_type =
-    c_readable<T> and std::copy_constructible<T> and std::assignable_from<T&, const T&>;
+concept c_writable = requires(T value, std::ostream& output_stream) { output_stream << value; };
 
 /**
- * @brief The concept is satisfied when `T` is comparable using the equality operator `==`.
+ * @brief The concept is satisfied when `T` is c_readable and semiregular.
  * @tparam T Type to check.
  */
 template <typename T>
-concept c_equality_comparable = requires(T lhs, T rhs) {
-    { lhs == rhs } -> std::convertible_to<bool>;
-};
+concept c_argument_value_type = c_readable<T> and std::semiregular<T>;
 
 /**
  * @brief Holds the boolean value indicating whether type `T` is the same as one of the `ValidTypes`.
@@ -113,14 +110,12 @@ namespace argument::detail {
 /// @brief Structure holding the argument name.
 struct argument_name {
     argument_name() = delete;
+
+    argument_name(const argument_name&) = default;
+    argument_name(argument_name&&) = default;
+
     argument_name& operator=(const argument_name&) = delete;
     argument_name& operator=(argument_name&&) = delete;
-
-    /// @brief Copy constructor
-    argument_name(const argument_name&) = default;
-
-    /// @brief Move constructor
-    argument_name(argument_name&&) = default;
 
     /**
      * @brief Primary name constructor.
@@ -204,6 +199,8 @@ struct argument_name {
 /// @brief Argument class interface
 class argument_interface {
 public:
+    virtual ~argument_interface() = default;
+
     /**
      * @brief Set the help message for the argument.
      * @param msg The help message to set.
@@ -213,9 +210,6 @@ public:
 
     /// @return True if the argument is optional, false otherwise.
     virtual bool is_optional() const noexcept = 0;
-
-    /// @brief Destructor for argument_interface.
-    virtual ~argument_interface() = default;
 
     /**
      * @brief Overloaded stream insertion operator.
@@ -460,19 +454,12 @@ public:
     range(const count_type nlow, const count_type nhigh)
     : _nlow(nlow), _nhigh(nhigh), _default(nlow == _ndefault and nhigh == _ndefault) {}
 
-    /// @brief Copy constructor
     range(const range&) = default;
-
-    /// @brief Move constructor
     range(range&&) = default;
 
-    /// @brief Copy assignmner constructor
     range& operator=(const range&) = default;
-
-    /// @brief Move assignmner constructor
     range& operator=(range&&) = default;
 
-    /// @brief Class destructor.
     ~range() = default;
 
     /// @return True if the range is [1, 1].
@@ -622,7 +609,7 @@ using action_variant_type =
  * @return True if the held action is a void action.
  */
 template <ap::utility::c_argument_value_type T>
-[[nodiscard]] inline bool is_void_action(const action_variant_type<T>& action) noexcept {
+[[nodiscard]] constexpr inline bool is_void_action(const action_variant_type<T>& action) noexcept {
     return std::holds_alternative<callable_type<ap::void_action, T>>(action);
 }
 
@@ -656,7 +643,6 @@ class positional_argument : public detail::argument_interface {
 public:
     using value_type = T; ///< Type of the argument value.
 
-    /// @brief Deleted default constructor.
     positional_argument() = delete;
 
     /**
@@ -665,7 +651,6 @@ public:
      */
     positional_argument(const detail::argument_name& name) : _name(name) {}
 
-    /// @brief Destructor for positional argument.
     ~positional_argument() = default;
 
     /**
@@ -694,7 +679,7 @@ public:
      * @note Requires T to be equality comparable.
      */
     positional_argument& choices(const std::vector<value_type>& choices) noexcept
-    requires(utility::c_equality_comparable<value_type>)
+    requires(std::equality_comparable<value_type>)
     {
         this->_choices = choices;
         return *this;
@@ -875,7 +860,6 @@ public:
     using value_type = T;
     using count_type = ap::nargs::range::count_type;
 
-    /// @brief Deleted default constructor for optional_argument.
     optional_argument() = delete;
 
     /**
@@ -884,7 +868,6 @@ public:
      */
     optional_argument(const detail::argument_name& name) : _name(name) {}
 
-    /// @brief Destructor for optional_argument.
     ~optional_argument() = default;
 
     /**
@@ -976,7 +959,7 @@ public:
      * @note Requires T to be equality comparable.
      */
     optional_argument& choices(const std::vector<value_type>& choices) noexcept
-    requires(utility::c_equality_comparable<value_type>)
+    requires(std::equality_comparable<value_type>)
     {
         this->_choices = choices;
         return *this;
@@ -1040,7 +1023,7 @@ private:
 
     /// @brief Mark the optional argument as used.
     void mark_used() noexcept override {
-        this->_nused++;
+        ++this->_nused;
     }
 
     /// @return True if the optional argument is used, false otherwise.
@@ -1074,7 +1057,7 @@ private:
         if (not (this->_nargs_range or this->_values.empty()))
             throw error::value_already_set_error(this->_name);
 
-        this->_values.push_back(value);
+        this->_values.emplace_back(std::move(value));
         return *this;
     }
 
@@ -1198,15 +1181,14 @@ using default_optarg = default_argument::optional;
 /// @brief Main argument parser class.
 class argument_parser {
 public:
-    /// @brief Default constructor.
+    argument_parser(const argument_parser&) = delete;
+    argument_parser& operator=(const argument_parser&) = delete;
+
     argument_parser() = default;
 
-    argument_parser(const argument_parser&) = delete;
-    argument_parser(argument_parser&&) = delete;
-    argument_parser& operator=(const argument_parser&) = delete;
-    argument_parser& operator=(argument_parser&&) = delete;
+    argument_parser(argument_parser&&) = default;
+    argument_parser& operator=(argument_parser&&) = default;
 
-    /// @brief Destructor for the argument parser.
     ~argument_parser() = default;
 
     /**
@@ -1269,8 +1251,9 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name
-        ));
+        this->_positional_args.emplace_back(
+            std::make_unique<argument::positional_argument<T>>(arg_name)
+        );
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
@@ -1291,8 +1274,9 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
-        this->_positional_args.push_back(std::make_unique<argument::positional_argument<T>>(arg_name
-        ));
+        this->_positional_args.emplace_back(
+            std::make_unique<argument::positional_argument<T>>(arg_name)
+        );
         return static_cast<argument::positional_argument<T>&>(*this->_positional_args.back());
     }
 
@@ -1331,7 +1315,8 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
-        this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(arg_name));
+        this->_optional_args.emplace_back(std::make_unique<argument::optional_argument<T>>(arg_name)
+        );
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
     }
 
@@ -1545,8 +1530,10 @@ private:
         enum class type_discriminator : bool { flag, value };
 
         cmd_argument() = default;
+
         cmd_argument(const cmd_argument&) = default;
         cmd_argument(cmd_argument&&) = default;
+
         cmd_argument& operator=(const cmd_argument&) = default;
         cmd_argument& operator=(cmd_argument&&) = default;
 
@@ -1636,14 +1623,14 @@ private:
         cmd_argument_list args;
         args.reserve(argc - 1);
 
-        for (int i = 1; i < argc; i++) {
+        for (int i = 1; i < argc; ++i) {
             std::string value = argv[i];
             if (this->_is_flag(value)) {
                 this->_strip_flag_prefix(value);
-                args.push_back(cmd_argument{cmd_argument::type_discriminator::flag, value});
+                args.emplace_back(cmd_argument::type_discriminator::flag, std::move(value));
             }
             else {
-                args.push_back(cmd_argument{cmd_argument::type_discriminator::value, value});
+                args.emplace_back(cmd_argument::type_discriminator::value, std::move(value));
             }
         }
 
@@ -1702,7 +1689,7 @@ private:
                 return;
 
             pos_arg->set_value(cmd_it->value);
-            cmd_it++;
+            ++cmd_it;
         }
     }
 
@@ -1735,7 +1722,7 @@ private:
                 curr_opt_arg->get()->set_value(cmd_it->value);
             }
 
-            cmd_it++;
+            ++cmd_it;
         }
     }
 
