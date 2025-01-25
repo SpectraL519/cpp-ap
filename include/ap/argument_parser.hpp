@@ -1525,43 +1525,43 @@ private:
         }
     }
 
-    /// @brief Structure representing a command-line argument.
-    struct cmd_argument {
-        enum class type_discriminator : bool { flag, value };
+    /// @brief Structure representing a single command-line argument token.
+    struct arg_token {
+        enum class token_type : bool { flag, value };
 
-        cmd_argument() = default;
+        arg_token() = default;
 
-        cmd_argument(const cmd_argument&) = default;
-        cmd_argument(cmd_argument&&) = default;
+        arg_token(const arg_token&) = default;
+        arg_token(arg_token&&) = default;
 
-        cmd_argument& operator=(const cmd_argument&) = default;
-        cmd_argument& operator=(cmd_argument&&) = default;
+        arg_token& operator=(const arg_token&) = default;
+        arg_token& operator=(arg_token&&) = default;
 
         /**
          * @brief Constructor of a command-line argument.
-         * @param discriminator Type discriminator (flag or value).
+         * @param type Type type of the token (flag or value).
          * @param value The value of the argument.
          */
-        cmd_argument(const type_discriminator discriminator, const std::string& value)
-        : discriminator(discriminator), value(value) {}
+        arg_token(const token_type type, const std::string& value)
+        : type(type), value(value) {}
 
-        ~cmd_argument() = default;
+        ~arg_token() = default;
 
         /**
-         * @brief Equality operator for comparing cmd_argument instances.
-         * @param other Another cmd_argument to compare with.
+         * @brief Equality operator for comparing arg_token instances.
+         * @param other Another arg_token to compare with.
          * @return Boolean statement of equality comparison.
          */
-        bool operator==(const cmd_argument& other) const noexcept {
-            return this->discriminator == other.discriminator and this->value == other.value;
+        bool operator==(const arg_token& other) const noexcept {
+            return this->type == other.type and this->value == other.value;
         }
 
-        type_discriminator discriminator;
+        token_type type;
         std::string value;
     };
 
-    using cmd_argument_list = std::vector<cmd_argument>;
-    using cmd_argument_list_iterator = typename cmd_argument_list::const_iterator;
+    using arg_token_list = std::vector<arg_token>;
+    using arg_token_list_iterator = typename arg_token_list::const_iterator;
 
     using argument_ptr_type = std::unique_ptr<argument::detail::argument_interface>;
     using argument_opt_type =
@@ -1616,21 +1616,21 @@ private:
      * @param argv Array of command-line argument strings.
      * @return List of preprocessed command-line arguments.
      */
-    [[nodiscard]] cmd_argument_list _preprocess_input(int argc, char* argv[]) const noexcept {
+    [[nodiscard]] arg_token_list _preprocess_input(int argc, char* argv[]) const noexcept {
         if (argc < 2)
-            return cmd_argument_list{};
+            return arg_token_list{};
 
-        cmd_argument_list args;
+        arg_token_list args;
         args.reserve(argc - 1);
 
         for (int i = 1; i < argc; ++i) {
             std::string value = argv[i];
             if (this->_is_flag(value)) {
                 this->_strip_flag_prefix(value);
-                args.emplace_back(cmd_argument::type_discriminator::flag, std::move(value));
+                args.emplace_back(arg_token::token_type::flag, std::move(value));
             }
             else {
-                args.emplace_back(cmd_argument::type_discriminator::value, std::move(value));
+                args.emplace_back(arg_token::token_type::value, std::move(value));
             }
         }
 
@@ -1667,8 +1667,8 @@ private:
      * @brief Implementation of parsing command-line arguments.
      * @param cmd_args The list of command-line arguments.
      */
-    void _parse_args_impl(const cmd_argument_list& cmd_args) {
-        cmd_argument_list_iterator cmd_it = cmd_args.begin();
+    void _parse_args_impl(const arg_token_list& cmd_args) {
+        arg_token_list_iterator cmd_it = cmd_args.begin();
         this->_parse_positional_args(cmd_args, cmd_it);
         this->_parse_optional_args(cmd_args, cmd_it);
     }
@@ -1679,13 +1679,13 @@ private:
      * @param cmd_it Iterator for iterating through command-line arguments.
      */
     void _parse_positional_args(
-        const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
+        const arg_token_list& cmd_args, arg_token_list_iterator& cmd_it
     ) noexcept {
         for (const auto& pos_arg : this->_positional_args) {
             if (cmd_it == cmd_args.end())
                 return;
 
-            if (cmd_it->discriminator == cmd_argument::type_discriminator::flag)
+            if (cmd_it->type == arg_token::token_type::flag)
                 return;
 
             pos_arg->set_value(cmd_it->value);
@@ -1699,12 +1699,12 @@ private:
      * @param cmd_it Iterator for iterating through command-line arguments.
      */
     void _parse_optional_args(
-        const cmd_argument_list& cmd_args, cmd_argument_list_iterator& cmd_it
+        const arg_token_list& cmd_args, arg_token_list_iterator& cmd_it
     ) {
         std::optional<std::reference_wrapper<argument_ptr_type>> curr_opt_arg;
 
         while (cmd_it != cmd_args.end()) {
-            if (cmd_it->discriminator == cmd_argument::type_discriminator::flag) {
+            if (cmd_it->type == arg_token::token_type::flag) {
                 auto opt_arg_it = std::ranges::find_if(
                     this->_optional_args, this->_name_match_predicate(cmd_it->value)
                 );

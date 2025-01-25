@@ -55,16 +55,16 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(cmd_args.size(), get_args_length(non_default_num_args, non_default_args_split));
 
     for (std::size_t i = 0; i < non_default_args_split; ++i) { // positional args
-        REQUIRE_EQ(cmd_args.at(i).discriminator, cmd_argument::type_discriminator::value);
+        REQUIRE_EQ(cmd_args.at(i).type, arg_token::token_type::value);
         CHECK_EQ(cmd_args.at(i).value, prepare_arg_value(i));
     }
 
     std::size_t opt_arg_idx = non_default_args_split;
     for (std::size_t i = non_default_args_split; i < cmd_args.size(); i += 2) { // optional args
-        REQUIRE_EQ(cmd_args.at(i).discriminator, cmd_argument::type_discriminator::flag);
+        REQUIRE_EQ(cmd_args.at(i).type, arg_token::token_type::flag);
         CHECK(prepare_arg_name(opt_arg_idx).match(cmd_args.at(i).value));
 
-        REQUIRE_EQ(cmd_args.at(i + 1).discriminator, cmd_argument::type_discriminator::value);
+        REQUIRE_EQ(cmd_args.at(i + 1).type, arg_token::token_type::value);
         CHECK_EQ(cmd_args.at(i + 1).value, prepare_arg_value(opt_arg_idx));
 
         ++opt_arg_idx;

@@ -14,8 +14,8 @@ struct argument_parser_test_fixture {
     argument_parser_test_fixture() = default;
     ~argument_parser_test_fixture() = default;
 
-    using cmd_argument = ap::argument_parser::cmd_argument;
-    using cmd_argument_list = ap::argument_parser::cmd_argument_list;
+    using arg_token = ap::argument_parser::arg_token;
+    using arg_token_list = ap::argument_parser::arg_token_list;
     using argument_list_type = ap::argument_parser::argument_list_type;
     using argument_opt_type = ap::argument_parser::argument_opt_type;
 
@@ -100,23 +100,23 @@ struct argument_parser_test_fixture {
         }
     }
 
-    [[nodiscard]] cmd_argument_list prepare_cmd_arg_list(
+    [[nodiscard]] arg_token_list prepare_cmd_arg_list(
         std::size_t num_args, std::size_t args_split
     ) const {
-        cmd_argument_list cmd_args;
+        arg_token_list cmd_args;
         cmd_args.reserve(get_args_length(num_args, args_split));
 
         for (std::size_t i = 0; i < args_split; ++i) { // positional args
             cmd_args.push_back(
-                cmd_argument{cmd_argument::type_discriminator::value, prepare_arg_value(i)}
+                arg_token{arg_token::token_type::value, prepare_arg_value(i)}
             );
         }
         for (std::size_t i = args_split; i < num_args; ++i) { // optional args
             cmd_args.push_back(
-                cmd_argument{cmd_argument::type_discriminator::flag, prepare_arg_name(i).primary}
+                arg_token{arg_token::token_type::flag, prepare_arg_name(i).primary}
             );
             cmd_args.push_back(
-                cmd_argument{cmd_argument::type_discriminator::value, prepare_arg_value(i)}
+                arg_token{arg_token::token_type::value, prepare_arg_value(i)}
             );
         }
 
@@ -132,11 +132,11 @@ struct argument_parser_test_fixture {
         return sut._program_description;
     }
 
-    [[nodiscard]] cmd_argument_list sut_process_input(int argc, char* argv[]) const {
+    [[nodiscard]] arg_token_list sut_process_input(int argc, char* argv[]) const {
         return sut._preprocess_input(argc, argv);
     }
 
-    void sut_parse_args_impl(const cmd_argument_list& cmd_args) {
+    void sut_parse_args_impl(const arg_token_list& cmd_args) {
         sut._parse_args_impl(cmd_args);
     }
 
