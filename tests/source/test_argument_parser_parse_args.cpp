@@ -26,16 +26,16 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string optional_secondary_name = "oa";
 };
 
-// _preprocess_input
+// _tokenize
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "_preprocess_input should return an empty vector for no command-line arguments"
+    "_tokenize should return an empty vector for no command-line arguments"
 ) {
     const auto argc = get_argc(default_num_args, default_num_args);
     auto argv = prepare_argv(default_num_args, default_num_args);
 
-    const auto args = sut_process_input(argc, argv);
+    const auto args = sut_tokenize(argc, argv);
 
     CHECK(args.empty());
 
@@ -43,29 +43,29 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "_preprocess_input should return a vector of correct arguments"
+    test_argument_parser_parse_args, "_tokenize should return a vector of correct arguments"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
-    const auto cmd_args = sut_process_input(argc, argv);
+    const auto arg_tokens = sut_tokenize(argc, argv);
 
-    REQUIRE_EQ(cmd_args.size(), get_args_length(non_default_num_args, non_default_args_split));
+    REQUIRE_EQ(arg_tokens.size(), get_args_length(non_default_num_args, non_default_args_split));
 
     for (std::size_t i = 0; i < non_default_args_split; ++i) { // positional args
-        REQUIRE_EQ(cmd_args.at(i).discriminator, cmd_argument::type_discriminator::value);
-        CHECK_EQ(cmd_args.at(i).value, prepare_arg_value(i));
+        REQUIRE_EQ(arg_tokens.at(i).type, arg_token::token_type::value);
+        CHECK_EQ(arg_tokens.at(i).value, prepare_arg_value(i));
     }
 
     std::size_t opt_arg_idx = non_default_args_split;
-    for (std::size_t i = non_default_args_split; i < cmd_args.size(); i += 2) { // optional args
-        REQUIRE_EQ(cmd_args.at(i).discriminator, cmd_argument::type_discriminator::flag);
-        CHECK(prepare_arg_name(opt_arg_idx).match(cmd_args.at(i).value));
+    for (std::size_t i = non_default_args_split; i < arg_tokens.size(); i += 2) { // optional args
+        REQUIRE_EQ(arg_tokens.at(i).type, arg_token::token_type::flag);
+        CHECK(prepare_arg_name(opt_arg_idx).match(arg_tokens.at(i).value));
 
-        REQUIRE_EQ(cmd_args.at(i + 1).discriminator, cmd_argument::type_discriminator::value);
-        CHECK_EQ(cmd_args.at(i + 1).value, prepare_arg_value(opt_arg_idx));
+        REQUIRE_EQ(arg_tokens.at(i + 1).type, arg_token::token_type::value);
+        CHECK_EQ(arg_tokens.at(i + 1).value, prepare_arg_value(opt_arg_idx));
 
         ++opt_arg_idx;
     }
@@ -82,10 +82,10 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
-    auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
-    cmd_args.erase(std::next(cmd_args.begin(), non_default_args_split));
+    auto arg_tokens = prepare_arg_token_list(non_default_num_args, non_default_args_split);
+    arg_tokens.erase(std::next(arg_tokens.begin(), non_default_args_split));
 
-    CHECK_THROWS_AS(sut_parse_args_impl(cmd_args), ap::error::free_value_error);
+    CHECK_THROWS_AS(sut_parse_args_impl(arg_tokens), ap::error::free_value_error);
 }
 
 TEST_CASE_FIXTURE(
@@ -93,8 +93,8 @@ TEST_CASE_FIXTURE(
     "_parse_args_impl should not throw when the arguments are correct"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
-    const auto cmd_args = prepare_cmd_arg_list(non_default_num_args, non_default_args_split);
-    CHECK_NOTHROW(sut_parse_args_impl(cmd_args));
+    const auto arg_tokens = prepare_arg_token_list(non_default_num_args, non_default_args_split);
+    CHECK_NOTHROW(sut_parse_args_impl(arg_tokens));
 }
 
 // _get_argument
