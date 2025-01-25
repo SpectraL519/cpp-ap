@@ -1548,7 +1548,7 @@ private:
 
         /**
          * @brief Equality operator for comparing arg_token instances.
-         * @param other Another arg_token to compare with.
+         * @param other An arg_token instance to compare with.
          * @return Boolean statement of equality comparison.
          */
         bool operator==(const arg_token& other) const noexcept {

@@ -100,20 +100,22 @@ struct argument_parser_test_fixture {
         }
     }
 
-    [[nodiscard]] arg_token_list prepare_cmd_arg_list(std::size_t num_args, std::size_t args_split)
-        const {
-        arg_token_list cmd_args;
-        cmd_args.reserve(get_args_length(num_args, args_split));
+    [[nodiscard]] arg_token_list prepare_arg_token_list(
+        std::size_t num_args, std::size_t args_split
+    ) const {
+        arg_token_list arg_tokens;
+        arg_tokens.reserve(get_args_length(num_args, args_split));
 
         for (std::size_t i = 0; i < args_split; ++i) { // positional args
-            cmd_args.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
+            arg_tokens.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
         }
         for (std::size_t i = args_split; i < num_args; ++i) { // optional args
-            cmd_args.push_back(arg_token{arg_token::token_type::flag, prepare_arg_name(i).primary});
-            cmd_args.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
+            arg_tokens.push_back(arg_token{arg_token::token_type::flag, prepare_arg_name(i).primary}
+            );
+            arg_tokens.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
         }
 
-        return cmd_args;
+        return arg_tokens;
     }
 
     // argument_parser private function accessors
@@ -129,8 +131,8 @@ struct argument_parser_test_fixture {
         return sut._tokenize(argc, argv);
     }
 
-    void sut_parse_args_impl(const arg_token_list& cmd_args) {
-        sut._parse_args_impl(cmd_args);
+    void sut_parse_args_impl(const arg_token_list& arg_tokens) {
+        sut._parse_args_impl(arg_tokens);
     }
 
     [[nodiscard]] argument_opt_type sut_get_argument(std::string_view arg_name) const {
