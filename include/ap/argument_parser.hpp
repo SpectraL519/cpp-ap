@@ -1357,7 +1357,7 @@ public:
      * @param argv Array of command-line argument strings.
      */
     void parse_args(int argc, char* argv[]) {
-        this->_parse_args_impl(this->_preprocess_input(argc, argv));
+        this->_parse_args_impl(this->_tokenize(argc, argv));
 
         if (this->_bypass_required_args())
             return;
@@ -1610,12 +1610,12 @@ private:
     }
 
     /**
-     * @brief Process command-line input arguments.
+     * @brief Processes the command-line arguments by converting them into tokens.
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument strings.
-     * @return List of preprocessed command-line arguments.
+     * @return List of preprocessed command-line argument tokens.
      */
-    [[nodiscard]] arg_token_list _preprocess_input(int argc, char* argv[]) const noexcept {
+    [[nodiscard]] arg_token_list _tokenize(int argc, char* argv[]) const noexcept {
         if (argc < 2)
             return arg_token_list{};
 
@@ -1664,62 +1664,62 @@ private:
 
     /**
      * @brief Implementation of parsing command-line arguments.
-     * @param cmd_args The list of command-line arguments.
+     * @param arg_tokens The list of command-line argument tokens.
      */
-    void _parse_args_impl(const arg_token_list& cmd_args) {
-        arg_token_list_iterator cmd_it = cmd_args.begin();
-        this->_parse_positional_args(cmd_args, cmd_it);
-        this->_parse_optional_args(cmd_args, cmd_it);
+    void _parse_args_impl(const arg_token_list& arg_tokens) {
+        arg_token_list_iterator token_it = arg_tokens.begin();
+        this->_parse_positional_args(arg_tokens, token_it);
+        this->_parse_optional_args(arg_tokens, token_it);
     }
 
     /**
      * @brief Parse positional arguments based on command-line input.
-     * @param cmd_args The list of command-line arguments.
-     * @param cmd_it Iterator for iterating through command-line arguments.
+     * @param arg_tokens The list of command-line argument tokens.
+     * @param token_it Iterator for iterating through command-line argument tokens.
      */
     void _parse_positional_args(
-        const arg_token_list& cmd_args, arg_token_list_iterator& cmd_it
+        const arg_token_list& arg_tokens, arg_token_list_iterator& token_it
     ) noexcept {
         for (const auto& pos_arg : this->_positional_args) {
-            if (cmd_it == cmd_args.end())
+            if (token_it == arg_tokens.end())
                 return;
 
-            if (cmd_it->type == arg_token::token_type::flag)
+            if (token_it->type == arg_token::token_type::flag)
                 return;
 
-            pos_arg->set_value(cmd_it->value);
-            ++cmd_it;
+            pos_arg->set_value(token_it->value);
+            ++token_it;
         }
     }
 
     /**
      * @brief Parse optional arguments based on command-line input.
-     * @param cmd_args The list of command-line arguments.
-     * @param cmd_it Iterator for iterating through command-line arguments.
+     * @param arg_tokens The list of command-line argument tokens.
+     * @param token_it Iterator for iterating through command-line argument tokens.
      */
-    void _parse_optional_args(const arg_token_list& cmd_args, arg_token_list_iterator& cmd_it) {
+    void _parse_optional_args(const arg_token_list& arg_tokens, arg_token_list_iterator& token_it) {
         std::optional<std::reference_wrapper<argument_ptr_type>> curr_opt_arg;
 
-        while (cmd_it != cmd_args.end()) {
-            if (cmd_it->type == arg_token::token_type::flag) {
+        while (token_it != arg_tokens.end()) {
+            if (token_it->type == arg_token::token_type::flag) {
                 auto opt_arg_it = std::ranges::find_if(
-                    this->_optional_args, this->_name_match_predicate(cmd_it->value)
+                    this->_optional_args, this->_name_match_predicate(token_it->value)
                 );
 
                 if (opt_arg_it == this->_optional_args.end())
-                    throw error::argument_not_found_error(cmd_it->value);
+                    throw error::argument_not_found_error(token_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 curr_opt_arg->get()->mark_used();
             }
             else {
                 if (not curr_opt_arg)
-                    throw error::free_value_error(cmd_it->value);
+                    throw error::free_value_error(token_it->value);
 
-                curr_opt_arg->get()->set_value(cmd_it->value);
+                curr_opt_arg->get()->set_value(token_it->value);
             }
 
-            ++cmd_it;
+            ++token_it;
         }
     }
 

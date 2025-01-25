@@ -125,8 +125,8 @@ struct argument_parser_test_fixture {
         return sut._program_description;
     }
 
-    [[nodiscard]] arg_token_list sut_process_input(int argc, char* argv[]) const {
-        return sut._preprocess_input(argc, argv);
+    [[nodiscard]] arg_token_list sut_tokenize(int argc, char* argv[]) const {
+        return sut._tokenize(argc, argv);
     }
 
     void sut_parse_args_impl(const arg_token_list& cmd_args) {

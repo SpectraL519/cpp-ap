@@ -26,16 +26,16 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string optional_secondary_name = "oa";
 };
 
-// _preprocess_input
+// _tokenize
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "_preprocess_input should return an empty vector for no command-line arguments"
+    "_tokenize should return an empty vector for no command-line arguments"
 ) {
     const auto argc = get_argc(default_num_args, default_num_args);
     auto argv = prepare_argv(default_num_args, default_num_args);
 
-    const auto args = sut_process_input(argc, argv);
+    const auto args = sut_tokenize(argc, argv);
 
     CHECK(args.empty());
 
@@ -43,14 +43,14 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "_preprocess_input should return a vector of correct arguments"
+    test_argument_parser_parse_args, "_tokenize should return a vector of correct arguments"
 ) {
     add_arguments(sut, non_default_num_args, non_default_args_split);
 
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
-    const auto cmd_args = sut_process_input(argc, argv);
+    const auto cmd_args = sut_tokenize(argc, argv);
 
     REQUIRE_EQ(cmd_args.size(), get_args_length(non_default_num_args, non_default_args_split));
 
