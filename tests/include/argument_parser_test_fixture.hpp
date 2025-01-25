@@ -100,24 +100,17 @@ struct argument_parser_test_fixture {
         }
     }
 
-    [[nodiscard]] arg_token_list prepare_cmd_arg_list(
-        std::size_t num_args, std::size_t args_split
-    ) const {
+    [[nodiscard]] arg_token_list prepare_cmd_arg_list(std::size_t num_args, std::size_t args_split)
+        const {
         arg_token_list cmd_args;
         cmd_args.reserve(get_args_length(num_args, args_split));
 
         for (std::size_t i = 0; i < args_split; ++i) { // positional args
-            cmd_args.push_back(
-                arg_token{arg_token::token_type::value, prepare_arg_value(i)}
-            );
+            cmd_args.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
         }
         for (std::size_t i = args_split; i < num_args; ++i) { // optional args
-            cmd_args.push_back(
-                arg_token{arg_token::token_type::flag, prepare_arg_name(i).primary}
-            );
-            cmd_args.push_back(
-                arg_token{arg_token::token_type::value, prepare_arg_value(i)}
-            );
+            cmd_args.push_back(arg_token{arg_token::token_type::flag, prepare_arg_name(i).primary});
+            cmd_args.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
         }
 
         return cmd_args;

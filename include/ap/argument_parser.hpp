@@ -1542,8 +1542,7 @@ private:
          * @param type Type type of the token (flag or value).
          * @param value The value of the argument.
          */
-        arg_token(const token_type type, const std::string& value)
-        : type(type), value(value) {}
+        arg_token(const token_type type, const std::string& value) : type(type), value(value) {}
 
         ~arg_token() = default;
 
@@ -1698,9 +1697,7 @@ private:
      * @param cmd_args The list of command-line arguments.
      * @param cmd_it Iterator for iterating through command-line arguments.
      */
-    void _parse_optional_args(
-        const arg_token_list& cmd_args, arg_token_list_iterator& cmd_it
-    ) {
+    void _parse_optional_args(const arg_token_list& cmd_args, arg_token_list_iterator& cmd_it) {
         std::optional<std::reference_wrapper<argument_ptr_type>> curr_opt_arg;
 
         while (cmd_it != cmd_args.end()) {
