@@ -10,7 +10,7 @@
 using namespace ap_testing;
 
 using ap::argument::positional_argument;
-using ap::argument::detail::argument_name;
+using ap::detail::argument_name;
 
 namespace {
 

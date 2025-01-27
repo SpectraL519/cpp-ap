@@ -7,7 +7,7 @@
 #include <cstring>
 
 using ap::argument::optional_argument;
-using ap::argument::detail::argument_name;
+using ap::detail::argument_name;
 using ap::detail::c_argument_value_type;
 
 namespace ap_testing {

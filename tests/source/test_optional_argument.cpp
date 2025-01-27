@@ -12,7 +12,7 @@ using namespace ap_testing;
 using namespace ap::nargs;
 
 using ap::argument::optional_argument;
-using ap::argument::detail::argument_name;
+using ap::detail::argument_name;
 
 namespace {
 

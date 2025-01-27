@@ -6,7 +6,7 @@
 
 #include <cstring>
 
-using ap::argument::detail::argument_name;
+using ap::detail::argument_name;
 
 namespace ap_testing {
 

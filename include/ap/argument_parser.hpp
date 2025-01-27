@@ -31,11 +31,12 @@ SOFTWARE.
  *
  * This header file contians the entire CPP-AP library implementation.
  *
- * @version 1.2
+ * @version 2.0.0
  */
 
 #pragma once
 
+#include "detail/argument_name.hpp"
 #include "detail/concepts.hpp"
 
 #include <algorithm>
@@ -75,95 +76,6 @@ class argument_parser;
 /// @brief Internal argument handling utility.
 namespace argument::detail {
 
-/// @brief Structure holding the argument name.
-struct argument_name {
-    argument_name() = delete;
-
-    argument_name(const argument_name&) = default;
-    argument_name(argument_name&&) = default;
-
-    argument_name& operator=(const argument_name&) = delete;
-    argument_name& operator=(argument_name&&) = delete;
-
-    /**
-     * @brief Primary name constructor.
-     * @param primary The primary name of the argument.
-     */
-    argument_name(std::string_view primary) : primary(primary) {}
-
-    /**
-     * @brief Primary and secondary name constructor.
-     * @param primary The primary name of the argument.
-     * @param secondary The secondary (short) name of the argument.
-     */
-    argument_name(std::string_view primary, std::string_view secondary)
-    : primary(primary), secondary(secondary) {}
-
-    /// @brief Class destructor.
-    ~argument_name() = default;
-
-    /**
-     * @brief Equality comparison operator.
-     * @param other The argument_name instance to compare with.
-     * @return Equality of argument names.
-     */
-    bool operator==(const argument_name& other) const noexcept {
-        if (not (this->secondary and other.secondary) and (this->secondary or other.secondary))
-            return false;
-
-        if (this->primary != other.primary)
-            return false;
-
-        return this->secondary ? this->secondary.value() == other.secondary.value() : true;
-    }
-
-    /**
-     * @brief Matches the given string to the argument_name instance.
-     * @param arg_name The name string to match.
-     * @return True if name is equal to either the primary or the secondary name of the argument_name instance.
-     */
-    [[nodiscard]] bool match(std::string_view arg_name) const noexcept {
-        return arg_name == this->primary
-            or (this->secondary and arg_name == this->secondary.value());
-    }
-
-    /**
-     * @brief Matches the given argument name to the argument_name instance.
-     * @param arg_name The argument_name instance to match.
-     * @return True if arg_name's primary or secondary value matches the argument_name instance.
-     */
-    [[nodiscard]] bool match(const argument_name& arg_name) const noexcept {
-        if (this->match(arg_name.primary))
-            return true;
-
-        if (arg_name.secondary)
-            return this->match(arg_name.secondary.value());
-
-        return false;
-    }
-
-    /// @brief Get a string representation of the argument_name.
-    [[nodiscard]] std::string str() const noexcept {
-        return this->secondary
-                 ? ("[" + this->primary + "," + this->secondary.value() + "]")
-                 : ("[" + this->primary + "]");
-    }
-
-    /**
-     * @brief Stream insertion operator for argument names.
-     * @param os The output stream.
-     * @param arg_name The argument name to be inserted into the stream.
-     * @return The modified output stream.
-     */
-    friend std::ostream& operator<<(std::ostream& os, const argument_name& arg_name) noexcept {
-        os << arg_name.str();
-        return os;
-    }
-
-    const std::string primary; ///< The primary name of the argument.
-    const std::optional<std::string> secondary; ///< The optional (short) name of the argument.
-};
-
 /// @brief Argument class interface
 class argument_interface {
 public:
@@ -196,7 +108,7 @@ public:
 
 protected:
     /// @return Reference to the name of the argument.
-    virtual const argument_name& name() const noexcept = 0;
+    virtual const ap::detail::argument_name& name() const noexcept = 0;
 
     /// @return True if the argument is required, false otherwise
     virtual bool is_required() const noexcept = 0;
@@ -266,7 +178,7 @@ public:
      * @brief Constructor for the value_already_set_error class.
      * @param arg_name The name of the argument that already has a value set.
      */
-    explicit value_already_set_error(const argument::detail::argument_name& arg_name)
+    explicit value_already_set_error(const detail::argument_name& arg_name)
     : argument_parser_error(
           std::format("Value for argument {} has already been set.", arg_name.str())
       ) {}
@@ -280,9 +192,7 @@ public:
      * @param arg_name The name of the argument for which the value parsing failed.
      * @param value The value that failed to parse.
      */
-    explicit invalid_value_error(
-        const argument::detail::argument_name& arg_name, const std::string& value
-    )
+    explicit invalid_value_error(const detail::argument_name& arg_name, const std::string& value)
     : argument_parser_error(
           std::format("Cannot parse value `{}` for argument {}.", value, arg_name.str())
       ) {}
@@ -296,9 +206,7 @@ public:
      * @param arg_name The name of the argument for which the value is not in choices.
      * @param value The value that is not in the allowed choices.
      */
-    explicit invalid_choice_error(
-        const argument::detail::argument_name& arg_name, const std::string& value
-    )
+    explicit invalid_choice_error(const detail::argument_name& arg_name, const std::string& value)
     : argument_parser_error(
           std::format("Value `{}` is not a valid choice for argument {}.", value, arg_name.str())
       ) {}
@@ -311,7 +219,7 @@ public:
      * @brief Constructor for the argument_name_used_error class.
      * @param arg_name The name of the argument causing the collision.
      */
-    explicit argument_name_used_error(const argument::detail::argument_name& arg_name)
+    explicit argument_name_used_error(const detail::argument_name& arg_name)
     : argument_parser_error(std::format("Given name `{}` already used.", arg_name.str())) {}
 };
 
@@ -335,7 +243,7 @@ public:
      * @param value_type The type information that failed to cast.
      */
     explicit invalid_value_type_error(
-        const argument::detail::argument_name& arg_name, const std::type_info& value_type
+        const detail::argument_name& arg_name, const std::type_info& value_type
     )
     : argument_parser_error(std::format(
           "Invalid value type specified for argument {} = {}.", arg_name.str(), value_type.name()
@@ -349,7 +257,7 @@ public:
      * @brief Constructor for the required_argument_not_parsed_error class.
      * @param arg_name The name of the required argument that was not parsed.
      */
-    explicit required_argument_not_parsed_error(const argument::detail::argument_name& arg_name)
+    explicit required_argument_not_parsed_error(const detail::argument_name& arg_name)
     : argument_parser_error("No values parsed for a required argument " + arg_name.str()) {}
 };
 
@@ -376,7 +284,7 @@ public:
      * @return The error message.
      */
     [[nodiscard]] static std::string msg(
-        const std::weak_ordering ordering, const argument::detail::argument_name& arg_name
+        const std::weak_ordering ordering, const detail::argument_name& arg_name
     ) {
         if (std::is_lt(ordering))
             return "Too few values provided for optional argument " + arg_name.str();
@@ -390,7 +298,7 @@ public:
      * @param arg_name The name of the argument for which the error occurred.
      */
     explicit invalid_nvalues_error(
-        const std::weak_ordering ordering, const argument::detail::argument_name& arg_name
+        const std::weak_ordering ordering, const detail::argument_name& arg_name
     )
     : argument_parser_error(invalid_nvalues_error::msg(ordering, arg_name)) {}
 };
@@ -617,7 +525,7 @@ public:
      * @brief Constructor for positional_argument with the `name` identifier.
      * @param name The `name` identifier of the positional argument.
      */
-    positional_argument(const detail::argument_name& name) : _name(name) {}
+    positional_argument(const ap::detail::argument_name& name) : _name(name) {}
 
     ~positional_argument() = default;
 
@@ -685,7 +593,7 @@ public:
 
 private:
     /// @return Reference the name of the positional argument.
-    [[nodiscard]] const detail::argument_name& name() const noexcept override {
+    [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
         return this->_name;
     }
 
@@ -803,7 +711,7 @@ private:
     using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional = false;
-    const detail::argument_name _name;
+    const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
     static constexpr bool _required = true; ///< Positional arguments are required by default.
@@ -834,7 +742,7 @@ public:
      * @brief Constructor for optional_argument with the `name` identifier.
      * @param name The `name` identifier of the optional argument.
      */
-    optional_argument(const detail::argument_name& name) : _name(name) {}
+    optional_argument(const ap::detail::argument_name& name) : _name(name) {}
 
     ~optional_argument() = default;
 
@@ -970,7 +878,7 @@ public:
 
 private:
     /// @return Reference to the name of the optional argument.
-    [[nodiscard]] const detail::argument_name& name() const noexcept override {
+    [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
         return this->_name;
     }
 
@@ -1112,7 +1020,7 @@ private:
     using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional = true;
-    const detail::argument_name _name;
+    const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
     bool _required = false;
@@ -1215,7 +1123,7 @@ public:
     argument::positional_argument<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name};
+        const ap::detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1238,7 +1146,7 @@ public:
     ) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name, secondary_name};
+        const ap::detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1258,7 +1166,7 @@ public:
     argument::optional_argument<T>& add_optional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name};
+        const ap::detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1279,7 +1187,7 @@ public:
     ) {
         // TODO: check forbidden characters
 
-        const argument::detail::argument_name arg_name = {primary_name, secondary_name};
+        const ap::detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used_error(arg_name);
 
@@ -1554,7 +1462,7 @@ private:
      * @return Argument predicate based on the provided name.
      */
     [[nodiscard]] argument_predicate_type _name_match_predicate(
-        const argument::detail::argument_name& arg_name
+        const ap::detail::argument_name& arg_name
     ) const noexcept {
         return [&arg_name](const argument_ptr_type& arg) { return arg->name().match(arg_name); };
     }
@@ -1564,8 +1472,7 @@ private:
      * @param arg_name The name of the argument.
      * @return True if the argument name is already used, false otherwise.
      */
-    [[nodiscard]] bool _is_arg_name_used(const argument::detail::argument_name& arg_name
-    ) const noexcept {
+    [[nodiscard]] bool _is_arg_name_used(const ap::detail::argument_name& arg_name) const noexcept {
         const auto predicate = this->_name_match_predicate(arg_name);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
