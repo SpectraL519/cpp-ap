@@ -8,7 +8,7 @@
 
 using ap::argument::positional_argument;
 using ap::argument::detail::argument_name;
-using ap::utility::c_argument_value_type;
+using ap::detail::c_argument_value_type;
 
 namespace ap_testing {
 

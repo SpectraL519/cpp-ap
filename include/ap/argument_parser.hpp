@@ -36,6 +36,8 @@ SOFTWARE.
 
 #pragma once
 
+#include "detail/concepts.hpp"
+
 #include <algorithm>
 #include <any>
 #include <compare>
@@ -69,40 +71,6 @@ struct argument_parser_test_fixture;
 namespace ap {
 
 class argument_parser;
-
-/// @brief Template type validation utility.
-namespace utility {
-
-/**
- * @brief The concept is satisfied when `T` overloads the std::istream operator `>>`.
- * @tparam T Type to check.
- */
-template <typename T>
-concept c_readable = requires(T value, std::istream& input_stream) { input_stream >> value; };
-
-/**
- * @brief The concept is satisfied when `T` overloads the std::ostream operator `<<`.
- * @tparam T Type to check.
- */
-template <typename T>
-concept c_writable = requires(T value, std::ostream& output_stream) { output_stream << value; };
-
-/**
- * @brief The concept is satisfied when `T` is c_readable and semiregular.
- * @tparam T Type to check.
- */
-template <typename T>
-concept c_argument_value_type = c_readable<T> and std::semiregular<T>;
-
-/**
- * @brief Holds the boolean value indicating whether type `T` is the same as one of the `ValidTypes`.
- * @tparam T Type to check.
- * @tparam ValidTypes The valid types to compare against.
- */
-template <typename T, typename... ValidTypes>
-inline constexpr bool is_valid_type_v = std::disjunction_v<std::is_same<T, ValidTypes>...>;
-
-} // namespace utility
 
 /// @brief Internal argument handling utility.
 namespace argument::detail {
@@ -566,13 +534,13 @@ private:
 
 /// @brief Defines valued argument action traits.
 struct valued_action {
-    template <ap::utility::c_argument_value_type T>
+    template <ap::detail::c_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
 /// @brief Defines void argument action traits.
 struct void_action {
-    template <ap::utility::c_argument_value_type T>
+    template <ap::detail::c_argument_value_type T>
     using type = std::function<void(T&)>;
 };
 
@@ -591,14 +559,14 @@ namespace detail {
  * @tparam AS The action specifier type.
  */
 template <typename AS>
-concept c_action_specifier = ap::utility::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
+concept c_action_specifier = ap::detail::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
 
 /// @brief Template argument action callable type alias.
-template <c_action_specifier AS, ap::utility::c_argument_value_type T>
+template <c_action_specifier AS, ap::detail::c_argument_value_type T>
 using callable_type = typename AS::template type<T>;
 
 /// @brief Template argument action callabla variant type alias.
-template <ap::utility::c_argument_value_type T>
+template <ap::detail::c_argument_value_type T>
 using action_variant_type =
     std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
 
@@ -608,7 +576,7 @@ using action_variant_type =
  * @param action The action variant.
  * @return True if the held action is a void action.
  */
-template <ap::utility::c_argument_value_type T>
+template <ap::detail::c_argument_value_type T>
 [[nodiscard]] constexpr inline bool is_void_action(const action_variant_type<T>& action) noexcept {
     return std::holds_alternative<callable_type<ap::void_action, T>>(action);
 }
@@ -616,7 +584,7 @@ template <ap::utility::c_argument_value_type T>
 } // namespace detail
 
 /// @brief Returns a default argument action.
-template <ap::utility::c_argument_value_type T>
+template <ap::detail::c_argument_value_type T>
 detail::callable_type<ap::void_action, T> default_action() noexcept {
     return [](T&) {};
 }
@@ -638,7 +606,7 @@ namespace argument {
  * @brief "Positional argument class of type T.
  * @tparam T The type of the argument value.
  */
-template <utility::c_argument_value_type T = std::string>
+template <ap::detail::c_argument_value_type T = std::string>
 class positional_argument : public detail::argument_interface {
 public:
     using value_type = T; ///< Type of the argument value.
@@ -854,7 +822,7 @@ private:
  * @brief Optional argument class of type T.
  * @tparam T The type of the argument value.
  */
-template <utility::c_argument_value_type T = std::string>
+template <ap::detail::c_argument_value_type T = std::string>
 class optional_argument : public detail::argument_interface {
 public:
     using value_type = T;
@@ -1243,7 +1211,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
      */
-    template <utility::c_argument_value_type T = std::string>
+    template <detail::c_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
@@ -1264,7 +1232,7 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      */
-    template <utility::c_argument_value_type T = std::string>
+    template <detail::c_argument_value_type T = std::string>
     argument::positional_argument<T>& add_positional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
@@ -1286,7 +1254,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
      */
-    template <utility::c_argument_value_type T = std::string>
+    template <detail::c_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
@@ -1305,7 +1273,7 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      */
-    template <utility::c_argument_value_type T = std::string>
+    template <detail::c_argument_value_type T = std::string>
     argument::optional_argument<T>& add_optional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
