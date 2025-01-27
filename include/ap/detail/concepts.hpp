@@ -19,18 +19,18 @@ template <typename T>
 concept c_writable = requires(T value, std::ostream& output_stream) { output_stream << value; };
 
 /**
- * @brief The concept is satisfied when `T` is c_readable and semiregular.
+ * @brief The concept is used to verify the validity of the arguments' value types.
  * @tparam T Type to check.
  */
 template <typename T>
 concept c_argument_value_type = c_readable<T> and std::semiregular<T>;
 
 /**
- * @brief Holds the boolean value indicating whether type `T` is the same as one of the `ValidTypes`.
+ * @brief Validates that `T` is the same as one of the types defined by `Types`.
  * @tparam T Type to check.
- * @tparam ValidTypes The valid types to compare against.
+ * @tparam Types The valid types to compare against.
  */
-template <typename T, typename... ValidTypes>
-inline constexpr bool is_valid_type_v = std::disjunction_v<std::is_same<T, ValidTypes>...>;
+template <typename T, typename... Types>
+concept c_one_of = std::disjunction_v<std::is_same<T, Types>...>;
 
 } // namespace ap::detail

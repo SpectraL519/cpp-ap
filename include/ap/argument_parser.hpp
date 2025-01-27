@@ -559,7 +559,7 @@ namespace detail {
  * @tparam AS The action specifier type.
  */
 template <typename AS>
-concept c_action_specifier = ap::detail::is_valid_type_v<AS, ap::valued_action, ap::void_action>;
+concept c_action_specifier = ap::detail::c_one_of<AS, ap::valued_action, ap::void_action>;
 
 /// @brief Template argument action callable type alias.
 template <c_action_specifier AS, ap::detail::c_argument_value_type T>
