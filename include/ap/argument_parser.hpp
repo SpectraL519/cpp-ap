@@ -48,23 +48,7 @@ SOFTWARE.
 #include "nargs/range.hpp"
 
 #include <algorithm>
-#include <any>
-#include <compare>
-#include <concepts>
-#include <filesystem>
-#include <format>
-#include <functional>
-#include <iostream>
-#include <memory>
-#include <optional>
 #include <ranges>
-#include <sstream>
-#include <stdexcept>
-#include <string_view>
-#include <type_traits>
-#include <typeinfo>
-#include <variant>
-#include <vector>
 
 #ifdef AP_TESTING
 

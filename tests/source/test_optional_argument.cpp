@@ -3,10 +3,7 @@
 #include "doctest.h"
 #include "optional_argument_test_fixture.hpp"
 
-#include <ap/argument_parser.hpp>
-
-#include <ranges>
-#include <string_view>
+#include <ap/argument/optional.hpp>
 
 using namespace ap_testing;
 using namespace ap::nargs;

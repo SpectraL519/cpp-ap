@@ -4,8 +4,6 @@
 
 #include <ap/argument_parser.hpp>
 
-#include <cstring>
-
 using ap::argument::positional;
 using ap::detail::argument_name;
 using ap::detail::c_argument_value_type;

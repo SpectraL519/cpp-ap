@@ -3,9 +3,7 @@
 #include "doctest.h"
 #include "positional_argument_test_fixture.hpp"
 
-#include <ap/argument_parser.hpp>
-
-#include <string_view>
+#include <ap/argument/positional.hpp>
 
 using namespace ap_testing;
 
