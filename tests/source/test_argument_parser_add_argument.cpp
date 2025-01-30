@@ -23,7 +23,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
     "default_positional_arguments should add the specified arguments"
 ) {
-    sut.default_positional_arguments({ap::default_posarg::input, ap::default_posarg::output});
+    sut.default_positional_arguments({default_positional::input, default_positional::output});
 
     const auto input_arg = sut_get_argument("input");
     REQUIRE(input_arg);
@@ -39,7 +39,7 @@ TEST_CASE_FIXTURE(
     "default_optional_arguments should add the specified arguments"
 ) {
     sut.default_optional_arguments(
-        {ap::default_optarg::help, ap::default_optarg::input, ap::default_optarg::output}
+        {default_optional::help, default_optional::input, default_optional::output}
     );
 
     std::string help_flag;

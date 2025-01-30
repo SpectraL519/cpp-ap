@@ -38,6 +38,7 @@ SOFTWARE.
 
 #include "action/predefined_actions.hpp"
 #include "action/specifiers.hpp"
+#include "argument/default.hpp"
 #include "argument/optional.hpp"
 #include "argument/positional.hpp"
 #include "detail/argument_interface.hpp"
@@ -75,19 +76,7 @@ struct argument_parser_test_fixture;
 
 namespace ap {
 
-/// @brief Namespace containing default argument types.
-namespace default_argument {
-
-/// @brief Enum class representing positional arguments.
-enum class positional : uint8_t { input, output };
-
-/// @brief Enum class representing optional arguments.
-enum class optional : uint8_t { help, input, output, multi_input, multi_output };
-
-} // namespace default_argument
-
-using default_posarg = default_argument::positional;
-using default_optarg = default_argument::optional;
+// TODO: argument namespace alias
 
 /// @brief Main argument parser class.
 class argument_parser {
@@ -128,7 +117,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& default_positional_arguments(
-        const std::vector<default_posarg>& arg_discriminator_list
+        const std::vector<argument::default_positional>& arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_positional_argument(arg_discriminator);
@@ -141,7 +130,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& default_optional_arguments(
-        const std::vector<default_optarg>& arg_discriminator_list
+        const std::vector<argument::default_optional>& arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
             this->_add_default_optional_argument(arg_discriminator);
@@ -378,15 +367,16 @@ private:
      * @brief Add default positional argument based on the specified discriminator.
      * @param arg_discriminator The default positional argument discriminator.
      */
-    void _add_default_positional_argument(const default_posarg arg_discriminator) noexcept {
+    void _add_default_positional_argument(const argument::default_positional arg_discriminator
+    ) noexcept {
         switch (arg_discriminator) {
-        case default_posarg::input:
+        case argument::default_positional::input:
             this->add_positional_argument("input")
                 .action<action_type::modify>(action::check_file_exists())
                 .help("Input file path");
             break;
 
-        case default_posarg::output:
+        case argument::default_positional::output:
             this->add_positional_argument("output").help("Output file path");
             break;
         }
@@ -396,13 +386,14 @@ private:
      * @brief Add default optional argument based on the specified discriminator.
      * @param arg_discriminator The default optional argument discriminator.
      */
-    void _add_default_optional_argument(const default_optarg arg_discriminator) noexcept {
+    void _add_default_optional_argument(const argument::default_optional arg_discriminator
+    ) noexcept {
         switch (arg_discriminator) {
-        case default_optarg::help:
+        case argument::default_optional::help:
             this->add_flag("help", "h").bypass_required().help("Display help message");
             break;
 
-        case default_optarg::input:
+        case argument::default_optional::input:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(1)
@@ -410,11 +401,11 @@ private:
                 .help("Input file path");
             break;
 
-        case default_optarg::output:
+        case argument::default_optional::output:
             this->add_optional_argument("output", "o").required().nargs(1).help("Output file path");
             break;
 
-        case default_optarg::multi_input:
+        case argument::default_optional::multi_input:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(ap::nargs::at_least(1))
@@ -422,7 +413,7 @@ private:
                 .help("Input files paths");
             break;
 
-        case default_optarg::multi_output:
+        case argument::default_optional::multi_output:
             this->add_optional_argument("output", "o")
                 .required()
                 .nargs(ap::nargs::at_least(1))

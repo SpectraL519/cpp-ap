@@ -296,11 +296,11 @@ The `CPP-AP` library has a few default arguments defined. To add a default argum
 ```c++
 // add positional arguments - pass a std::vector of default positional arguments
 parser.default_positional_arguments({...});
-// here ... represents a list of ap::default_argument::positional values (or alternatively ap::default_posarg)
+// here `...` represents a list of ap::argument::default_positional values
 
 // add optional arguments - pass a std::vector of default optional arguments
 parser.default_positional_arguments({...});
-// here ... represents a list of ap::default_argument::optional values (or alternatively ap::default_optarg)
+// here `...` represents a list of ap::argument::default_optional values
 ```
 
 The supported default arguments are:
