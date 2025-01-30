@@ -232,7 +232,7 @@ Parameters which can be specified for both positional and optional arguments inc
 
 #### Optional argument specific parameters
 
-- `required` - if this option is set for an argument, failure of parsing it's value will result in an error.
+- `required` - if this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
   ```c++
   parser.add_optional_argument("output", "o").required();
@@ -440,7 +440,7 @@ int main(int argc, char* argv[]) {
 
 - Positional arguments are parsed first, in the order they were defined in and without a flag.
 
-  In the example above the first command-line argument must be the value for `positional_argument`:
+  In the example above the first command-line argument must be the value for the `positional` argument:
 
   ```shell
   ./power 2

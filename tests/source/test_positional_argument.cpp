@@ -9,7 +9,7 @@
 
 using namespace ap_testing;
 
-using ap::argument::positional_argument;
+using ap::argument::positional;
 using ap::detail::argument_name;
 
 namespace {
@@ -18,7 +18,7 @@ constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
 
 using test_value_type = int;
-using sut_type = positional_argument<test_value_type>;
+using sut_type = positional<test_value_type>;
 
 sut_type prepare_argument(std::string_view primary_name) {
     return sut_type(argument_name{primary_name});
