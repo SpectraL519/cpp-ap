@@ -358,7 +358,7 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("valued action") {
         const auto double_valued_action = [](const test_value_type& value) { return 2 * value; };
-        sut.action<ap::valued_action>(double_valued_action);
+        sut.action<ap::action_type::transform>(double_valued_action);
 
         sut_set_value(sut, std::to_string(value_1));
 
@@ -367,7 +367,7 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("void action") {
         const auto double_void_action = [](test_value_type& value) { value *= 2; };
-        sut.action<ap::void_action>(double_void_action);
+        sut.action<ap::action_type::modify>(double_void_action);
 
         auto test_value = value_1;
 

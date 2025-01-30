@@ -36,6 +36,8 @@ SOFTWARE.
 
 #pragma once
 
+#include "action/predefined_actions.hpp"
+#include "action/specifiers.hpp"
 #include "detail/argument_interface.hpp"
 #include "detail/argument_name.hpp"
 #include "detail/concepts.hpp"
@@ -72,73 +74,6 @@ struct argument_parser_test_fixture;
 #endif
 
 namespace ap {
-
-/// @brief Defines valued argument action traits.
-struct valued_action {
-    template <ap::detail::c_argument_value_type T>
-    using type = std::function<T(const T&)>;
-};
-
-/// @brief Defines void argument action traits.
-struct void_action {
-    template <ap::detail::c_argument_value_type T>
-    using type = std::function<void(T&)>;
-};
-
-// TODO:
-// * on_read_action
-// * on_flag_action
-
-/// @brief Argument action handling utility.
-namespace action {
-
-/// @brief Internal argument action handling utility
-namespace detail {
-
-/**
- * @brief The concept is satisfied when `AS` is either a valued or void argument action
- * @tparam AS The action specifier type.
- */
-template <typename AS>
-concept c_action_specifier = ap::detail::c_one_of<AS, ap::valued_action, ap::void_action>;
-
-/// @brief Template argument action callable type alias.
-template <c_action_specifier AS, ap::detail::c_argument_value_type T>
-using callable_type = typename AS::template type<T>;
-
-/// @brief Template argument action callabla variant type alias.
-template <ap::detail::c_argument_value_type T>
-using action_variant_type =
-    std::variant<callable_type<ap::valued_action, T>, callable_type<ap::void_action, T>>;
-
-/**
- * @brief Checks if an argument action variant holds a void action.
- * @tparam T The argument value type.
- * @param action The action variant.
- * @return True if the held action is a void action.
- */
-template <ap::detail::c_argument_value_type T>
-[[nodiscard]] constexpr inline bool is_void_action(const action_variant_type<T>& action) noexcept {
-    return std::holds_alternative<callable_type<ap::void_action, T>>(action);
-}
-
-} // namespace detail
-
-/// @brief Returns a default argument action.
-template <ap::detail::c_argument_value_type T>
-detail::callable_type<ap::void_action, T> default_action() noexcept {
-    return [](T&) {};
-}
-
-/// @brief Returns a predefined action for file name handling arguments. Checks whether a file with the given name exists.
-inline detail::callable_type<ap::void_action, std::string> check_file_exists() noexcept {
-    return [](std::string& file_path) {
-        if (not std::filesystem::exists(file_path))
-            throw argument_parser_exception(std::format("File `{}` does not exists!", file_path));
-    };
-}
-
-} // namespace action
 
 /// @brief Namespace containing classes and utilities for handling command-line arguments.
 namespace argument {
@@ -334,11 +269,13 @@ private:
     void _apply_action(value_type& value) const noexcept {
         namespace action = ap::action::detail;
         if (action::is_void_action(this->_action))
-            std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
+            std::get<action::callable_type<ap::action_type::modify, value_type>>(this->_action)(
+                value
+            );
         else
-            value =
-                std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value
-                );
+            value = std::get<
+                action::callable_type<ap::action_type::transform, value_type>>(this->_action)(value
+            );
     }
 
     using action_type = ap::action::detail::action_variant_type<T>;
@@ -351,8 +288,8 @@ private:
     static constexpr bool _bypass_required =
         false; ///< Bypassing required status is defaultly not allowed for positional arguments.
     std::vector<value_type> _choices; ///< Vector of valid choices for the positional argument.
-    action_type _action = ap::action::default_action<value_type>(
-    ); ///< Action associated with the positional argument.
+    action_type _action =
+        ap::action::none<value_type>(); ///< Action associated with the positional argument.
 
     std::any _value; ///< Stored value of the positional argument.
 
@@ -643,11 +580,13 @@ private:
     void _apply_action(value_type& value) const noexcept {
         namespace action = ap::action::detail;
         if (action::is_void_action(this->_action))
-            std::get<action::callable_type<ap::void_action, value_type>>(this->_action)(value);
+            std::get<action::callable_type<ap::action_type::modify, value_type>>(this->_action)(
+                value
+            );
         else
-            value =
-                std::get<action::callable_type<ap::valued_action, value_type>>(this->_action)(value
-                );
+            value = std::get<
+                action::callable_type<ap::action_type::transform, value_type>>(this->_action)(value
+            );
     }
 
     using action_type = ap::action::detail::action_variant_type<T>;
@@ -660,7 +599,7 @@ private:
     bool _bypass_required = false;
     std::optional<ap::nargs::range> _nargs_range;
     action_type _action =
-        ap::action::default_action<value_type>(); ///< Action associated with the opitonal argument.
+        ap::action::none<value_type>(); ///< Action associated with the opitonal argument.
     std::vector<value_type> _choices; ///< Vector of valid choices for the optional argument.
     std::any _default_value;
     std::any _implicit_value;
@@ -985,7 +924,7 @@ private:
         switch (arg_discriminator) {
         case default_posarg::input:
             this->add_positional_argument("input")
-                .action<ap::void_action>(ap::action::check_file_exists())
+                .action<action_type::modify>(action::check_file_exists())
                 .help("Input file path");
             break;
 
@@ -1009,7 +948,7 @@ private:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(1)
-                .action<ap::void_action>(ap::action::check_file_exists())
+                .action<action_type::modify>(action::check_file_exists())
                 .help("Input file path");
             break;
 
@@ -1021,7 +960,7 @@ private:
             this->add_optional_argument("input", "i")
                 .required()
                 .nargs(ap::nargs::at_least(1))
-                .action<ap::void_action>(ap::action::check_file_exists())
+                .action<action_type::modify>(action::check_file_exists())
                 .help("Input files paths");
             break;
 

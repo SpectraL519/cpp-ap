@@ -201,31 +201,34 @@ Parameters which can be specified for both positional and optional arguments inc
 
 - `action` - a function performed after reading an argument's value.
   Actions are represented as functions, which take the argument's value as an argument. There are two types of actions:
-  - Void actions - `void(value_type&)`
-  - Valued actions - `value_type(const value_type&)`
+  - `modify` actions | `void(value_type&)` - applied to the initialized value of an argument.
 
-  The default action is an empty void function.
+    ```c++
+    parser.add_optional_argument<std::string>("name", "n")
+          .action<ap::action_type::modify>([](std::string& name) { name[0] = std::toupper(name[0]); });
+    ```
 
-  Actions can be used to modify a value parsed from the command-line:
+  - `transform` actions | `value_type(const value_type&)` - applied to the parsed value. The returned value will be used to initialize the argument's value.
 
-  ```c++
-  parser.add_optional_argument<double>("denominator", "d")
-        .action<ap::void_action>([](double& value) { value = 1. / value; });
-  ```
+    ```c++
+    std::string to_lower(std::string s) {
+        for (auto& c : s)
+            c = static_cast<char>(std::tolower(c));
+        return s;
+    }
 
-  or en equivalent valued action:
+    parser.add_optional_argument<std::string>("key", "k")
+          .action<ap::action_type::transform>(to_lower);
+    ```
 
-  ```c++
-  parser.add_optional_argument<double>("denominator", "d")
-        .action<ap::valued_action>([](const double& value) { return 1. / value; });
-  ```
-
-  Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists` which checks if a file with a given name exists:
+  Actions can also be used to perform some value checking logic instead of actualy modifying or transforming a value, as e.g. the predefined `check_file_exists` which verifies whether a file with a given name exists:
 
   ```c++
   parser.add_optional_argument("input", "i")
-        .action<ap::void_action>(ap::action::check_file_exists());
+        .action<ap::action_type::modify>(ap::action::check_file_exists());
   ```
+
+  > **NOTE:** The default action is an empty `modify` action.
 
 #### Optional argument specific parameters
 
@@ -307,7 +310,7 @@ The supported default arguments are:
   ```c++
   // equivalent to:
   parser.add_positional_argument<std::string>("input")
-        .action<ap::void_action>(ap::action::check_file_exists())
+        .action<ap::action_type::modify>(ap::action::check_file_exists())
         .help("Input file path");
   ```
 
@@ -343,14 +346,14 @@ The supported default arguments are:
   parser.add_optional_argument("input", "i")
         .required()
         .nargs(1)
-        .action<ap::void_action>(ap::action::check_file_exists())
+        .action<ap::action_type::modify>(ap::action::check_file_exists())
         .help("Input file path");
 
   // multi_input - equivalent to:
   parser.add_optional_argument("input", "i")
         .required()
         .nargs(ap::nargs::at_least(1))
-        .action<ap::void_action>(ap::action::check_file_exists())
+        .action<ap::action_type::modify>(ap::action::check_file_exists())
         .help("Input files paths");
   ```
 
