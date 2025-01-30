@@ -36,8 +36,10 @@ SOFTWARE.
 
 #pragma once
 
+#include "detail/argument_interface.hpp"
 #include "detail/argument_name.hpp"
 #include "detail/concepts.hpp"
+#include "nargs/range.hpp"
 
 #include <algorithm>
 #include <any>
@@ -68,90 +70,7 @@ struct argument_parser_test_fixture;
 
 #endif
 
-/// @brief Main argument parser library namespace.
 namespace ap {
-
-class argument_parser;
-
-/// @brief Internal argument handling utility.
-namespace argument::detail {
-
-/// @brief Argument class interface
-class argument_interface {
-public:
-    virtual ~argument_interface() = default;
-
-    /**
-     * @brief Set the help message for the argument.
-     * @param msg The help message to set.
-     * @return Reference to the argument_interface.
-     */
-    virtual argument_interface& help(std::string_view) noexcept = 0;
-
-    /// @return True if the argument is optional, false otherwise.
-    virtual bool is_optional() const noexcept = 0;
-
-    /**
-     * @brief Overloaded stream insertion operator.
-     * @param os The output stream.
-     * @param argument The argument_interface to output.
-     * @return The output stream.
-     */
-    friend std::ostream& operator<<(std::ostream& os, const argument_interface& argument) noexcept {
-        os << argument.name() << " : ";
-        const auto& argument_help_msg = argument.help();
-        os << (argument_help_msg ? argument_help_msg.value() : "[ostream(argument)] TODO: msg");
-        return os;
-    }
-
-    friend class ::ap::argument_parser;
-
-protected:
-    /// @return Reference to the name of the argument.
-    virtual const ap::detail::argument_name& name() const noexcept = 0;
-
-    /// @return True if the argument is required, false otherwise
-    virtual bool is_required() const noexcept = 0;
-
-    /// @return True if bypassing the required status is enabled for the argument, false otherwise.
-    virtual bool bypass_required_enabled() const noexcept = 0;
-
-    /// @return Optional help message for the argument.
-    virtual const std::optional<std::string>& help() const noexcept = 0;
-
-    /// @brief Mark the argument as used.
-    virtual void mark_used() noexcept = 0;
-
-    /// @return True if the argument has been used, false otherwise.
-    virtual bool is_used() const noexcept = 0;
-
-    /// @return The number of times the positional argument is used.
-    virtual std::size_t nused() const noexcept = 0;
-
-    /**
-     * @brief Set the value for the argument.
-     * @param value The string representation of the value.
-     * @return Reference to the argument_interface.
-     */
-    virtual argument_interface& set_value(const std::string&) = 0;
-
-    /// @return True if the argument has a value, false otherwise.
-    virtual bool has_value() const noexcept = 0;
-
-    /// @return True if the argument has parsed values., false otherwise.
-    virtual bool has_parsed_values() const noexcept = 0;
-
-    /// @return The ordering relationship of argument range.
-    virtual std::weak_ordering nvalues_in_range() const noexcept = 0;
-
-    /// @return Reference to the stored value of the argument.
-    virtual const std::any& value() const = 0;
-
-    /// @return Reference to the vector of parsed values of the argument.
-    virtual const std::vector<std::any>& values() const = 0;
-};
-
-} // namespace argument::detail
 
 /**
  * @brief Base class for exceptions thrown by the argument parser.
@@ -305,141 +224,6 @@ public:
 
 } // namespace error
 
-/// @brief Argument's number of values management utility.
-namespace nargs {
-
-/// @brief Argument's number of values managing class.
-class range {
-public:
-    using count_type = std::size_t;
-
-    /// @brief Default constructor: creates range [1, 1].
-    range() : _nlow(_ndefault), _nhigh(_ndefault) {}
-
-    /**
-     * @brief Exact count constructor: creates range [n, n].
-     * @param n Expected value count.
-     */
-    explicit range(const count_type n) : _nlow(n), _nhigh(n), _default(n == _ndefault) {}
-
-    /**
-     * @brief Concrete range constructor: creates range [nlow, nhigh].
-     * @param nlow The lower bound.
-     * @param nhigh The upper bound.
-     */
-    range(const count_type nlow, const count_type nhigh)
-    : _nlow(nlow), _nhigh(nhigh), _default(nlow == _ndefault and nhigh == _ndefault) {}
-
-    range(const range&) = default;
-    range(range&&) = default;
-
-    range& operator=(const range&) = default;
-    range& operator=(range&&) = default;
-
-    ~range() = default;
-
-    /// @return True if the range is [1, 1].
-    [[nodiscard]] bool is_default() const noexcept {
-        return this->_default;
-    }
-
-    /**
-     * @brief Checks if a given value count is within the range.
-     * @param n The value count to check.
-     * @return Ordering relationship between the count and the range.
-     */
-    [[nodiscard]] std::weak_ordering contains(const range::count_type n) const noexcept {
-        if (not (this->_nlow.has_value() or this->_nhigh.has_value()))
-            return std::weak_ordering::equivalent;
-
-        if (this->_nlow.has_value() and this->_nhigh.has_value()) {
-            if (n < this->_nlow.value())
-                return std::weak_ordering::less;
-
-            if (n > this->_nhigh.value())
-                return std::weak_ordering::greater;
-
-            return std::weak_ordering::equivalent;
-        }
-
-        if (this->_nlow.has_value())
-            return (n < this->_nlow.value())
-                     ? std::weak_ordering::less
-                     : std::weak_ordering::equivalent;
-
-        return (n > this->_nhigh.value())
-                 ? std::weak_ordering::greater
-                 : std::weak_ordering::equivalent;
-    }
-
-    friend range at_least(const count_type) noexcept;
-    friend range more_than(const count_type) noexcept;
-    friend range less_than(const count_type) noexcept;
-    friend range up_to(const count_type) noexcept;
-    friend range any() noexcept;
-
-private:
-    /**
-     * @brief Private constructor: creates a possibly unbound range
-     * @param nlow The optional lower bound of the range.
-     * @param nhigh The optional upper bound of the range.
-     */
-    range(const std::optional<count_type> nlow, const std::optional<count_type> nhigh)
-    : _nlow(nlow), _nhigh(nhigh) {}
-
-    std::optional<count_type> _nlow;
-    std::optional<count_type> _nhigh;
-    bool _default = true;
-
-    static constexpr count_type _ndefault = 1;
-};
-
-/**
- * @brief `range` class builder function. Creates a range [n, inf].
- * @param n The lower bound.
- * @return Built `range` class instance.
- */
-[[nodiscard]] inline range at_least(const range::count_type n) noexcept {
-    return range(n, std::nullopt);
-}
-
-/**
- * @brief `range` class builder function. Creates a range [n + 1, inf].
- * @param n The lower bound.
- * @return Built `range` class instance.
- */
-[[nodiscard]] inline range more_than(const range::count_type n) noexcept {
-    return range(n + 1, std::nullopt);
-}
-
-/**
- * @brief `range` class builder function. Creates a range [0, n - 1].
- * @param n The upper bound
- * @return Built `range` class instance.
- */
-[[nodiscard]] inline range less_than(const range::count_type n) noexcept {
-    return range(std::nullopt, n - 1);
-}
-
-/**
- * @brief `range` class builder function. Creates a range [0, n].
- * @param n The upper bound
- * @return Built `range` class instance.
- */
-[[nodiscard]] inline range up_to(const range::count_type n) noexcept {
-    return range(std::nullopt, n);
-}
-
-/**
- * @brief `range` class builder function. Creates a range [0, inf].
- * @return Built `range` class instance.
- */
-[[nodiscard]] inline range any() noexcept {
-    return range(std::nullopt, std::nullopt);
-}
-
-} // namespace nargs
-
 /// @brief Defines valued argument action traits.
 struct valued_action {
     template <ap::detail::c_argument_value_type T>
@@ -515,7 +299,7 @@ namespace argument {
  * @tparam T The type of the argument value.
  */
 template <ap::detail::c_argument_value_type T = std::string>
-class positional_argument : public detail::argument_interface {
+class positional_argument : public ap::detail::argument_interface {
 public:
     using value_type = T; ///< Type of the argument value.
 
@@ -731,7 +515,7 @@ private:
  * @tparam T The type of the argument value.
  */
 template <ap::detail::c_argument_value_type T = std::string>
-class optional_argument : public detail::argument_interface {
+class optional_argument : public ap::detail::argument_interface {
 public:
     using value_type = T;
     using count_type = ap::nargs::range::count_type;
@@ -1438,9 +1222,8 @@ private:
     using arg_token_list = std::vector<arg_token>;
     using arg_token_list_iterator = typename arg_token_list::const_iterator;
 
-    using argument_ptr_type = std::unique_ptr<argument::detail::argument_interface>;
-    using argument_opt_type =
-        std::optional<std::reference_wrapper<argument::detail::argument_interface>>;
+    using argument_ptr_type = std::unique_ptr<ap::detail::argument_interface>;
+    using argument_opt_type = std::optional<std::reference_wrapper<ap::detail::argument_interface>>;
     using argument_list_type = std::vector<argument_ptr_type>;
     using argument_list_iterator_type = typename argument_list_type::iterator;
     using argument_list_const_iterator_type = typename argument_list_type::const_iterator;

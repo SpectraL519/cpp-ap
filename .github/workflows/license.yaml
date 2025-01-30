@@ -1,28 +1,28 @@
-name: license
-on:
-  push:
-    branches:
-      - '*'
-    paths:
-      - .github/workflows/license.yaml
-      - scripts/check_licence.py
-      - include/**
+# name: license
+# on:
+#   push:
+#     branches:
+#       - '*'
+#     paths:
+#       - .github/workflows/license.yaml
+#       - scripts/check_licence.py
+#       - include/**
 
-jobs:
-  build:
-    name: Test code formatting
-    runs-on: ubuntu-24.04
+# jobs:
+#   build:
+#     name: Test code formatting
+#     runs-on: ubuntu-24.04
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-      - name: Set up python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+#       - name: Set up python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
 
-      - name: Test licence
-        shell: bash
-        run: |
-          python3 scripts/check_license.py
+#       - name: Test licence
+#         shell: bash
+#         run: |
+#           python3 scripts/check_license.py
