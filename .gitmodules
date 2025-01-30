@@ -1,3 +1,4 @@
 [submodule "cpp-ap-demo"]
 	path = cpp-ap-demo
 	url = https://github.com/SpectraL519/cpp-ap-demo.git
+    branch = cpp-ap-v2

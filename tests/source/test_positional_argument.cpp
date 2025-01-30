@@ -159,9 +159,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
     REQUIRE(sut_has_value(sut));
-    CHECK_THROWS_AS(
-        sut_set_value(sut, std::to_string(value_2)), ap::error::value_already_set_error
-    );
+    CHECK_THROWS_AS(sut_set_value(sut, std::to_string(value_2)), ap::error::value_already_set);
 }
 
 TEST_CASE_FIXTURE(
@@ -171,11 +169,11 @@ TEST_CASE_FIXTURE(
     auto sut = prepare_argument(primary_name);
 
     SUBCASE("given string is empty") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), ap::error::invalid_value_error);
+        REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), ap::error::invalid_value);
         CHECK_FALSE(sut_has_value(sut));
     }
     SUBCASE("given string is non-convertible to value_type") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, invalid_value_str), ap::error::invalid_value_error);
+        REQUIRE_THROWS_AS(sut_set_value(sut, invalid_value_str), ap::error::invalid_value);
         CHECK_FALSE(sut_has_value(sut));
     }
 }
@@ -188,7 +186,7 @@ TEST_CASE_FIXTURE(
     sut_set_choices(sut, default_choices);
 
     REQUIRE_THROWS_AS(
-        sut_set_value(sut, std::to_string(invalid_choice)), ap::error::invalid_choice_error
+        sut_set_value(sut, std::to_string(invalid_choice)), ap::error::invalid_choice
     );
     CHECK_FALSE(sut_has_value(sut));
 }

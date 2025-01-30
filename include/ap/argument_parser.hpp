@@ -39,6 +39,7 @@ SOFTWARE.
 #include "detail/argument_interface.hpp"
 #include "detail/argument_name.hpp"
 #include "detail/concepts.hpp"
+#include "error/exceptions.hpp"
 #include "nargs/range.hpp"
 
 #include <algorithm>
@@ -71,158 +72,6 @@ struct argument_parser_test_fixture;
 #endif
 
 namespace ap {
-
-/**
- * @brief Base class for exceptions thrown by the argument parser.
- *
- * This class is derived from std::runtime_error and serves as the base class for all
- * exceptions related to the argument parser functionality.
- */
-class argument_parser_error : public std::runtime_error {
-public:
-    /**
-     * @brief Constructor for the argument_parser_error class.
-     * @param message A descriptive error message providing information about the exception.
-     */
-    explicit argument_parser_error(const std::string& message) : std::runtime_error(message) {}
-};
-
-/// @brief Namespace containing custom exception classes for argument parser errors.
-namespace error {
-
-/// @brief Exception thrown when attempting to set a value for an argument that already has one.
-class value_already_set_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the value_already_set_error class.
-     * @param arg_name The name of the argument that already has a value set.
-     */
-    explicit value_already_set_error(const detail::argument_name& arg_name)
-    : argument_parser_error(
-          std::format("Value for argument {} has already been set.", arg_name.str())
-      ) {}
-};
-
-/// @brief Exception thrown when the value provided for an argument cannot be parsed.
-class invalid_value_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the invalid_value_error class.
-     * @param arg_name The name of the argument for which the value parsing failed.
-     * @param value The value that failed to parse.
-     */
-    explicit invalid_value_error(const detail::argument_name& arg_name, const std::string& value)
-    : argument_parser_error(
-          std::format("Cannot parse value `{}` for argument {}.", value, arg_name.str())
-      ) {}
-};
-
-/// @brief Exception thrown when the provided value is not in the choices for an argument.
-class invalid_choice_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the invalid_choice_error class.
-     * @param arg_name The name of the argument for which the value is not in choices.
-     * @param value The value that is not in the allowed choices.
-     */
-    explicit invalid_choice_error(const detail::argument_name& arg_name, const std::string& value)
-    : argument_parser_error(
-          std::format("Value `{}` is not a valid choice for argument {}.", value, arg_name.str())
-      ) {}
-};
-
-/// @brief Exception thrown when there is a collision in argument names.
-class argument_name_used_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the argument_name_used_error class.
-     * @param arg_name The name of the argument causing the collision.
-     */
-    explicit argument_name_used_error(const detail::argument_name& arg_name)
-    : argument_parser_error(std::format("Given name `{}` already used.", arg_name.str())) {}
-};
-
-/// @brief Exception thrown when an argument with a specific name is not found.
-class argument_not_found_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the argument_name_not_found_error class.
-     * @param arg_name The name of the argument that was not found.
-     */
-    explicit argument_not_found_error(const std::string_view& arg_name)
-    : argument_parser_error(std::format("Argument with given name `{}` not found.", arg_name)) {}
-};
-
-/// @brief Exception thrown when there is an attempt to cast to an invalid type.
-class invalid_value_type_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the invalid_value_type_error class.
-     * @param arg_name The name of the argument that had invalid value type.
-     * @param value_type The type information that failed to cast.
-     */
-    explicit invalid_value_type_error(
-        const detail::argument_name& arg_name, const std::type_info& value_type
-    )
-    : argument_parser_error(std::format(
-          "Invalid value type specified for argument {} = {}.", arg_name.str(), value_type.name()
-      )) {}
-};
-
-/// @brief Exception thrown when a required argument is not parsed.
-class required_argument_not_parsed_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the required_argument_not_parsed_error class.
-     * @param arg_name The name of the required argument that was not parsed.
-     */
-    explicit required_argument_not_parsed_error(const detail::argument_name& arg_name)
-    : argument_parser_error("No values parsed for a required argument " + arg_name.str()) {}
-};
-
-/// @brief Exception thrown when there is an error deducing the argument for a given value.
-class free_value_error : public argument_parser_error {
-public:
-    /**
-     * @brief Constructor for the free_value_error class.
-     * @param value The value for which the argument deduction failed.
-     */
-    explicit free_value_error(const std::string& value)
-    : argument_parser_error(
-          std::format("Failed to deduce the argument for the given value `{}`", value)
-      ) {}
-};
-
-/// @brief Exception thrown when an invalid number of values is provided for an argument.
-class invalid_nvalues_error : public argument_parser_error {
-public:
-    /**
-     * @brief Helper function to generate an error message based on the weak_ordering result.
-     * @param ordering The result of the weak_ordering comparison.
-     * @param arg_name The name of the argument for which the error occurred.
-     * @return The error message.
-     */
-    [[nodiscard]] static std::string msg(
-        const std::weak_ordering ordering, const detail::argument_name& arg_name
-    ) {
-        if (std::is_lt(ordering))
-            return "Too few values provided for optional argument " + arg_name.str();
-        else
-            return "Too many values provided for optional argument " + arg_name.str();
-    }
-
-    /**
-     * @brief Constructor for the invalid_nvalues_error class.
-     * @param ordering The result of the weak_ordering comparison.
-     * @param arg_name The name of the argument for which the error occurred.
-     */
-    explicit invalid_nvalues_error(
-        const std::weak_ordering ordering, const detail::argument_name& arg_name
-    )
-    : argument_parser_error(invalid_nvalues_error::msg(ordering, arg_name)) {}
-};
-
-} // namespace error
 
 /// @brief Defines valued argument action traits.
 struct valued_action {
@@ -285,7 +134,7 @@ detail::callable_type<ap::void_action, T> default_action() noexcept {
 inline detail::callable_type<ap::void_action, std::string> check_file_exists() noexcept {
     return [](std::string& file_path) {
         if (not std::filesystem::exists(file_path))
-            throw argument_parser_error(std::format("File `{}` does not exists!", file_path));
+            throw argument_parser_exception(std::format("File `{}` does not exists!", file_path));
     };
 }
 
@@ -419,17 +268,17 @@ private:
      */
     positional_argument& set_value(const std::string& str_value) override {
         if (this->_value.has_value())
-            throw error::value_already_set_error(this->_name);
+            throw error::value_already_set(this->_name);
 
         this->_ss.clear();
         this->_ss.str(str_value);
 
         value_type value;
         if (not (this->_ss >> value))
-            throw error::invalid_value_error(this->_name, this->_ss.str());
+            throw error::invalid_value(this->_name, this->_ss.str());
 
         if (not this->_is_valid_choice(value))
-            throw error::invalid_choice_error(this->_name, str_value);
+            throw error::invalid_choice(this->_name, str_value);
 
         this->_apply_action(value);
 
@@ -707,15 +556,15 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw error::invalid_value_error(this->_name, this->_ss.str());
+            throw error::invalid_value(this->_name, this->_ss.str());
 
         if (not this->_is_valid_choice(value))
-            throw error::invalid_choice_error(this->_name, str_value);
+            throw error::invalid_choice(this->_name, str_value);
 
         this->_apply_action(value);
 
         if (not (this->_nargs_range or this->_values.empty()))
-            throw error::value_already_set_error(this->_name);
+            throw error::value_already_set(this->_name);
 
         this->_values.emplace_back(std::move(value));
         return *this;
@@ -909,7 +758,7 @@ public:
 
         const ap::detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used_error(arg_name);
+            throw error::argument_name_used(arg_name);
 
         this->_positional_args.emplace_back(
             std::make_unique<argument::positional_argument<T>>(arg_name)
@@ -932,7 +781,7 @@ public:
 
         const ap::detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used_error(arg_name);
+            throw error::argument_name_used(arg_name);
 
         this->_positional_args.emplace_back(
             std::make_unique<argument::positional_argument<T>>(arg_name)
@@ -952,7 +801,7 @@ public:
 
         const ap::detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used_error(arg_name);
+            throw error::argument_name_used(arg_name);
 
         this->_optional_args.push_back(std::make_unique<argument::optional_argument<T>>(arg_name));
         return static_cast<argument::optional_argument<T>&>(*this->_optional_args.back());
@@ -973,7 +822,7 @@ public:
 
         const ap::detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used_error(arg_name);
+            throw error::argument_name_used(arg_name);
 
         this->_optional_args.emplace_back(std::make_unique<argument::optional_argument<T>>(arg_name)
         );
@@ -1056,14 +905,14 @@ public:
     T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found_error(arg_name);
+            throw error::argument_not_found(arg_name);
 
         const auto& arg_value = arg_opt->get().value();
         try {
             return std::any_cast<T>(arg_value);
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type_error(arg_opt->get().name(), typeid(T));
+            throw error::invalid_value_type(arg_opt->get().name(), typeid(T));
         }
     }
 
@@ -1077,7 +926,7 @@ public:
     std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found_error(arg_name);
+            throw error::argument_not_found(arg_name);
 
         const auto& arg = arg_opt->get();
 
@@ -1096,7 +945,7 @@ public:
             return values;
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type_error(arg.name(), typeid(T));
+            throw error::invalid_value_type(arg.name(), typeid(T));
         }
     }
 
@@ -1365,14 +1214,14 @@ private:
                 );
 
                 if (opt_arg_it == this->_optional_args.end())
-                    throw error::argument_not_found_error(token_it->value);
+                    throw error::argument_not_found(token_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 curr_opt_arg->get()->mark_used();
             }
             else {
                 if (not curr_opt_arg)
-                    throw error::free_value_error(token_it->value);
+                    throw error::free_value(token_it->value);
 
                 curr_opt_arg->get()->set_value(token_it->value);
             }
@@ -1395,11 +1244,11 @@ private:
     void _check_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used())
-                throw error::required_argument_not_parsed_error(arg->name());
+                throw error::required_argument_not_parsed(arg->name());
 
         for (const auto& arg : this->_optional_args)
             if (arg->is_required() and not arg->has_value())
-                throw error::required_argument_not_parsed_error(arg->name());
+                throw error::required_argument_not_parsed(arg->name());
     }
 
     /// @brief Check if the number of argument values is within the specified range.
@@ -1407,13 +1256,13 @@ private:
         for (const auto& arg : this->_positional_args) {
             const auto nvalues_ordering = arg->nvalues_in_range();
             if (not std::is_eq(nvalues_ordering))
-                throw error::invalid_nvalues_error(nvalues_ordering, arg->name());
+                throw error::invalid_nvalues(nvalues_ordering, arg->name());
         }
 
         for (const auto& arg : this->_optional_args) {
             const auto nvalues_ordering = arg->nvalues_in_range();
             if (not std::is_eq(nvalues_ordering))
-                throw error::invalid_nvalues_error(nvalues_ordering, arg->name());
+                throw error::invalid_nvalues(nvalues_ordering, arg->name());
         }
     }
 
