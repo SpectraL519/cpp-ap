@@ -11,7 +11,7 @@
 using namespace ap_testing;
 using namespace ap::nargs;
 
-using ap::argument::optional_argument;
+using ap::argument::optional;
 using ap::detail::argument_name;
 
 namespace {
@@ -21,7 +21,7 @@ constexpr std::string_view secondary_name = "t";
 
 using test_value_type = int;
 using invalid_value_type = double;
-using sut_type = optional_argument<test_value_type>;
+using sut_type = optional<test_value_type>;
 
 sut_type prepare_argument(std::string_view primary_name) {
     return sut_type(argument_name{primary_name});
