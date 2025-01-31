@@ -27,7 +27,8 @@ using action_variant_type =
  * @return True if the held action is a void action.
  */
 template <ap::detail::c_argument_value_type T>
-[[nodiscard]] constexpr inline bool is_void_action(const action_variant_type<T>& action) noexcept {
+[[nodiscard]] constexpr inline bool is_modify_action(const action_variant_type<T>& action
+) noexcept {
     return std::holds_alternative<callable_type<action_type::modify, T>>(action);
 }
 

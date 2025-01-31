@@ -23,6 +23,7 @@ class optional : public ap::detail::argument_interface {
 public:
     using value_type = T; ///< The argument's value type.
     using count_type = ap::nargs::range::count_type; ///< The argument's value count type.
+    using action_type = ap::action::detail::action_variant_type<T>; ///< The argument's action type.
 
     optional() = delete;
 
@@ -296,18 +297,17 @@ private:
      * @param value The value to apply the action to.
      */
     void _apply_action(value_type& value) const noexcept {
-        namespace action = ap::action::detail;
-        if (action::is_void_action(this->_action))
-            std::get<action::callable_type<ap::action_type::modify, value_type>>(this->_action)(
-                value
-            );
-        else
-            value = std::get<
-                action::callable_type<ap::action_type::transform, value_type>>(this->_action)(value
-            );
+        if (action::detail::is_modify_action(this->_action)) {
+            using callable_type =
+                action::detail::callable_type<ap::action_type::modify, value_type>;
+            std::get<callable_type>(this->_action)(value);
+        }
+        else {
+            using callable_type =
+                action::detail::callable_type<ap::action_type::transform, value_type>;
+            value = std::get<callable_type>(this->_action)(value);
+        }
     }
-
-    using action_type = ap::action::detail::action_variant_type<T>;
 
     static constexpr bool _optional = true;
     const ap::detail::argument_name _name;
