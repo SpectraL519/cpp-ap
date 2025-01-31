@@ -351,6 +351,10 @@ private:
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
     using arg_opt_t = std::optional<std::reference_wrapper<ap::detail::argument_interface>>;
 
+    // TODO: extract to a separate file
+    // TODO: add a tokenizer struct
+    //       which will be responsible for converting a span/range of strings
+    //       to tokens using a specified flag prefix character
     /// @brief Structure representing a single command-line argument token.
     struct arg_token {
         enum class token_type : bool { flag, value };
@@ -388,6 +392,7 @@ private:
     using arg_token_list_t = std::vector<arg_token>;
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
 
+    // TODO: extract to detail
     /**
      * @brief Add default positional argument based on the specified discriminator.
      * @param arg_discriminator The default positional argument discriminator.
@@ -407,6 +412,7 @@ private:
         }
     }
 
+    // TODO: extract to detail
     /**
      * @brief Add default optional argument based on the specified discriminator.
      * @param arg_discriminator The default optional argument discriminator.
