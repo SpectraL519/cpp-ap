@@ -55,16 +55,16 @@ TEST_CASE_FIXTURE(
     REQUIRE_EQ(arg_tokens.size(), get_args_length(non_default_num_args, non_default_args_split));
 
     for (std::size_t i = 0; i < non_default_args_split; ++i) { // positional args
-        REQUIRE_EQ(arg_tokens.at(i).type, arg_token::token_type::value);
+        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_value);
         CHECK_EQ(arg_tokens.at(i).value, prepare_arg_value(i));
     }
 
     std::size_t opt_arg_idx = non_default_args_split;
     for (std::size_t i = non_default_args_split; i < arg_tokens.size(); i += 2) { // optional args
-        REQUIRE_EQ(arg_tokens.at(i).type, arg_token::token_type::flag);
+        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag);
         CHECK(prepare_arg_name(opt_arg_idx).match(arg_tokens.at(i).value));
 
-        REQUIRE_EQ(arg_tokens.at(i + 1).type, arg_token::token_type::value);
+        REQUIRE_EQ(arg_tokens.at(i + 1).type, argument_token::t_value);
         CHECK_EQ(arg_tokens.at(i + 1).value, prepare_arg_value(opt_arg_idx));
 
         ++opt_arg_idx;
@@ -85,7 +85,7 @@ TEST_CASE_FIXTURE(
     auto arg_tokens = prepare_arg_token_list(non_default_num_args, non_default_args_split);
     arg_tokens.erase(std::next(arg_tokens.begin(), non_default_args_split));
 
-    CHECK_THROWS_AS(sut_parse_args_impl(arg_tokens), ap::error::free_value_error);
+    CHECK_THROWS_AS(sut_parse_args_impl(arg_tokens), ap::error::free_value);
 }
 
 TEST_CASE_FIXTURE(
@@ -139,7 +139,7 @@ TEST_CASE_FIXTURE(
 
     auto argv = to_char_2d_array(argv_vec);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed_error);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
 
     free_argv(argc, argv);
 }
@@ -159,7 +159,7 @@ TEST_CASE_FIXTURE(
 
     auto argv = to_char_2d_array(argv_vec);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed_error);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
 
     free_argv(argc, argv);
 }
@@ -177,7 +177,7 @@ TEST_CASE_FIXTURE(
     const auto argc = get_argc(non_default_num_args, non_default_args_split);
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed_error);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
 
     free_argv(argc, argv);
 }
@@ -195,7 +195,7 @@ TEST_CASE_FIXTURE(
     sut.add_optional_argument(range_arg_name.primary, range_arg_name.secondary.value())
         .nargs(at_least(1));
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::invalid_nvalues_error);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::invalid_nvalues);
 
     free_argv(argc, argv);
 }
@@ -370,7 +370,7 @@ TEST_CASE_FIXTURE(
     auto argv = prepare_argv(non_default_num_args, non_default_args_split);
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-    CHECK_THROWS_AS(sut.value(invalid_arg_name), ap::error::argument_not_found_error);
+    CHECK_THROWS_AS(sut.value(invalid_arg_name), ap::error::argument_not_found);
 
     free_argv(argc, argv);
 }
@@ -449,7 +449,7 @@ TEST_CASE_FIXTURE(
 
         REQUIRE(sut.has_value(arg_name.primary));
         CHECK_THROWS_AS(
-            sut.value<invalid_value_type>(arg_name.primary), ap::error::invalid_value_type_error
+            sut.value<invalid_value_type>(arg_name.primary), ap::error::invalid_value_type
         );
     }
 
@@ -622,11 +622,11 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_THROWS_AS(
         sut.values<invalid_argument_value_type>(optional_primary_name),
-        ap::error::invalid_value_type_error
+        ap::error::invalid_value_type
     );
     REQUIRE_THROWS_AS(
         sut.values<invalid_argument_value_type>(optional_secondary_name),
-        ap::error::invalid_value_type_error
+        ap::error::invalid_value_type
     );
 
     free_argv(argc, argv);

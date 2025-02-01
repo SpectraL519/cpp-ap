@@ -2,13 +2,11 @@
 
 #include "doctest.h"
 
-#include <ap/argument_parser.hpp>
+#include <ap/detail/argument_name.hpp>
 
 #include <sstream>
-#include <string_view>
 
-using namespace ap_testing;
-using namespace ap::argument::detail;
+using namespace ap::detail;
 
 TEST_SUITE_BEGIN("test_argument_name");
 
