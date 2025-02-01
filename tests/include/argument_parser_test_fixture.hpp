@@ -7,6 +7,7 @@
 #include <cstring>
 
 using ap::detail::argument_name;
+using ap::detail::argument_token;
 
 namespace ap_testing {
 
@@ -14,7 +15,6 @@ struct argument_parser_test_fixture {
     argument_parser_test_fixture() = default;
     ~argument_parser_test_fixture() = default;
 
-    using arg_token = ap::argument_parser::arg_token;
     using arg_token_list_t = ap::argument_parser::arg_token_list_t;
     using arg_opt_t = ap::argument_parser::arg_opt_t;
 
@@ -106,12 +106,12 @@ struct argument_parser_test_fixture {
         arg_tokens.reserve(get_args_length(num_args, args_split));
 
         for (std::size_t i = 0; i < args_split; ++i) { // positional args
-            arg_tokens.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
+            arg_tokens.push_back(argument_token{argument_token::t_value, prepare_arg_value(i)});
         }
         for (std::size_t i = args_split; i < num_args; ++i) { // optional args
-            arg_tokens.push_back(arg_token{arg_token::token_type::flag, prepare_arg_name(i).primary}
+            arg_tokens.push_back(argument_token{argument_token::t_flag, prepare_arg_name(i).primary}
             );
-            arg_tokens.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
+            arg_tokens.push_back(argument_token{argument_token::t_value, prepare_arg_value(i)});
         }
 
         return arg_tokens;

@@ -27,10 +27,7 @@ SOFTWARE.
 
 /*!
  * @file argument_parser.hpp
- * @brief CPP-AP library source file.
- *
- * This header file contians the entire CPP-AP library implementation.
- *
+ * @brief The core CPP-AP library header file.
  * @version 2.0.0
  */
 
@@ -43,6 +40,7 @@ SOFTWARE.
 #include "argument/positional.hpp"
 #include "detail/argument_interface.hpp"
 #include "detail/argument_name.hpp"
+#include "detail/argument_token.hpp"
 #include "detail/concepts.hpp"
 #include "error/exceptions.hpp"
 #include "nargs/range.hpp"
@@ -131,7 +129,7 @@ public:
     argument::positional<T>& add_positional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const ap::detail::argument_name arg_name = {primary_name};
+        const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
 
@@ -152,7 +150,7 @@ public:
     ) {
         // TODO: check forbidden characters
 
-        const ap::detail::argument_name arg_name = {primary_name, secondary_name};
+        const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
 
@@ -170,7 +168,7 @@ public:
     argument::optional<T>& add_optional_argument(std::string_view primary_name) {
         // TODO: check forbidden characters
 
-        const ap::detail::argument_name arg_name = {primary_name};
+        const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
 
@@ -191,7 +189,7 @@ public:
     ) {
         // TODO: check forbidden characters
 
-        const ap::detail::argument_name arg_name = {primary_name, secondary_name};
+        const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
 
@@ -231,14 +229,14 @@ public:
     }
 
     /**
-     * @brief Parse command-line arguments.
+     * @brief Parses the command-line arguments.
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument strings.
      */
     void parse_args(int argc, char* argv[]) {
         this->_parse_args_impl(this->_tokenize(argc, argv));
 
-        if (this->_bypass_required_args())
+        if (this->_are_required_args_bypassed())
             return;
 
         this->_check_required_args();
@@ -246,7 +244,6 @@ public:
     }
 
     /**
-     * @brief Check if an argument has a value.
      * @param arg_name The name of the argument.
      * @return True if the argument has a value, false otherwise.
      */
@@ -256,7 +253,6 @@ public:
     }
 
     /**
-     * @brief Get the count of times a positional or optional argument has been used.
      * @param arg_name The name of the argument.
      * @return The count of times the argument has been used.
      */
@@ -266,7 +262,6 @@ public:
     }
 
     /**
-     * @brief Get the value of a typed argument.
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
@@ -287,7 +282,6 @@ public:
     }
 
     /**
-     * @brief Get the values of a typed argument.
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
@@ -320,7 +314,7 @@ public:
     }
 
     /**
-     * @brief Overloaded stream insertion operator for printing the argument parser details.
+     * @brief Prints the argument parser's details to an output stream.
      * @param os Output stream.
      * @param parser The argument parser to print.
      * @return The modified output stream.
@@ -347,54 +341,16 @@ public:
 #endif
 
 private:
-    using arg_ptr_t = std::unique_ptr<ap::detail::argument_interface>;
+    using arg_ptr_t = std::unique_ptr<detail::argument_interface>;
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
-    using arg_opt_t = std::optional<std::reference_wrapper<ap::detail::argument_interface>>;
+    using arg_opt_t = std::optional<std::reference_wrapper<detail::argument_interface>>;
 
-    // TODO: extract to a separate file
-    // TODO: add a tokenizer struct
-    //       which will be responsible for converting a span/range of strings
-    //       to tokens using a specified flag prefix character
-    /// @brief Structure representing a single command-line argument token.
-    struct arg_token {
-        enum class token_type : bool { flag, value };
-
-        arg_token() = default;
-
-        arg_token(const arg_token&) = default;
-        arg_token(arg_token&&) = default;
-
-        arg_token& operator=(const arg_token&) = default;
-        arg_token& operator=(arg_token&&) = default;
-
-        /**
-         * @brief Constructor of a command-line argument.
-         * @param type Type type of the token (flag or value).
-         * @param value The value of the argument.
-         */
-        arg_token(const token_type type, const std::string& value) : type(type), value(value) {}
-
-        ~arg_token() = default;
-
-        /**
-         * @brief Equality operator for comparing arg_token instances.
-         * @param other An arg_token instance to compare with.
-         * @return Boolean statement of equality comparison.
-         */
-        bool operator==(const arg_token& other) const noexcept {
-            return this->type == other.type and this->value == other.value;
-        }
-
-        token_type type;
-        std::string value;
-    };
-
-    using arg_token_list_t = std::vector<arg_token>;
+    using arg_token_list_t = std::vector<detail::argument_token>;
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
 
-    // TODO: extract to detail
+    // TODO: extract to detail after impl split
     /**
-     * @brief Add default positional argument based on the specified discriminator.
+     * @brief Adds a default positional argument based on the specified discriminator.
      * @param arg_discriminator The default positional argument discriminator.
      */
     void _add_default_positional_argument(const argument::default_positional arg_discriminator
@@ -412,9 +368,9 @@ private:
         }
     }
 
-    // TODO: extract to detail
+    // TODO: extract to detail after impl split
     /**
-     * @brief Add default optional argument based on the specified discriminator.
+     * @brief Adds a default optional argument based on the specified discriminator.
      * @param arg_discriminator The default optional argument discriminator.
      */
     void _add_default_optional_argument(const argument::default_optional arg_discriminator
@@ -455,7 +411,7 @@ private:
 
     // TODO: extract to argument_name.{hpp,cpp} after impl split
     /**
-     * @brief Returns an unary predicate function which checks if the given name matches the argument's name
+     * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
@@ -465,12 +421,11 @@ private:
 
     // TODO: extract to argument_name.{hpp,cpp} after impl split
     /**
-     * @brief Returns an unary predicate function which checks if the given name matches the argument's name
+     * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] auto _name_match_predicate(const ap::detail::argument_name& arg_name
-    ) const noexcept {
+    [[nodiscard]] auto _name_match_predicate(const detail::argument_name& arg_name) const noexcept {
         return [&arg_name](const arg_ptr_t& arg) { return arg->name().match(arg_name); };
     }
 
@@ -479,7 +434,7 @@ private:
      * @param arg_name The name of the argument.
      * @return True if the argument name is already used, false otherwise.
      */
-    [[nodiscard]] bool _is_arg_name_used(const ap::detail::argument_name& arg_name) const noexcept {
+    [[nodiscard]] bool _is_arg_name_used(const detail::argument_name& arg_name) const noexcept {
         const auto predicate = this->_name_match_predicate(arg_name);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
@@ -492,7 +447,7 @@ private:
     }
 
     /**
-     * @brief Processes the command-line arguments by converting them into tokens.
+     * @brief Converts the command-line arguments into a list of tokens.
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument strings.
      * @return List of preprocessed command-line argument tokens.
@@ -508,10 +463,10 @@ private:
             std::string value = argv[i];
             if (this->_is_flag(value)) {
                 this->_strip_flag_prefix(value);
-                args.emplace_back(arg_token::token_type::flag, std::move(value));
+                args.emplace_back(detail::argument_token::t_flag, std::move(value));
             }
             else {
-                args.emplace_back(arg_token::token_type::value, std::move(value));
+                args.emplace_back(detail::argument_token::t_value, std::move(value));
             }
         }
 
@@ -566,7 +521,7 @@ private:
             if (token_it == arg_tokens.end())
                 return;
 
-            if (token_it->type == arg_token::token_type::flag)
+            if (token_it->type == detail::argument_token::t_flag)
                 return;
 
             pos_arg->set_value(token_it->value);
@@ -585,7 +540,7 @@ private:
         std::optional<std::reference_wrapper<arg_ptr_t>> curr_opt_arg;
 
         while (token_it != arg_tokens.end()) {
-            if (token_it->type == arg_token::token_type::flag) {
+            if (token_it->type == detail::argument_token::t_flag) {
                 auto opt_arg_it = std::ranges::find_if(
                     this->_optional_args, this->_name_match_predicate(token_it->value)
                 );
@@ -611,7 +566,7 @@ private:
      * @brief Check if optional arguments can bypass the required arguments.
      * @return True if optional arguments can bypass required arguments, false otherwise.
      */
-    [[nodiscard]] bool _bypass_required_args() const noexcept {
+    [[nodiscard]] bool _are_required_args_bypassed() const noexcept {
         return std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
             return arg->is_used() and arg->bypass_required_enabled();
         });
@@ -673,7 +628,7 @@ private:
     static constexpr uint8_t _flag_prefix_char_length = 1u;
     static constexpr uint8_t _flag_prefix_length = 2u;
     static constexpr char _flag_prefix_char = '-';
-    const std::string _flag_prefix = "--";
+    static constexpr std::string _flag_prefix = "--";
 };
 
 } // namespace ap
