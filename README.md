@@ -11,9 +11,7 @@ Command-line argument parser for C++20
 
 ## Overview
 
-The goal of the project was to create a light,  intuitive and simple to use command-line argument parser library for the `C++20` and newer standards.
-
-The `CPP-AP` library does not require installing any additional tools or heavy libraries, like with `boost::program_options`. Much like with the `Doctest` framework - the only thing you need to do is copy the `argument_parser.hpp` file into the include directory of your project and you're set to go.
+`CPP-AP` is a lightweight and feature-rich command-line argument parsing library, designed as an alternative to `boost::program_options`. It offers a modern, intuitive interface allowing for straightforward argument configuration and parsing.
 
 > [!NOTE]
 > [v1.0](https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
