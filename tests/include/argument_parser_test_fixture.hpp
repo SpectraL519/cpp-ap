@@ -6,7 +6,8 @@
 
 #include <cstring>
 
-using ap::argument::detail::argument_name;
+using ap::detail::argument_name;
+using ap::detail::argument_token;
 
 namespace ap_testing {
 
@@ -14,10 +15,8 @@ struct argument_parser_test_fixture {
     argument_parser_test_fixture() = default;
     ~argument_parser_test_fixture() = default;
 
-    using arg_token = ap::argument_parser::arg_token;
-    using arg_token_list = ap::argument_parser::arg_token_list;
-    using argument_list_type = ap::argument_parser::argument_list_type;
-    using argument_opt_type = ap::argument_parser::argument_opt_type;
+    using arg_token_list_t = ap::argument_parser::arg_token_list_t;
+    using arg_opt_t = ap::argument_parser::arg_opt_t;
 
     using argument_value_type = std::string;
     using invalid_argument_value_type = int;
@@ -100,19 +99,19 @@ struct argument_parser_test_fixture {
         }
     }
 
-    [[nodiscard]] arg_token_list prepare_arg_token_list(
+    [[nodiscard]] arg_token_list_t prepare_arg_token_list(
         std::size_t num_args, std::size_t args_split
     ) const {
-        arg_token_list arg_tokens;
+        arg_token_list_t arg_tokens;
         arg_tokens.reserve(get_args_length(num_args, args_split));
 
         for (std::size_t i = 0; i < args_split; ++i) { // positional args
-            arg_tokens.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
+            arg_tokens.push_back(argument_token{argument_token::t_value, prepare_arg_value(i)});
         }
         for (std::size_t i = args_split; i < num_args; ++i) { // optional args
-            arg_tokens.push_back(arg_token{arg_token::token_type::flag, prepare_arg_name(i).primary}
+            arg_tokens.push_back(argument_token{argument_token::t_flag, prepare_arg_name(i).primary}
             );
-            arg_tokens.push_back(arg_token{arg_token::token_type::value, prepare_arg_value(i)});
+            arg_tokens.push_back(argument_token{argument_token::t_value, prepare_arg_value(i)});
         }
 
         return arg_tokens;
@@ -127,15 +126,15 @@ struct argument_parser_test_fixture {
         return sut._program_description;
     }
 
-    [[nodiscard]] arg_token_list sut_tokenize(int argc, char* argv[]) const {
+    [[nodiscard]] arg_token_list_t sut_tokenize(int argc, char* argv[]) const {
         return sut._tokenize(argc, argv);
     }
 
-    void sut_parse_args_impl(const arg_token_list& arg_tokens) {
+    void sut_parse_args_impl(const arg_token_list_t& arg_tokens) {
         sut._parse_args_impl(arg_tokens);
     }
 
-    [[nodiscard]] argument_opt_type sut_get_argument(std::string_view arg_name) const {
+    [[nodiscard]] arg_opt_t sut_get_argument(std::string_view arg_name) const {
         return sut._get_argument(arg_name);
     }
 

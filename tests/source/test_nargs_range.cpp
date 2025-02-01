@@ -2,11 +2,10 @@
 
 #include "doctest.h"
 
-#include <ap/argument_parser.hpp>
+#include <ap/nargs/range.hpp>
 
 #include <limits>
 
-using namespace ap_testing;
 using namespace ap::nargs;
 
 namespace {

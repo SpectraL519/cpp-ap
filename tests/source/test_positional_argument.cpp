@@ -3,14 +3,12 @@
 #include "doctest.h"
 #include "positional_argument_test_fixture.hpp"
 
-#include <ap/argument_parser.hpp>
-
-#include <string_view>
+#include <ap/argument/positional.hpp>
 
 using namespace ap_testing;
 
-using ap::argument::positional_argument;
-using ap::argument::detail::argument_name;
+using ap::argument::positional;
+using ap::detail::argument_name;
 
 namespace {
 
@@ -18,7 +16,7 @@ constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
 
 using test_value_type = int;
-using sut_type = positional_argument<test_value_type>;
+using sut_type = positional<test_value_type>;
 
 sut_type prepare_argument(std::string_view primary_name) {
     return sut_type(argument_name{primary_name});
@@ -159,9 +157,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut_set_value(sut, std::to_string(value_1)));
     REQUIRE(sut_has_value(sut));
-    CHECK_THROWS_AS(
-        sut_set_value(sut, std::to_string(value_2)), ap::error::value_already_set_error
-    );
+    CHECK_THROWS_AS(sut_set_value(sut, std::to_string(value_2)), ap::error::value_already_set);
 }
 
 TEST_CASE_FIXTURE(
@@ -171,11 +167,11 @@ TEST_CASE_FIXTURE(
     auto sut = prepare_argument(primary_name);
 
     SUBCASE("given string is empty") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), ap::error::invalid_value_error);
+        REQUIRE_THROWS_AS(sut_set_value(sut, empty_str), ap::error::invalid_value);
         CHECK_FALSE(sut_has_value(sut));
     }
     SUBCASE("given string is non-convertible to value_type") {
-        REQUIRE_THROWS_AS(sut_set_value(sut, invalid_value_str), ap::error::invalid_value_error);
+        REQUIRE_THROWS_AS(sut_set_value(sut, invalid_value_str), ap::error::invalid_value);
         CHECK_FALSE(sut_has_value(sut));
     }
 }
@@ -188,7 +184,7 @@ TEST_CASE_FIXTURE(
     sut_set_choices(sut, default_choices);
 
     REQUIRE_THROWS_AS(
-        sut_set_value(sut, std::to_string(invalid_choice)), ap::error::invalid_choice_error
+        sut_set_value(sut, std::to_string(invalid_choice)), ap::error::invalid_choice
     );
     CHECK_FALSE(sut_has_value(sut));
 }
@@ -224,7 +220,7 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("valued action") {
         const auto double_valued_action = [](const test_value_type& value) { return 2 * value; };
-        sut.action<ap::valued_action>(double_valued_action);
+        sut.action<ap::action_type::transform>(double_valued_action);
 
         sut_set_value(sut, std::to_string(value_1));
 
@@ -233,7 +229,7 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("void action") {
         const auto double_void_action = [](test_value_type& value) { value *= 2; };
-        sut.action<ap::void_action>(double_void_action);
+        sut.action<ap::action_type::modify>(double_void_action);
 
         auto test_value = value_1;
 

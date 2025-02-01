@@ -11,9 +11,7 @@ Command-line argument parser for C++20
 
 ## Overview
 
-The goal of the project was to create a light,  intuitive and simple to use command-line argument parser library for the `C++20` and newer standards.
-
-The `CPP-AP` library does not require installing any additional tools or heavy libraries, like with `boost::program_options`. Much like with the `Doctest` framework - the only thing you need to do is copy the `argument_parser.hpp` file into the include directory of your project and you're set to go.
+`CPP-AP` is a lightweight and feature-rich command-line argument parsing library, designed as an alternative to `boost::program_options`. It offers a modern, intuitive interface allowing for straightforward argument configuration and parsing.
 
 > [!NOTE]
 > [v1.0](https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
@@ -33,7 +31,6 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
   - [Including CPP-AP into a project](#including-cpp-ap-into-a-project)
     - [CMake integration](#cmake-integration)
     - [Downloading the library](#downloading-the-library)
-    - [Downloading the single header](#downloading-the-single-header)
   - [The parser class](#the-parser-class)
   - [Adding arguments](#adding-arguments)
   - [Argument parameters](#argument-parameters)
@@ -53,8 +50,6 @@ The `CPP-AP` library does not require installing any additional tools or heavy l
 ## Tutorial
 
 ### Including CPP-AP into a project
-
-There are 3 main ways to include the CPP-AP library into a C++ project:
 
 #### CMake integration
 
@@ -92,17 +87,6 @@ target_link_libraries(my_project PRIVATE cpp-ap)
 #### Downloading the library
 
 If you do not use CMake you can dowload the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add the `<cpp-ap-dir>/include` to the include paths of your project.
-
-#### Downloading the single header
-
-The core of the library is a [single header file](https://github.com/SpectraL519/cpp-ap/blob/master/include/ap/argument_parser.hpp) so to be able to use the library you can simply download the `argument_parser.hpp` header and paste it into the include directory of your project.
-
-> [!IMPORTANT]
-> To actually use the library in your project simply include the single header in you `main.cpp` file:
->
-> ```c++
-> #include <ap/argument_parser.hpp>
-> ```
 
 <br />
 
@@ -201,35 +185,38 @@ Parameters which can be specified for both positional and optional arguments inc
 
 - `action` - a function performed after reading an argument's value.
   Actions are represented as functions, which take the argument's value as an argument. There are two types of actions:
-  - Void actions - `void(value_type&)`
-  - Valued actions - `value_type(const value_type&)`
+  - `modify` actions | `void(value_type&)` - applied to the initialized value of an argument.
 
-  The default action is an empty void function.
+    ```c++
+    parser.add_optional_argument<std::string>("name", "n")
+          .action<ap::action_type::modify>([](std::string& name) { name[0] = std::toupper(name[0]); });
+    ```
 
-  Actions can be used to modify a value parsed from the command-line:
+  - `transform` actions | `value_type(const value_type&)` - applied to the parsed value. The returned value will be used to initialize the argument's value.
 
-  ```c++
-  parser.add_optional_argument<double>("denominator", "d")
-        .action<ap::void_action>([](double& value) { value = 1. / value; });
-  ```
+    ```c++
+    std::string to_lower(std::string s) {
+        for (auto& c : s)
+            c = static_cast<char>(std::tolower(c));
+        return s;
+    }
 
-  or en equivalent valued action:
+    parser.add_optional_argument<std::string>("key", "k")
+          .action<ap::action_type::transform>(to_lower);
+    ```
 
-  ```c++
-  parser.add_optional_argument<double>("denominator", "d")
-        .action<ap::valued_action>([](const double& value) { return 1. / value; });
-  ```
-
-  Actions can also be used to perform some value checking logic, e.g. the predefined `check_file_exists` which checks if a file with a given name exists:
+  Actions can also be used to perform some value checking logic instead of actualy modifying or transforming a value, as e.g. the predefined `check_file_exists` which verifies whether a file with a given name exists:
 
   ```c++
   parser.add_optional_argument("input", "i")
-        .action<ap::void_action>(ap::action::check_file_exists());
+        .action<ap::action_type::modify>(ap::action::check_file_exists());
   ```
+
+  > **NOTE:** The default action is an empty `modify` action.
 
 #### Optional argument specific parameters
 
-- `required` - if this option is set for an argument, failure of parsing it's value will result in an error.
+- `required` - if this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
   ```c++
   parser.add_optional_argument("output", "o").required();
@@ -293,11 +280,11 @@ The `CPP-AP` library has a few default arguments defined. To add a default argum
 ```c++
 // add positional arguments - pass a std::vector of default positional arguments
 parser.default_positional_arguments({...});
-// here ... represents a list of ap::default_argument::positional values (or alternatively ap::default_posarg)
+// here `...` represents a list of ap::argument::default_positional values
 
 // add optional arguments - pass a std::vector of default optional arguments
 parser.default_positional_arguments({...});
-// here ... represents a list of ap::default_argument::optional values (or alternatively ap::default_optarg)
+// here `...` represents a list of ap::argument::default_optional values
 ```
 
 The supported default arguments are:
@@ -307,7 +294,7 @@ The supported default arguments are:
   ```c++
   // equivalent to:
   parser.add_positional_argument<std::string>("input")
-        .action<ap::void_action>(ap::action::check_file_exists())
+        .action<ap::action_type::modify>(ap::action::check_file_exists())
         .help("Input file path");
   ```
 
@@ -343,14 +330,14 @@ The supported default arguments are:
   parser.add_optional_argument("input", "i")
         .required()
         .nargs(1)
-        .action<ap::void_action>(ap::action::check_file_exists())
+        .action<ap::action_type::modify>(ap::action::check_file_exists())
         .help("Input file path");
 
   // multi_input - equivalent to:
   parser.add_optional_argument("input", "i")
         .required()
         .nargs(ap::nargs::at_least(1))
-        .action<ap::void_action>(ap::action::check_file_exists())
+        .action<ap::action_type::modify>(ap::action::check_file_exists())
         .help("Input files paths");
   ```
 
@@ -402,7 +389,7 @@ int main(int argc, char* argv[]) {
     try {
         parser.parse_args(argc, argv);
     }
-    catch (const ap::argument_parser_error& err) {
+    catch (const ap::argument_parser_exception& err) {
         std::cerr << "[ERROR] : " << err.what() << std::endl << parser << std::endl;
         std::exit(EXIT_FAILURE);
     }
@@ -437,7 +424,7 @@ int main(int argc, char* argv[]) {
 
 - Positional arguments are parsed first, in the order they were defined in and without a flag.
 
-  In the example above the first command-line argument must be the value for `positional_argument`:
+  In the example above the first command-line argument must be the value for the `positional` argument:
 
   ```shell
   ./power 2
