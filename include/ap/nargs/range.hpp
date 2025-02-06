@@ -20,15 +20,14 @@ public:
      * @brief Exact count constructor: creates range [n, n].
      * @param n Expected value count.
      */
-    explicit range(const count_type n) : _nlow(n), _nhigh(n), _default(n == _ndefault) {}
+    explicit range(const count_type n) : _nlow(n), _nhigh(n) {}
 
     /**
      * @brief Concrete range constructor: creates range [nlow, nhigh].
      * @param nlow The lower bound.
      * @param nhigh The upper bound.
      */
-    range(const count_type nlow, const count_type nhigh)
-    : _nlow(nlow), _nhigh(nhigh), _default(nlow == _ndefault and nhigh == _ndefault) {}
+    range(const count_type nlow, const count_type nhigh) : _nlow(nlow), _nhigh(nhigh) {}
 
     range(const range&) = default;
     range(range&&) = default;
@@ -37,11 +36,6 @@ public:
     range& operator=(range&&) = default;
 
     ~range() = default;
-
-    /// @return True if the range is [1, 1].
-    [[nodiscard]] bool is_default() const noexcept {
-        return this->_default;
-    }
 
     /**
      * @brief Checks if a given value count is within the range.
@@ -89,9 +83,8 @@ private:
 
     std::optional<count_type> _nlow;
     std::optional<count_type> _nhigh;
-    bool _default = true;
 
-    static constexpr count_type _ndefault = 1;
+    static constexpr count_type _ndefault = 1ull;
 };
 
 /**
