@@ -28,6 +28,10 @@ file(GLOB_RECURSE cpp-ap-src CONFIGURE_DEPENDS "${SOURCE_DIR}/**/*.cpp")
 # The static library target
 add_library(cpp-ap-static STATIC ${cpp-ap-src})
 target_include_directories(cpp-ap-static PUBLIC ${INCLUDE_DIR})
+set_target_properties(cpp-ap-static PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+)
 
 # The library target
 add_library(cpp-ap INTERFACE)
