@@ -173,7 +173,7 @@ public:
         return this->add_optional_argument<bool>(primary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
-            .nargs(0);
+            .nargs(0ull);
     }
 
     /**
@@ -190,7 +190,7 @@ public:
         return this->add_optional_argument<bool>(primary_name, secondary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
-            .nargs(0);
+            .nargs(0ull);
     }
 
     /**

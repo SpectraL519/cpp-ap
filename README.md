@@ -86,7 +86,7 @@ target_link_libraries(my_project PRIVATE cpp-ap)
 
 #### Downloading the library
 
-If you do not use CMake you can dowload the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add the `<cpp-ap-dir>/include` to the include paths of your project.
+If you do not use CMake you can dowload the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
 
 <br />
 
