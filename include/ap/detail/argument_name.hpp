@@ -24,15 +24,14 @@ struct argument_name {
      * @brief Primary name constructor.
      * @param primary The primary name of the argument.
      */
-    argument_name(std::string_view primary) : primary(primary) {}
+    argument_name(std::string_view primary);
 
     /**
      * @brief Primary and secondary name constructor.
      * @param primary The primary name of the argument.
      * @param secondary The secondary (short) name of the argument.
      */
-    argument_name(std::string_view primary, std::string_view secondary)
-    : primary(primary), secondary(secondary) {}
+    argument_name(std::string_view primary, std::string_view secondary);
 
     /// @brief Class destructor.
     ~argument_name() = default;
@@ -42,47 +41,24 @@ struct argument_name {
      * @param other The argument_name instance to compare with.
      * @return Equality of argument names.
      */
-    bool operator==(const argument_name& other) const noexcept {
-        if (not (this->secondary and other.secondary) and (this->secondary or other.secondary))
-            return false;
-
-        if (this->primary != other.primary)
-            return false;
-
-        return this->secondary ? this->secondary.value() == other.secondary.value() : true;
-    }
+    bool operator==(const argument_name& other) const noexcept;
 
     /**
      * @brief Matches the given string to the argument_name instance.
      * @param arg_name The name string to match.
      * @return True if name is equal to either the primary or the secondary name of the argument_name instance.
      */
-    [[nodiscard]] bool match(std::string_view arg_name) const noexcept {
-        return arg_name == this->primary
-            or (this->secondary and arg_name == this->secondary.value());
-    }
+    [[nodiscard]] bool match(std::string_view arg_name) const noexcept;
 
     /**
      * @brief Matches the given argument name to the argument_name instance.
      * @param arg_name The argument_name instance to match.
      * @return True if arg_name's primary or secondary value matches the argument_name instance.
      */
-    [[nodiscard]] bool match(const argument_name& arg_name) const noexcept {
-        if (this->match(arg_name.primary))
-            return true;
-
-        if (arg_name.secondary)
-            return this->match(arg_name.secondary.value());
-
-        return false;
-    }
+    [[nodiscard]] bool match(const argument_name& arg_name) const noexcept;
 
     /// @brief Get a string representation of the argument_name.
-    [[nodiscard]] std::string str() const noexcept {
-        return this->secondary
-                 ? ("[" + this->primary + "," + this->secondary.value() + "]")
-                 : ("[" + this->primary + "]");
-    }
+    [[nodiscard]] std::string str() const noexcept;
 
     /**
      * @brief Stream insertion operator for argument names.
@@ -90,10 +66,7 @@ struct argument_name {
      * @param arg_name The argument name to be inserted into the stream.
      * @return The modified output stream.
      */
-    friend std::ostream& operator<<(std::ostream& os, const argument_name& arg_name) noexcept {
-        os << arg_name.str();
-        return os;
-    }
+    friend std::ostream& operator<<(std::ostream& os, const argument_name& arg_name) noexcept;
 
     const std::string primary; ///< The primary name of the argument.
     const std::optional<std::string> secondary; ///< The optional (short) name of the argument.

@@ -14,9 +14,22 @@ project(cpp-ap
     LANGUAGES CXX
 )
 
+# Options
 option(BUILD_TESTS "Build project tests" OFF)
 
-# Define the library target
+# Structure
+set(SOURCE_DIR "source")
+set(INCLUDE_DIR "include")
+
+# Files
+# should be relative ?
+file(GLOB_RECURSE cpp-ap-src CONFIGURE_DEPENDS "${SOURCE_DIR}/**/*.cpp")
+
+# The static library target
+add_library(cpp-ap-static STATIC ${cpp-ap-src})
+target_include_directories(cpp-ap-static PUBLIC ${INCLUDE_DIR})
+
+# The library target
 add_library(cpp-ap INTERFACE)
 target_include_directories(cpp-ap INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -31,6 +44,8 @@ set_target_properties(cpp-ap PROPERTIES
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+set(INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-ap)
+
 # Install the headers
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
@@ -42,7 +57,7 @@ install(TARGETS cpp-ap EXPORT cpp-ap-targets)
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cpp-ap-config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-ap
+    INSTALL_DESTINATION ${INSTALL_DIR}
 )
 
 write_basic_package_version_file(
@@ -54,13 +69,13 @@ write_basic_package_version_file(
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config-version.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-ap
+    DESTINATION ${INSTALL_DIR}
 )
 
 install(EXPORT cpp-ap-targets
     FILE cpp-ap-targets.cmake
     NAMESPACE cpp-ap::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-ap
+    DESTINATION ${INSTALL_DIR}
 )
 
 # Include the tests directory if CPP-AP is a top level project

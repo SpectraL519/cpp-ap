@@ -33,4 +33,4 @@ set_target_properties(run PROPERTIES
     CXX_EXTENSIONS NO
 )
 target_include_directories(run PRIVATE ${INCLUDE_DIRS})
-target_link_libraries(run PRIVATE cpp-ap)
+target_link_libraries(run PRIVATE cpp-ap-static)
