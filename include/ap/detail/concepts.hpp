@@ -5,6 +5,7 @@
 #pragma once
 
 #include <iostream>
+#include <ranges>
 
 namespace ap::detail {
 
@@ -36,5 +37,14 @@ concept c_argument_value_type = c_readable<T> and std::semiregular<T>;
  */
 template <typename T, typename... Types>
 concept c_one_of = std::disjunction_v<std::is_same<T, Types>...>;
+
+/**
+ * @brief Validates that R is a range of type T (ignoring the cvref attributes).
+ * @tparam R The range type to check.
+ * @tparam V The expected range value type.
+ */
+template <typename R, typename V>
+concept c_range_of =
+    std::ranges::range<R> and std::same_as<V, std::remove_cvref_t<std::ranges::range_value_t<R>>>;
 
 } // namespace ap::detail
