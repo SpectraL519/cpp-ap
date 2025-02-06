@@ -4,6 +4,8 @@
 
 #include "ap/argument_parser.hpp"
 
+#include <algorithm>
+
 namespace ap {
 
 argument_parser& argument_parser::program_name(std::string_view name) noexcept {

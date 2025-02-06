@@ -3,8 +3,6 @@
 #include "argument_parser_test_fixture.hpp"
 #include "doctest.h"
 
-#include <ap/argument_parser.hpp>
-
 using namespace ap_testing;
 
 TEST_SUITE_BEGIN("test_argument_parser_info");

@@ -6,6 +6,8 @@
 
 #include "ap/action/specifiers.hpp"
 
+#include <variant>
+
 namespace ap::action::detail {
 
 /**
