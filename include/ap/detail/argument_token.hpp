@@ -14,7 +14,7 @@ struct argument_token {
     enum class token_type : bool { t_flag, t_value };
     using enum token_type;
 
-    argument_token() = default;
+    argument_token() = delete;
 
     argument_token(const argument_token&) = default;
     argument_token(argument_token&&) = default;

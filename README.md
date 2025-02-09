@@ -11,7 +11,7 @@ Command-line argument parser for C++20
 
 ## Overview
 
-`CPP-AP` is a lightweight and feature-rich command-line argument parsing library, designed as an alternative to `boost::program_options`. It offers a modern, intuitive interface allowing for straightforward argument configuration and parsing.
+`CPP-AP` is a lightweight and feature-rich command-line argument parsing library for the C++20 and newer standards, designed as an alternative to `boost::program_options`. It offers a modern and intuitive interface allowing for straightforward argument configuration and parsing.
 
 > [!NOTE]
 > [v1.0](https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
@@ -41,7 +41,7 @@ Command-line argument parser for C++20
   - [Building and testing](#building-and-testing)
   - [Formatting](#formatting)
 - [Documentation](#documentation)
-- [Compiler support](#compiler-support)
+- [Compiler support](#compiler-compatibilty)
 - [License](#license)
 
 <br />
@@ -289,7 +289,7 @@ parser.default_positional_arguments({...});
 
 The supported default arguments are:
 
-- `positional::input`:
+- `default_positional::input`:
 
   ```c++
   // equivalent to:
@@ -298,14 +298,14 @@ The supported default arguments are:
         .help("Input file path");
   ```
 
-- `positional::output`:
+- `default_positional::output`:
 
   ```c++
   // equivalent to:
   parser.add_positional_argument("output").help("Output file path");
   ```
 
-- `optional::help`:
+- `default_optional::help`:
 
   ```c++
   // equivalent to:
@@ -323,7 +323,7 @@ The supported default arguments are:
 > }
 > ```
 
-- `optional::input` and `optional::multi_input`:
+- `default_optional::input` and `default_optional::multi_input`:
 
   ```c++
   // input - equivalent to:
@@ -341,7 +341,7 @@ The supported default arguments are:
         .help("Input files paths");
   ```
 
-- `optional::output` and `optional::multi_output`:
+- `default_optional::output` and `default_optional::multi_output`:
 
   ```c++
   // output - equivalent to:
@@ -383,7 +383,7 @@ int main(int argc, char* argv[]) {
           .nargs(ap::nargs::any())
           .help("the exponent value");
 
-    parser.default_optional_arguments({ap::default_argument::optional::help});
+    parser.default_optional_arguments({ap::argument::default_optional::help});
 
     // parse command-line arguments
     try {
@@ -499,7 +499,7 @@ The library usage examples / demo projects can be found in the [cpp-ap-demo](htt
 #### Build the testing executable
 
 ```shell
-cmake -B build
+cmake -B build -DBUILD_TESTS=ON
 cd build
 make # -j <n>
 ```
@@ -561,7 +561,7 @@ The documentation for this project can be generated using Doxygen:
 <br />
 <br />
 
-## Compiler support
+## Compiler compatibilty
 
 | Compiler | Min version |
 | :-: | :-: |
