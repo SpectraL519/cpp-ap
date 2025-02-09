@@ -15,7 +15,7 @@ LICENCE_INFO = [
 ]
 
 class DefaultParameters:
-    search_paths: list[str] = ["include"]
+    search_paths: list[str] = ["include", "source"]
     file_patterns: list[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
     exclude_paths: list[str] = []
     help: bool = False

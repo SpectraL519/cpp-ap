@@ -7,7 +7,6 @@
 #include "ap/detail/argument_name.hpp"
 
 #include <format>
-#include <stdexcept>
 
 namespace ap {
 

@@ -3,8 +3,6 @@
 #include "doctest.h"
 #include "positional_argument_test_fixture.hpp"
 
-#include <ap/argument/positional.hpp>
-
 using namespace ap_testing;
 
 using ap::argument::positional;
