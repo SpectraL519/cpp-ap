@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <ranges>
+#include <span>
 
 #ifdef AP_TESTING
 
@@ -234,7 +235,7 @@ public:
      * @param argv Array of command-line argument strings.
      */
     void parse_args(int argc, char* argv[]) {
-        this->_parse_args_impl(this->_tokenize(argc, argv));
+        this->_parse_args_impl(this->_tokenize(std::span(argv + 1, argc - 1)));
 
         if (this->_are_required_args_bypassed())
             return;
@@ -385,29 +386,31 @@ private:
 
     /**
      * @brief Converts the command-line arguments into a list of tokens.
-     * @param argc Number of command-line arguments.
-     * @param argv Array of command-line argument strings.
-     * @return List of preprocessed command-line argument tokens.
+     * @tparam AR The command-line argument value range type.
+     * @param arg_range The command-line argument value range.
+     * @return A list of preprocessed command-line argument tokens.
      */
-    [[nodiscard]] arg_token_list_t _tokenize(int argc, char* argv[]) const noexcept {
-        if (argc < 2)
+    template <detail::c_sized_range_of<std::string, detail::type_validator::convertible> AR>
+    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const noexcept {
+        const auto n_args = std::ranges::size(arg_range);
+        if (n_args == 0ull)
             return arg_token_list_t{};
 
-        arg_token_list_t args;
-        args.reserve(argc - 1);
+        arg_token_list_t toks;
+        toks.reserve(n_args);
 
-        for (int i = 1; i < argc; ++i) {
-            std::string value = argv[i];
+        for (const auto& arg : arg_range) {
+            std::string value = static_cast<std::string>(arg);
             if (this->_is_flag(value)) {
                 this->_strip_flag_prefix(value);
-                args.emplace_back(detail::argument_token::t_flag, std::move(value));
+                toks.emplace_back(detail::argument_token::t_flag, std::move(value));
             }
             else {
-                args.emplace_back(detail::argument_token::t_value, std::move(value));
+                toks.emplace_back(detail::argument_token::t_value, std::move(value));
             }
         }
 
-        return args;
+        return toks;
     }
 
     /**
@@ -416,15 +419,13 @@ private:
      * @return True if the argument is a flag, false otherwise.
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
-        {
-            if (arg.starts_with(this->_flag_prefix))
-                return this->_is_arg_name_used({arg.substr(this->_flag_prefix_length)});
+        if (arg.starts_with(this->_flag_prefix))
+            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_length)});
 
-            if (arg.starts_with(this->_flag_prefix_char))
-                return this->_is_arg_name_used({arg.substr(this->_flag_prefix_char_length)});
+        if (arg.starts_with(this->_flag_prefix_char))
+            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_char_length)});
 
-            return false;
-        }
+        return false;
     }
 
     /**
