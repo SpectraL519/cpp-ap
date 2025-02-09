@@ -153,7 +153,7 @@ TEST_CASE_FIXTURE(
         REQUIRE(argument.is_optional());
         CHECK_FALSE(sut.value<bool>(primary_name_1));
 
-        opt_arg_fixture.sut_set_used(argument);
+        opt_arg_fixture.mark_used(argument);
         CHECK(sut.value<bool>(primary_name_1));
     }
 
@@ -163,7 +163,7 @@ TEST_CASE_FIXTURE(
         REQUIRE(argument.is_optional());
         CHECK(sut.value<bool>(primary_name_1));
 
-        opt_arg_fixture.sut_set_used(argument);
+        opt_arg_fixture.mark_used(argument);
         CHECK_FALSE(sut.value<bool>(primary_name_1));
     }
 }

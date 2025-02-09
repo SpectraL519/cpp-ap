@@ -97,8 +97,9 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "is_used() should return true when argument contains a value"
 ) {
     auto sut = init_arg(primary_name);
-    set_value(sut, std::to_string(value_1));
+    REQUIRE_FALSE(is_used(sut));
 
+    set_value(sut, std::to_string(value_1));
     CHECK(is_used(sut));
 }
 

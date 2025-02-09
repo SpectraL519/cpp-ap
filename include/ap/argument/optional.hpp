@@ -294,6 +294,7 @@ private:
      * @return True if choice is valid, false otherwise.
      */
     [[nodiscard]] bool _is_valid_choice(const value_type& choice) const noexcept {
+        // TODO: replace with `std::ranges::contains` after transition to C++23
         return this->_choices.empty()
             or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }

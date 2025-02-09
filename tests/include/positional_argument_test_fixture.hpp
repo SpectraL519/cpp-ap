@@ -52,6 +52,7 @@ struct positional_argument_test_fixture {
         return arg.has_parsed_values();
     }
 
+    // TODO: const T& instead of const std::string&
     template <c_argument_value_type T>
     positional<T>& set_value(positional<T>& arg, const std::string& str_value) const {
         return arg.set_value(str_value);
