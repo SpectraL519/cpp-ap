@@ -124,7 +124,7 @@ private:
 
     /**
      * @brief Mark the positional argument as used.
-     * @note Not required for positional arguments.
+     * @note No logic is performed for positional arguments
      */
     void mark_used() noexcept override {}
 
