@@ -32,10 +32,13 @@ struct optional_argument_test_fixture {
         return arg.nused();
     }
 
-    // TODO: const T& instead of const std::string&
+    template <c_argument_value_type T>
+    optional<T>& set_value(optional<T>& arg, const T& value) const {
+        return arg.set_value(std::to_string(value));
+    }
+
     template <c_argument_value_type T>
     optional<T>& set_value(optional<T>& arg, const std::string& str_value) const {
-        arg.mark_used();
         return arg.set_value(str_value);
     }
 

@@ -143,7 +143,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return fal
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return true if value is set") {
     auto sut = init_arg(primary_name);
-    set_value(sut, std::to_string(value_1));
+    set_value(sut, value_1);
     CHECK(has_value(sut));
 }
 
@@ -217,7 +217,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "has_parsed_values() should true if the value is set"
 ) {
     auto sut = init_arg(primary_name);
-    set_value(sut, std::to_string(value_1));
+    set_value(sut, value_1);
     CHECK(has_parsed_values(sut));
 }
 
@@ -234,7 +234,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "value() should return the argument's value if it has been set"
 ) {
     auto sut = init_arg(primary_name);
-    set_value(sut, std::to_string(value_1));
+    set_value(sut, value_1);
 
     REQUIRE(has_value(sut));
     CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value_1);
@@ -288,7 +288,7 @@ TEST_CASE_FIXTURE(
     auto sut = init_arg(primary_name);
     set_choices(sut, default_choices);
 
-    REQUIRE_THROWS_AS(set_value(sut, std::to_string(invalid_choice)), ap::error::invalid_choice);
+    REQUIRE_THROWS_AS(set_value(sut, invalid_choice), ap::error::invalid_choice);
     CHECK_FALSE(has_value(sut));
 }
 
@@ -311,7 +311,7 @@ TEST_CASE_FIXTURE(
 
     CAPTURE(value);
 
-    REQUIRE_NOTHROW(set_value(sut, std::to_string(value)));
+    REQUIRE_NOTHROW(set_value(sut, value));
     REQUIRE(has_value(sut));
     CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value);
 }
@@ -322,9 +322,9 @@ TEST_CASE_FIXTURE(
 ) {
     auto sut = init_arg(primary_name);
 
-    REQUIRE_NOTHROW(set_value(sut, std::to_string(value_1)));
+    REQUIRE_NOTHROW(set_value(sut, value_1));
     REQUIRE(has_value(sut));
-    CHECK_THROWS_AS(set_value(sut, std::to_string(value_2)), ap::error::value_already_set);
+    CHECK_THROWS_AS(set_value(sut, value_2), ap::error::value_already_set);
 }
 
 TEST_CASE_FIXTURE(
@@ -335,7 +335,7 @@ TEST_CASE_FIXTURE(
     sut.nargs(non_default_range);
 
     for (const auto value : default_choices) {
-        REQUIRE_NOTHROW(set_value(sut, std::to_string(value)));
+        REQUIRE_NOTHROW(set_value(sut, value));
     }
 
     const auto stored_values = get_values(sut);
@@ -355,7 +355,7 @@ TEST_CASE_FIXTURE(
         const auto double_valued_action = [](const sut_value_type& value) { return 2 * value; };
         sut.action<ap::action_type::transform>(double_valued_action);
 
-        set_value(sut, std::to_string(value_1));
+        set_value(sut, value_1);
 
         CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), double_valued_action(value_1));
     }
@@ -366,7 +366,7 @@ TEST_CASE_FIXTURE(
 
         auto test_value = value_1;
 
-        set_value(sut, std::to_string(test_value));
+        set_value(sut, test_value);
 
         double_void_action(test_value);
         CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), test_value);
@@ -404,11 +404,11 @@ TEST_CASE_FIXTURE(
     REQUIRE(std::is_lt(nvalues_in_range(sut)));
 
     for (const auto value : default_choices) {
-        REQUIRE_NOTHROW(set_value(sut, std::to_string(value)));
+        REQUIRE_NOTHROW(set_value(sut, value));
         CHECK(std::is_eq(nvalues_in_range(sut)));
     }
 
-    REQUIRE_NOTHROW(set_value(sut, std::to_string(invalid_choice)));
+    REQUIRE_NOTHROW(set_value(sut, invalid_choice));
     CHECK(std::is_gt(nvalues_in_range(sut)));
 }
 
