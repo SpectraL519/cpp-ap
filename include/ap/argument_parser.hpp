@@ -2,28 +2,17 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/*!
- * @file argument_parser.hpp
- * @brief The core CPP-AP library header file.
- * @version 2.0.0
- */
-
 #pragma once
 
-#include "action/predefined_actions.hpp"
-#include "action/specifiers.hpp"
 #include "argument/default.hpp"
 #include "argument/optional.hpp"
 #include "argument/positional.hpp"
-#include "detail/argument_interface.hpp"
-#include "detail/argument_name.hpp"
 #include "detail/argument_token.hpp"
 #include "detail/concepts.hpp"
-#include "error/exceptions.hpp"
-#include "nargs/range.hpp"
 
 #include <algorithm>
 #include <ranges>
+#include <span>
 
 #ifdef AP_TESTING
 
@@ -36,6 +25,15 @@ struct argument_parser_test_fixture;
 namespace ap {
 
 // TODO: argument namespace alias
+
+class argument_parser;
+
+namespace detail {
+
+void add_default_argument(const argument::default_positional, argument_parser&) noexcept;
+void add_default_argument(const argument::default_optional, argument_parser&) noexcept;
+
+} // namespace detail
 
 /// @brief Main argument parser class.
 class argument_parser {
@@ -72,27 +70,53 @@ public:
 
     /**
      * @brief Set default positional arguments.
-     * @param arg_discriminator_list Vector of default positional argument categories.
+     * @tparam AR Type of the positional argument discriminator range.
+     * @param arg_discriminator_range A range of default positional argument discriminators.
+     * @return Reference to the argument parser.
+     */
+    template <detail::c_range_of<argument::default_positional> AR>
+    argument_parser& default_positional_arguments(const AR& arg_discriminator_range) noexcept {
+        for (const auto arg_discriminator : arg_discriminator_range)
+            detail::add_default_argument(arg_discriminator, *this);
+        return *this;
+    }
+
+    /**
+     * @brief Set default positional arguments.
+     * @param arg_discriminator_list A list of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
     argument_parser& default_positional_arguments(
-        const std::vector<argument::default_positional>& arg_discriminator_list
+        std::initializer_list<argument::default_positional> arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
-            this->_add_default_positional_argument(arg_discriminator);
+            detail::add_default_argument(arg_discriminator, *this);
         return *this;
     }
 
     /**
      * @brief Set default optional arguments.
-     * @param arg_discriminator_list Vector of default optional argument categories.
+     * @tparam AR Type of the optional argument discriminator range.
+     * @param arg_discriminator_range A range of default optional argument discriminators.
+     * @return Reference to the argument parser.
+     */
+    template <detail::c_range_of<argument::default_optional> AR>
+    argument_parser& default_optional_arguments(const AR& arg_discriminator_range) noexcept {
+        for (const auto arg_discriminator : arg_discriminator_range)
+            detail::add_default_argument(arg_discriminator, *this);
+        return *this;
+    }
+
+    /**
+     * @brief Set default optional arguments.
+     * @param arg_discriminator_list A list of default optional argument discriminators.
      * @return Reference to the argument parser.
      */
     argument_parser& default_optional_arguments(
-        const std::vector<argument::default_optional>& arg_discriminator_list
+        std::initializer_list<argument::default_optional> arg_discriminator_list
     ) noexcept {
         for (const auto arg_discriminator : arg_discriminator_list)
-            this->_add_default_optional_argument(arg_discriminator);
+            detail::add_default_argument(arg_discriminator, *this);
         return *this;
     }
 
@@ -185,7 +209,7 @@ public:
         return this->add_optional_argument<bool>(primary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
-            .nargs(0);
+            .nargs(0ull);
     }
 
     /**
@@ -202,7 +226,7 @@ public:
         return this->add_optional_argument<bool>(primary_name, secondary_name)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
-            .nargs(0);
+            .nargs(0ull);
     }
 
     /**
@@ -211,7 +235,7 @@ public:
      * @param argv Array of command-line argument strings.
      */
     void parse_args(int argc, char* argv[]) {
-        this->_parse_args_impl(this->_tokenize(argc, argv));
+        this->_parse_args_impl(this->_tokenize(std::span(argv + 1, argc - 1)));
 
         if (this->_are_required_args_bypassed())
             return;
@@ -325,68 +349,6 @@ private:
     using arg_token_list_t = std::vector<detail::argument_token>;
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
 
-    // TODO: extract to detail after impl split
-    /**
-     * @brief Adds a default positional argument based on the specified discriminator.
-     * @param arg_discriminator The default positional argument discriminator.
-     */
-    void _add_default_positional_argument(const argument::default_positional arg_discriminator
-    ) noexcept {
-        switch (arg_discriminator) {
-        case argument::default_positional::input:
-            this->add_positional_argument("input")
-                .action<action_type::modify>(action::check_file_exists())
-                .help("Input file path");
-            break;
-
-        case argument::default_positional::output:
-            this->add_positional_argument("output").help("Output file path");
-            break;
-        }
-    }
-
-    // TODO: extract to detail after impl split
-    /**
-     * @brief Adds a default optional argument based on the specified discriminator.
-     * @param arg_discriminator The default optional argument discriminator.
-     */
-    void _add_default_optional_argument(const argument::default_optional arg_discriminator
-    ) noexcept {
-        switch (arg_discriminator) {
-        case argument::default_optional::help:
-            this->add_flag("help", "h").bypass_required().help("Display help message");
-            break;
-
-        case argument::default_optional::input:
-            this->add_optional_argument("input", "i")
-                .required()
-                .nargs(1)
-                .action<action_type::modify>(action::check_file_exists())
-                .help("Input file path");
-            break;
-
-        case argument::default_optional::output:
-            this->add_optional_argument("output", "o").required().nargs(1).help("Output file path");
-            break;
-
-        case argument::default_optional::multi_input:
-            this->add_optional_argument("input", "i")
-                .required()
-                .nargs(ap::nargs::at_least(1))
-                .action<action_type::modify>(action::check_file_exists())
-                .help("Input files paths");
-            break;
-
-        case argument::default_optional::multi_output:
-            this->add_optional_argument("output", "o")
-                .required()
-                .nargs(ap::nargs::at_least(1))
-                .help("Output files paths");
-            break;
-        }
-    }
-
-    // TODO: extract to argument_name.{hpp,cpp} after impl split
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
@@ -396,7 +358,6 @@ private:
         return [arg_name](const arg_ptr_t& arg) { return arg->name().match(arg_name); };
     }
 
-    // TODO: extract to argument_name.{hpp,cpp} after impl split
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
@@ -425,29 +386,31 @@ private:
 
     /**
      * @brief Converts the command-line arguments into a list of tokens.
-     * @param argc Number of command-line arguments.
-     * @param argv Array of command-line argument strings.
-     * @return List of preprocessed command-line argument tokens.
+     * @tparam AR The command-line argument value range type.
+     * @param arg_range The command-line argument value range.
+     * @return A list of preprocessed command-line argument tokens.
      */
-    [[nodiscard]] arg_token_list_t _tokenize(int argc, char* argv[]) const noexcept {
-        if (argc < 2)
+    template <detail::c_sized_range_of<std::string, detail::type_validator::convertible> AR>
+    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const noexcept {
+        const auto n_args = std::ranges::size(arg_range);
+        if (n_args == 0ull)
             return arg_token_list_t{};
 
-        arg_token_list_t args;
-        args.reserve(argc - 1);
+        arg_token_list_t toks;
+        toks.reserve(n_args);
 
-        for (int i = 1; i < argc; ++i) {
-            std::string value = argv[i];
+        for (const auto& arg : arg_range) {
+            std::string value = static_cast<std::string>(arg);
             if (this->_is_flag(value)) {
                 this->_strip_flag_prefix(value);
-                args.emplace_back(detail::argument_token::t_flag, std::move(value));
+                toks.emplace_back(detail::argument_token::t_flag, std::move(value));
             }
             else {
-                args.emplace_back(detail::argument_token::t_value, std::move(value));
+                toks.emplace_back(detail::argument_token::t_value, std::move(value));
             }
         }
 
-        return args;
+        return toks;
     }
 
     /**
@@ -607,5 +570,62 @@ private:
     static constexpr char _flag_prefix_char = '-';
     static constexpr std::string _flag_prefix = "--";
 };
+
+namespace detail {
+
+inline void add_default_argument(
+    const argument::default_positional arg_discriminator, argument_parser& arg_parser
+) noexcept {
+    switch (arg_discriminator) {
+    case argument::default_positional::input:
+        arg_parser.add_positional_argument("input")
+            .action<action_type::modify>(action::check_file_exists())
+            .help("Input file path");
+        break;
+
+    case argument::default_positional::output:
+        arg_parser.add_positional_argument("output").help("Output file path");
+        break;
+    }
+}
+
+inline void add_default_argument(
+    const argument::default_optional arg_discriminator, argument_parser& arg_parser
+) noexcept {
+    switch (arg_discriminator) {
+    case argument::default_optional::help:
+        arg_parser.add_flag("help", "h").bypass_required().help("Display help message");
+        break;
+
+    case argument::default_optional::input:
+        arg_parser.add_optional_argument("input", "i")
+            .required()
+            .nargs(1)
+            .action<action_type::modify>(action::check_file_exists())
+            .help("Input file path");
+        break;
+
+    case argument::default_optional::output:
+        arg_parser.add_optional_argument("output", "o").required().nargs(1).help("Output file path");
+        break;
+
+    case argument::default_optional::multi_input:
+        arg_parser.add_optional_argument("input", "i")
+            .required()
+            .nargs(ap::nargs::at_least(1))
+            .action<action_type::modify>(action::check_file_exists())
+            .help("Input files paths");
+        break;
+
+    case argument::default_optional::multi_output:
+        arg_parser.add_optional_argument("output", "o")
+            .required()
+            .nargs(ap::nargs::at_least(1))
+            .help("Output files paths");
+        break;
+    }
+}
+
+} // namespace detail
 
 } // namespace ap

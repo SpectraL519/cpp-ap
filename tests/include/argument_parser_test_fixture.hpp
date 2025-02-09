@@ -127,7 +127,7 @@ struct argument_parser_test_fixture {
     }
 
     [[nodiscard]] arg_token_list_t sut_tokenize(int argc, char* argv[]) const {
-        return sut._tokenize(argc, argv);
+        return sut._tokenize(std::span(argv + 1, argc - 1));
     }
 
     void sut_parse_args_impl(const arg_token_list_t& arg_tokens) {

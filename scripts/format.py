@@ -9,7 +9,7 @@ from common import find_files
 
 class DefaultParameters:
     modified_files: bool = False
-    search_paths: Iterable[str] = ["include", "tests"]
+    search_paths: Iterable[str] = ["include", "source", "tests"]
     file_patterns: Iterable[str] = ["*.cpp", "*.hpp", "*.c", "*.h"]
     exclude_paths: Iterable[str] = ["tests/external"]
     check: bool = False
