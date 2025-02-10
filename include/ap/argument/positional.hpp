@@ -124,7 +124,7 @@ private:
 
     /**
      * @brief Mark the positional argument as used.
-     * @note Not required for positional arguments.
+     * @note No logic is performed for positional arguments
      */
     void mark_used() noexcept override {}
 
@@ -200,6 +200,7 @@ private:
      * @return True if the choice valid, false otherwise.
      */
     [[nodiscard]] bool _is_valid_choice(const value_type& choice) const noexcept {
+        // TODO: replace with `std::ranges::contains` after transition to C++23
         return this->_choices.empty()
             or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }

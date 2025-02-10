@@ -10,15 +10,15 @@
 
 namespace ap::detail {
 
-/// @brief Structure holding the argument name.
+/// @brief Structure holding the argument's name.
 struct argument_name {
     argument_name() = delete;
 
-    argument_name(const argument_name&) = default;
-    argument_name(argument_name&&) = default;
-
     argument_name& operator=(const argument_name&) = delete;
     argument_name& operator=(argument_name&&) = delete;
+
+    argument_name(const argument_name&) = default;
+    argument_name(argument_name&&) = default;
 
     /**
      * @brief Primary name constructor.

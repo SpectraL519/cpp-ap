@@ -38,11 +38,19 @@ public:
     ~range() = default;
 
     /**
-     * @brief Checks if a given value count is within the range.
-     * @param n The value count to check.
+     * @brief Determines the ordering of the count against a range instance.
+     *
+     * For a `[low, high]` range and the count `n` the returned value is:
+     * - `less` if `n < low`,
+     * - `equivalent` if `n >= low` and `n <= high`,
+     * - `greater` if `n > high`.
+     * If either `low` or `high` limits are not set (std::nullopt),
+     * then the corresponding conditions are dropped.
+     *
+     * @param n The value count to order.
      * @return Ordering relationship between the count and the range.
      */
-    [[nodiscard]] std::weak_ordering contains(const range::count_type n) const noexcept {
+    [[nodiscard]] std::weak_ordering ordering(const range::count_type n) const noexcept {
         if (not (this->_nlow.has_value() or this->_nhigh.has_value()))
             return std::weak_ordering::equivalent;
 
