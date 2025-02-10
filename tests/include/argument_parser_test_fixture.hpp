@@ -13,7 +13,7 @@ namespace ap_testing {
 
 struct argument_parser_test_fixture {
     argument_parser_test_fixture() = default;
-    ~argument_parser_test_fixture() = default;
+    virtual ~argument_parser_test_fixture() = default;
 
     using arg_token_list_t = ap::argument_parser::arg_token_list_t;
     using arg_opt_t = ap::argument_parser::arg_opt_t;
@@ -22,24 +22,26 @@ struct argument_parser_test_fixture {
     using invalid_argument_value_type = int;
 
     // test utility functions
-    [[nodiscard]] std::string prepare_arg_flag_primary(std::size_t i) const {
+    [[nodiscard]] std::string init_arg_flag_primary(std::size_t i) const {
         return "--test_arg_" + std::to_string(i);
     }
 
-    [[nodiscard]] std::string prepare_arg_flag_secondary(std::size_t i) const {
+    [[nodiscard]] std::string init_arg_flag_secondary(std::size_t i) const {
         return "-ta_" + std::to_string(i);
     }
 
-    [[nodiscard]] argument_value_type prepare_arg_value(std::size_t i) const {
+    [[nodiscard]] argument_value_type init_arg_value(std::size_t i) const {
         return "test_value_" + std::to_string(i);
     }
 
-    [[nodiscard]] std::size_t get_args_length(std::size_t num_args, std::size_t args_split) const {
-        return args_split + 2 * (num_args - args_split);
+    [[nodiscard]] std::size_t get_args_length(
+        std::size_t n_positional_args, std::size_t n_optional_args
+    ) const {
+        return n_positional_args + (2ull * n_optional_args);
     }
 
-    [[nodiscard]] int get_argc(std::size_t num_args, std::size_t args_split) const {
-        return static_cast<int>(get_args_length(num_args, args_split) + 1);
+    [[nodiscard]] int get_argc(std::size_t n_positional_args, std::size_t n_optional_args) const {
+        return static_cast<int>(get_args_length(n_positional_args, n_optional_args) + 1);
     }
 
     [[nodiscard]] char** to_char_2d_array(const std::vector<std::string>& argv_vec) const {
@@ -53,88 +55,94 @@ struct argument_parser_test_fixture {
         return argv;
     }
 
-    [[nodiscard]] std::vector<std::string> prepare_argv_vec(
-        std::size_t num_args, std::size_t args_split
+    [[nodiscard]] std::vector<std::string> init_argv_vec(
+        std::size_t n_positional_args, std::size_t n_optional_args
     ) const {
         std::vector<std::string> argv_vec;
-        argv_vec.reserve(get_argc(num_args, args_split));
+        argv_vec.reserve(get_argc(n_positional_args, n_optional_args));
 
         argv_vec.emplace_back("program");
 
-        for (std::size_t i = 0; i < args_split; ++i) // positional args
-            argv_vec.emplace_back(prepare_arg_value(i));
+        for (std::size_t i = 0ull; i < n_positional_args; ++i)
+            argv_vec.emplace_back(init_arg_value(i));
 
-        for (std::size_t i = args_split; i < num_args; ++i) { // optional args
-            argv_vec.emplace_back(prepare_arg_flag_primary(i));
-            argv_vec.emplace_back(prepare_arg_value(i));
+        for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+            const auto arg_idx = n_positional_args + i;
+            argv_vec.emplace_back(init_arg_flag_primary(arg_idx));
+            argv_vec.emplace_back(init_arg_value(arg_idx));
         }
 
         return argv_vec;
     }
 
-    [[nodiscard]] char** prepare_argv(std::size_t num_args, std::size_t args_split) const {
-        return to_char_2d_array(prepare_argv_vec(num_args, args_split));
+    [[nodiscard]] char** init_argv(std::size_t n_positional_args, std::size_t n_optional_args)
+        const {
+        return to_char_2d_array(init_argv_vec(n_positional_args, n_optional_args));
     }
 
     void free_argv(std::size_t argc, char** argv) const {
-        for (std::size_t i = 0; i < argc; ++i)
+        for (std::size_t i = 0ull; i < argc; ++i)
             delete[] argv[i];
         delete[] argv;
     }
 
-    [[nodiscard]] argument_name prepare_arg_name(std::size_t i) const {
+    [[nodiscard]] argument_name init_arg_name(std::size_t i) const {
         return argument_name("test_arg_" + std::to_string(i), "ta_" + std::to_string(i));
     }
 
-    void add_arguments(ap::argument_parser& parser, std::size_t num_args, std::size_t args_split)
-        const {
-        for (std::size_t i = 0; i < args_split; ++i) { // positional args
-            const auto arg_name = prepare_arg_name(i);
+    void add_arguments(
+        ap::argument_parser& parser, std::size_t n_positional_args, std::size_t n_optional_args
+    ) const {
+        for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+            const auto arg_name = init_arg_name(i);
             parser.add_positional_argument(arg_name.primary, arg_name.secondary.value());
         }
 
-        for (std::size_t i = args_split; i < num_args; ++i) { // optional args
-            const auto arg_name = prepare_arg_name(i);
+        for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+            const auto arg_idx = n_positional_args + i;
+            const auto arg_name = init_arg_name(arg_idx);
             parser.add_optional_argument(arg_name.primary, arg_name.secondary.value());
         }
     }
 
-    [[nodiscard]] arg_token_list_t prepare_arg_token_list(
-        std::size_t num_args, std::size_t args_split
+    [[nodiscard]] arg_token_list_t init_arg_tokens(
+        std::size_t n_positional_args, std::size_t n_optional_args
     ) const {
         arg_token_list_t arg_tokens;
-        arg_tokens.reserve(get_args_length(num_args, args_split));
+        arg_tokens.reserve(get_args_length(n_positional_args, n_optional_args));
 
-        for (std::size_t i = 0; i < args_split; ++i) { // positional args
-            arg_tokens.push_back(argument_token{argument_token::t_value, prepare_arg_value(i)});
-        }
-        for (std::size_t i = args_split; i < num_args; ++i) { // optional args
-            arg_tokens.push_back(argument_token{argument_token::t_flag, prepare_arg_name(i).primary}
+        for (std::size_t i = 0ull; i < n_positional_args; ++i)
+            arg_tokens.push_back(argument_token{argument_token::t_value, init_arg_value(i)});
+
+        for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+            const auto arg_idx = n_positional_args + i;
+            arg_tokens.push_back(
+                argument_token{argument_token::t_flag, init_arg_name(arg_idx).primary}
             );
-            arg_tokens.push_back(argument_token{argument_token::t_value, prepare_arg_value(i)});
+            arg_tokens.push_back(argument_token{argument_token::t_value, init_arg_value(arg_idx)});
         }
 
         return arg_tokens;
     }
 
     // argument_parser private function accessors
-    [[nodiscard]] const std::optional<std::string>& sut_get_program_name() const {
+    [[nodiscard]] const std::optional<std::string>& get_program_name() const {
         return sut._program_name;
     }
 
-    [[nodiscard]] const std::optional<std::string>& sut_get_program_description() const {
+    [[nodiscard]] const std::optional<std::string>& get_program_description() const {
         return sut._program_description;
     }
 
-    [[nodiscard]] arg_token_list_t sut_tokenize(int argc, char* argv[]) const {
+    [[nodiscard]] arg_token_list_t tokenize(int argc, char* argv[]) const {
         return sut._tokenize(std::span(argv + 1, argc - 1));
     }
 
-    void sut_parse_args_impl(const arg_token_list_t& arg_tokens) {
+    void parse_args_impl(const arg_token_list_t& arg_tokens) {
         sut._parse_args_impl(arg_tokens);
     }
 
-    [[nodiscard]] arg_opt_t sut_get_argument(std::string_view arg_name) const {
+    [[nodiscard]] arg_opt_t get_argument(std::string_view arg_name) const {
         return sut._get_argument(arg_name);
     }
 

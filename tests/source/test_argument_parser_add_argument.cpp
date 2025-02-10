@@ -23,11 +23,11 @@ TEST_CASE_FIXTURE(
 ) {
     sut.default_positional_arguments({default_positional::input, default_positional::output});
 
-    const auto input_arg = sut_get_argument("input");
+    const auto input_arg = get_argument("input");
     REQUIRE(input_arg);
     REQUIRE_FALSE(input_arg->get().is_optional());
 
-    const auto output_arg = sut_get_argument("output");
+    const auto output_arg = get_argument("output");
     REQUIRE(output_arg);
     REQUIRE_FALSE(output_arg->get().is_optional());
 }
@@ -60,15 +60,15 @@ TEST_CASE_FIXTURE(
     CAPTURE(input_flag);
     CAPTURE(output_flag);
 
-    const auto help_arg = sut_get_argument(help_flag);
+    const auto help_arg = get_argument(help_flag);
     REQUIRE(help_arg);
     CHECK(help_arg->get().is_optional());
 
-    const auto input_arg = sut_get_argument(input_flag);
+    const auto input_arg = get_argument(input_flag);
     REQUIRE(input_arg);
     CHECK(input_arg->get().is_optional());
 
-    const auto output_arg = sut_get_argument(output_flag);
+    const auto output_arg = get_argument(output_flag);
     REQUIRE(output_arg);
     CHECK(output_arg->get().is_optional());
 }
