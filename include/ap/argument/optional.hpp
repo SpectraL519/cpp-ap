@@ -250,7 +250,7 @@ private:
         if (this->_values.empty() and this->_has_predefined_value())
             return std::weak_ordering::equivalent;
 
-        return this->_nargs_range->contains(this->_values.size());
+        return this->_nargs_range->ordering(this->_values.size());
     }
 
     /// @return Reference to the stored value of the optional argument.
