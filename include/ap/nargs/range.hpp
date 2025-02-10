@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <iostream>
 #include <optional>
 
 namespace ap::nargs {
