@@ -284,7 +284,9 @@ public:
 
     /**
      * @tparam T Type of the argument value.
+     * @tparam U The default value type.
      * @param arg_name The name of the argument.
+     * @param default_value The default value.
      * @return The value of the argument.
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
