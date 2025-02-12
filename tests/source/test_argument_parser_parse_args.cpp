@@ -46,7 +46,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args, "_tokenize should return a vector of correct arguments"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -81,7 +81,7 @@ TEST_CASE_FIXTURE(
     "_parse_args_impl should throw when there is a non-positional value specified "
     "without an argument flag present before the value"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
     arg_tokens.erase(std::next(arg_tokens.begin(), n_positional_args));
@@ -93,7 +93,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "_parse_args_impl should not throw when the arguments are correct"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
     const auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
     CHECK_NOTHROW(parse_args_impl(arg_tokens));
 }
@@ -104,7 +104,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "_get_argument should return nullopt if there is no argument with given name present"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
     CHECK_FALSE(get_argument(invalid_arg_name));
 }
 
@@ -112,7 +112,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "_get_argument should return valid argument if there is an argument with the given name"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     for (std::size_t i = 0ull; i < n_positional_args; ++i) {
         const auto arg_name = init_arg_name(i);
@@ -127,7 +127,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "parse_args should throw when there is less input values than positional arguments"
 ) {
-    add_arguments(sut, n_positional_args, no_args);
+    add_arguments(n_positional_args, no_args);
 
     auto argc = get_argc(n_positional_args, no_args);
     auto argv_vec = init_argv_vec(n_positional_args, no_args);
@@ -147,7 +147,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "parse_args should throw when there is not enough positional values"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv_vec = init_argv_vec(n_positional_args, n_optional_args);
@@ -167,7 +167,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "parse_args should throw when there is no value specified for a required optional argument"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto required_arg_name = init_arg_name(n_args_total);
     sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
@@ -185,7 +185,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "parse_args should throw when an optional argument's nvalues is not in a specified range"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -204,7 +204,7 @@ TEST_CASE_FIXTURE(
     "parse_args should not throw if the number of positional values are correct and all required "
     "optional arguments have values"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto required_arg_name = init_arg_name(n_args_total);
     sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
@@ -240,7 +240,7 @@ TEST_CASE_FIXTURE(
     "parse_args should not throw if there is an argument which has the bypass_required option "
     "enabled and is used"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto bypass_required_arg_name = init_arg_name(n_args_total);
     sut.add_optional_argument<bool>(
@@ -277,7 +277,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "has_value should return false if there is no argument with given name present"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -291,7 +291,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args, "has_value should return false when an argument has no values"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
@@ -304,7 +304,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "has_value should return true if a value has been parsed for the argument"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const int argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -326,7 +326,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "value() should throw if there is no argument with given name present"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
     CHECK_THROWS_AS(sut.value(invalid_arg_name), ap::error::argument_not_found);
 }
 
@@ -334,7 +334,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "value() should throw if no value has been parsed for an argument"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
@@ -347,7 +347,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "value() should throw if an argument has a value but the given type is invalid"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -373,7 +373,7 @@ TEST_CASE_FIXTURE(
     "value() should return a correct value when the argument name is valid and its value has been "
     "parsed"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -419,7 +419,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "value_or() should throw if there is no argument with given name present"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
     CHECK_THROWS_AS(sut.value_or(invalid_arg_name, empty_str), ap::error::argument_not_found);
 }
 
@@ -427,7 +427,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "value_or() should throw if an argument has a value but the given type is invalid"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -454,7 +454,7 @@ TEST_CASE_FIXTURE(
     "value_or() should return a correct value when the argument name is valid and its value has "
     "been parsed"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
@@ -503,7 +503,7 @@ TEST_CASE_FIXTURE(
     using value_type = int;
     using default_value_type = short;
 
-    add_arguments<value_type>(sut, n_positional_args, n_optional_args);
+    add_arguments<value_type>(n_positional_args, n_optional_args);
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
@@ -521,7 +521,7 @@ TEST_CASE_FIXTURE(
     "value_or() should return the given default value if no value has been parsed for an argument "
     "and it doesn't have a predefined value (optional)"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
@@ -535,7 +535,7 @@ TEST_CASE_FIXTURE(
 // count
 
 TEST_CASE_FIXTURE(test_argument_parser_parse_args, "count should return 0 by default") {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
@@ -548,7 +548,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "count should return 0 if there is no argument with given name present"
 ) {
-    add_arguments(sut, n_positional_args, n_optional_args);
+    add_arguments(n_positional_args, n_optional_args);
     CHECK_EQ(sut.count(invalid_arg_name), 0ull);
 }
 

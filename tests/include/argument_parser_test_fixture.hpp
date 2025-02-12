@@ -93,18 +93,16 @@ struct argument_parser_test_fixture {
     }
 
     template <c_argument_value_type T = std::string>
-    void add_arguments(
-        ap::argument_parser& parser, std::size_t n_positional_args, std::size_t n_optional_args
-    ) const {
+    void add_arguments(std::size_t n_positional_args, std::size_t n_optional_args) {
         for (std::size_t i = 0ull; i < n_positional_args; ++i) {
             const auto arg_name = init_arg_name(i);
-            parser.add_positional_argument<T>(arg_name.primary, arg_name.secondary.value());
+            sut.add_positional_argument<T>(arg_name.primary, arg_name.secondary.value());
         }
 
         for (std::size_t i = 0ull; i < n_optional_args; ++i) {
             const auto arg_idx = n_positional_args + i;
             const auto arg_name = init_arg_name(arg_idx);
-            parser.add_optional_argument<T>(arg_name.primary, arg_name.secondary.value());
+            sut.add_optional_argument<T>(arg_name.primary, arg_name.secondary.value());
         }
     }
 
