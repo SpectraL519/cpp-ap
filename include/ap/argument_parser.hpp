@@ -267,7 +267,7 @@ public:
      * @param arg_name The name of the argument.
      * @return The value of the argument.
      */
-    template <std::copy_constructible T = std::string>
+    template <detail::c_argument_value_type T = std::string>
     T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
@@ -283,11 +283,36 @@ public:
     }
 
     /**
+     * @tparam T Type of the argument value.
+     * @param arg_name The name of the argument.
+     * @return The value of the argument.
+     */
+    template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
+    T value_or(std::string_view arg_name, U&& default_value) const {
+        const auto arg_opt = this->_get_argument(arg_name);
+        if (not arg_opt)
+            throw error::argument_not_found(arg_name);
+
+        try {
+            const auto& arg_value = arg_opt->get().value();
+            return std::any_cast<T>(arg_value);
+        }
+        catch (const std::logic_error&) {
+            // positional: no value parsed
+            // optional: no value parsed + no predefined value
+            return T{std::forward<U>(default_value)};
+        }
+        catch (const std::bad_any_cast& err) {
+            throw error::invalid_value_type(arg_opt->get().name(), typeid(T));
+        }
+    }
+
+    /**
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
      */
-    template <std::copy_constructible T = std::string>
+    template <detail::c_argument_value_type T = std::string>
     std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)

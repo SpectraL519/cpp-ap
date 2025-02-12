@@ -23,6 +23,8 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string positional_secondary_name = "pa";
     const std::string optional_primary_name = "optional_arg";
     const std::string optional_secondary_name = "oa";
+
+    const std::string empty_str{};
 };
 
 // _tokenize
@@ -368,8 +370,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "value() should return a correct value when there is an argument"
-    "with the given name and a parsed value present"
+    "value() should return a correct value when the argument name is valid and its value has been "
+    "parsed"
 ) {
     add_arguments(sut, n_positional_args, n_optional_args);
 
@@ -388,6 +390,146 @@ TEST_CASE_FIXTURE(
     }
 
     free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "value() should return a correct value for an optional argument when the name is valid and the "
+    "argument has a predefined value"
+) {
+    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+        const auto arg_name = init_arg_name(i);
+        sut.add_optional_argument(arg_name.primary, arg_name.secondary.value())
+            .default_value(init_arg_value(i));
+    }
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+        const auto arg_name = init_arg_name(i);
+        const auto arg_value = init_arg_value(i);
+
+        REQUIRE(sut.has_value(arg_name.primary));
+        CHECK_EQ(sut.value(arg_name.primary), arg_value);
+        CHECK_EQ(sut.value(arg_name.secondary.value()), arg_value);
+    }
+}
+
+// value_or
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "value_or() should throw if there is no argument with given name present"
+) {
+    add_arguments(sut, n_positional_args, n_optional_args);
+    CHECK_THROWS_AS(sut.value_or(invalid_arg_name, empty_str), ap::error::argument_not_found);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "value_or() should throw if an argument has a value but the given type is invalid"
+) {
+    add_arguments(sut, n_positional_args, n_optional_args);
+
+    const auto argc = get_argc(n_positional_args, n_optional_args);
+    auto argv = init_argv(n_positional_args, n_optional_args);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+    using invalid_value_type = int;
+
+    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+        const auto arg_name = init_arg_name(i);
+
+        REQUIRE(sut.has_value(arg_name.primary));
+        CHECK_THROWS_AS(
+            sut.value_or<invalid_value_type>(arg_name.primary, invalid_value_type{}),
+            ap::error::invalid_value_type
+        );
+    }
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "value_or() should return a correct value when the argument name is valid and its value has "
+    "been parsed"
+) {
+    add_arguments(sut, n_positional_args, n_optional_args);
+
+    const auto argc = get_argc(n_positional_args, n_optional_args);
+    auto argv = init_argv(n_positional_args, n_optional_args);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+        const auto arg_name = init_arg_name(i);
+        const auto arg_value = init_arg_value(i);
+
+        REQUIRE(sut.has_value(arg_name.primary));
+        CHECK_EQ(sut.value_or(arg_name.primary, empty_str), arg_value);
+        CHECK_EQ(sut.value_or(arg_name.secondary.value(), empty_str), arg_value);
+    }
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "value_or() should return a correct value for an optional argument when the name is valid and "
+    "the argument has a predefined value"
+) {
+    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+        const auto arg_name = init_arg_name(i);
+        sut.add_optional_argument(arg_name.primary, arg_name.secondary.value())
+            .default_value(init_arg_value(i));
+    }
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+        const auto arg_name = init_arg_name(i);
+        const auto arg_value = init_arg_value(i);
+
+        REQUIRE(sut.has_value(arg_name.primary));
+        CHECK_EQ(sut.value_or(arg_name.primary, empty_str), arg_value);
+        CHECK_EQ(sut.value_or(arg_name.secondary.value(), empty_str), arg_value);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "value_or() should return an instance of the specified type initialized from the given default "
+    "value if no value has been parsed for an argument and it doesn't have a predefined value "
+    "(optional)"
+) {
+    using value_type = int;
+    using default_value_type = short;
+
+    add_arguments<value_type>(sut, n_positional_args, n_optional_args);
+
+    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+        const auto arg_name = init_arg_name(i);
+        const default_value_type default_value = 2 * static_cast<default_value_type>(i);
+
+        CHECK_EQ(sut.value_or<value_type>(arg_name.primary, default_value), default_value);
+        CHECK_EQ(
+            sut.value_or<value_type>(arg_name.secondary.value(), default_value), default_value
+        );
+    }
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "value_or() should return the given default value if no value has been parsed for an argument "
+    "and it doesn't have a predefined value (optional)"
+) {
+    add_arguments(sut, n_positional_args, n_optional_args);
+
+    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+        const auto arg_name = init_arg_name(i);
+        const auto default_value = init_arg_value(i);
+
+        CHECK_EQ(sut.value_or(arg_name.primary, default_value), default_value);
+        CHECK_EQ(sut.value_or(arg_name.secondary.value(), default_value), default_value);
+    }
 }
 
 // count
