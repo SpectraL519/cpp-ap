@@ -5,9 +5,11 @@
 #include <ap/argument_parser.hpp>
 
 #include <cstring>
+#include <format>
 
 using ap::detail::argument_name;
 using ap::detail::argument_token;
+using ap::detail::c_argument_value_type;
 
 namespace ap_testing {
 
@@ -23,15 +25,15 @@ struct argument_parser_test_fixture {
 
     // test utility functions
     [[nodiscard]] std::string init_arg_flag_primary(std::size_t i) const {
-        return "--test_arg_" + std::to_string(i);
+        return std::format("--test_arg_{}", i);
     }
 
     [[nodiscard]] std::string init_arg_flag_secondary(std::size_t i) const {
-        return "-ta_" + std::to_string(i);
+        return std::format("-ta_{}", i);
     }
 
     [[nodiscard]] argument_value_type init_arg_value(std::size_t i) const {
-        return "test_value_" + std::to_string(i);
+        return std::format("test_value_{}", i);
     }
 
     [[nodiscard]] std::size_t get_args_length(
@@ -87,21 +89,20 @@ struct argument_parser_test_fixture {
     }
 
     [[nodiscard]] argument_name init_arg_name(std::size_t i) const {
-        return argument_name("test_arg_" + std::to_string(i), "ta_" + std::to_string(i));
+        return argument_name{std::format("test_arg_{}", i), std::format("ta_{}", i)};
     }
 
-    void add_arguments(
-        ap::argument_parser& parser, std::size_t n_positional_args, std::size_t n_optional_args
-    ) const {
+    template <c_argument_value_type T = std::string>
+    void add_arguments(std::size_t n_positional_args, std::size_t n_optional_args) {
         for (std::size_t i = 0ull; i < n_positional_args; ++i) {
             const auto arg_name = init_arg_name(i);
-            parser.add_positional_argument(arg_name.primary, arg_name.secondary.value());
+            sut.add_positional_argument<T>(arg_name.primary, arg_name.secondary.value());
         }
 
         for (std::size_t i = 0ull; i < n_optional_args; ++i) {
             const auto arg_idx = n_positional_args + i;
             const auto arg_name = init_arg_name(arg_idx);
-            parser.add_optional_argument(arg_name.primary, arg_name.secondary.value());
+            sut.add_optional_argument<T>(arg_name.primary, arg_name.secondary.value());
         }
     }
 
