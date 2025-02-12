@@ -36,6 +36,7 @@ Command-line argument parser for C++20
   - [Argument parameters](#argument-parameters)
   - [Default arguments](#default-arguments)
   - [Parsing arguments](#parsing-arguments)
+  - [Retrieving argument values](#retrieving-argument-values)
 - [Examples](#examples)
 - [Dev notes](#dev-notes)
   - [Building and testing](#building-and-testing)
@@ -106,6 +107,8 @@ parser.program_name("Name of the program")
       .program_description("Description of the program");
 ```
 
+<br />
+
 ### Adding arguments
 
 The parser supports both positional and optional arguments. Both argument types are identified by their names represented as strings. Arguments can be defined with only a primary name or with a primary and a secondary (short) name.
@@ -159,6 +162,8 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
       .help("disables option: another option");
 */
 ```
+
+<br />
 
 ### Argument parameters
 
@@ -273,6 +278,8 @@ Parameters which can be specified for both positional and optional arguments inc
 
   In this example if you run the program with only a `-s` or `--save` flag and no value, the value will be set to `out.txt`.
 
+<br />
+
 ### Default arguments
 
 The `CPP-AP` library has a few default arguments defined. To add a default argument to the parser use the following:
@@ -359,6 +366,8 @@ The supported default arguments are:
 
 > [!NOTE]
 > The `argument_parser::default_<positional/optional>_arguments` functions will be modified to use a variadic argument list instead of a `std::vector` in a future release.
+
+<br />
 
 ### Parsing arguments
 
@@ -478,6 +487,36 @@ int main(int argc, char* argv[]) {
 
 > [!IMPORTANT]
 > The parser behaviour depends on the argument definitions. The argument parameters are described int the [Argument parameters](#argument-parameters) section.
+
+<br />
+
+### Retrieving argument values
+
+You can retrieve the argument's value with:
+
+```cpp
+(const) auto value = parser.value<value_type>("argument_name"); // (1)
+(const) auto value = parser.value_or<value_type>("argument_name", default_value); // (2)
+```
+
+1. This will return the value parsed for the given argument.
+
+    For optional arguments this will return the argument's predefined value if no value has been parsed. Additionaly, if more than one value has been parsed for an optional argument, this function will return the first parsed value.
+
+2. When a value has been parsed for the argument, the behaviour is the same as in case **(1)**. Otherwise, this will return `value_type{std::forward<U>(default_value)}` (where `U` is the deducted type of `default_value`), if:
+
+    - There is no value parsed for a positional argument
+    - There is no parsed values and no predefined values for an optional arrument
+
+<br />
+
+Additionally for optional arguments, you can use:
+
+```cpp
+(const) std::vector<value_type> values = parser.values<value_type>("argument_name");
+```
+
+which returns a `vector` containing all values parsed for the given argument.
 
 <br />
 <br />
