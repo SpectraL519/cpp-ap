@@ -89,9 +89,7 @@ public:
     argument_parser& default_positional_arguments(
         std::initializer_list<argument::default_positional> arg_discriminator_list
     ) noexcept {
-        for (const auto arg_discriminator : arg_discriminator_list)
-            detail::add_default_argument(arg_discriminator, *this);
-        return *this;
+        return this->default_positional_arguments<>(arg_discriminator_list);
     }
 
     /**
@@ -115,9 +113,7 @@ public:
     argument_parser& default_optional_arguments(
         std::initializer_list<argument::default_optional> arg_discriminator_list
     ) noexcept {
-        for (const auto arg_discriminator : arg_discriminator_list)
-            detail::add_default_argument(arg_discriminator, *this);
-        return *this;
+        return this->default_optional_arguments<>(arg_discriminator_list);
     }
 
     /**

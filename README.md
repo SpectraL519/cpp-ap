@@ -282,19 +282,20 @@ Parameters which can be specified for both positional and optional arguments inc
 
 ### Default arguments
 
-The `CPP-AP` library has a few default arguments defined. To add a default argument to the parser use the following:
+The `CPP-AP` library defines several default arguments, which can be added to the parser's configuration as follows.
 
 ```c++
-// add positional arguments - pass a std::vector of default positional arguments
 parser.default_positional_arguments({...});
-// here `...` represents a list of ap::argument::default_positional values
+// here `...` represents a collection of ap::argument::default_positional values
 
-// add optional arguments - pass a std::vector of default optional arguments
 parser.default_positional_arguments({...});
-// here `...` represents a list of ap::argument::default_optional values
+// here `...` represents a collection of ap::argument::default_optional values
 ```
 
-The supported default arguments are:
+> [!NOTE]
+> These functions work with `std::initializer_list` and all other `std::ranges::range` types with the correct value type - `ap::argument::default_{positional/optional}`
+
+The available default arguments are:
 
 - `default_positional::input`:
 
