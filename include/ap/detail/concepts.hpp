@@ -41,7 +41,7 @@ concept c_one_of = std::disjunction_v<std::is_same<T, Types>...>;
 /**
  * @brief Specifies the type validation rule.
  */
-enum class type_validator {
+enum class type_validator : bool {
     same, ///< Exact type match.
     convertible ///< Implicit conversion allowed.
 };

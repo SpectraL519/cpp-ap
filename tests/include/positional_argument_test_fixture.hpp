@@ -63,9 +63,8 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    positional<T>& set_choices(positional<T>& arg, const std::vector<value_type<T>>& choices)
-        const {
-        return arg.choices(choices);
+    void reset_value(positional<T>& arg) const {
+        arg._value.reset();
     }
 
     template <c_argument_value_type T>

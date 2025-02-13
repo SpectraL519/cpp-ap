@@ -43,8 +43,8 @@ struct optional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    optional<T>& set_choices(optional<T>& arg, const std::vector<value_type<T>>& choices) const {
-        return arg.choices(choices);
+    void reset_value(optional<T>& arg) const {
+        arg._values.clear();
     }
 
     template <c_argument_value_type T>
