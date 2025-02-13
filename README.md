@@ -179,14 +179,14 @@ Parameters which can be specified for both positional and optional arguments inc
     ```
 
 - `choices` - a list of valid argument values.
-    The `choices` parameter takes a `const std::vector<value_type>&` as an argument.
+    The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
 
     ```c++
     parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
     ```
 
 > [!IMPORTANT]
-> To use the `choices` the `value_type` must overload the equaility comparison operator: `==`;
+> The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
 
 - `action` - a function performed after reading an argument's value.
   Actions are represented as functions, which take the argument's value as an argument. There are two types of actions:
@@ -282,19 +282,20 @@ Parameters which can be specified for both positional and optional arguments inc
 
 ### Default arguments
 
-The `CPP-AP` library has a few default arguments defined. To add a default argument to the parser use the following:
+The `CPP-AP` library defines several default arguments, which can be added to the parser's configuration as follows.
 
 ```c++
-// add positional arguments - pass a std::vector of default positional arguments
 parser.default_positional_arguments({...});
-// here `...` represents a list of ap::argument::default_positional values
+// here `...` represents a collection of ap::argument::default_positional values
 
-// add optional arguments - pass a std::vector of default optional arguments
 parser.default_positional_arguments({...});
-// here `...` represents a list of ap::argument::default_optional values
+// here `...` represents a collection of ap::argument::default_optional values
 ```
 
-The supported default arguments are:
+> [!NOTE]
+> These functions work with `std::initializer_list` and all other `std::ranges::range` types with the correct value type - `ap::argument::default_{positional/optional}`
+
+The available default arguments are:
 
 - `default_positional::input`:
 
