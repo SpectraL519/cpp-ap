@@ -32,7 +32,7 @@ constexpr std::string invalid_value_str = "invalid value";
 constexpr sut_value_type value_1 = 1;
 constexpr sut_value_type value_2 = 2;
 
-const std::vector<sut_value_type> default_choices{1, 2, 3};
+const std::vector<sut_value_type> choices{1, 2, 3};
 constexpr sut_value_type invalid_choice = 4;
 
 } // namespace
@@ -182,7 +182,7 @@ TEST_CASE_FIXTURE(
     "set_value(any) should throw when the choices set does not contain the parsed value"
 ) {
     auto sut = init_arg(primary_name);
-    set_choices(sut, default_choices);
+    sut.choices(choices);
 
     REQUIRE_THROWS_AS(set_value(sut, invalid_choice), ap::error::invalid_choice);
     CHECK_FALSE(has_value(sut));
@@ -194,21 +194,16 @@ TEST_CASE_FIXTURE(
     "and if the given value is present in the choices set"
 ) {
     auto sut = init_arg(primary_name);
-    set_choices(sut, default_choices);
+    sut.choices(choices);
 
-    sut_value_type value;
+    for (const sut_value_type& value : choices) {
+        reset_value(sut);
+        REQUIRE_FALSE(has_value(sut));
 
-    for (const auto& v : default_choices) {
-        SUBCASE("correct value") {
-            value = v;
-        }
+        REQUIRE_NOTHROW(set_value(sut, value));
+        REQUIRE(has_value(sut));
+        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value);
     }
-
-    CAPTURE(value);
-
-    REQUIRE_NOTHROW(set_value(sut, value));
-    REQUIRE(has_value(sut));
-    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value);
 }
 
 TEST_CASE_FIXTURE(

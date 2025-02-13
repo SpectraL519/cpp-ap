@@ -34,10 +34,10 @@ constexpr sut_value_type value_2 = 2;
 constexpr sut_value_type default_value = 0;
 constexpr sut_value_type implicit_value = -1;
 
-const std::vector<sut_value_type> default_choices{1, 2, 3};
+const std::vector<sut_value_type> choices{1, 2, 3};
 constexpr sut_value_type invalid_choice = 4;
 
-const range non_default_range = range{1ull, default_choices.size()};
+const range non_default_range = range{1ull, choices.size()};
 
 } // namespace
 
@@ -286,7 +286,7 @@ TEST_CASE_FIXTURE(
     "set_value(any) should throw when the choices set does not contain the parsed value"
 ) {
     auto sut = init_arg(primary_name);
-    set_choices(sut, default_choices);
+    sut.choices(choices);
 
     REQUIRE_THROWS_AS(set_value(sut, invalid_choice), ap::error::invalid_choice);
     CHECK_FALSE(has_value(sut));
@@ -298,22 +298,16 @@ TEST_CASE_FIXTURE(
     "and if the given value is present in the choices set"
 ) {
     auto sut = init_arg(primary_name);
-    set_choices(sut, default_choices);
+    sut.choices(choices);
 
-    const std::vector<sut_value_type> correct_values = default_choices;
-    sut_value_type value;
+    for (const sut_value_type& value : choices) {
+        reset_value(sut);
+        REQUIRE_FALSE(has_value(sut));
 
-    for (const auto& v : correct_values) {
-        SUBCASE("correct value") {
-            value = v;
-        }
+        REQUIRE_NOTHROW(set_value(sut, value));
+        REQUIRE(has_value(sut));
+        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value);
     }
-
-    CAPTURE(value);
-
-    REQUIRE_NOTHROW(set_value(sut, value));
-    REQUIRE(has_value(sut));
-    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value);
 }
 
 TEST_CASE_FIXTURE(
@@ -334,15 +328,15 @@ TEST_CASE_FIXTURE(
     auto sut = init_arg(primary_name);
     sut.nargs(non_default_range);
 
-    for (const auto value : default_choices) {
+    for (const auto value : choices) {
         REQUIRE_NOTHROW(set_value(sut, value));
     }
 
     const auto stored_values = get_values(sut);
 
-    REQUIRE_EQ(stored_values.size(), default_choices.size());
+    REQUIRE_EQ(stored_values.size(), choices.size());
     for (std::size_t i = 0; i < stored_values.size(); ++i) {
-        REQUIRE_EQ(std::any_cast<sut_value_type>(stored_values[i]), default_choices[i]);
+        REQUIRE_EQ(std::any_cast<sut_value_type>(stored_values[i]), choices[i]);
     }
 }
 
@@ -403,7 +397,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE(std::is_lt(nvalues_in_range(sut)));
 
-    for (const auto value : default_choices) {
+    for (const auto value : choices) {
         REQUIRE_NOTHROW(set_value(sut, value));
         CHECK(std::is_eq(nvalues_in_range(sut)));
     }
