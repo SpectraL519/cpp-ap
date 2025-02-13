@@ -125,15 +125,31 @@ public:
 
     /**
      * @brief Set the choices for the optional argument.
-     * @param choices The vector of valid choices for the argument.
+     * @tparam CR The choices range type.
+     * @param choices The range of valid choices for the argument.
      * @return Reference to the optional argument.
-     * @note Requires T to be equality comparable.
+     * @note `value_type` must be equality comparable.
+     * @note `CR` must be a range such that its value type is convertible to `value_type`.
      */
-    optional& choices(const std::vector<value_type>& choices) noexcept
+    template <detail::c_range_of<value_type, detail::type_validator::convertible> CR>
+    optional& choices(const CR& choices) noexcept
     requires(std::equality_comparable<value_type>)
     {
-        this->_choices = choices;
+        for (const auto& choice : choices)
+            this->_choices.emplace_back(choice);
         return *this;
+    }
+
+    /**
+     * @brief Set the choices for the optional argument.
+     * @param choices The list of valid choices for the argument.
+     * @return Reference to the optional argument.
+     * @note `value_type` must be equality comparable.
+     */
+    optional& choices(std::initializer_list<value_type> choices) noexcept
+    requires(std::equality_comparable<value_type>)
+    {
+        return this->choices<>(choices);
     }
 
     /**

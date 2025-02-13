@@ -41,7 +41,7 @@ concept c_one_of = std::disjunction_v<std::is_same<T, Types>...>;
 /**
  * @brief Specifies the type validation rule.
  */
-enum class type_validator : bool {
+enum class type_validator {
     same, ///< Exact type match.
     convertible ///< Implicit conversion allowed.
 };
@@ -52,8 +52,8 @@ enum class type_validator : bool {
  * The primary template of the `is_valid_type_v` helper variable,
  * which does not perform any logic and defaults to `false`.
  *
- * @tparam T The first type.
- * @tparam U The second type.
+ * @tparam T The type to check.
+ * @tparam U The type to check agains.
  * @tparam TV The validation rule.
  */
 template <typename T, typename U, type_validator TV>
@@ -61,16 +61,16 @@ inline constexpr bool is_valid_type_v = false;
 
 /**
  * @brief Checks if `T` and `U` are the same type.
- * @tparam T The first type.
- * @tparam U The second type.
+ * @tparam T The type to check.
+ * @tparam U The type to check agains.
  */
 template <typename T, typename U>
 inline constexpr bool is_valid_type_v<T, U, type_validator::same> = std::same_as<T, U>;
 
 /**
  * @brief Checks if `T` is convertible to `U`.
- * @tparam T The first type.
- * @tparam U The second type.
+ * @tparam T The type to check.
+ * @tparam U The type to check agains.
  */
 template <typename T, typename U>
 inline constexpr bool is_valid_type_v<T, U, type_validator::convertible> =
@@ -78,8 +78,8 @@ inline constexpr bool is_valid_type_v<T, U, type_validator::convertible> =
 
 /**
  * @brief Concept that enforces `is_valid_type_v`.
- * @tparam T The first type.
- * @tparam U The second type.
+ * @tparam T The type to check.
+ * @tparam U The type to check agains.
  * @tparam TV The validation rule (`same` or `convertible`).
  */
 template <typename T, typename U, type_validator TV = type_validator::same>
@@ -94,7 +94,7 @@ concept c_valid_type = is_valid_type_v<T, U, TV>;
 template <typename R, typename V, type_validator TV = type_validator::same>
 concept c_range_of =
     std::ranges::range<R>
-    and c_valid_type<V, std::remove_cvref_t<std::ranges::range_value_t<R>>, TV>;
+    and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
 
 /**
  * @brief Validates that R is a sized range of type T (ignoring the cvref attributes).
