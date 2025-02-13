@@ -179,14 +179,14 @@ Parameters which can be specified for both positional and optional arguments inc
     ```
 
 - `choices` - a list of valid argument values.
-    The `choices` parameter takes a `const std::vector<value_type>&` as an argument.
+    The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
 
     ```c++
     parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
     ```
 
 > [!IMPORTANT]
-> To use the `choices` the `value_type` must overload the equaility comparison operator: `==`;
+> The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
 
 - `action` - a function performed after reading an argument's value.
   Actions are represented as functions, which take the argument's value as an argument. There are two types of actions:
