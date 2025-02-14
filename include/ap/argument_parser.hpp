@@ -228,10 +228,21 @@ public:
     /**
      * @brief Parses the command-line arguments.
      * @param argc Number of command-line arguments.
-     * @param argv Array of command-line argument strings.
+     * @param argv Array of command-line argument values.
+     * @note The first argument (the program name) is ignored.
      */
     void parse_args(int argc, char* argv[]) {
-        this->_parse_args_impl(this->_tokenize(std::span(argv + 1, argc - 1)));
+        this->parse_args(std::span(argv + 1, argc - 1));
+    }
+
+    /**
+     * @brief Parses the command-line arguments.
+     * @tparam AR The argument range type.
+     * @param argv A range of command-line argument values.
+     */
+    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    void parse_args(const AR& argv) {
+        this->_parse_args_impl(this->_tokenize(argv));
 
         if (this->_are_required_args_bypassed())
             return;
