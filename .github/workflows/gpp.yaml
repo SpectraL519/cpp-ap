@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Build and run tests
+    name: Build and run tests (g++)
     runs-on: ubuntu-24.04
 
     steps:

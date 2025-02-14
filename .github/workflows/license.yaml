@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Test code formatting
+    name: Test license comments
     runs-on: ubuntu-24.04
 
     steps:
