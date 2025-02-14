@@ -251,6 +251,13 @@ public:
         this->_check_nvalues_in_range();
     }
 
+    void handle_help_action() const noexcept {
+        if (this->value<bool>("help")) {
+            std::cout << *this << std::endl;
+            std::exit(EXIT_SUCCESS);
+        }
+    }
+
     /**
      * @param arg_name The name of the argument.
      * @return True if the argument has a value, false otherwise.

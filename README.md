@@ -321,8 +321,8 @@ The available default arguments are:
   ```
 
 > [!NOTE]
-> As of now the *on flag action* functionality is not implemented in the library - this will be added in a future release.
-> To properly use the help argument in the current release add the following right beneath the `parser.parse_args(argc, argv)` try-catch block:
+> As of now the *on flag/use action* functionality is not implemented in the library - this will be added in a future release.
+> To properly use the help argument in the current release add the, use the `parser.handle_help_action()` method right beneath the `parser.parse_args(argc, argv)` try-catch block. This would be equivalent to:
 >
 > ```c++
 > if (parser.value<bool>("help")) {
@@ -409,11 +409,8 @@ int main(int argc, char* argv[]) {
         std::exit(EXIT_FAILURE);
     }
 
-    // check for the help argument presence
-    if (parser.value<bool>("help")) {
-        std::cout << parser << std::endl;
-        std::exit(EXIT_SUCCESS);
-    }
+    // handle the `help` argument
+    parser.handle_help_action();
 
     // check if any values for the `exponent` argument have been parsed
     if (not parser.has_value("exponent")) {
