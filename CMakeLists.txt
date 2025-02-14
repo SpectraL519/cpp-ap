@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
 
-# Check if CPP-AP is a top level project
 if (NOT DEFINED PROJECT_NAME)
     set(CPP_AP_IS_TOP_LEVEL_PROJECT ON)
 else()
@@ -18,12 +17,12 @@ project(cpp-ap
 option(BUILD_TESTS "Build project tests" OFF)
 
 # The library target
-add_library(cpp-ap INTERFACE)
-target_include_directories(cpp-ap INTERFACE
+add_library(cpp-ap-2 INTERFACE)
+target_include_directories(cpp-ap-2 INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
-set_target_properties(cpp-ap PROPERTIES
+set_target_properties(cpp-ap-2 PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
 )
@@ -32,49 +31,49 @@ set_target_properties(cpp-ap PROPERTIES
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-set(INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-ap)
+set(INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/cpp-ap-2)
 
 # Install the headers
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install the library target
-install(TARGETS cpp-ap EXPORT cpp-ap-targets)
+install(TARGETS cpp-ap-2 EXPORT cpp-ap-2-targets)
 
-# Create a Config file for find_package
+# Create a config file for find_package
 configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cpp-ap-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cpp-ap-2-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-2-config.cmake
     INSTALL_DESTINATION ${INSTALL_DIR}
 )
 
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config-version.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-2-config-version.cmake
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY ExactVersion
 )
 
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-config-version.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-2-config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-2-config-version.cmake
     DESTINATION ${INSTALL_DIR}
 )
 
-install(EXPORT cpp-ap-targets
-    FILE cpp-ap-targets.cmake
-    NAMESPACE cpp-ap::
+install(EXPORT cpp-ap-2-targets
+    FILE cpp-ap-2-targets.cmake
+    NAMESPACE cpp-ap-2::
     DESTINATION ${INSTALL_DIR}
 )
 
-# Include the tests directory if CPP-AP is a top level project
+# Include the tests directory if CPP-AP is a top-level project
 if (CPP_AP_IS_TOP_LEVEL_PROJECT AND BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
 # Exporting from the build tree
-export(EXPORT cpp-ap-targets
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-targets.cmake
-    NAMESPACE cpp-ap::
+export(EXPORT cpp-ap-2-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-2-targets.cmake
+    NAMESPACE cpp-ap-2::
 )
 
-export(PACKAGE cpp-ap)
+export(PACKAGE cpp-ap-2)

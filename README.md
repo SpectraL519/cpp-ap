@@ -25,7 +25,7 @@ Command-line argument parser for C++20
 <br />
 <br />
 
-## Table of contents
+## Table of Contents
 
 - [Tutorial](#tutorial)
   - [Including CPP-AP into a project](#including-cpp-ap-into-a-project)
@@ -81,8 +81,8 @@ set_target_properties(my_project PROPERTIES
     CXX_STANDARD_REQUIRED YES
 )
 
-# Link against the cpp-ap library
-target_link_libraries(my_project PRIVATE cpp-ap)
+# Link against the cpp-ap (v2) library
+target_link_libraries(my_project PRIVATE cpp-ap-2)
 ```
 
 #### Downloading the library
