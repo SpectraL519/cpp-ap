@@ -322,7 +322,7 @@ The available default arguments are:
 
 > [!NOTE]
 > As of now the *on flag/use action* functionality is not implemented in the library - this will be added in a future release.
-> To properly use the help argument in the current release add the, use the `parser.handle_help_action()` method right beneath the `parser.parse_args(argc, argv)` try-catch block. This would be equivalent to:
+> To properly use the help argument in the current release add the, use the `parser.handle_help_action()` method after parsing the arguments. This would be equivalent to:
 >
 > ```c++
 > if (parser.value<bool>("help")) {
@@ -379,6 +379,19 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 > [!IMPORTANT]
 > The `parse_args(argc, argv)` method ignores the first argument (the program name) and is equivalent to calling `parse_args(std::span(argv + 1, argc - 1))`.
 
+> [!TIP]
+> The `argument_parser` class defines `try_parse_args` methods, which are equivalent to:
+>
+> ```c++
+> try {
+>     parser.parse_args(...);
+> }
+> catch (const ap::argument_parser_exception& err) {
+>     std::cerr << "[ERROR] : " << err.what() << std::endl << parser << std::endl;
+>     std::exit(EXIT_FAILURE);
+> }
+> ```
+
 ```c++
 // power.cpp
 #include <ap/argument_parser.hpp>
@@ -401,13 +414,7 @@ int main(int argc, char* argv[]) {
     parser.default_optional_arguments({ap::argument::default_optional::help});
 
     // parse command-line arguments
-    try {
-        parser.parse_args(argc, argv);
-    }
-    catch (const ap::argument_parser_exception& err) {
-        std::cerr << "[ERROR] : " << err.what() << std::endl << parser << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
+    parser.try_parse_args(argc, argv);
 
     // handle the `help` argument
     parser.handle_help_action();

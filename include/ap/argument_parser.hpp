@@ -251,6 +251,43 @@ public:
         this->_check_nvalues_in_range();
     }
 
+    /**
+     * @brief Parses the command-line arguments and exits on error.
+     * @param argc Number of command-line arguments.
+     * @param argv Array of command-line argument values.
+     * @note The first argument (the program name) is ignored.
+     */
+    void try_parse_args(int argc, char* argv[]) {
+        this->try_parse_args(std::span(argv + 1, argc - 1));
+    }
+
+    /**
+     * @brief Parses the command-line arguments and exits on error.
+     *
+     * Calls `parse_args(argv)` in a try-catch block. If an error is thrown, then its
+     * message and the parser are printed to `std::cerr` and the function exists with
+     * `EXIT_FAILURE` status.
+     *
+     * @tparam AR The argument range type.
+     * @param argv A range of command-line argument values.
+     */
+    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    void try_parse_args(const AR& argv) {
+        try {
+            this->parse_args(argv);
+        }
+        catch (const ap::argument_parser_exception& err) {
+            std::cerr << "[ERROR] : " << err.what() << std::endl << *this << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+
+    /**
+     * @brief Handles the `help` argument logic.
+     *
+     * Extracts the value of the `help` boolean flag argument and if the value `is` true,
+     * prints the parser to `std::cout` anb exists with `EXIT_SUCCESS` status.
+     */
     void handle_help_action() const noexcept {
         if (this->value<bool>("help")) {
             std::cout << *this << std::endl;
@@ -635,7 +672,7 @@ inline void add_default_argument(
 ) noexcept {
     switch (arg_discriminator) {
     case argument::default_optional::help:
-        arg_parser.add_flag("help", "h").bypass_required().help("Display help message");
+        arg_parser.add_flag("help", "h").bypass_required().help("Display the help message");
         break;
 
     case argument::default_optional::input:
