@@ -372,7 +372,12 @@ The available default arguments are:
 
 ### Parsing arguments
 
-To parse the command-line arguments use the `argument_parser::parse_args` method:
+To parse the command-line arguments use the `void argument_parser::parse_args(const AR& argv)` method, where `AR` must be a type that satisfies `std::ranges::range` and its value type is convertible to `std::string`.
+
+The `argument_parser` class also defines the `void parse_args(int argc, char* argv[])` overload, which works directly with the `argc` and `argv` arguments of the `main` function.
+
+> [!IMPORTANT]
+> The `parse_args(argc, argv)` method ignores the first argument (the program name) and is equivalent to calling `parse_args(std::span(argv + 1, argc - 1))`.
 
 ```c++
 // power.cpp
