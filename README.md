@@ -414,7 +414,9 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 > The `parse_args(argc, argv)` method ignores the first argument (the program name) and is equivalent to calling `parse_args(std::span(argv + 1, argc - 1))`.
 
 > [!TIP]
-> The `argument_parser` class defines `try_parse_args` methods, which are equivalent to:
+> The `parse_args` functions may throw an `ap::argument_parser_exception` if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which automatically catch these exceptions, print the error message, and exit with a failure status.
+>
+> Internally, This is equivalent to:
 >
 > ```c++
 > try {

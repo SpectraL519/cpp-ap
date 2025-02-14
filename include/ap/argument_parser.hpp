@@ -285,7 +285,7 @@ public:
     /**
      * @brief Handles the `help` argument logic.
      *
-     * Extracts the value of the `help` boolean flag argument and if the value `is` true,
+     * Checks the value of the `help` boolean flag argument and if the value `is` true,
      * prints the parser to `std::cout` anb exists with `EXIT_SUCCESS` status.
      */
     void handle_help_action() const noexcept {
