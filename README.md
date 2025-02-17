@@ -24,40 +24,13 @@ Command-line argument parser for C++20
 > The project has received the 1st place at the 2024 CreatiWITy competition organized by the faculty. The article in Polish can be found on the [faculty website](https://wit.pwr.edu.pl/aktualnosci/oto-laureaci-konkursu-creatiwity-273.html). Please note that this is not a technical article :)
 
 <br />
-<br />
 
-## Table of Contents
+## Related Pages
 
-- [Key Changes in v2](/docs/changelog_v2.md)
 - [Tutorial](/docs/tutorial.md)
 - [Dev notes](/docs/dev_notes.md)
-- [Documentation](#documentation)
-- [Compiler support](#compiler-compatibilty)
-- [License](#license)
+- [Key Changes in v2](/docs/changelog_v2.md)
 
-<br />
-<br />
-
-## Documentation
-
-The documentation for this project can be generated using Doxygen:
-
-1. Make sure you have `Doxygen` installed on your machine. If not, you can download it from [here](https://www.doxygen.nl/download.html).
-
-2. Generate the documentation:
-
-  Open your terminal and use the following instructions:
-
-  ```shell
-  cd <project-root>
-  doxygen Doxyfile
-  ```
-
-> [!NOTE]
->
-> In the Doxygen output markdown links to other files might not be rendered properly, however the referenced pages will still be generated in the *Related Pages* section.
-
-<br />
 <br />
 
 ## Compiler Compatibilty
@@ -71,7 +44,6 @@ The documentation for this project can be generated using Doxygen:
 >
 > Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++20 support like MSVC.
 
-<br />
 <br />
 
 ## License

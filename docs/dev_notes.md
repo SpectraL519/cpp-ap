@@ -1,5 +1,7 @@
 # Dev Notes
 
+<br />
+
 ## Building and testing
 
 > [!NOTE]
@@ -28,6 +30,7 @@ cd build
 > Test suites in the project have the same names as the files they're in except for the `test_extarnal_libs_config.cpp` file which defines the `test_doctest_config` test suite.
 
 <br />
+<br />
 
 ## Formatting
 
@@ -52,3 +55,31 @@ python scripts/format.py --help
 > [!NOTE]
 >
 > The script requires `python >= 3.9`
+
+<br />
+<br />
+
+## Documentation
+
+The documentation for this project can be generated using Doxygen, styled with a custom [fork](https://github.com/SpectraL519/doxygen-awesome-css/tree/theme-alignment) of the [doxygen-awesome-css](https://github.com/jothepro/doxygen-awesome-css) theme.
+
+### Prerequisites
+
+1. Ensure that Doxygen is installed on your system. If not, you can download it from the [official website](https://www.doxygen.nl/download.html).
+
+2. The `doxygen-awesome-ccs` theme fork is included as a submodule within the project.
+
+### Generating the Documentation
+
+To generate the documentation, run the following commands in your terminal:
+
+```shell
+cd <project-root>
+doxygen Doxyfile
+```
+
+This should create a `documentation` directory containing the project's documentation in html format.
+
+> [!NOTE]
+>
+> Markdown links to other files might not be rendered properly in the Doxygen output, however the referenced pages will still be generated in the *Related Pages* section.
