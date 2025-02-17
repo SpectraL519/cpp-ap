@@ -31,3 +31,13 @@ Added utility functions to the `argument_parser` class that encapsulate common b
 | <pre>T value_or<T, U>(<br/>    std::string_view arg_name, U&& default_value<br/>)</pre> | Returns the argument's value if possible and `default_value` otherwise. |
 
 A more detailed explanation of these functions is available in the [Tutorial](/README.md#tutorial) section.
+
+<br />
+<br />
+
+## v2.0.1
+
+- `Doxyfile` cleanup
+- Extracted the `tutorial` and `dev notes` sections from readme to separate files
+- Added the `documentation` workflow
+- Aligned the current workflows to be triggered on PRs to master

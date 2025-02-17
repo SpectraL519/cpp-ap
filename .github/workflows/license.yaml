@@ -7,6 +7,9 @@ on:
       - .github/workflows/license.yaml
       - scripts/check_licence.py
       - include/**
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:

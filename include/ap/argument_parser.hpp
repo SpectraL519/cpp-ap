@@ -121,11 +121,11 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
+     *
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::positional<T>& add_positional_argument(std::string_view primary_name) {
-        // TODO: check forbidden characters
-
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -140,13 +140,13 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
+     *
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::positional<T>& add_positional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
-        // TODO: check forbidden characters
-
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -160,11 +160,11 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
+     *
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::optional<T>& add_optional_argument(std::string_view primary_name) {
-        // TODO: check forbidden characters
-
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -179,13 +179,13 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
+     *
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::optional<T>& add_optional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
-        // TODO: check forbidden characters
-
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);

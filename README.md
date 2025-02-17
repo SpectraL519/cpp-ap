@@ -6,6 +6,7 @@ Command-line argument parser for C++20
 [![clang++](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang++)
 [![format](https://github.com/SpectraL519/cpp-ap/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/format)
 [![demo](https://github.com/SpectraL519/cpp-ap/actions/workflows/demo.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/demo)
+[![documentation](https://github.com/SpectraL519/cpp-ap/actions/workflows/documentation.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/documentation)
 
 <br />
 
@@ -24,40 +25,26 @@ Command-line argument parser for C++20
 > The project has received the 1st place at the 2024 CreatiWITy competition organized by the faculty. The article in Polish can be found on the [faculty website](https://wit.pwr.edu.pl/aktualnosci/oto-laureaci-konkursu-creatiwity-273.html). Please note that this is not a technical article :)
 
 <br />
-<br />
 
-## Table of Contents
+## Related Pages
 
-- [Key Changes in v2](/docs/changelog_v2.md)
 - [Tutorial](/docs/tutorial.md)
+  - [Setting Up CPP-AP](/docs/tutorial.md#setting-up-cpp-ap)
+    - [CMake Integration](/docs/tutorial.md#cmake-integration)
+    - [Downloading the Library](/docs/tutorial.md#downloading-the-library)
+  - [The Parser Class](/docs/tutorial.md#the-parser-class)
+  - [Adding Arguments](/docs/tutorial.md#adding-arguments)
+  - [Argument Parameters](/docs/tutorial.md#argument-parameters)
+  - [Default Arguments](/docs/tutorial.md#default-arguments)
+  - [Parsing Arguments](/docs/tutorial.md#parsing-arguments)
+  - [Retrieving Argument Values](/docs/tutorial.md#retrieving-argument-values)
+  - [Examples](/docs/tutorial.md#examples)
 - [Dev notes](/docs/dev_notes.md)
-- [Documentation](#documentation)
-- [Compiler support](#compiler-compatibilty)
-- [License](#license)
+  - [Building and testing](/docs/dev_notes.md#building-and-testing)
+  - [Formatting](/docs/dev_notes.md#formatting)
+  - [Documentation](/docs/dev_notes.md#documentation)
+- [Key Changes in v2](/docs/changelog_v2.md)
 
-<br />
-<br />
-
-## Documentation
-
-The documentation for this project can be generated using Doxygen:
-
-1. Make sure you have `Doxygen` installed on your machine. If not, you can download it from [here](https://www.doxygen.nl/download.html).
-
-2. Generate the documentation:
-
-  Open your terminal and use the following instructions:
-
-  ```shell
-  cd <project-root>
-  doxygen Doxyfile
-  ```
-
-> [!NOTE]
->
-> In the Doxygen output markdown links to other files might not be rendered properly, however the referenced pages will still be generated in the *Related Pages* section.
-
-<br />
 <br />
 
 ## Compiler Compatibilty
@@ -71,7 +58,6 @@ The documentation for this project can be generated using Doxygen:
 >
 > Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++20 support like MSVC.
 
-<br />
 <br />
 
 ## License

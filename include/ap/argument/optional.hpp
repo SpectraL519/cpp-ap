@@ -63,6 +63,8 @@ public:
     /**
      * @brief Mark the optional argument as required.
      * @return Reference to the optional argument.
+     *
+     * \todo Add a `const bool` parameter to enable explicit enabling/disabling of this option.
      */
     optional& required() noexcept {
         this->_required = true;
