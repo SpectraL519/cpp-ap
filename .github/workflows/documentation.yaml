@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  build-demo:
+  build-doc:
     name: Build documentation
     runs-on: ubuntu-24.04
 
@@ -27,8 +27,7 @@ jobs:
         run: sudo apt install doxygen -y
 
       - name: Run doxygen
-        run: |
-          doxygen Doxyfile
+        run: doxygen Doxyfile
 
       - name: Verify documentation
-          test -d documentation && test -f documentation/index.html
+        run: test -d documentation && test -f documentation/index.html
