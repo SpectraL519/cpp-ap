@@ -1,6 +1,6 @@
 name: documentation
 on:
-  push: # TODO: PR
+  pull_request:
     branches-ignore:
       - cpp-ap-v1
     paths:
@@ -38,4 +38,6 @@ jobs:
       - name: Run doxygen
         run: |
           doxygen Doxyfile
+
+      - name: Verify documentation
           test -d documentation && test -f documentation/index.html
