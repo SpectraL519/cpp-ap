@@ -8,6 +8,9 @@ on:
       - include/**
       - tests/**
       - CMakeLists.txt
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:

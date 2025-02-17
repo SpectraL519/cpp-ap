@@ -1,17 +1,8 @@
 name: documentation
 on:
   pull_request:
-    branches-ignore:
-      - cpp-ap-v1
-    paths:
-      - .github/workflows/documentation.yaml
-      - .gitmodules
-      - Doxyfile
-      - README.md
-      - LICENSE.md
-      - docs/**
-      - doxygen-awesome-css
-      - include/**
+    branches:
+      - master
 
 
 jobs:

@@ -10,6 +10,9 @@ on:
       - tests/include/**
       - tests/source/**
       - tests/app/**
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:

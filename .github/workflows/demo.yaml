@@ -9,6 +9,9 @@ on:
       - cpp-ap-demo
       - include/**
       - CMakeLists.txt
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-demo:
@@ -30,7 +33,12 @@ jobs:
 
       - name: Determine Current Branch
         id: branch-name
-        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "branch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build cpp-ap-demo
         run: |
