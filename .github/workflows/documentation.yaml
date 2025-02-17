@@ -1,0 +1,41 @@
+name: documentation
+on:
+  push: # TODO: PR
+    branches-ignore:
+      - cpp-ap-v1
+    paths:
+      - .github/workflows/documentation.yaml
+      - .gitmodules
+      - Doxyfile
+      - README.md
+      - LICENSE.md
+      - docs/**
+      - doxygen-awesome-css
+      - include/**
+
+
+jobs:
+  build-demo:
+    name: Build documentation
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out current branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Sync submodules to HTTPS
+        run: git submodule sync --recursive
+
+      - name: Update submodules
+        run: git submodule update --init --recursive
+
+      - name: Install dependencies
+        run: sudo apt install doxygen -y
+
+      - name: Run doxygen
+        run: |
+          doxygen Doxyfile
+          test -d documentation && test -f documentation/index.html
