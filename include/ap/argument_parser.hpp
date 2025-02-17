@@ -122,7 +122,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
      *
-     * \todo Check forbidden characters
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::positional<T>& add_positional_argument(std::string_view primary_name) {
@@ -141,7 +141,7 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      *
-     * \todo Check forbidden characters
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::positional<T>& add_positional_argument(
@@ -161,7 +161,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
      *
-     * \todo Check forbidden characters
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::optional<T>& add_optional_argument(std::string_view primary_name) {
@@ -180,7 +180,7 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      *
-     * \todo Check forbidden characters
+     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::optional<T>& add_optional_argument(
