@@ -1,6 +1,3 @@
 [submodule "cpp-ap-demo"]
 	path = cpp-ap-demo
 	url = https://github.com/SpectraL519/cpp-ap-demo.git
-[submodule "doxygen-awesome-css"]
-	path = doxygen-awesome-css
-	url = https://github.com/jothepro/doxygen-awesome-css.git
