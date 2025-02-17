@@ -28,7 +28,20 @@ Command-line argument parser for C++20
 ## Related Pages
 
 - [Tutorial](/docs/tutorial.md)
+  - [Setting Up CPP-AP](/docs/tutorial.md#setting-up-cpp-ap)
+    - [CMake Integration](/docs/tutorial.md#cmake-integration)
+    - [Downloading the Library](/docs/tutorial.md#downloading-the-library)
+  - [The Parser Class](/docs/tutorial.md#the-parser-class)
+  - [Adding Arguments](/docs/tutorial.md#adding-arguments)
+  - [Argument Parameters](/docs/tutorial.md#argument-parameters)
+  - [Default Arguments](/docs/tutorial.md#default-arguments)
+  - [Parsing Arguments](/docs/tutorial.md#parsing-arguments)
+  - [Retrieving Argument Values](/docs/tutorial.md#retrieving-argument-values)
+  - [Examples](/docs/tutorial.md#examples)
 - [Dev notes](/docs/dev_notes.md)
+  - [Building and testing](/docs/dev_notes.md#building-and-testing)
+  - [Formatting](/docs/dev_notes.md#formatting)
+  - [Documentation](/docs/dev_notes.md#documentation)
 - [Key Changes in v2](/docs/changelog_v2.md)
 
 <br />
