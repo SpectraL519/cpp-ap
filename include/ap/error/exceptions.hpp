@@ -19,7 +19,6 @@ namespace ap {
 class argument_parser_exception : public std::runtime_error {
 public:
     /**
-     * @brief Constructor for the argument_parser_exception class.
      * @param message A descriptive error message providing information about the exception.
      */
     explicit argument_parser_exception(const std::string& message) : std::runtime_error(message) {}
@@ -31,7 +30,6 @@ namespace error {
 class value_already_set : public argument_parser_exception {
 public:
     /**
-     * @brief Constructor for the value_already_set class.
      * @param arg_name The name of the argument that already has a value set.
      */
     explicit value_already_set(const detail::argument_name& arg_name)
@@ -44,7 +42,6 @@ public:
 class invalid_value : public argument_parser_exception {
 public:
     /**
-     * @brief Constructor for the invalid_value class.
      * @param arg_name The name of the argument for which the value parsing failed.
      * @param value The value that failed to parse.
      */
@@ -58,7 +55,6 @@ public:
 class invalid_choice : public argument_parser_exception {
 public:
     /**
-     * @brief Constructor for the invalid_choice class.
      * @param arg_name The name of the argument for which the value is not in choices.
      * @param value The value that is not in the allowed choices.
      */
@@ -68,8 +64,13 @@ public:
       ) {}
 };
 
+/// @brief Exception thrown when an argument name string pattern is invalid.
 class invalid_argument_name_pattern : public argument_parser_exception {
 public:
+    /**
+     * @param arg_name The name of the argument, the pattern of which is invalid.
+     * @param reaseon The reason why the pattern of the given argument name is invalid.
+     */
     explicit invalid_argument_name_pattern(
         const std::string_view arg_name, const std::string_view reason
     )
@@ -82,7 +83,6 @@ public:
 class argument_name_used : public argument_parser_exception {
 public:
     /**
-     * @brief Constructor for the argument_name_used class.
      * @param arg_name The name of the argument causing the collision.
      */
     explicit argument_name_used(const detail::argument_name& arg_name)
@@ -93,7 +93,6 @@ public:
 class argument_not_found : public argument_parser_exception {
 public:
     /**
-     * @brief Constructor for the argument_name_not_found_error class.
      * @param arg_name The name of the argument that was not found.
      */
     explicit argument_not_found(const std::string_view& arg_name)

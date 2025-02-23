@@ -437,6 +437,10 @@ private:
     using arg_token_list_t = std::vector<detail::argument_token>;
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
 
+    /**
+     * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
+     * @throws ap::error::invalid_argument_name_pattern
+     */
     void _verify_arg_name_pattern(const std::string_view arg_name) const {
         if (arg_name.empty())
             throw error::invalid_argument_name_pattern(
