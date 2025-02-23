@@ -158,6 +158,9 @@ private:
      * @brief Set the value for the positional argument.
      * @param str_value The string representation of the value.
      * @return Reference to the positional argument.
+     * @throws ap::error::value_already_set
+     * @throws ap::error::invalid_value
+     * @throws ap::error::invalid_choice
      */
     positional& set_value(const std::string& str_value) override {
         if (this->_value.has_value())
@@ -194,7 +197,10 @@ private:
         return this->_value.has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
     }
 
-    /// @brief Get the stored value of the positional argument.
+    /**
+     * @brief Get the stored value of the positional argument.
+     * @throws std::logic_error
+     */
     [[nodiscard]] const std::any& value() const override {
         if (not this->_value.has_value())
             throw std::logic_error(
@@ -203,7 +209,10 @@ private:
         return this->_value;
     }
 
-    /// @return Reference to the vector of parsed values for the positional argument.
+    /**
+     * @return Reference to the vector of parsed values for the positional argument.
+     * @throws std::logic_error
+     */
     [[nodiscard]] const std::vector<std::any>& values() const override {
         throw std::logic_error(
             std::format("Positional argument `{}` has only 1 value.", this->_name.primary)

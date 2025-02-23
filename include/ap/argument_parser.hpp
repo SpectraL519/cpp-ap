@@ -121,6 +121,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -142,6 +143,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
+     * @throws ap::error::argument_name_is_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -165,6 +167,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
+     * @throws ap::error::argument_name_is_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -186,6 +189,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
+     * @throws ap::error::argument_name_is_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -327,6 +331,8 @@ public:
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
     T value(std::string_view arg_name) const {
@@ -349,6 +355,8 @@ public:
      * @param arg_name The name of the argument.
      * @param default_value The default value.
      * @return The value of the argument.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
     T value_or(std::string_view arg_name, U&& default_value) const {
@@ -374,6 +382,8 @@ public:
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
     std::vector<T> values(std::string_view arg_name) const {
@@ -586,6 +596,8 @@ private:
      * @brief Parse optional arguments based on command-line input.
      * @param arg_tokens The list of command-line argument tokens.
      * @param token_it Iterator for iterating through command-line argument tokens.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::free_value
      */
     void _parse_optional_args(
         const arg_token_list_t& arg_tokens, arg_token_list_iterator_t& token_it
@@ -625,7 +637,10 @@ private:
         });
     }
 
-    /// @brief Check if all required positional and optional arguments are used.
+    /**
+     * @brief Check if all required positional and optional arguments are used.
+     * @throws ap::error::required_argument_not_parsed
+     */
     void _check_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used())
@@ -636,7 +651,10 @@ private:
                 throw error::required_argument_not_parsed(arg->name());
     }
 
-    /// @brief Check if the number of argument values is within the specified range.
+    /**
+     * @brief Check if the number of argument values is within the specified range.
+     * @throws ap::error::invalid_nvalues
+     */
     void _check_nvalues_in_range() const {
         for (const auto& arg : this->_positional_args) {
             const auto nvalues_ordering = arg->nvalues_in_range();
