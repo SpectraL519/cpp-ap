@@ -121,6 +121,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
+     * @throws ap::error::invalid_argument_name_pattern
      * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
@@ -143,7 +144,8 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
-     * @throws ap::error::argument_name_is_used
+     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -167,7 +169,8 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::error::argument_name_is_used
+     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -189,7 +192,8 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::error::argument_name_is_used
+     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -209,8 +213,8 @@ public:
     }
 
     /**
-     * @brief Adds a boolean flag argument to the parser's configuration.
-     * @tparam StoreImplicitly Flag indicating whether to store implicitly.
+     * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
      * @param primary_name The primary name of the flag.
      * @return Reference to the added boolean flag argument.
      */
@@ -223,8 +227,8 @@ public:
     }
 
     /**
-     * @brief Adds a boolean flag argument to the parser's configuration.
-     * @tparam StoreImplicitly Flag indicating whether to store implicitly.
+     * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
      * @param primary_name The primary name of the flag.
      * @param secondary_name The secondary name of the flag.
      * @return Reference to the added boolean flag argument.
