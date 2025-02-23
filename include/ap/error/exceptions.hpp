@@ -68,6 +68,16 @@ public:
       ) {}
 };
 
+class invalid_argument_name_pattern : public argument_parser_exception {
+public:
+    explicit invalid_argument_name_pattern(
+        const std::string_view arg_name, const std::string_view reason
+    )
+    : argument_parser_exception(
+          std::format("Given name `{}` is invalid.\nReason: {}", arg_name, reason)
+      ) {}
+};
+
 /// @brief Exception thrown when there is a collision in argument names.
 class argument_name_used : public argument_parser_exception {
 public:

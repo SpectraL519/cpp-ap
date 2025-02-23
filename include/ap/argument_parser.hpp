@@ -126,6 +126,8 @@ public:
      */
     template <detail::c_argument_value_type T = std::string>
     argument::positional<T>& add_positional_argument(std::string_view primary_name) {
+        this->_verify_arg_name_pattern(primary_name);
+
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -147,6 +149,9 @@ public:
     argument::positional<T>& add_positional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
+        this->_verify_arg_name_pattern(primary_name);
+        this->_verify_arg_name_pattern(secondary_name);
+
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -165,6 +170,8 @@ public:
      */
     template <detail::c_argument_value_type T = std::string>
     argument::optional<T>& add_optional_argument(std::string_view primary_name) {
+        this->_verify_arg_name_pattern(primary_name);
+
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -186,6 +193,9 @@ public:
     argument::optional<T>& add_optional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
+        this->_verify_arg_name_pattern(primary_name);
+        this->_verify_arg_name_pattern(secondary_name);
+
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -427,12 +437,33 @@ private:
     using arg_token_list_t = std::vector<detail::argument_token>;
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
 
+    void _verify_arg_name_pattern(const std::string_view arg_name) const {
+        if (arg_name.empty())
+            throw error::invalid_argument_name_pattern(
+                arg_name, "An argument name cannot be empty."
+            );
+
+        if (arg_name.front() == this->_flag_prefix_char)
+            throw error::invalid_argument_name_pattern(
+                arg_name,
+                std::format(
+                    "An argument name cannot begin with a flag prefix character ({}).",
+                    this->_flag_prefix_char
+                )
+            );
+
+        if (std::isdigit(arg_name.front()))
+            throw error::invalid_argument_name_pattern(
+                arg_name, "An argument name cannot begin with a digit."
+            );
+    }
+
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] auto _name_match_predicate(std::string_view arg_name) const noexcept {
+    [[nodiscard]] auto _name_match_predicate(const std::string_view arg_name) const noexcept {
         return [arg_name](const arg_ptr_t& arg) { return arg->name().match(arg_name); };
     }
 
