@@ -229,8 +229,14 @@ private:
      * @brief Set the value for the optional argument.
      * @param str_value The string value to set.
      * @return Reference to the optional argument.
+     * @throws ap::error::value_already_set
+     * @throws ap::error::invalid_value
+     * @throws ap::error::invalid_choice
      */
     optional& set_value(const std::string& str_value) override {
+        if (not (this->_nargs_range or this->_values.empty()))
+            throw error::value_already_set(this->_name);
+
         this->_ss.clear();
         this->_ss.str(str_value);
 
@@ -242,9 +248,6 @@ private:
             throw error::invalid_choice(this->_name, str_value);
 
         this->_apply_action(value);
-
-        if (not (this->_nargs_range or this->_values.empty()))
-            throw error::value_already_set(this->_name);
 
         this->_values.emplace_back(std::move(value));
         return *this;
@@ -287,7 +290,10 @@ private:
             or (this->is_used() and this->_implicit_value.has_value());
     }
 
-    /// @return Reference to the predefined value of the optional argument.
+    /**
+     * @return Reference to the predefined value of the optional argument.
+     * @throws std::logic_error
+     */
     [[nodiscard]] const std::any& _predefined_value() const {
         if (this->is_used()) {
             if (not this->_implicit_value.has_value())

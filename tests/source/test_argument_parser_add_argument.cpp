@@ -15,62 +15,130 @@ struct test_argument_parser_add_argument : public argument_parser_test_fixture {
 
     const std::string_view primary_name_2 = "primary_name_2";
     const std::string_view secondary_name_2 = "s2";
+
+    const std::string_view invalid_name_empty = "";
+    const std::string_view invalid_name_flag_prefix = "-invalid";
+    const std::string_view invalid_name_digit = "1invalid";
+
+    [[nodiscard]] auto invalid_name_pattern_err_msg(
+        const std::string_view arg_name, const std::string_view reason
+    ) const noexcept {
+        return ap::error::invalid_argument_name_pattern(arg_name, reason).what();
+    }
 };
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "default_positional_arguments should add the specified arguments"
+    "add_{positional,optional}_argument(primary) should throw if the passed argument name is "
+    "invalid"
 ) {
-    sut.default_positional_arguments({default_positional::input, default_positional::output});
+    std::string primary_name, reason;
 
-    const auto input_arg = get_argument("input");
-    REQUIRE(input_arg);
-    REQUIRE_FALSE(input_arg->get().is_optional());
+    SUBCASE("The name is empty") {
+        primary_name = invalid_name_empty;
+        reason = "An argument name cannot be empty.";
+    }
 
-    const auto output_arg = get_argument("output");
-    REQUIRE(output_arg);
-    REQUIRE_FALSE(output_arg->get().is_optional());
+    SUBCASE("The name begins with the flag prefix character") {
+        primary_name = invalid_name_flag_prefix;
+        reason = "An argument name cannot begin with a flag prefix character (-).";
+    }
+
+    SUBCASE("The name begins with a digit") {
+        primary_name = invalid_name_digit;
+        reason = "An argument name cannot begin with a digit.";
+    }
+
+    CAPTURE(primary_name);
+    CAPTURE(reason);
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_positional_argument(primary_name),
+        invalid_name_pattern_err_msg(primary_name, reason),
+        ap::error::invalid_argument_name_pattern
+    );
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_optional_argument(primary_name),
+        invalid_name_pattern_err_msg(primary_name, reason),
+        ap::error::invalid_argument_name_pattern
+    );
 }
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "default_optional_arguments should add the specified arguments"
+    "add_{positional,optional}_argument(primary, secondary) should throw if the primary name is "
+    "invalid"
 ) {
-    sut.default_optional_arguments(
-        {default_optional::help, default_optional::input, default_optional::output}
+    std::string primary_name, reason;
+
+    SUBCASE("The name is empty") {
+        primary_name = invalid_name_empty;
+        reason = "An argument name cannot be empty.";
+    }
+
+    SUBCASE("The name begins with the flag prefix character") {
+        primary_name = invalid_name_flag_prefix;
+        reason = "An argument name cannot begin with a flag prefix character (-).";
+    }
+
+    SUBCASE("The name begins with a digit") {
+        primary_name = invalid_name_digit;
+        reason = "An argument name cannot begin with a digit.";
+    }
+
+    CAPTURE(primary_name);
+    CAPTURE(reason);
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_positional_argument(primary_name, secondary_name_1),
+        invalid_name_pattern_err_msg(primary_name, reason),
+        ap::error::invalid_argument_name_pattern
     );
 
-    std::string help_flag;
-    std::string input_flag;
-    std::string output_flag;
+    CHECK_THROWS_WITH_AS(
+        sut.add_optional_argument(primary_name, secondary_name_1),
+        invalid_name_pattern_err_msg(primary_name, reason),
+        ap::error::invalid_argument_name_pattern
+    );
+}
 
-    SUBCASE("using primary flags") {
-        help_flag = "help";
-        input_flag = "input";
-        output_flag = "output";
+TEST_CASE_FIXTURE(
+    test_argument_parser_add_argument,
+    "add_{positional,optional}_argument(primary, secondary) should throw if the secondary name is "
+    "invalid"
+) {
+    std::string secondary_name, reason;
+
+    SUBCASE("The name is empty") {
+        secondary_name = invalid_name_empty;
+        reason = "An argument name cannot be empty.";
     }
 
-    SUBCASE("using secondary flags") {
-        help_flag = "h";
-        input_flag = "i";
-        output_flag = "o";
+    SUBCASE("The name begins with the flag prefix character") {
+        secondary_name = invalid_name_flag_prefix;
+        reason = "An argument name cannot begin with a flag prefix character (-).";
     }
 
-    CAPTURE(help_flag);
-    CAPTURE(input_flag);
-    CAPTURE(output_flag);
+    SUBCASE("The name begins with a digit") {
+        secondary_name = invalid_name_digit;
+        reason = "An argument name cannot begin with a digit.";
+    }
 
-    const auto help_arg = get_argument(help_flag);
-    REQUIRE(help_arg);
-    CHECK(help_arg->get().is_optional());
+    CAPTURE(secondary_name);
+    CAPTURE(reason);
 
-    const auto input_arg = get_argument(input_flag);
-    REQUIRE(input_arg);
-    CHECK(input_arg->get().is_optional());
+    CHECK_THROWS_WITH_AS(
+        sut.add_positional_argument(primary_name_1, secondary_name),
+        invalid_name_pattern_err_msg(secondary_name, reason),
+        ap::error::invalid_argument_name_pattern
+    );
 
-    const auto output_arg = get_argument(output_flag);
-    REQUIRE(output_arg);
-    CHECK(output_arg->get().is_optional());
+    CHECK_THROWS_WITH_AS(
+        sut.add_optional_argument(primary_name_1, secondary_name),
+        invalid_name_pattern_err_msg(secondary_name, reason),
+        ap::error::invalid_argument_name_pattern
+    );
 }
 
 TEST_CASE_FIXTURE(
@@ -189,6 +257,62 @@ TEST_CASE_FIXTURE(
             sut.add_flag(primary_name_2, secondary_name_1), ap::error::argument_name_used
         );
     }
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_add_argument,
+    "default_positional_arguments should add the specified arguments"
+) {
+    sut.default_positional_arguments({default_positional::input, default_positional::output});
+
+    const auto input_arg = get_argument("input");
+    REQUIRE(input_arg);
+    REQUIRE_FALSE(input_arg->get().is_optional());
+
+    const auto output_arg = get_argument("output");
+    REQUIRE(output_arg);
+    REQUIRE_FALSE(output_arg->get().is_optional());
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_add_argument,
+    "default_optional_arguments should add the specified arguments"
+) {
+    sut.default_optional_arguments(
+        {default_optional::help, default_optional::input, default_optional::output}
+    );
+
+    std::string help_flag;
+    std::string input_flag;
+    std::string output_flag;
+
+    SUBCASE("using primary flags") {
+        help_flag = "help";
+        input_flag = "input";
+        output_flag = "output";
+    }
+
+    SUBCASE("using secondary flags") {
+        help_flag = "h";
+        input_flag = "i";
+        output_flag = "o";
+    }
+
+    CAPTURE(help_flag);
+    CAPTURE(input_flag);
+    CAPTURE(output_flag);
+
+    const auto help_arg = get_argument(help_flag);
+    REQUIRE(help_arg);
+    CHECK(help_arg->get().is_optional());
+
+    const auto input_arg = get_argument(input_flag);
+    REQUIRE(input_arg);
+    CHECK(input_arg->get().is_optional());
+
+    const auto output_arg = get_argument(output_flag);
+    REQUIRE(output_arg);
+    CHECK(output_arg->get().is_optional());
 }
 
 TEST_SUITE_END();

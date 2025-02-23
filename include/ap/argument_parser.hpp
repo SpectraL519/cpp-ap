@@ -121,11 +121,15 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
+     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::positional<T>& add_positional_argument(std::string_view primary_name) {
+        this->_verify_arg_name_pattern(primary_name);
+
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -140,6 +144,8 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
+     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -147,6 +153,9 @@ public:
     argument::positional<T>& add_positional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
+        this->_verify_arg_name_pattern(primary_name);
+        this->_verify_arg_name_pattern(secondary_name);
+
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -160,11 +169,15 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
+     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     argument::optional<T>& add_optional_argument(std::string_view primary_name) {
+        this->_verify_arg_name_pattern(primary_name);
+
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -179,6 +192,8 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
+     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -186,6 +201,9 @@ public:
     argument::optional<T>& add_optional_argument(
         std::string_view primary_name, std::string_view secondary_name
     ) {
+        this->_verify_arg_name_pattern(primary_name);
+        this->_verify_arg_name_pattern(secondary_name);
+
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
             throw error::argument_name_used(arg_name);
@@ -195,8 +213,8 @@ public:
     }
 
     /**
-     * @brief Adds a boolean flag argument to the parser's configuration.
-     * @tparam StoreImplicitly Flag indicating whether to store implicitly.
+     * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
      * @param primary_name The primary name of the flag.
      * @return Reference to the added boolean flag argument.
      */
@@ -209,8 +227,8 @@ public:
     }
 
     /**
-     * @brief Adds a boolean flag argument to the parser's configuration.
-     * @tparam StoreImplicitly Flag indicating whether to store implicitly.
+     * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
      * @param primary_name The primary name of the flag.
      * @param secondary_name The secondary name of the flag.
      * @return Reference to the added boolean flag argument.
@@ -317,6 +335,8 @@ public:
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
     T value(std::string_view arg_name) const {
@@ -339,6 +359,8 @@ public:
      * @param arg_name The name of the argument.
      * @param default_value The default value.
      * @return The value of the argument.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
     T value_or(std::string_view arg_name, U&& default_value) const {
@@ -364,6 +386,8 @@ public:
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
     std::vector<T> values(std::string_view arg_name) const {
@@ -428,11 +452,36 @@ private:
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
 
     /**
+     * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
+     * @throws ap::error::invalid_argument_name_pattern
+     */
+    void _verify_arg_name_pattern(const std::string_view arg_name) const {
+        if (arg_name.empty())
+            throw error::invalid_argument_name_pattern(
+                arg_name, "An argument name cannot be empty."
+            );
+
+        if (arg_name.front() == this->_flag_prefix_char)
+            throw error::invalid_argument_name_pattern(
+                arg_name,
+                std::format(
+                    "An argument name cannot begin with a flag prefix character ({}).",
+                    this->_flag_prefix_char
+                )
+            );
+
+        if (std::isdigit(arg_name.front()))
+            throw error::invalid_argument_name_pattern(
+                arg_name, "An argument name cannot begin with a digit."
+            );
+    }
+
+    /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] auto _name_match_predicate(std::string_view arg_name) const noexcept {
+    [[nodiscard]] auto _name_match_predicate(const std::string_view arg_name) const noexcept {
         return [arg_name](const arg_ptr_t& arg) { return arg->name().match(arg_name); };
     }
 
@@ -551,6 +600,8 @@ private:
      * @brief Parse optional arguments based on command-line input.
      * @param arg_tokens The list of command-line argument tokens.
      * @param token_it Iterator for iterating through command-line argument tokens.
+     * @throws ap::error::argument_not_found
+     * @throws ap::error::free_value
      */
     void _parse_optional_args(
         const arg_token_list_t& arg_tokens, arg_token_list_iterator_t& token_it
@@ -590,7 +641,10 @@ private:
         });
     }
 
-    /// @brief Check if all required positional and optional arguments are used.
+    /**
+     * @brief Check if all required positional and optional arguments are used.
+     * @throws ap::error::required_argument_not_parsed
+     */
     void _check_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used())
@@ -601,7 +655,10 @@ private:
                 throw error::required_argument_not_parsed(arg->name());
     }
 
-    /// @brief Check if the number of argument values is within the specified range.
+    /**
+     * @brief Check if the number of argument values is within the specified range.
+     * @throws ap::error::invalid_nvalues
+     */
     void _check_nvalues_in_range() const {
         for (const auto& arg : this->_positional_args) {
             const auto nvalues_ordering = arg->nvalues_in_range();

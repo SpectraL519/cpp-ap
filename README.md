@@ -43,7 +43,6 @@ Command-line argument parser for C++20
   - [Building and testing](/docs/dev_notes.md#building-and-testing)
   - [Formatting](/docs/dev_notes.md#formatting)
   - [Documentation](/docs/dev_notes.md#documentation)
-- [Key Changes in v2](/docs/changelog_v2.md)
 
 <br />
 
