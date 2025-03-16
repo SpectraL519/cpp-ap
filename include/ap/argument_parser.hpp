@@ -421,19 +421,27 @@ public:
      * @param os Output stream.
      * @param parser The argument parser to print.
      * @return The modified output stream.
+     *
+     * \todo extract impl to a `str(const bool verbose)` method
      */
     friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) noexcept {
         if (parser._program_name)
-            os << parser._program_name.value() << std::endl;
+            os << "Program: " << parser._program_name.value() << std::endl;
 
         if (parser._program_description)
             os << parser._program_description.value() << std::endl;
 
-        for (const auto& argument : parser._positional_args)
-            os << "\t" << *argument << std::endl;
+        if (not parser._positional_args.empty()) {
+            os << "\nPositional arguments:\n";
+            for (const auto& argument : parser._positional_args)
+                os << _indent << *argument << std::endl;
+        }
 
-        for (const auto& argument : parser._optional_args)
-            os << "\t" << *argument << std::endl;
+        if (not parser._optional_args.empty()) {
+            os << "\nOptional arguments: [--,-]\n"; // TODO: use defined vars and println
+            for (const auto& argument : parser._optional_args)
+                os << _indent << *argument << std::endl;
+        }
 
         return os;
     }
@@ -704,6 +712,7 @@ private:
     static constexpr uint8_t _flag_prefix_length = 2u;
     static constexpr char _flag_prefix_char = '-';
     static constexpr std::string _flag_prefix = "--";
+    static constexpr std::string _indent = "    ";
 };
 
 namespace detail {
