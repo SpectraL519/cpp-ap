@@ -74,6 +74,16 @@ public:
                  : std::weak_ordering::equivalent;
     }
 
+    friend std::ostream& operator<<(std::ostream& os, const range& r) noexcept {
+        os << "[" << r._nlow.value_or(0ull) << ", ";
+        if (r._nhigh.has_value())
+            os << r._nhigh.value() << "]";
+        else
+            os << "inf)";
+
+        return os;
+    }
+
     friend range at_least(const count_type) noexcept;
     friend range more_than(const count_type) noexcept;
     friend range less_than(const count_type) noexcept;

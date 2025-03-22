@@ -87,7 +87,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& default_positional_arguments(
-        std::initializer_list<argument::default_positional> arg_discriminator_list
+        const std::initializer_list<argument::default_positional> arg_discriminator_list
     ) noexcept {
         return this->default_positional_arguments<>(arg_discriminator_list);
     }
@@ -111,7 +111,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& default_optional_arguments(
-        std::initializer_list<argument::default_optional> arg_discriminator_list
+        const std::initializer_list<argument::default_optional> arg_discriminator_list
     ) noexcept {
         return this->default_optional_arguments<>(arg_discriminator_list);
     }
