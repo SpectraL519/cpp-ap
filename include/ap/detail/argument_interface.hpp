@@ -21,13 +21,6 @@ class argument_interface {
 public:
     virtual ~argument_interface() = default;
 
-    /**
-     * @brief Set the help message for the argument.
-     * @param msg The help message to set.
-     * @return Reference to the argument_interface.
-     */
-    virtual argument_interface& help(std::string_view) noexcept = 0;
-
     /// @return True if the argument is optional, false otherwise.
     virtual bool is_optional() const noexcept = 0;
 

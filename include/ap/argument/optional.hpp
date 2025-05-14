@@ -55,9 +55,13 @@ public:
      * @param help_msg The help message to set.
      * @return Reference to the optional argument.
      */
-    optional& help(std::string_view help_msg) noexcept override {
+    optional& help(std::string_view help_msg) noexcept {
         this->_help_msg = help_msg;
         return *this;
+    }
+
+    optional& verbose(const bool v) noexcept {
+        this->_verbose = v;
     }
 
     /**
@@ -343,6 +347,7 @@ private:
     static constexpr bool _optional = true;
     const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
+    bool _verbose = false;
 
     bool _required = false;
     bool _bypass_required = false;

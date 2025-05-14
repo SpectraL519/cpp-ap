@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ap/detail/argument_name.hpp"
+#include "concepts.hpp"
 
 #include <format>
 #include <sstream>
@@ -21,6 +22,13 @@ namespace detail {
 Fill the string with spaces at the back:
 str.resize(desired_length, ' ');
 */
+
+class param_descriptor {
+public:
+    virtual ~param_descriptor() = default;
+
+    // virtual std::ostream& operator<<(std::ostream& os)
+};
 
 class argument_description_builder {
 public:

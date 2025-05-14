@@ -53,9 +53,13 @@ public:
      * @param help_msg The help message to set.
      * @return Reference to the positional argument.
      */
-    positional& help(std::string_view help_msg) noexcept override {
+    positional& help(std::string_view help_msg) noexcept {
         this->_help_msg = help_msg;
         return *this;
+    }
+
+    positional& verbose(const bool v) noexcept {
+        this->_verbose = v;
     }
 
     /**
@@ -251,6 +255,7 @@ private:
 
     const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
+    bool _verbose = false;
 
     static constexpr bool _required = true; ///< Positional arguments are required by default.
     static constexpr bool _bypass_required =
