@@ -24,6 +24,8 @@ public:
     /// @return True if the argument is optional, false otherwise.
     virtual bool is_optional() const noexcept = 0;
 
+    virtual std::string description(const uint8_t indent_width) const noexcept = 0;
+
     /**
      * @brief Overloaded stream insertion operator.
      * @param os The output stream.
@@ -64,7 +66,7 @@ protected:
      * @param value The string representation of the value.
      * @return Reference to the argument_interface.
      */
-    virtual argument_interface& set_value(const std::string&) = 0;
+    virtual argument_interface& set_value(const std::string& value) = 0;
 
     /// @return True if the argument has a value, false otherwise.
     virtual bool has_value() const noexcept = 0;

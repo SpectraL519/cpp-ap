@@ -110,6 +110,9 @@ public:
         return this->_optional;
     }
 
+    [[nodiscard]] std::string description(const uint8_t indent_width) const noexcept override {
+        return std::format("{} : {}", this->_name.str(), this->_help_msg.value_or(""));
+    }
 
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;

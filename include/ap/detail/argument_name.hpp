@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <format>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -80,8 +81,8 @@ struct argument_name {
     /// @brief Get a string representation of the argument_name.
     [[nodiscard]] std::string str() const noexcept {
         return this->secondary
-                 ? ("[" + this->primary + "," + this->secondary.value() + "]")
-                 : ("[" + this->primary + "]");
+                 ? std::format("{}, {}", this->primary, this->secondary.value())
+                 : std::format("{}", this->primary);
     }
 
     /**

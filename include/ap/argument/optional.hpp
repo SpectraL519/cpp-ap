@@ -6,6 +6,7 @@
 
 #include "ap/action/detail/utility.hpp"
 #include "ap/action/predefined_actions.hpp"
+#include "ap/detail/argument_descriptor.hpp"
 #include "ap/detail/argument_interface.hpp"
 #include "ap/detail/concepts.hpp"
 #include "ap/nargs/range.hpp"
@@ -181,6 +182,27 @@ public:
     /// @return True if argument is optional, false otherwise.
     [[nodiscard]] bool is_optional() const noexcept override {
         return this->_optional;
+    }
+
+    [[nodiscard]] std::string description(const uint8_t indent_width) const noexcept override {
+        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
+
+        if (this->_required)
+            desc.add_param("required", "true");
+        if (this->_bypass_required)
+            desc.add_param("bypass required", "true");
+        if (this->_nargs_range.has_value())
+            desc.add_param("nargs", this->_nargs_range.value());
+        if (not this->_choices.empty())
+            desc.add_range_param("choices", this->_choices);
+        if (this->_default_value.has_value())
+            desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
+        if (this->_implicit_value.has_value())
+            desc.add_param("implicit value", std::any_cast<value_type>(this->_implicit_value));
+
+
+        return desc.get(indent_width);
+        // return std::format("{} : {}", this->_name.str(), this->_help_msg.value_or(""));
     }
 
     /// @brief Friend class declaration for access by argument_parser.

@@ -11,6 +11,7 @@
 #include "detail/concepts.hpp"
 
 #include <algorithm>
+#include <format>
 #include <ranges>
 #include <span>
 
@@ -429,18 +430,18 @@ public:
             os << "Program: " << parser._program_name.value() << std::endl;
 
         if (parser._program_description)
-            os << parser._program_description.value() << std::endl;
+            os << "\n" << parser._program_description.value() << std::endl;
 
         if (not parser._positional_args.empty()) {
-            os << "\nPositional arguments:\n";
+            os << "\nPositional arguments:\n" << std::endl;
             for (const auto& argument : parser._positional_args)
-                os << _indent << *argument << std::endl;
+                os << parser._indent() << argument->description(parser._indent_width) << std::endl;
         }
 
         if (not parser._optional_args.empty()) {
-            os << "\nOptional arguments: [--,-]\n"; // TODO: use defined vars and println
+            os << "\nOptional arguments: [--,-]\n" << std::endl;
             for (const auto& argument : parser._optional_args)
-                os << _indent << *argument << std::endl;
+                os << parser._indent() << argument->description(parser._indent_width) << std::endl;
         }
 
         return os;
@@ -555,10 +556,10 @@ private:
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_length)});
+            return this->_is_arg_name_used({arg.substr(this->_primary_flag_prefxi_length)});
 
         if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_char_length)});
+            return this->_is_arg_name_used({arg.substr(this->_secondary_flag_prefix_length)});
 
         return false;
     }
@@ -569,9 +570,9 @@ private:
      */
     void _strip_flag_prefix(std::string& arg_flag) const noexcept {
         if (arg_flag.starts_with(this->_flag_prefix))
-            arg_flag.erase(0, this->_flag_prefix_length);
+            arg_flag.erase(0, this->_primary_flag_prefxi_length);
         else
-            arg_flag.erase(0, this->_flag_prefix_char_length);
+            arg_flag.erase(0, this->_secondary_flag_prefix_length);
     }
 
     /**
@@ -702,17 +703,21 @@ private:
         return std::nullopt;
     }
 
+    [[nodiscard]] constexpr std::string _indent() const noexcept {
+        return std::string(this->_indent_width, ' ');
+    }
+
     std::optional<std::string> _program_name;
     std::optional<std::string> _program_description;
 
     arg_ptr_list_t _positional_args;
     arg_ptr_list_t _optional_args;
 
-    static constexpr uint8_t _flag_prefix_char_length = 1u;
-    static constexpr uint8_t _flag_prefix_length = 2u;
+    static constexpr uint8_t _secondary_flag_prefix_length = 1u;
+    static constexpr uint8_t _primary_flag_prefxi_length = 2u;
     static constexpr char _flag_prefix_char = '-';
     static constexpr std::string _flag_prefix = "--";
-    static constexpr std::string _indent = "    ";
+    static constexpr uint8_t _indent_width = 2;
 };
 
 namespace detail {
