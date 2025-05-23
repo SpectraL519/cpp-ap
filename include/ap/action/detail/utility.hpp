@@ -11,6 +11,7 @@
 
 #include "ap/action/specifiers.hpp"
 
+#include <utility>
 #include <variant>
 
 namespace ap::action::detail {
@@ -20,26 +21,38 @@ namespace ap::action::detail {
  * @tparam AS The action specifier type.
  */
 template <typename AS>
-concept c_action_specifier = ap::detail::c_one_of<AS, action_type::transform, action_type::modify>;
+concept c_value_action_specifier =
+    ap::detail::c_one_of<AS, action_type::observe, action_type::transform, action_type::modify>;
 
 /// @brief Template argument action callable type alias.
-template <c_action_specifier AS, ap::detail::c_argument_value_type T>
+template <c_value_action_specifier AS, ap::detail::c_argument_value_type T>
 using callable_type = typename AS::template type<T>;
 
 /// @brief Template argument action callabla variant type alias.
 template <ap::detail::c_argument_value_type T>
-using action_variant_type =
-    std::variant<callable_type<action_type::transform, T>, callable_type<action_type::modify, T>>;
+using value_action_variant_type = std::variant<
+    callable_type<action_type::observe, T>,
+    callable_type<action_type::transform, T>,
+    callable_type<action_type::modify, T>>;
 
-/**
- * @brief Checks if an argument action variant holds a void action.
- * @tparam T The argument value type.
- * @param action The action variant.
- * @return True if the held action is a void action.
- */
 template <ap::detail::c_argument_value_type T>
-[[nodiscard]] constexpr bool is_modify_action(const action_variant_type<T>& action) noexcept {
-    return std::holds_alternative<callable_type<action_type::modify, T>>(action);
-}
+struct apply_visitor {
+    using value_type = T;
+
+    void operator()(const callable_type<action_type::observe, value_type>& action) const noexcept {
+        action(std::as_const(value));
+    }
+
+    void operator()(const callable_type<action_type::transform, value_type>& action
+    ) const noexcept {
+        value = action(std::as_const(value));
+    }
+
+    void operator()(const callable_type<action_type::modify, value_type>& action) const noexcept {
+        action(value);
+    }
+
+    value_type& value;
+};
 
 } // namespace ap::action::detail

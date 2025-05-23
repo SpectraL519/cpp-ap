@@ -29,7 +29,8 @@ template <ap::detail::c_argument_value_type T = std::string>
 class positional : public ap::detail::argument_interface {
 public:
     using value_type = T; ///< The argument's value type.
-    using action_type = ap::action::detail::action_variant_type<T>;
+    using value_action_type =
+        ap::action::detail::value_action_variant_type<T>; ///< The argument's value action type.
 
     positional() = delete;
 
@@ -96,10 +97,10 @@ public:
      * @param action The action function to set.
      * @return Reference to the positional argument.
      */
-    template <ap::action::detail::c_action_specifier AS, std::invocable<value_type&> F>
+    template <ap::action::detail::c_value_action_specifier AS, std::invocable<value_type&> F>
     positional& action(F&& action) noexcept {
         using callable_type = ap::action::detail::callable_type<AS, value_type>;
-        this->_action = std::forward<callable_type>(action);
+        this->_value_actions.emplace_back(std::forward<callable_type>(action));
         return *this;
     }
 
@@ -195,7 +196,9 @@ private:
         if (not this->_is_valid_choice(value))
             throw error::invalid_choice(this->_name, str_value);
 
-        this->_apply_action(value);
+        const auto apply_visitor = action::detail::apply_visitor<value_type>{value};
+        for (const auto& action : this->_value_actions)
+            std::visit(apply_visitor, action);
 
         this->_value = value;
         return *this;
@@ -249,34 +252,15 @@ private:
             or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
-    /**
-     * @brief Apply the specified action to the value of the positional argument.
-     * @param value The value to apply the action to.
-     */
-    void _apply_action(value_type& value) const noexcept {
-        if (action::detail::is_modify_action(this->_action)) {
-            using callable_type =
-                action::detail::callable_type<ap::action_type::modify, value_type>;
-            std::get<callable_type>(this->_action)(value);
-        }
-        else {
-            using callable_type =
-                action::detail::callable_type<ap::action_type::transform, value_type>;
-            value = std::get<callable_type>(this->_action)(value);
-        }
-    }
-
     static constexpr bool _optional = false;
 
     const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
-    static constexpr bool _required = true; ///< Positional arguments are required by default.
-    static constexpr bool _bypass_required =
-        false; ///< Bypassing required status is defaultly not allowed for positional arguments.
-    std::vector<value_type> _choices; ///< Vector of valid choices for the positional argument.
-    action_type _action =
-        ap::action::none<value_type>(); ///< Action associated with the positional argument.
+    static constexpr bool _required = true;
+    static constexpr bool _bypass_required = false;
+    std::vector<value_type> _choices;
+    std::vector<value_action_type> _value_actions;
 
     std::any _value; ///< Stored value of the positional argument.
 

@@ -449,12 +449,12 @@ public:
 
         if (not this->_positional_args.empty()) {
             os << "\nPositional arguments:\n";
-            this->_print(os, this->_positional_args);
+            this->_print(os, this->_positional_args, verbose);
         }
 
         if (not this->_optional_args.empty()) {
             os << "\nOptional arguments: [--,-]\n";
-            this->_print(os, this->_optional_args);
+            this->_print(os, this->_optional_args, verbose);
         }
     }
 
@@ -734,17 +734,17 @@ private:
      * @param os The output stream to print to.
      * @param args The argument list to print.
      */
-    void _print(std::ostream& os, const arg_ptr_list_t& args) const noexcept {
-        if (this->_verbose) {
+    void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
+        if (verbose) {
             for (const auto& arg : args)
-                os << '\n' << arg->desc(this->_verbose).get(this->_indent_width) << '\n';
+                os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
             descriptors.reserve(args.size());
 
             for (const auto& arg : args)
-                descriptors.emplace_back(arg->desc(this->_verbose));
+                descriptors.emplace_back(arg->desc(verbose));
 
             std::size_t max_arg_name_length = 0ull;
             for (const auto& desc : descriptors)

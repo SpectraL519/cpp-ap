@@ -15,6 +15,11 @@
 
 namespace ap::action_type {
 
+struct observe {
+    template <ap::detail::c_argument_value_type T>
+    using type = std::function<void(const T&)>;
+};
+
 /**
  * @brief Represents a transformating action.
  *

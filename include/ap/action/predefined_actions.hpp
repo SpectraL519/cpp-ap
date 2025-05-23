@@ -13,18 +13,12 @@
 
 namespace ap::action {
 
-/// @brief Returns a default argument action.
-template <ap::detail::c_argument_value_type T>
-detail::callable_type<ap::action_type::modify, T> none() noexcept {
-    return [](T&) {};
-}
-
 /**
  * @brief Returns a predefined action for file name handling arguments. Checks whether a file with the given name exists.
  * @throws ap::argument_parser_exception
  */
-inline detail::callable_type<ap::action_type::modify, std::string> check_file_exists() noexcept {
-    return [](std::string& file_path) {
+inline detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept {
+    return [](const std::string& file_path) {
         if (not std::filesystem::exists(file_path))
             throw argument_parser_exception(std::format("File `{}` does not exists!", file_path));
     };
