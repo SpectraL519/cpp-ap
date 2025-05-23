@@ -10,11 +10,35 @@
 #include "detail/utility.hpp"
 
 #include <filesystem>
+#include <ostream>
 
-namespace ap::action {
+namespace ap {
+
+class argument_parser;
+std::ostream& operator<<(std::ostream& os, const argument_parser&) noexcept;
+
+namespace action {
 
 /**
- * @brief Returns an `observe` action which checks whether lower_bound file with the given name exists.
+ * @brief Returns an *on-flag* action which prints the argument parser's configuration.
+ * @param parser The argument parser the configuration of which will be printed.
+ * @param exit_code The exit code with which `std::exit` will be called (if not `std::nullopt`).
+ * @param os The output stream to which the configuration will be printed.
+ */
+inline typename ap::action_type::on_flag::type print_config(
+    const argument_parser& parser,
+    const std::optional<int> exit_code = std::nullopt,
+    std::ostream& os = std::cout
+) noexcept {
+    return [&parser, &os, exit_code]() {
+        os << parser << std::endl;
+        if (exit_code)
+            std::exit(exit_code.value());
+    };
+}
+
+/**
+ * @brief Returns an *observe* action which checks whether lower_bound file with the given name exists.
  */
 inline detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept {
     return [](const std::string& file_path) {
@@ -24,7 +48,7 @@ inline detail::callable_type<ap::action_type::observe, std::string> check_file_e
 }
 
 /**
- * @brief Returns an `observe` action which checks if a parsed value is greater than the given bound.
+ * @brief Returns an *observe* action which checks if a parsed value is greater than the given bound.
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive lower bound to validate against.
  */
@@ -39,7 +63,7 @@ detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexc
 }
 
 /**
- * @brief Returns an `observe` action which checks if a parsed value is greater than or equal to the given bound.
+ * @brief Returns an *observe* action which checks if a parsed value is greater than or equal to the given bound.
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive lower bound to validate against.
  */
@@ -54,7 +78,7 @@ detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noex
 }
 
 /**
- * @brief Returns an `observe` action which checks if a parsed value is less than the given bound.
+ * @brief Returns an *observe* action which checks if a parsed value is less than the given bound.
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive upper bound to validate against.
  */
@@ -69,7 +93,7 @@ detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexc
 }
 
 /**
- * @brief Returns an `observe` action which checks if a parsed value is less than or equal to the given bound.
+ * @brief Returns an *observe* action which checks if a parsed value is less than or equal to the given bound.
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive upper bound to validate against.
  */
@@ -84,7 +108,7 @@ detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noex
 }
 
 /**
- * @brief Returns an `observe` action which checks if a parsed value falls within the specified interval.
+ * @brief Returns an *observe* action which checks if a parsed value falls within the specified interval.
  *
  * The interval is defined by the given lower and upper bounds, with inclusivity controlled by the template parameters.
  *
@@ -118,4 +142,5 @@ detail::callable_type<ap::action_type::observe, T> within(
     };
 }
 
-} // namespace ap::action
+} // namespace action
+} // namespace ap

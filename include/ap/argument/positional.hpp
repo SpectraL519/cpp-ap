@@ -29,8 +29,6 @@ template <ap::detail::c_argument_value_type T = std::string>
 class positional : public ap::detail::argument_interface {
 public:
     using value_type = T; ///< The argument's value type.
-    using value_action_type =
-        ap::action::detail::value_action_variant_type<T>; ///< The argument's value action type.
 
     positional() = delete;
 
@@ -92,7 +90,7 @@ public:
 
     /**
      * @brief Set the action for the positional argument.
-     * @tparam AS The action specifier type (valued_action or void_action).
+     * @tparam AS The value action specifier type (valued_action or void_action).
      * @tparam F The type of the action function.
      * @param action The action function to set.
      * @return Reference to the positional argument.
@@ -120,6 +118,9 @@ public:
 #endif
 
 private:
+    using value_action_type =
+        ap::action::detail::value_action_variant_type<T>; ///< The argument's value action type.
+
     /// @return Reference the name of the positional argument.
     [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
         return this->_name;

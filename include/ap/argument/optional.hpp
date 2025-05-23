@@ -32,8 +32,6 @@ class optional : public ap::detail::argument_interface {
 public:
     using value_type = T; ///< The argument's value type.
     using count_type = ap::nargs::range::count_type; ///< The argument's value count type.
-    using value_action_type =
-        ap::action::detail::value_action_variant_type<T>; ///< The argument's value action type.
 
     optional() = delete;
 
@@ -117,15 +115,21 @@ public:
 
     /**
      * @brief Set the action for the optional argument.
-     * @tparam AS The action specifier type (valued_action or void_action).
+     * @tparam AS The action specifier type (see @ref ap/action/specifiers.hpp).
      * @tparam F The type of the action function.
      * @param action The action function to set.
      * @return Reference to the optional argument.
      */
-    template <ap::action::detail::c_value_action_specifier AS, std::invocable<value_type&> F>
+    template <ap::action::detail::c_action_specifier AS, typename F>
     optional& action(F&& action) noexcept {
-        using callable_type = ap::action::detail::callable_type<AS, value_type>;
-        this->_value_actions.emplace_back(std::forward<callable_type>(action));
+        if constexpr (ap::action::detail::c_value_action_specifier<AS>) {
+            using callable_type = ap::action::detail::callable_type<AS, value_type>;
+            this->_value_actions.emplace_back(std::forward<callable_type>(action));
+        }
+        else {
+            this->_flag_actions.emplace_back(std::forward<flag_action_type>(action));
+        }
+
         return *this;
     }
 
@@ -194,6 +198,10 @@ public:
 #endif
 
 private:
+    using value_action_type =
+        ap::action::detail::value_action_variant_type<T>; ///< The argument's value action type.
+    using flag_action_type = typename ap::action_type::on_flag::type;
+
     /// @return Reference to the name of the optional argument.
     [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
         return this->_name;
@@ -246,6 +254,8 @@ private:
     /// @brief Mark the optional argument as used.
     void mark_used() noexcept override {
         ++this->_nused;
+        for (const auto& action : this->_flag_actions)
+            action();
     }
 
     /// @return True if the optional argument is used, false otherwise.
@@ -368,6 +378,7 @@ private:
     std::any _default_value;
     std::any _implicit_value;
     std::vector<value_type> _choices;
+    std::vector<flag_action_type> _flag_actions;
     std::vector<value_action_type> _value_actions;
 
     std::size_t _nused = 0u;

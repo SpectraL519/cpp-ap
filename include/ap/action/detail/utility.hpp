@@ -17,12 +17,19 @@
 namespace ap::action::detail {
 
 /**
- * @brief The concept is satisfied when `AS` is either a valued or void argument action
+ * @brief The concept is satisfied when `AS` is a valid *value* action action specifier.
  * @tparam AS The action specifier type.
  */
 template <typename AS>
 concept c_value_action_specifier =
     ap::detail::c_one_of<AS, action_type::observe, action_type::transform, action_type::modify>;
+
+/**
+ * @brief The concept is satisfied when `AS` is a valid action action specifier.
+ * @tparam AS The action specifier type.
+ */
+template <typename AS>
+concept c_action_specifier = c_value_action_specifier<AS> or std::same_as<AS, action_type::on_flag>;
 
 /// @brief Template argument action callable type alias.
 template <c_value_action_specifier AS, ap::detail::c_argument_value_type T>
@@ -35,6 +42,10 @@ using value_action_variant_type = std::variant<
     callable_type<action_type::transform, T>,
     callable_type<action_type::modify, T>>;
 
+/**
+ * @brief A visitor structure used to apply *value* actions.
+ * @tparam T The argument's value type
+ */
 template <ap::detail::c_argument_value_type T>
 struct apply_visitor {
     using value_type = T;

@@ -323,12 +323,16 @@ public:
      * Checks the value of the `help` boolean flag argument and if the value `is` true,
      * prints the parser to `std::cout` anb exists with `EXIT_SUCCESS` status.
      */
+    // clang-format off
+    [[deprecated("The default help argument now uses the `print_config` on-flag action")]]
     void handle_help_action() const noexcept {
         if (this->value<bool>("help")) {
             std::cout << *this << std::endl;
             std::exit(EXIT_SUCCESS);
         }
     }
+
+    // clang-format on
 
     /**
      * @param arg_name The name of the argument.
@@ -804,7 +808,9 @@ inline void add_default_argument(
 ) noexcept {
     switch (arg_discriminator) {
     case argument::default_optional::help:
-        arg_parser.add_flag("help", "h").bypass_required().help("Display the help message");
+        arg_parser.add_flag("help", "h")
+            .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
+            .help("Display the help message");
         break;
 
     case argument::default_optional::input:
