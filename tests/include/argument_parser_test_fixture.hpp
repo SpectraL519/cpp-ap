@@ -61,7 +61,7 @@ struct argument_parser_test_fixture {
         std::size_t n_positional_args, std::size_t n_optional_args
     ) const {
         std::vector<std::string> argv_vec;
-        argv_vec.reserve(get_argc(n_positional_args, n_optional_args));
+        argv_vec.reserve(static_cast<std::size_t>(get_argc(n_positional_args, n_optional_args)));
 
         argv_vec.emplace_back("program");
 
@@ -82,8 +82,8 @@ struct argument_parser_test_fixture {
         return to_char_2d_array(init_argv_vec(n_positional_args, n_optional_args));
     }
 
-    void free_argv(std::size_t argc, char** argv) const {
-        for (std::size_t i = 0ull; i < argc; ++i)
+    void free_argv(int argc, char** argv) const {
+        for (int i = 0; i < argc; ++i)
             delete[] argv[i];
         delete[] argv;
     }
@@ -136,7 +136,7 @@ struct argument_parser_test_fixture {
     }
 
     [[nodiscard]] arg_token_list_t tokenize(int argc, char* argv[]) const {
-        return sut._tokenize(std::span(argv + 1, argc - 1));
+        return sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
     }
 
     void parse_args_impl(const arg_token_list_t& arg_tokens) {

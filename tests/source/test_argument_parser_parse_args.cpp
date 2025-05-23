@@ -84,7 +84,7 @@ TEST_CASE_FIXTURE(
     add_arguments(n_positional_args, n_optional_args);
 
     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
-    arg_tokens.erase(std::next(arg_tokens.begin(), n_positional_args));
+    arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(n_positional_args)));
 
     CHECK_THROWS_AS(parse_args_impl(arg_tokens), ap::error::free_value);
 }
@@ -154,7 +154,9 @@ TEST_CASE_FIXTURE(
 
     // remove the last positional value
     --argc;
-    argv_vec.erase(std::next(argv_vec.begin(), n_positional_args - 1ull));
+    argv_vec.erase(
+        std::next(argv_vec.begin(), static_cast<std::ptrdiff_t>(n_positional_args - 1ull))
+    );
 
     auto argv = to_char_2d_array(argv_vec);
 

@@ -267,7 +267,7 @@ public:
      * @note The first argument (the program name) is ignored.
      */
     void parse_args(int argc, char* argv[]) {
-        this->parse_args(std::span(argv + 1, argc - 1));
+        this->parse_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
     }
 
     /**
@@ -293,7 +293,7 @@ public:
      * @note The first argument (the program name) is ignored.
      */
     void try_parse_args(int argc, char* argv[]) {
-        this->try_parse_args(std::span(argv + 1, argc - 1));
+        this->try_parse_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
     }
 
     /**
