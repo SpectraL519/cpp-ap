@@ -11,7 +11,9 @@ int main(int argc, char* argv[]) {
           .default_optional_arguments({ap::argument::default_optional::help});
 
     // add arguments
-    parser.add_positional_argument("simple-pos").help("A simple positional argument.");
+    parser.add_positional_argument("simple-pos")
+          .choices({"abc", "def"})
+          .help("A simple positional argument.");
     parser.add_optional_argument<int>("simpl-opt", "s")
           .nargs(ap::nargs::any())
           .help("A simple optional argument.");

@@ -113,12 +113,12 @@ TEST_CASE("operator<< should push correct data to the output stream") {
 
     SUBCASE("argument_name with primary name only") {
         ss << arg_name_primary_1;
-        expected_ss << "[" << primary_1 << "]";
+        expected_ss << primary_1;
     }
 
     SUBCASE("argument_name with both names") {
         ss << arg_name_full_1;
-        expected_ss << "[" << primary_1 << "," << secondary_1 << "]";
+        expected_ss << primary_1 << ", " << secondary_1;
     }
 
     CAPTURE(ss);

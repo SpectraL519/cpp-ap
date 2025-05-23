@@ -5,6 +5,7 @@
 #pragma once
 
 #include <optional>
+#include <ostream>
 
 namespace ap::nargs {
 
@@ -76,8 +77,7 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const range& r) noexcept {
-        if (r._lower_bound.has_value() and r._upper_bound.has_value()
-            and r._lower_bound.value() == r._upper_bound.value()) {
+        if (r._lower_bound.has_value() and r._lower_bound == r._upper_bound) {
             os << r._lower_bound.value();
             return os;
         }

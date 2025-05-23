@@ -1,3 +1,7 @@
+// Copyright (c) 2023-2025 Jakub Musiał
+// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+
 #pragma once
 
 #include "ap/detail/argument_name.hpp"
@@ -48,7 +52,9 @@ public:
         this->params.emplace_back(name, join_with(range, delimiter));
     }
 
-    [[nodiscard]] std::string get_basic(const uint8_t indent_width, const std::optional<uint8_t> align_to = std::nullopt) const {
+    [[nodiscard]] std::string get_basic(
+        const uint8_t indent_width, const std::optional<uint8_t> align_to = std::nullopt
+    ) const {
         std::ostringstream oss;
 
         oss << std::string(indent_width, ' ');
@@ -62,7 +68,6 @@ public:
         return oss.str();
     }
 
-    // TODO: add arg name alignment
     [[nodiscard]] std::string get(
         const uint8_t indent_width, std::optional<std::size_t> max_line_width = std::nullopt
     ) const {
