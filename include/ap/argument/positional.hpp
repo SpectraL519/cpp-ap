@@ -110,10 +110,6 @@ public:
         return this->_optional;
     }
 
-    [[nodiscard]] std::string description(const uint8_t indent_width) const noexcept override {
-        return std::format("{} : {}", this->_name.str(), this->_help_msg.value_or(""));
-    }
-
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
@@ -133,6 +129,10 @@ private:
     /// @return Optional help message for the positional argument.
     [[nodiscard]] const std::optional<std::string>& help() const noexcept override {
         return this->_help_msg;
+    }
+
+    [[nodiscard]] detail::argument_descriptor desc() const noexcept override {
+        return detail::argument_descriptor(this->_name.str(), this->_help_msg);
     }
 
     /// @return True if the positional argument is required, false otherwise

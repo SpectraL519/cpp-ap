@@ -25,17 +25,17 @@ struct parameter_descriptor {
 class argument_descriptor {
 public:
     argument_descriptor(const std::string& name, const std::optional<std::string>& help)
-    : _name(name), _help(help) {}
+    : name(name), help(help) {}
 
     void add_param(const std::string& name, const std::string& value) {
-        this->_params.emplace_back(name, value);
+        this->params.emplace_back(name, value);
     }
 
     template <c_writable T>
     void add_param(const std::string& name, const T& value) {
         std::ostringstream oss;
         oss << std::boolalpha << value;
-        this->_params.emplace_back(name, oss.str());
+        this->params.emplace_back(name, oss.str());
     }
 
     template <std::ranges::range R>
@@ -45,18 +45,34 @@ public:
         const R& range,
         const std::string_view delimiter = default_delimiter
     ) {
-        this->_params.emplace_back(name, join_with(range, delimiter));
+        this->params.emplace_back(name, join_with(range, delimiter));
+    }
+
+    [[nodiscard]] std::string get_basic(const uint8_t indent_width, const std::optional<uint8_t> align_to = std::nullopt) const {
+        std::ostringstream oss;
+
+        oss << std::string(indent_width, ' ');
+        if (align_to.has_value())
+            oss << std::setw(static_cast<int>(align_to.value())) << std::left;
+        oss << this->name;
+
+        if (this->help.has_value())
+            oss << " : " << this->help.value();
+
+        return oss.str();
     }
 
     // TODO: add arg name alignment
-    std::string get(
+    [[nodiscard]] std::string get(
         const uint8_t indent_width, std::optional<std::size_t> max_line_width = std::nullopt
     ) const {
-        if (this->_params.empty())
-            return this->_get_single_line();
+        std::ostringstream oss;
+
+        if (this->params.empty())
+            return this->_get_single_line(indent_width);
 
         if (max_line_width.has_value()) {
-            std::string single_line_str = this->_get_single_line();
+            std::string single_line_str = this->_get_single_line(indent_width);
             if (single_line_str.size() <= max_line_width.value())
                 return single_line_str;
         }
@@ -64,16 +80,17 @@ public:
         return this->_get_multi_line(indent_width);
     }
 
+    std::string name;
+    std::optional<std::string> help;
+    std::vector<parameter_descriptor> params;
+
 private:
-    [[nodiscard]] std::string _get_single_line() const {
+    [[nodiscard]] std::string _get_single_line(const uint8_t indent_width) const {
         std::ostringstream oss;
 
-        oss << this->_name;
-        if (this->_help.has_value())
-            oss << " : " << this->_help.value();
-
-        if (not this->_params.empty()) {
-            oss << " (" << join_with(this->_params | std::views::transform([](const auto& param) {
+        oss << this->get_basic(indent_width);
+        if (not this->params.empty()) {
+            oss << " (" << join_with(this->params | std::views::transform([](const auto& param) {
                                          return std::format("{}: {}", param.name, param.value);
                                      }))
                 << ")";
@@ -85,28 +102,21 @@ private:
     [[nodiscard]] std::string _get_multi_line(const uint8_t indent_width) const {
         std::ostringstream oss;
 
-        oss << this->_name;
-        if (this->_help.has_value())
-            oss << " : " << this->_help.value();
+        oss << this->get_basic(indent_width);
 
-        std::size_t max_param_name_len = 0;
-        for (const auto& param : this->_params)
+        std::size_t max_param_name_len = 0ull;
+        for (const auto& param : this->params)
             max_param_name_len = std::max(max_param_name_len, param.name.size());
 
-        for (const auto& param : this->_params) {
+        for (const auto& param : this->params) {
             oss << "\n"
                 << std::string(indent_width * 2, ' ') << "- "
                 << std::setw(static_cast<int>(max_param_name_len)) << std::left << param.name
                 << " = " << param.value;
         }
-        oss << "\n";
 
         return oss.str();
     }
-
-    std::string _name;
-    std::optional<std::string> _help;
-    std::vector<parameter_descriptor> _params;
 
     static constexpr std::string_view default_delimiter = ", ";
 };

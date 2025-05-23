@@ -184,27 +184,6 @@ public:
         return this->_optional;
     }
 
-    [[nodiscard]] std::string description(const uint8_t indent_width) const noexcept override {
-        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
-
-        if (this->_required)
-            desc.add_param("required", "true");
-        if (this->_bypass_required)
-            desc.add_param("bypass required", "true");
-        if (this->_nargs_range.has_value())
-            desc.add_param("nargs", this->_nargs_range.value());
-        if (not this->_choices.empty())
-            desc.add_range_param("choices", this->_choices);
-        if (this->_default_value.has_value())
-            desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
-        if (this->_implicit_value.has_value())
-            desc.add_param("implicit value", std::any_cast<value_type>(this->_implicit_value));
-
-
-        return desc.get(indent_width);
-        // return std::format("{} : {}", this->_name.str(), this->_help_msg.value_or(""));
-    }
-
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
@@ -224,6 +203,25 @@ private:
     /// @return Reference to the optional help message for the optional argument.
     [[nodiscard]] const std::optional<std::string>& help() const noexcept override {
         return this->_help_msg;
+    }
+
+    [[nodiscard]] detail::argument_descriptor desc() const noexcept override {
+        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
+
+        if (this->_required)
+            desc.add_param("required", "true");
+        if (this->_bypass_required)
+            desc.add_param("bypass required", "true");
+        if (this->_nargs_range.has_value())
+            desc.add_param("nargs", this->_nargs_range.value());
+        if (not this->_choices.empty())
+            desc.add_range_param("choices", this->_choices);
+        if (this->_default_value.has_value())
+            desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
+        if (this->_implicit_value.has_value())
+            desc.add_param("implicit value", std::any_cast<value_type>(this->_implicit_value));
+
+        return desc;
     }
 
     /// @return True if the optional argument is required, false otherwise.

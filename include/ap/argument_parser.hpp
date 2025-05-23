@@ -430,18 +430,16 @@ public:
             os << "Program: " << parser._program_name.value() << std::endl;
 
         if (parser._program_description)
-            os << "\n" << parser._program_description.value() << std::endl;
+            os << "\n" << std::string(parser._indent_width, ' ') << parser._program_description.value() << std::endl;
 
         if (not parser._positional_args.empty()) {
-            os << "\nPositional arguments:\n" << std::endl;
-            for (const auto& argument : parser._positional_args)
-                os << parser._indent() << argument->description(parser._indent_width) << std::endl;
+            os << "\nPositional arguments:\n";
+            parser._print(os, parser._positional_args);
         }
 
         if (not parser._optional_args.empty()) {
-            os << "\nOptional arguments: [--,-]\n" << std::endl;
-            for (const auto& argument : parser._optional_args)
-                os << parser._indent() << argument->description(parser._indent_width) << std::endl;
+            os << "\nOptional arguments: [--,-]\n";
+            parser._print(os, parser._optional_args);
         }
 
         return os;
@@ -703,12 +701,32 @@ private:
         return std::nullopt;
     }
 
-    [[nodiscard]] constexpr std::string _indent() const noexcept {
-        return std::string(this->_indent_width, ' ');
+    void _print(std::ostream& os, const arg_ptr_list_t& args) const noexcept {
+        if (this->_verbose) {
+            for (const auto& arg : args)
+                os << '\n' << arg->desc().get(this->_indent_width) << '\n';
+        }
+        else {
+            std::vector<detail::argument_descriptor> descriptors;
+            descriptors.reserve(args.size());
+
+            for (const auto& arg : args)
+                descriptors.emplace_back(arg->desc());
+
+            std::size_t max_arg_name_length = 0ull;
+            for (const auto& desc : descriptors)
+                max_arg_name_length = std::max(max_arg_name_length, desc.name.length());
+
+            for (const auto& desc : descriptors)
+                os << '\n' << desc.get_basic(this->_indent_width, max_arg_name_length);
+
+            os << '\n';
+        }
     }
 
     std::optional<std::string> _program_name;
     std::optional<std::string> _program_description;
+    bool _verbose = false;
 
     arg_ptr_list_t _positional_args;
     arg_ptr_list_t _optional_args;

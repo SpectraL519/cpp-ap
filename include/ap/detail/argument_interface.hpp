@@ -24,8 +24,6 @@ public:
     /// @return True if the argument is optional, false otherwise.
     virtual bool is_optional() const noexcept = 0;
 
-    virtual std::string description(const uint8_t indent_width) const noexcept = 0;
-
     /**
      * @brief Overloaded stream insertion operator.
      * @param os The output stream.
@@ -43,14 +41,16 @@ protected:
     /// @return Reference to the name of the argument.
     virtual const argument_name& name() const noexcept = 0;
 
+    /// @return Optional help message for the argument.
+    virtual const std::optional<std::string>& help() const noexcept = 0;
+
+    virtual detail::argument_descriptor desc() const noexcept = 0;
+
     /// @return True if the argument is required, false otherwise
     virtual bool is_required() const noexcept = 0;
 
     /// @return True if bypassing the required status is enabled for the argument, false otherwise.
     virtual bool bypass_required_enabled() const noexcept = 0;
-
-    /// @return Optional help message for the argument.
-    virtual const std::optional<std::string>& help() const noexcept = 0;
 
     /// @brief Mark the argument as used.
     virtual void mark_used() noexcept = 0;

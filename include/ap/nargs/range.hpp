@@ -41,11 +41,11 @@ public:
     /**
      * @brief Determines the ordering of the count against a range instance.
      *
-     * For a `[low, high]` range and the count `n` the returned value is:
-     * - `less` if `n < low`,
-     * - `equivalent` if `n >= low` and `n <= high`,
-     * - `greater` if `n > high`.
-     * If either `low` or `high` limits are not set (std::nullopt),
+     * For a `[lower, upper]` range and the count `n` the returned value is:
+     * - `less` if `n < lower`,
+     * - `equivalent` if `n >= lower` and `n <= upper`,
+     * - `greater` if `n > upper`.
+     * If either `lower` or `upper` limits are not set (std::nullopt),
      * then the corresponding conditions are dropped.
      *
      * @param n The value count to order.
