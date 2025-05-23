@@ -50,20 +50,32 @@ template <ap::detail::c_argument_value_type T>
 struct apply_visitor {
     using value_type = T;
 
+    /**
+     * @brief The call operator overload for the *observe* action type.
+     * @param action The *observe* action callable.
+     */
     void operator()(const callable_type<action_type::observe, value_type>& action) const noexcept {
         action(std::as_const(value));
     }
 
+    /**
+     * @brief The call operator overload for the *transform* action type.
+     * @param action The *transform* action callable.
+     */
     void operator()(const callable_type<action_type::transform, value_type>& action
     ) const noexcept {
         value = action(std::as_const(value));
     }
 
+    /**
+     * @brief The call operator overload for the *modify* action type.
+     * @param action The *modify* action callable.
+     */
     void operator()(const callable_type<action_type::modify, value_type>& action) const noexcept {
         action(value);
     }
 
-    value_type& value;
+    value_type& value; ///< A reference to the argument's value for which the action will be applied.
 };
 
 } // namespace ap::action::detail

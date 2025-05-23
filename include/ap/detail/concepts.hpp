@@ -28,6 +28,10 @@ concept c_readable = requires(T value, std::istream& input_stream) { input_strea
 template <typename T>
 concept c_writable = requires(T value, std::ostream& output_stream) { output_stream << value; };
 
+/**
+ * @brief The concept is satisfied when `T` is an arithmetic type.
+ * @tparam T Type to check.
+ */
 template <typename T>
 concept c_arithmetic = std::is_arithmetic_v<T>;
 
