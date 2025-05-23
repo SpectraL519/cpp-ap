@@ -6,12 +6,21 @@
 - [The Parser Class](#the-parser-class)
 - [Adding Arguments](#adding-arguments)
 - [Argument Parameters](#argument-parameters)
+- [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Parsing Arguments](#parsing-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
 - [Examples](#examples)
 
-<br />
+<br/>
+
+> [!IMPORTANT]
+>
+> This tutorial covers the most common use cases and features of the library.
+> For more in-depth information and advanced usage, please refer to the full documentation.
+> Instructions for building the documentation are available in the [Dev Notes](/docs/dev_notes.md#documentation) page.
+
+<br/>
 
 ## Setting Up CPP-AP
 
@@ -52,8 +61,9 @@ target_link_libraries(my_project PRIVATE cpp-ap-2)
 
 If you do not use CMake you can dowload the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
 
-<br />
-<br />
+<br/>
+<br/>
+<br/>
 
 ## The Parser Class
 
@@ -61,18 +71,20 @@ To use the argument parser in your code you need to use the `ap::argument_parser
 
 The parameters you can specify for a parser's instance are:
 
-- Program name
-- Program description
-- [Arguments](#adding-arguments)
+- Program name and description - used in the parser's configuration output (`std::cout << parser`).
+- Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
+- [Arguments](#adding-arguments) - specify the values/options accepted by the program.
 
 ```cpp
 ap::argument_parser parser;
 parser.program_name("Name of the program")
-      .program_description("Description of the program");
+      .program_description("Description of the program")
+      .verbose();
 ```
 
-<br />
-<br />
+<br/>
+<br/>
+<br/>
 
 ## Adding Arguments
 
@@ -131,8 +143,9 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
 */
 ```
 
-<br />
-<br />
+<br/>
+<br/>
+<br/>
 
 ## Argument Parameters
 
@@ -140,31 +153,38 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
 
 Parameters which can be specified for both positional and optional arguments include:
 
-- `help` - the argument's description which will be printed when printing the parser class instance.
+#### `help` - The argument's description which will be printed when printing the parser class instance.
 
     ```cpp
     parser.add_positional_argument<std::size_t>("number", "n")
           .help("a positive integer value");
     ```
 
-- `choices` - a list of valid argument values.
-    The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
+#### `choices` - A list of valid argument values.
 
-    ```cpp
-    parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
-    ```
+The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
+
+```cpp
+parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
+```
 
 > [!IMPORTANT]
 >
 > The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
 
-- `action` - a function performed after reading an argument's value.
-  Actions are represented as functions, which take the argument's value as an argument. There are two types of actions:
-  - `modify` actions | `void(value_type&)` - applied to the initialized value of an argument.
+#### Value actions - Function performed after parsing an argument's value.
+  Actions are represented as functions, which take the argument's value as an argument. The available action types are:
+
+  - `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
 
     ```cpp
-    parser.add_optional_argument<std::string>("name", "n")
-          .action<ap::action_type::modify>([](std::string& name) { name[0] = std::toupper(name[0]); });
+    void is_valid_user_tag(const std::string& tag) {
+        if (tag.empty() or tag.front() != '@')
+            throw std::runtime_error(std::format("Invalid user tag: `{}` — must start with '@'", tag));
+    }
+
+    parser.add_optional_argument<std::string>("user", "u")
+          .action<ap::action_type::observe>(is_valid_user_tag);
     ```
 
   - `transform` actions | `value_type(const value_type&)` - applied to the parsed value. The returned value will be used to initialize the argument's value.
@@ -180,26 +200,36 @@ Parameters which can be specified for both positional and optional arguments inc
           .action<ap::action_type::transform>(to_lower);
     ```
 
-  Actions can also be used to perform some value checking logic instead of actualy modifying or transforming a value, as e.g. the predefined `check_file_exists` which verifies whether a file with a given name exists:
+  - `modify` actions | `void(value_type&)` - applied to the initialized value of an argument.
 
-  ```cpp
-  parser.add_optional_argument("input", "i")
-        .action<ap::action_type::modify>(ap::action::check_file_exists());
-  ```
+    ```cpp
+    void capitalize(std::string& s) {
+        s.at(0) = std::toupper(s.at(0));
+    }
 
-  > **NOTE:** The default action is an empty `modify` action.
+    parser.add_optional_argument<std::string>("name", "n")
+          .action<ap::action_type::modify>(capitalize);
+    ```
+
+> [!TIP]
+>
+> A single argument can have multiple value actions. Instead of writing complex logic in one action, consider composing several simple, focused actions for better readability and reuse.
+
+<br/>
 
 ### Parameters Specific for Optional Arguments
 
-- `required` - if this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
+Apart from the common parameters listed above, for optional arguments you can also specify the following parameters:
+
+#### `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
   ```cpp
   parser.add_optional_argument("output", "o").required();
   ```
 
-- `bypass_required` - if this option is set for an argument, parsing it's value will overrite the `required` option for other optional arguments and all positional arguments.
+#### `bypass_required` - If this option is set for an argument, parsing it's value will overrite the `required` option for other optional arguments and all positional arguments.
 
-- `nargs` - sets the allowed number of values to be parsed for an argument. This can be set as a:
+#### `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
 
   - Concrete number:
 
@@ -232,13 +262,13 @@ Parameters which can be specified for both positional and optional arguments inc
 >
 > The default nargs value is `1`.
 
-- `default_value` - the default value for an argument which will be used if no values for this argument are parsed
+#### `default_value` - The default value for an argument which will be used if no values for this argument are parsed
 
   ```cpp
   parser.add_opitonal_argument("output", "o").default_value("out.txt");
   ```
 
-- `implicit_value` - a value which will be set for an argument if only it's flag is parsed from the command-line but no value follows
+#### `implicit_value` - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
 
   ```cpp
   // program.cpp
@@ -249,8 +279,116 @@ Parameters which can be specified for both positional and optional arguments inc
 
   In this example if you run the program with only a `-s` or `--save` flag and no value, the value will be set to `out.txt`.
 
-<br />
-<br />
+#### On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
+
+  ```cpp
+  void print_debug_info() noexcept {
+  #ifdef NDEBUG
+      std::cout << "Running in release mode.\n";
+  #else
+      std::cout << "Running in debug mode.\n";
+  #endif
+      std::exit(EXIT_SUCCESS);
+  };
+
+  parser.add_optional_argument("--debug-info")
+        .action<ap::action_type::on_flag>(print_debug_info);
+  ```
+
+  Here the `print_debug_info` function will be called right after parsing the `--debug-info` flag and the program will exit, even if there are more arguments after this flag.
+
+<br/>
+<br/>
+<br/>
+
+## Predefined Parameter Values
+
+### Actions
+
+---
+
+#### `print_config` | on-flag
+
+Prints the configuration of the parser to the output stream and optionally exits with the given code.
+
+```cpp
+typename ap::action_type::on_flag::type print_config(
+    const ap::argument_parser& parser,
+    const std::optional<int> exit_code = std::nullopt,
+    std::ostream& os = std::cout
+) noexcept;
+```
+
+---
+
+#### `check_file_exists` | observe (value type: `std::string`)
+
+Throws if the provided file path does not exist.
+
+```cpp
+detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept;
+```
+
+---
+
+#### `gt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+
+Validates that the value is strictly greater than `lower_bound`.
+
+```cpp
+template <ap::detail::c_arithmetic T>
+detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept;
+```
+
+---
+
+#### `geq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+
+Validates that the value is greater than or equal to `lower_bound`.
+
+```cpp
+template <ap::detail::c_arithmetic T>
+detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept;
+```
+
+---
+
+#### `lt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+
+Validates that the value is strictly less than `upper_bound`.
+
+```cpp
+template <ap::detail::c_arithmetic T>
+detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept
+```
+
+---
+
+#### `leq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+
+Validates that the value is less than or equal to `upper_bound`.
+
+```cpp
+template <ap::detail::c_arithmetic T>
+detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept
+```
+
+---
+
+#### `within` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+
+Checks if the value is within the given interval. Bound inclusivity is customizable using template parameters.
+
+```cpp
+template <ap::detail::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
+detail::callable_type<ap::action_type::observe, T> within(
+    const T lower_bound, const T upper_bound
+) noexcept
+```
+
+<br/>
+<br/>
+<br/>
 
 ## Default Arguments
 
@@ -290,20 +428,10 @@ The available default arguments are:
 
   ```cpp
   // equivalent to:
-  parser.add_flag("help", "h").bypass_required().help("Display help message");
+  parser.add_flag("help", "h")
+        .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
+        .help("Display the help message");
   ```
-
-> [!NOTE]
->
-> As of now the *on flag/use action* functionality is not implemented in the library - this will be added in a future release.
-> To properly use the help argument in the current release add the, use the `parser.handle_help_action()` method after parsing the arguments. This would be equivalent to:
->
-> ```cpp
-> if (parser.value<bool>("help")) {
->     std::cout << parser << std::endl;
->     std::exit(EXIT_SUCCESS);
-> }
-> ```
 
 - `default_optional::input` and `default_optional::multi_input`:
 
@@ -312,14 +440,14 @@ The available default arguments are:
   parser.add_optional_argument("input", "i")
         .required()
         .nargs(1)
-        .action<ap::action_type::modify>(ap::action::check_file_exists())
+        .action<ap::action_type::observe>(ap::action::check_file_exists())
         .help("Input file path");
 
   // multi_input - equivalent to:
   parser.add_optional_argument("input", "i")
         .required()
         .nargs(ap::nargs::at_least(1))
-        .action<ap::action_type::modify>(ap::action::check_file_exists())
+        .action<ap::action_type::observe>(ap::action::check_file_exists())
         .help("Input files paths");
   ```
 
@@ -339,12 +467,9 @@ The available default arguments are:
         .help("Output files paths");
   ```
 
-> [!NOTE]
->
-> The `argument_parser::default_<positional/optional>_arguments` functions will be modified to use a variadic argument list instead of a `std::vector` in a future release.
-
-<br />
-<br />
+<br/>
+<br/>
+<br/>
 
 ## Parsing Arguments
 
@@ -383,7 +508,7 @@ int main(int argc, char* argv[]) {
     // create the parser class instance
     ap::argument_parser parser;
     parser.program_name("power calculator")
-          .program_description("calculates the value of an expression: base ^ exponent");
+          .program_description("Calculates the value of an expression: base ^ exponent");
 
     // add arguments
     parser.add_positional_argument<double>("base").help("the exponentation base value");
@@ -395,9 +520,6 @@ int main(int argc, char* argv[]) {
 
     // parse command-line arguments
     parser.try_parse_args(argc, argv);
-
-    // handle the `help` argument
-    parser.handle_help_action();
 
     // check if any values for the `exponent` argument have been parsed
     if (not parser.has_value("exponent")) {
@@ -434,12 +556,19 @@ int main(int argc, char* argv[]) {
   ```shell
   ./power
   # out:
-  # [ERROR] : No values parsed for a required argument [base]
-  # power calculator
-  # calculates the value of an expression: base ^ exponent
-  #         [base] : the exponentation base value
-  #         [exponent,e] : the exponent value
-  #         [help,h] : Display help message
+  # [ERROR] : No values parsed for a required argument base
+  # Program: power calculator
+  #
+  #   calculates the value of an expression: base ^ exponent
+  #
+  # Positional arguments:
+  #
+  #   base : the exponentation base value
+  #
+  # Optional arguments: [--,-]
+  #
+  #   exponent, e : the exponent value
+  #   help, h     : Display the help message
   ```
 
 > [!IMPORTANT]
@@ -469,19 +598,27 @@ int main(int argc, char* argv[]) {
   ./power 2 1 2 3
   # out:
   # [ERROR] : Failed to deduce the argument for the given value `1`
-  # power calculator
-  # calculates the value of an expression: base & exponent
-  #         [base] : the exponentation base value
-  #         [exponent,e] : the exponent value
-  #         [help,h] : Display help message
+  # Program: power calculator
+  #
+  #   calculates the value of an expression: base ^ exponent
+  #
+  # Positional arguments:
+  #
+  #   base : the exponentation base value
+  #
+  # Optional arguments: [--,-]
+  #
+  #   exponent, e : the exponent value
+  #   help, h     : Display the help message
   ```
 
 > [!IMPORTANT]
 >
 > The parser behaviour depends on the argument definitions. The argument parameters are described int the [Argument parameters](#argument-parameters) section.
 
-<br />
-<br />
+<br/>
+<br/>
+<br/>
 
 ## Retrieving Argument Values
 
@@ -501,7 +638,7 @@ You can retrieve the argument's value with:
     - There is no value parsed for a positional argument
     - There is no parsed values and no predefined values for an optional arrument
 
-<br />
+<br/>
 
 Additionally for optional arguments, you can use:
 
@@ -511,8 +648,9 @@ Additionally for optional arguments, you can use:
 
 which returns a `vector` containing all values parsed for the given argument.
 
-<br />
-<br />
+<br/>
+<br/>
+<br/>
 
 ## Examples
 

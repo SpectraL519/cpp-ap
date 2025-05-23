@@ -144,19 +144,23 @@ private:
      * @param indent_width Number of spaces before the argument name.
      * @return A single-line formatted description string.
      */
+    // clang-format off
     [[nodiscard]] std::string _get_single_line(const uint8_t indent_width) const {
         std::ostringstream oss;
 
         oss << this->get_basic(indent_width);
         if (not this->params.empty()) {
-            oss << " (" << join_with(this->params | std::views::transform([](const auto& param) {
-                                         return std::format("{}: {}", param.name, param.value);
-                                     }))
+            oss << " ("
+                << join_with(this->params | std::views::transform(
+                    [](const auto& param) { return std::format("{}: {}", param.name, param.value); }
+                ))
                 << ")";
         }
 
         return oss.str();
     }
+
+    // clang-format on
 
     /**
      * @brief Generates a multi-line string representation of the argument and its parameters, formatting each parameter on its own line with aligned names.

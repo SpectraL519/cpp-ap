@@ -60,7 +60,7 @@ protected:
     virtual bool bypass_required_enabled() const noexcept = 0;
 
     /// @brief Mark the argument as used.
-    virtual void mark_used() noexcept = 0;
+    virtual void mark_used() = 0;
 
     /// @return True if the argument has been used, false otherwise.
     virtual bool is_used() const noexcept = 0;

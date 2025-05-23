@@ -267,7 +267,7 @@ public:
      * @note The first argument (the program name) is ignored.
      */
     void parse_args(int argc, char* argv[]) {
-        this->parse_args(std::span(argv + 1, argc - 1));
+        this->parse_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
     }
 
     /**
@@ -293,7 +293,7 @@ public:
      * @note The first argument (the program name) is ignored.
      */
     void try_parse_args(int argc, char* argv[]) {
-        this->try_parse_args(std::span(argv + 1, argc - 1));
+        this->try_parse_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
     }
 
     /**
@@ -323,12 +323,16 @@ public:
      * Checks the value of the `help` boolean flag argument and if the value `is` true,
      * prints the parser to `std::cout` anb exists with `EXIT_SUCCESS` status.
      */
+    // clang-format off
+    [[deprecated("The default help argument now uses the `print_config` on-flag action")]]
     void handle_help_action() const noexcept {
         if (this->value<bool>("help")) {
             std::cout << *this << std::endl;
             std::exit(EXIT_SUCCESS);
         }
     }
+
+    // clang-format on
 
     /**
      * @param arg_name The name of the argument.
@@ -449,12 +453,12 @@ public:
 
         if (not this->_positional_args.empty()) {
             os << "\nPositional arguments:\n";
-            this->_print(os, this->_positional_args);
+            this->_print(os, this->_positional_args, verbose);
         }
 
         if (not this->_optional_args.empty()) {
             os << "\nOptional arguments: [--,-]\n";
-            this->_print(os, this->_optional_args);
+            this->_print(os, this->_optional_args, verbose);
         }
     }
 
@@ -734,17 +738,17 @@ private:
      * @param os The output stream to print to.
      * @param args The argument list to print.
      */
-    void _print(std::ostream& os, const arg_ptr_list_t& args) const noexcept {
-        if (this->_verbose) {
+    void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
+        if (verbose) {
             for (const auto& arg : args)
-                os << '\n' << arg->desc(this->_verbose).get(this->_indent_width) << '\n';
+                os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
             descriptors.reserve(args.size());
 
             for (const auto& arg : args)
-                descriptors.emplace_back(arg->desc(this->_verbose));
+                descriptors.emplace_back(arg->desc(verbose));
 
             std::size_t max_arg_name_length = 0ull;
             for (const auto& desc : descriptors)
@@ -804,14 +808,16 @@ inline void add_default_argument(
 ) noexcept {
     switch (arg_discriminator) {
     case argument::default_optional::help:
-        arg_parser.add_flag("help", "h").bypass_required().help("Display the help message");
+        arg_parser.add_flag("help", "h")
+            .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
+            .help("Display the help message");
         break;
 
     case argument::default_optional::input:
         arg_parser.add_optional_argument("input", "i")
             .required()
             .nargs(1)
-            .action<action_type::modify>(action::check_file_exists())
+            .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
 
@@ -823,7 +829,7 @@ inline void add_default_argument(
         arg_parser.add_optional_argument("input", "i")
             .required()
             .nargs(ap::nargs::at_least(1))
-            .action<action_type::modify>(action::check_file_exists())
+            .action<action_type::observe>(action::check_file_exists())
             .help("Input files paths");
         break;
 

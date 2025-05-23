@@ -29,6 +29,13 @@ template <typename T>
 concept c_writable = requires(T value, std::ostream& output_stream) { output_stream << value; };
 
 /**
+ * @brief The concept is satisfied when `T` is an arithmetic type.
+ * @tparam T Type to check.
+ */
+template <typename T>
+concept c_arithmetic = std::is_arithmetic_v<T>;
+
+/**
  * @brief The concept is used to verify the validity of the arguments' value types.
  * @tparam T Type to check.
  */

@@ -16,7 +16,18 @@
 namespace ap::action_type {
 
 /**
- * @brief Represents a transformating action.
+ * @brief An observing *value* action specifier.
+ *
+ * Represents an argument action which observes the parsed value and
+ * performs some logic on it without modifying it.
+ */
+struct observe {
+    template <ap::detail::c_argument_value_type T>
+    using type = std::function<void(const T&)>;
+};
+
+/**
+ * @brief A transformating *value* action specifier.
  *
  * Represents an argument action which transforms the parsed value and
  * returns a new value with which the argument will be initialized.
@@ -27,18 +38,26 @@ struct transform {
 };
 
 /**
- * @brief Represents a modifying action.
+ * @brief A modifying *value* action specifier.
  *
  * Represents an argument action which modifies the value of an
  * already initialized argument.
- *
- * NOTE: The modify action doesn't have to actually modify the
- * underlying value - it can simply perform some action on it.
- * Example: `ap::action::check_file_exists`
  */
 struct modify {
     template <ap::detail::c_argument_value_type T>
     using type = std::function<void(T&)>;
+};
+
+/**
+ * @brief An on-flag action specifier.
+ *
+ * Represents an action associated with an argument that performs
+ * some logic, independently of the parsed value.
+ *
+ * @note An on-flag action is executed immediately after parsing the argument's flag and before parsing the following values.
+ */
+struct on_flag {
+    using type = std::function<void()>;
 };
 
 } // namespace ap::action_type
