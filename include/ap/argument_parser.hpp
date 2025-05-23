@@ -69,6 +69,11 @@ public:
         return *this;
     }
 
+    argument_parser& verbose(const bool v = true) noexcept {
+        this->_verbose = v;
+        return *this;
+    }
+
     /**
      * @brief Set default positional arguments.
      * @tparam AR Type of the positional argument discriminator range.
@@ -704,14 +709,14 @@ private:
     void _print(std::ostream& os, const arg_ptr_list_t& args) const noexcept {
         if (this->_verbose) {
             for (const auto& arg : args)
-                os << '\n' << arg->desc().get(this->_indent_width) << '\n';
+                os << '\n' << arg->desc(this->_verbose).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
             descriptors.reserve(args.size());
 
             for (const auto& arg : args)
-                descriptors.emplace_back(arg->desc());
+                descriptors.emplace_back(arg->desc(this->_verbose));
 
             std::size_t max_arg_name_length = 0ull;
             for (const auto& desc : descriptors)

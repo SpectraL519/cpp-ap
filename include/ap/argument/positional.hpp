@@ -58,10 +58,6 @@ public:
         return *this;
     }
 
-    positional& verbose(const bool v) noexcept {
-        this->_verbose = v;
-    }
-
     /**
      * @brief Set the choices for the positional argument.
      * @tparam CR The choices range type.
@@ -131,8 +127,18 @@ private:
         return this->_help_msg;
     }
 
-    [[nodiscard]] detail::argument_descriptor desc() const noexcept override {
-        return detail::argument_descriptor(this->_name.str(), this->_help_msg);
+    [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
+        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
+
+        if (not verbose)
+            return desc;
+
+        if constexpr (detail::c_writable<value_type>) {
+            if (not this->_choices.empty())
+                desc.add_range_param("choices", this->_choices);
+        }
+
+        return desc;
     }
 
     /// @return True if the positional argument is required, false otherwise
@@ -258,7 +264,6 @@ private:
 
     const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
-    bool _verbose = false;
 
     static constexpr bool _required = true; ///< Positional arguments are required by default.
     static constexpr bool _bypass_required =

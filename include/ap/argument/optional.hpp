@@ -61,10 +61,6 @@ public:
         return *this;
     }
 
-    optional& verbose(const bool v) noexcept {
-        this->_verbose = v;
-    }
-
     /**
      * @brief Mark the optional argument as required.
      * @return Reference to the optional argument.
@@ -205,21 +201,27 @@ private:
         return this->_help_msg;
     }
 
-    [[nodiscard]] detail::argument_descriptor desc() const noexcept override {
+    [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
         detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
 
+        if (not verbose)
+            return desc;
+
+        desc.params.reserve(6);
         if (this->_required)
             desc.add_param("required", "true");
         if (this->_bypass_required)
             desc.add_param("bypass required", "true");
         if (this->_nargs_range.has_value())
             desc.add_param("nargs", this->_nargs_range.value());
-        if (not this->_choices.empty())
-            desc.add_range_param("choices", this->_choices);
-        if (this->_default_value.has_value())
-            desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
-        if (this->_implicit_value.has_value())
-            desc.add_param("implicit value", std::any_cast<value_type>(this->_implicit_value));
+        if constexpr (detail::c_writable<value_type>) {
+            if (not this->_choices.empty())
+                desc.add_range_param("choices", this->_choices);
+            if (this->_default_value.has_value())
+                desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
+            if (this->_implicit_value.has_value())
+                desc.add_param("implicit value", std::any_cast<value_type>(this->_implicit_value));
+        }
 
         return desc;
     }
@@ -367,7 +369,6 @@ private:
     static constexpr bool _optional = true;
     const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
-    bool _verbose = false;
 
     bool _required = false;
     bool _bypass_required = false;

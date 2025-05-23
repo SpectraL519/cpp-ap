@@ -44,7 +44,7 @@ protected:
     /// @return Optional help message for the argument.
     virtual const std::optional<std::string>& help() const noexcept = 0;
 
-    virtual detail::argument_descriptor desc() const noexcept = 0;
+    virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
 
     /// @return True if the argument is required, false otherwise
     virtual bool is_required() const noexcept = 0;
