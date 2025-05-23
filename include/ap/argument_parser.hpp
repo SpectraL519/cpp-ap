@@ -75,8 +75,9 @@ public:
     }
 
     /**
-     * @brief Set the verbose mode.
-     * @param v The verbosity mode value (default: `true`).
+     * @brief Set the verbosity mode.
+     * @note The default verbosity mode value is `false`.
+     * @param v The verbosity mode value.
      * @return Reference to the argument parser.
      */
     argument_parser& verbose(const bool v = true) noexcept {
@@ -434,31 +435,41 @@ public:
 
     /**
      * @brief Prints the argument parser's details to an output stream.
+     * @param verbose The verbosity mode value.
+     * @param os Output stream.
+     */
+    void print_config(const bool verbose, std::ostream& os = std::cout) const noexcept {
+        if (this->_program_name)
+            os << "Program: " << this->_program_name.value() << std::endl;
+
+        if (this->_program_description)
+            os << "\n"
+               << std::string(this->_indent_width, ' ') << this->_program_description.value()
+               << std::endl;
+
+        if (not this->_positional_args.empty()) {
+            os << "\nPositional arguments:\n";
+            this->_print(os, this->_positional_args);
+        }
+
+        if (not this->_optional_args.empty()) {
+            os << "\nOptional arguments: [--,-]\n";
+            this->_print(os, this->_optional_args);
+        }
+    }
+
+    /**
+     * @brief Prints the argument parser's details to an output stream.
+     *
+     * An `os << parser` operation is equivalent to a `parser.print_config(_verbose, os)` call,
+     * where `_verbose` is the inner verbosity mode, which can be set with the @ref verbose function.
+     *
      * @param os Output stream.
      * @param parser The argument parser to print.
      * @return The modified output stream.
-     *
-     * \todo Extract impl to a `str(const bool verbose)` method
      */
     friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) noexcept {
-        if (parser._program_name)
-            os << "Program: " << parser._program_name.value() << std::endl;
-
-        if (parser._program_description)
-            os << "\n"
-               << std::string(parser._indent_width, ' ') << parser._program_description.value()
-               << std::endl;
-
-        if (not parser._positional_args.empty()) {
-            os << "\nPositional arguments:\n";
-            parser._print(os, parser._positional_args);
-        }
-
-        if (not parser._optional_args.empty()) {
-            os << "\nOptional arguments: [--,-]\n";
-            parser._print(os, parser._optional_args);
-        }
-
+        parser.print_config(parser._verbose, os);
         return os;
     }
 

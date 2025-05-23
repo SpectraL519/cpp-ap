@@ -49,7 +49,7 @@ public:
 
     /**
      * @brief Adds a parameter descriptor with the given value.
-     * @tparam T The type of the parameter; must satisfy the @ref c_writable concept.
+     * @tparam T The type of the parameter; must satisfy the @ref ap::detail::c_writable concept.
      * @param name The parameter's name.
      * @param value The parameter's value.
      */
@@ -62,7 +62,7 @@ public:
 
     /**
      * @brief Adds a range parameter descriptor with the given value.
-     * @tparam R The type of the parameter range. The value type of R must satisfy the \ref c_writable concept.
+     * @tparam R The type of the parameter range. The value type of R must satisfy the @ref ap::detail::c_writable concept.
      * @param name The parameter's name.
      * @param range The parameter value range.
      * @param delimiter The delimiter used to separate the range values.
