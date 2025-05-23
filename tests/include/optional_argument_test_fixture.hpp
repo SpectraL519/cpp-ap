@@ -5,6 +5,7 @@
 #include <ap/argument/optional.hpp>
 
 using ap::argument::optional;
+using ap::detail::argument_descriptor;
 using ap::detail::argument_name;
 using ap::detail::c_argument_value_type;
 
@@ -78,13 +79,18 @@ struct optional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    [[nodiscard]] bool is_required(const optional<T>& arg) const {
-        return arg.is_required();
+    [[nodiscard]] const std::optional<std::string>& get_help(const optional<T>& arg) const {
+        return arg.help();
     }
 
     template <c_argument_value_type T>
-    [[nodiscard]] const std::optional<std::string>& get_help(const optional<T>& arg) const {
-        return arg.help();
+    [[nodiscard]] argument_descriptor get_desc(const optional<T>& arg, const bool verbose) const {
+        return arg.desc(verbose);
+    }
+
+    template <c_argument_value_type T>
+    [[nodiscard]] bool is_required(const optional<T>& arg) const {
+        return arg.is_required();
     }
 };
 

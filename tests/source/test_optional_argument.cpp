@@ -2,17 +2,21 @@
 
 #include "doctest.h"
 #include "optional_argument_test_fixture.hpp"
+#include "utility.hpp"
 
 using namespace ap_testing;
 using namespace ap::nargs;
 
 using ap::argument::optional;
 using ap::detail::argument_name;
+using ap::detail::parameter_descriptor;
 
 namespace {
 
 constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
+
+constexpr std::string_view help_msg = "test help msg";
 
 using sut_value_type = int;
 using invalid_value_type = double;
@@ -77,14 +81,95 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "help() should return a massage set for the argument"
 ) {
     auto sut = init_arg(primary_name);
-
-    constexpr std::string_view help_msg = "test help msg";
     sut.help(help_msg);
 
     const auto stored_help_msg = get_help(sut);
 
     REQUIRE(stored_help_msg);
     CHECK_EQ(stored_help_msg, help_msg);
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "desc(verbose=false) should return an argument_descriptor with no params"
+) {
+    constexpr bool verbose = false;
+
+    auto sut = init_arg(primary_name, secondary_name);
+
+    auto desc = get_desc(sut, verbose);
+    REQUIRE_EQ(desc.name, get_name(sut).str());
+    CHECK_FALSE(desc.help);
+    CHECK(desc.params.empty());
+
+    // with a help msg
+    sut.help(help_msg);
+    desc = get_desc(sut, verbose);
+    REQUIRE_EQ(desc.name, get_name(sut).str());
+    CHECK(desc.help);
+    CHECK_EQ(desc.help.value(), help_msg);
+    CHECK(desc.params.empty());
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "desc(verbose=true) should return an argument_descriptor with non-default params"
+) {
+    constexpr bool verbose = true;
+
+    auto sut = init_arg(primary_name, secondary_name);
+
+    auto desc = get_desc(sut, verbose);
+    REQUIRE_EQ(desc.name, get_name(sut).str());
+    CHECK_FALSE(desc.help);
+    CHECK(desc.params.empty());
+
+    // with a help msg
+    sut.help(help_msg);
+
+    desc = get_desc(sut, verbose);
+    REQUIRE(desc.help);
+    CHECK_EQ(desc.help.value(), help_msg);
+    CHECK(desc.params.empty());
+
+    // set the parameters
+    sut.required();
+    sut.bypass_required();
+    sut.nargs(non_default_range);
+    sut.choices(choices);
+    sut.default_value(default_value);
+    sut.implicit_value(implicit_value);
+
+    // check the descriptor parameters
+    desc = get_desc(sut, verbose);
+
+    const auto required_it =
+        std::ranges::find(desc.params, "required", &parameter_descriptor::name);
+    REQUIRE_NE(required_it, desc.params.end());
+    CHECK_EQ(required_it->value, "true");
+
+    const auto bypass_required_it =
+        std::ranges::find(desc.params, "bypass required", &parameter_descriptor::name);
+    REQUIRE_NE(bypass_required_it, desc.params.end());
+    CHECK_EQ(bypass_required_it->value, "true");
+
+    const auto nargs_it = std::ranges::find(desc.params, "nargs", &parameter_descriptor::name);
+    REQUIRE_NE(nargs_it, desc.params.end());
+    CHECK_EQ(nargs_it->value, as_string(non_default_range));
+
+    const auto choices_it = std::ranges::find(desc.params, "choices", &parameter_descriptor::name);
+    REQUIRE_NE(choices_it, desc.params.end());
+    CHECK_EQ(choices_it->value, ap::detail::join_with(choices, ", "));
+
+    const auto default_value_it =
+        std::ranges::find(desc.params, "default value", &parameter_descriptor::name);
+    REQUIRE_NE(default_value_it, desc.params.end());
+    CHECK_EQ(default_value_it->value, std::to_string(default_value));
+
+    const auto implicit_value_it =
+        std::ranges::find(desc.params, "implicit value", &parameter_descriptor::name);
+    REQUIRE_NE(implicit_value_it, desc.params.end());
+    CHECK_EQ(implicit_value_it->value, std::to_string(implicit_value));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_required() should return false by default") {

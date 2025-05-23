@@ -12,6 +12,7 @@ namespace {
 
 constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
+constexpr std::string_view help_msg = "test help msg";
 
 using sut_value_type = int;
 using sut_type = positional<sut_value_type>;
@@ -73,14 +74,64 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "help() should return a massage set for the argument"
 ) {
     auto sut = init_arg(primary_name);
-
-    constexpr std::string_view help_msg = "test help msg";
     sut.help(help_msg);
 
     const auto stored_help_msg = get_help(sut);
 
     REQUIRE(stored_help_msg);
     CHECK_EQ(stored_help_msg, help_msg);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "desc(verbose=false) should return an argument_descriptor with no params"
+) {
+    constexpr bool verbose = false;
+
+    auto sut = init_arg(primary_name, secondary_name);
+
+    auto desc = get_desc(sut, verbose);
+    REQUIRE_EQ(desc.name, get_name(sut).str());
+    CHECK_FALSE(desc.help);
+    CHECK(desc.params.empty());
+
+    // with a help msg
+    sut.help(help_msg);
+    desc = get_desc(sut, verbose);
+    REQUIRE_EQ(desc.name, get_name(sut).str());
+    CHECK(desc.help);
+    CHECK_EQ(desc.help.value(), help_msg);
+    CHECK(desc.params.empty());
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "desc(verbose=true) should return an argument_descriptor with non-default params"
+) {
+    constexpr bool verbose = true;
+
+    auto sut = init_arg(primary_name, secondary_name);
+
+    auto desc = get_desc(sut, verbose);
+    REQUIRE_EQ(desc.name, get_name(sut).str());
+    CHECK_FALSE(desc.help);
+    CHECK(desc.params.empty());
+
+    // with a help msg
+    sut.help(help_msg);
+
+    desc = get_desc(sut, verbose);
+    REQUIRE(desc.help);
+    CHECK_EQ(desc.help.value(), help_msg);
+    CHECK(desc.params.empty());
+
+    // with the choices parameter
+    sut.choices(choices);
+    desc = get_desc(sut, verbose);
+    REQUIRE_FALSE(desc.params.empty());
+    const auto& choices_param = desc.params.back();
+    CHECK_EQ(choices_param.name, "choices");
+    CHECK_EQ(choices_param.value, ap::detail::join_with(choices, ", "));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true") {

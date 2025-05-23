@@ -8,6 +8,7 @@
 #include "concepts.hpp"
 #include "str_utility.hpp"
 
+#include <cstdint>
 #include <format>
 #include <iomanip>
 #include <optional>
@@ -15,11 +16,6 @@
 #include <vector>
 
 namespace ap::detail {
-
-/*
-Fill the string with spaces at the back:
-str.resize(desired_length, ' ');
-*/
 
 struct parameter_descriptor {
     std::string name;
@@ -53,7 +49,7 @@ public:
     }
 
     [[nodiscard]] std::string get_basic(
-        const uint8_t indent_width, const std::optional<uint8_t> align_to = std::nullopt
+        const uint8_t indent_width, const std::optional<std::size_t> align_to = std::nullopt
     ) const {
         std::ostringstream oss;
 

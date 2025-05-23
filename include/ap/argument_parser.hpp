@@ -435,7 +435,9 @@ public:
             os << "Program: " << parser._program_name.value() << std::endl;
 
         if (parser._program_description)
-            os << "\n" << std::string(parser._indent_width, ' ') << parser._program_description.value() << std::endl;
+            os << "\n"
+               << std::string(parser._indent_width, ' ') << parser._program_description.value()
+               << std::endl;
 
         if (not parser._positional_args.empty()) {
             os << "\nPositional arguments:\n";
