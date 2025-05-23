@@ -29,8 +29,8 @@ requires(c_writable<std::ranges::range_value_t<R>>)
 [[nodiscard]] std::string join_with(const R& range, const std::string_view delimiter = ", ") {
     std::ostringstream oss;
 
-    auto it = std::begin(range);
-    const auto end = std::end(range);
+    auto it = std::ranges::begin(range);
+    const auto end = std::ranges::end(range);
     if (it != end) {
         oss << *it;
         ++it;
