@@ -2,6 +2,11 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/**
+ * @file argument_parser.hpp
+ * @brief Main library header file. Defines the `argument_parser` class.
+ */
+
 #pragma once
 
 #include "argument/default.hpp"
@@ -11,6 +16,7 @@
 #include "detail/concepts.hpp"
 
 #include <algorithm>
+#include <format>
 #include <ranges>
 #include <span>
 
@@ -69,6 +75,17 @@ public:
     }
 
     /**
+     * @brief Set the verbosity mode.
+     * @note The default verbosity mode value is `false`.
+     * @param v The verbosity mode value.
+     * @return Reference to the argument parser.
+     */
+    argument_parser& verbose(const bool v = true) noexcept {
+        this->_verbose = v;
+        return *this;
+    }
+
+    /**
      * @brief Set default positional arguments.
      * @tparam AR Type of the positional argument discriminator range.
      * @param arg_discriminator_range A range of default positional argument discriminators.
@@ -87,7 +104,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& default_positional_arguments(
-        std::initializer_list<argument::default_positional> arg_discriminator_list
+        const std::initializer_list<argument::default_positional> arg_discriminator_list
     ) noexcept {
         return this->default_positional_arguments<>(arg_discriminator_list);
     }
@@ -111,7 +128,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& default_optional_arguments(
-        std::initializer_list<argument::default_optional> arg_discriminator_list
+        const std::initializer_list<argument::default_optional> arg_discriminator_list
     ) noexcept {
         return this->default_optional_arguments<>(arg_discriminator_list);
     }
@@ -418,23 +435,41 @@ public:
 
     /**
      * @brief Prints the argument parser's details to an output stream.
+     * @param verbose The verbosity mode value.
+     * @param os Output stream.
+     */
+    void print_config(const bool verbose, std::ostream& os = std::cout) const noexcept {
+        if (this->_program_name)
+            os << "Program: " << this->_program_name.value() << std::endl;
+
+        if (this->_program_description)
+            os << "\n"
+               << std::string(this->_indent_width, ' ') << this->_program_description.value()
+               << std::endl;
+
+        if (not this->_positional_args.empty()) {
+            os << "\nPositional arguments:\n";
+            this->_print(os, this->_positional_args);
+        }
+
+        if (not this->_optional_args.empty()) {
+            os << "\nOptional arguments: [--,-]\n";
+            this->_print(os, this->_optional_args);
+        }
+    }
+
+    /**
+     * @brief Prints the argument parser's details to an output stream.
+     *
+     * An `os << parser` operation is equivalent to a `parser.print_config(_verbose, os)` call,
+     * where `_verbose` is the inner verbosity mode, which can be set with the @ref verbose function.
+     *
      * @param os Output stream.
      * @param parser The argument parser to print.
      * @return The modified output stream.
      */
     friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) noexcept {
-        if (parser._program_name)
-            os << parser._program_name.value() << std::endl;
-
-        if (parser._program_description)
-            os << parser._program_description.value() << std::endl;
-
-        for (const auto& argument : parser._positional_args)
-            os << "\t" << *argument << std::endl;
-
-        for (const auto& argument : parser._optional_args)
-            os << "\t" << *argument << std::endl;
-
+        parser.print_config(parser._verbose, os);
         return os;
     }
 
@@ -547,10 +582,10 @@ private:
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_length)});
+            return this->_is_arg_name_used({arg.substr(this->_primary_flag_prefxi_length)});
 
         if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used({arg.substr(this->_flag_prefix_char_length)});
+            return this->_is_arg_name_used({arg.substr(this->_secondary_flag_prefix_length)});
 
         return false;
     }
@@ -561,9 +596,9 @@ private:
      */
     void _strip_flag_prefix(std::string& arg_flag) const noexcept {
         if (arg_flag.starts_with(this->_flag_prefix))
-            arg_flag.erase(0, this->_flag_prefix_length);
+            arg_flag.erase(0, this->_primary_flag_prefxi_length);
         else
-            arg_flag.erase(0, this->_flag_prefix_char_length);
+            arg_flag.erase(0, this->_secondary_flag_prefix_length);
     }
 
     /**
@@ -694,20 +729,55 @@ private:
         return std::nullopt;
     }
 
+    /**
+     * @brief Print the given argument list to an output stream.
+     * @param os The output stream to print to.
+     * @param args The argument list to print.
+     */
+    void _print(std::ostream& os, const arg_ptr_list_t& args) const noexcept {
+        if (this->_verbose) {
+            for (const auto& arg : args)
+                os << '\n' << arg->desc(this->_verbose).get(this->_indent_width) << '\n';
+        }
+        else {
+            std::vector<detail::argument_descriptor> descriptors;
+            descriptors.reserve(args.size());
+
+            for (const auto& arg : args)
+                descriptors.emplace_back(arg->desc(this->_verbose));
+
+            std::size_t max_arg_name_length = 0ull;
+            for (const auto& desc : descriptors)
+                max_arg_name_length = std::max(max_arg_name_length, desc.name.length());
+
+            for (const auto& desc : descriptors)
+                os << '\n' << desc.get_basic(this->_indent_width, max_arg_name_length);
+
+            os << '\n';
+        }
+    }
+
     std::optional<std::string> _program_name;
     std::optional<std::string> _program_description;
+    bool _verbose = false;
 
     arg_ptr_list_t _positional_args;
     arg_ptr_list_t _optional_args;
 
-    static constexpr uint8_t _flag_prefix_char_length = 1u;
-    static constexpr uint8_t _flag_prefix_length = 2u;
+    static constexpr uint8_t _secondary_flag_prefix_length = 1u;
+    static constexpr uint8_t _primary_flag_prefxi_length = 2u;
     static constexpr char _flag_prefix_char = '-';
     static constexpr std::string _flag_prefix = "--";
+    static constexpr uint8_t _indent_width = 2;
 };
 
 namespace detail {
 
+/**
+ * @brief Adds a predefined/default positional argument to the parser.
+ * @param arg_discriminator The default argument discriminator.
+ * @param arg_parser The argument parser to which the argument will be added.
+ */
 inline void add_default_argument(
     const argument::default_positional arg_discriminator, argument_parser& arg_parser
 ) noexcept {
@@ -724,6 +794,11 @@ inline void add_default_argument(
     }
 }
 
+/**
+ * @brief Adds a predefined/default optional argument to the parser.
+ * @param arg_discriminator The default argument discriminator.
+ * @param arg_parser The argument parser to which the argument will be added.
+ */
 inline void add_default_argument(
     const argument::default_optional arg_discriminator, argument_parser& arg_parser
 ) noexcept {

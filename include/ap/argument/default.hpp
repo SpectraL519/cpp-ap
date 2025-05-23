@@ -2,6 +2,11 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/**
+ * @file default.hpp
+ * @brief Defines the default argument discriminator types.
+ */
+
 #pragma once
 
 #include <cstdint>

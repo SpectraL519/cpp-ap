@@ -2,9 +2,15 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/**
+ * @file range.hpp
+ * @brief Defines the `nargs::range` class and it's builder functions.
+ */
+
 #pragma once
 
 #include <optional>
+#include <ostream>
 
 namespace ap::nargs {
 
@@ -14,20 +20,21 @@ public:
     using count_type = std::size_t;
 
     /// @brief Default constructor: creates range [1, 1].
-    range() : _nlow(_ndefault), _nhigh(_ndefault) {}
+    range() : _lower_bound(_default_bound), _upper_bound(_default_bound) {}
 
     /**
      * @brief Exact count constructor: creates range [n, n].
      * @param n Expected value count.
      */
-    explicit range(const count_type n) : _nlow(n), _nhigh(n) {}
+    explicit range(const count_type n) : _lower_bound(n), _upper_bound(n) {}
 
     /**
-     * @brief Concrete range constructor: creates range [nlow, nhigh].
-     * @param nlow The lower bound.
-     * @param nhigh The upper bound.
+     * @brief Concrete range constructor: creates range [lower_bound, upper_bound].
+     * @param lower_bound The lower bound.
+     * @param upper_bound The upper bound.
      */
-    range(const count_type nlow, const count_type nhigh) : _nlow(nlow), _nhigh(nhigh) {}
+    range(const count_type lower_bound, const count_type upper_bound)
+    : _lower_bound(lower_bound), _upper_bound(upper_bound) {}
 
     range(const range&) = default;
     range(range&&) = default;
@@ -40,38 +47,58 @@ public:
     /**
      * @brief Determines the ordering of the count against a range instance.
      *
-     * For a `[low, high]` range and the count `n` the returned value is:
-     * - `less` if `n < low`,
-     * - `equivalent` if `n >= low` and `n <= high`,
-     * - `greater` if `n > high`.
-     * If either `low` or `high` limits are not set (std::nullopt),
+     * For a `[lower, upper]` range and the count `n` the returned value is:
+     * - `less` if `n < lower`,
+     * - `equivalent` if `n >= lower` and `n <= upper`,
+     * - `greater` if `n > upper`.
+     * If either `lower` or `upper` limits are not set (std::nullopt),
      * then the corresponding conditions are dropped.
      *
      * @param n The value count to order.
      * @return Ordering relationship between the count and the range.
      */
     [[nodiscard]] std::weak_ordering ordering(const range::count_type n) const noexcept {
-        if (not (this->_nlow.has_value() or this->_nhigh.has_value()))
+        if (not (this->_lower_bound.has_value() or this->_upper_bound.has_value()))
             return std::weak_ordering::equivalent;
 
-        if (this->_nlow.has_value() and this->_nhigh.has_value()) {
-            if (n < this->_nlow.value())
+        if (this->_lower_bound.has_value() and this->_upper_bound.has_value()) {
+            if (n < this->_lower_bound.value())
                 return std::weak_ordering::less;
 
-            if (n > this->_nhigh.value())
+            if (n > this->_upper_bound.value())
                 return std::weak_ordering::greater;
 
             return std::weak_ordering::equivalent;
         }
 
-        if (this->_nlow.has_value())
-            return (n < this->_nlow.value())
+        if (this->_lower_bound.has_value())
+            return (n < this->_lower_bound.value())
                      ? std::weak_ordering::less
                      : std::weak_ordering::equivalent;
 
-        return (n > this->_nhigh.value())
+        return (n > this->_upper_bound.value())
                  ? std::weak_ordering::greater
                  : std::weak_ordering::equivalent;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const range& r) noexcept {
+        if (r._lower_bound.has_value() and r._lower_bound == r._upper_bound) {
+            os << r._lower_bound.value();
+            return os;
+        }
+
+        if (not r._lower_bound.has_value() and not r._upper_bound.has_value()) {
+            os << "unbound";
+            return os;
+        }
+
+        os << "[" << r._lower_bound.value_or(0ull) << ", ";
+        if (r._upper_bound.has_value())
+            os << r._upper_bound.value() << "]";
+        else
+            os << "inf)";
+
+        return os;
     }
 
     friend range at_least(const count_type) noexcept;
@@ -83,16 +110,16 @@ public:
 private:
     /**
      * @brief Private constructor: creates a possibly unbound range
-     * @param nlow The optional lower bound of the range.
-     * @param nhigh The optional upper bound of the range.
+     * @param lower_bound The optional lower bound of the range.
+     * @param upper_bound The optional upper bound of the range.
      */
-    range(const std::optional<count_type> nlow, const std::optional<count_type> nhigh)
-    : _nlow(nlow), _nhigh(nhigh) {}
+    range(const std::optional<count_type> lower_bound, const std::optional<count_type> upper_bound)
+    : _lower_bound(lower_bound), _upper_bound(upper_bound) {}
 
-    std::optional<count_type> _nlow;
-    std::optional<count_type> _nhigh;
+    std::optional<count_type> _lower_bound;
+    std::optional<count_type> _upper_bound;
 
-    static constexpr count_type _ndefault = 1ull;
+    static constexpr count_type _default_bound = 1ull;
 };
 
 /**

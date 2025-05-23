@@ -68,6 +68,7 @@ def check_licence(expected_licence: Iterable[str], files: set[Path]) -> int:
         return_code = c if not return_code else return_code
 
     n_licence_lines = len(expected_licence)
+    errors = list()
 
     def _check_file(file: Path):
         with open(file, "r", encoding="utf-8") as f:
@@ -85,15 +86,19 @@ def check_licence(expected_licence: Iterable[str], files: set[Path]) -> int:
                 missing_info = any(matching_lines)
                 if missing_info:
                     _set_return_code(ReturnCode.invalid_licence)
-                    print(f"[error] Incomplete license info in file `{file}`")
+                    errors.append(f"[error] Incomplete license info in file `{file}`")
                 else:
                     _set_return_code(ReturnCode.missing_licence)
-                    print(f"[error] Missing license info in file `{file}`")
-
+                    errors.append(f"[error] Missing license info in file `{file}`")
 
     for i, file in enumerate(files):
         print(f"[{i + 1}/{n_files}] {file}")
         _check_file(file)
+
+    if errors:
+        print("\n\033[91m", end="")
+        print("\n".join(errors))
+        print("\033[0m", end="\n")
 
     print("Done!")
 

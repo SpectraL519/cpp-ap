@@ -2,8 +2,11 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file argument_interface.hpp
+
 #pragma once
 
+#include "argument_descriptor.hpp"
 #include "argument_name.hpp"
 
 #include <any>
@@ -20,13 +23,6 @@ namespace detail {
 class argument_interface {
 public:
     virtual ~argument_interface() = default;
-
-    /**
-     * @brief Set the help message for the argument.
-     * @param msg The help message to set.
-     * @return Reference to the argument_interface.
-     */
-    virtual argument_interface& help(std::string_view) noexcept = 0;
 
     /// @return True if the argument is optional, false otherwise.
     virtual bool is_optional() const noexcept = 0;
@@ -48,14 +44,20 @@ protected:
     /// @return Reference to the name of the argument.
     virtual const argument_name& name() const noexcept = 0;
 
+    /// @return Optional help message for the argument.
+    virtual const std::optional<std::string>& help() const noexcept = 0;
+
+    /**
+     * @param verbose The verbosity mode value.
+     * @return An argument_descriptor instance for the argument.
+     */
+    virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
+
     /// @return True if the argument is required, false otherwise
     virtual bool is_required() const noexcept = 0;
 
     /// @return True if bypassing the required status is enabled for the argument, false otherwise.
     virtual bool bypass_required_enabled() const noexcept = 0;
-
-    /// @return Optional help message for the argument.
-    virtual const std::optional<std::string>& help() const noexcept = 0;
 
     /// @brief Mark the argument as used.
     virtual void mark_used() noexcept = 0;
@@ -71,7 +73,7 @@ protected:
      * @param value The string representation of the value.
      * @return Reference to the argument_interface.
      */
-    virtual argument_interface& set_value(const std::string&) = 0;
+    virtual argument_interface& set_value(const std::string& value) = 0;
 
     /// @return True if the argument has a value, false otherwise.
     virtual bool has_value() const noexcept = 0;

@@ -2,6 +2,11 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/**
+ * @file utility.hpp
+ * @brief Defines general action-related utility.
+ */
+
 #pragma once
 
 #include "ap/action/specifiers.hpp"

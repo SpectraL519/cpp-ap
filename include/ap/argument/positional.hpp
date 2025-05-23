@@ -2,6 +2,8 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file positional.hpp
+
 #pragma once
 
 #include "ap/action/detail/utility.hpp"
@@ -53,7 +55,7 @@ public:
      * @param help_msg The help message to set.
      * @return Reference to the positional argument.
      */
-    positional& help(std::string_view help_msg) noexcept override {
+    positional& help(std::string_view help_msg) noexcept {
         this->_help_msg = help_msg;
         return *this;
     }
@@ -106,7 +108,6 @@ public:
         return this->_optional;
     }
 
-
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
@@ -126,6 +127,24 @@ private:
     /// @return Optional help message for the positional argument.
     [[nodiscard]] const std::optional<std::string>& help() const noexcept override {
         return this->_help_msg;
+    }
+
+    /**
+     * @param verbose The verbosity mode value.
+     * @return An argument_descriptor instance for the argument.
+     */
+    [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
+        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
+
+        if (not verbose)
+            return desc;
+
+        if constexpr (detail::c_writable<value_type>) {
+            if (not this->_choices.empty())
+                desc.add_range_param("choices", this->_choices);
+        }
+
+        return desc;
     }
 
     /// @return True if the positional argument is required, false otherwise

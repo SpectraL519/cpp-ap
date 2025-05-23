@@ -2,6 +2,11 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/**
+ * @file specifiers.hpp
+ * @brief Defies the action specifier types.
+ */
+
 #pragma once
 
 #include "ap/detail/concepts.hpp"
@@ -10,11 +15,7 @@
 
 namespace ap::action_type {
 
-// TODO:
-// * on_read_action
-// * on_flag_action
-
-/*
+/**
  * @brief Represents a transformating action.
  *
  * Represents an argument action which transforms the parsed value and
@@ -25,7 +26,7 @@ struct transform {
     using type = std::function<T(const T&)>;
 };
 
-/*
+/**
  * @brief Represents a modifying action.
  *
  * Represents an argument action which modifies the value of an

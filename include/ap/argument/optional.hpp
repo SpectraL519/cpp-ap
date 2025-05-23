@@ -2,10 +2,13 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file optional.hpp
+
 #pragma once
 
 #include "ap/action/detail/utility.hpp"
 #include "ap/action/predefined_actions.hpp"
+#include "ap/detail/argument_descriptor.hpp"
 #include "ap/detail/argument_interface.hpp"
 #include "ap/detail/concepts.hpp"
 #include "ap/nargs/range.hpp"
@@ -55,7 +58,7 @@ public:
      * @param help_msg The help message to set.
      * @return Reference to the optional argument.
      */
-    optional& help(std::string_view help_msg) noexcept override {
+    optional& help(std::string_view help_msg) noexcept {
         this->_help_msg = help_msg;
         return *this;
     }
@@ -198,6 +201,35 @@ private:
     /// @return Reference to the optional help message for the optional argument.
     [[nodiscard]] const std::optional<std::string>& help() const noexcept override {
         return this->_help_msg;
+    }
+
+    /**
+     * @param verbose The verbosity mode value.
+     * @return An argument_descriptor instance for the argument.
+     */
+    [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
+        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
+
+        if (not verbose)
+            return desc;
+
+        desc.params.reserve(6);
+        if (this->_required)
+            desc.add_param("required", "true");
+        if (this->_bypass_required)
+            desc.add_param("bypass required", "true");
+        if (this->_nargs_range.has_value())
+            desc.add_param("nargs", this->_nargs_range.value());
+        if constexpr (detail::c_writable<value_type>) {
+            if (not this->_choices.empty())
+                desc.add_range_param("choices", this->_choices);
+            if (this->_default_value.has_value())
+                desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
+            if (this->_implicit_value.has_value())
+                desc.add_param("implicit value", std::any_cast<value_type>(this->_implicit_value));
+        }
+
+        return desc;
     }
 
     /// @return True if the optional argument is required, false otherwise.
