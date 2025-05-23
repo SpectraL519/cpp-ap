@@ -2,6 +2,8 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file argument_interface.hpp
+
 #pragma once
 
 #include "argument_descriptor.hpp"
@@ -45,6 +47,10 @@ protected:
     /// @return Optional help message for the argument.
     virtual const std::optional<std::string>& help() const noexcept = 0;
 
+    /**
+     * @param verbose The verbosity mode value.
+     * @return An argument_descriptor instance for the argument.
+     */
     virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
 
     /// @return True if the argument is required, false otherwise

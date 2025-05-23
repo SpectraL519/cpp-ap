@@ -2,6 +2,11 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/**
+ * @file argument_parser.hpp
+ * @brief Main library header file. Defines the `argument_parser` class.
+ */
+
 #pragma once
 
 #include "argument/default.hpp"
@@ -69,6 +74,11 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Set the verbose mode.
+     * @param v The verbosity mode value (default: `true`).
+     * @return Reference to the argument parser.
+     */
     argument_parser& verbose(const bool v = true) noexcept {
         this->_verbose = v;
         return *this;
@@ -428,7 +438,7 @@ public:
      * @param parser The argument parser to print.
      * @return The modified output stream.
      *
-     * \todo extract impl to a `str(const bool verbose)` method
+     * \todo Extract impl to a `str(const bool verbose)` method
      */
     friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) noexcept {
         if (parser._program_name)
@@ -708,6 +718,11 @@ private:
         return std::nullopt;
     }
 
+    /**
+     * @brief Print the given argument list to an output stream.
+     * @param os The output stream to print to.
+     * @param args The argument list to print.
+     */
     void _print(std::ostream& os, const arg_ptr_list_t& args) const noexcept {
         if (this->_verbose) {
             for (const auto& arg : args)
@@ -747,6 +762,11 @@ private:
 
 namespace detail {
 
+/**
+ * @brief Adds a predefined/default positional argument to the parser.
+ * @param arg_discriminator The default argument discriminator.
+ * @param arg_parser The argument parser to which the argument will be added.
+ */
 inline void add_default_argument(
     const argument::default_positional arg_discriminator, argument_parser& arg_parser
 ) noexcept {
@@ -763,6 +783,11 @@ inline void add_default_argument(
     }
 }
 
+/**
+ * @brief Adds a predefined/default optional argument to the parser.
+ * @param arg_discriminator The default argument discriminator.
+ * @param arg_parser The argument parser to which the argument will be added.
+ */
 inline void add_default_argument(
     const argument::default_optional arg_discriminator, argument_parser& arg_parser
 ) noexcept {

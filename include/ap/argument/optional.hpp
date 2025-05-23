@@ -2,6 +2,8 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
+/// @file optional.hpp
+
 #pragma once
 
 #include "ap/action/detail/utility.hpp"
@@ -201,6 +203,10 @@ private:
         return this->_help_msg;
     }
 
+    /**
+     * @param verbose The verbosity mode value.
+     * @return An argument_descriptor instance for the argument.
+     */
     [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
         detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
 
