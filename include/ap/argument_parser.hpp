@@ -811,7 +811,7 @@ inline void add_default_argument(
         arg_parser.add_optional_argument("input", "i")
             .required()
             .nargs(1)
-            .action<action_type::modify>(action::check_file_exists())
+            .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
 
@@ -823,7 +823,7 @@ inline void add_default_argument(
         arg_parser.add_optional_argument("input", "i")
             .required()
             .nargs(ap::nargs::at_least(1))
-            .action<action_type::modify>(action::check_file_exists())
+            .action<action_type::observe>(action::check_file_exists())
             .help("Input files paths");
         break;
 

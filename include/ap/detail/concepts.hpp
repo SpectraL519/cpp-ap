@@ -28,6 +28,9 @@ concept c_readable = requires(T value, std::istream& input_stream) { input_strea
 template <typename T>
 concept c_writable = requires(T value, std::ostream& output_stream) { output_stream << value; };
 
+template <typename T>
+concept c_arithmetic = std::is_arithmetic_v<T>;
+
 /**
  * @brief The concept is used to verify the validity of the arguments' value types.
  * @tparam T Type to check.
