@@ -163,7 +163,7 @@ private:
      * @brief Mark the positional argument as used.
      * @note No logic is performed for positional arguments
      */
-    void mark_used() noexcept override {}
+    void mark_used() override {}
 
     /// @return True if the positional argument is used, false otherwise.
     [[nodiscard]] bool is_used() const noexcept override {
@@ -192,7 +192,7 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw error::invalid_value(this->_name, this->_ss.str());
+            throw error::invalid_value(this->_name, str_value);
 
         if (not this->_is_valid_choice(value))
             throw error::invalid_choice(this->_name, str_value);

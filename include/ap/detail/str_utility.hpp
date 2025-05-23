@@ -17,6 +17,18 @@
 namespace ap::detail {
 
 /**
+ * @brief Converts a value to `std::string`.
+ * @tparam T The value type (must satisfy the @ref ap::detail::c_writable concept).
+ * @param value The value to convert.
+ */
+template <c_writable T>
+[[nodiscard]] std::string as_string(const T& value) noexcept {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
+/**
  * @brief Joins elements of a range into a single string with a delimiter.
  * @tparam R The type of the value range. The value type of R must satisfy the @ref c_writable concept.
  * @param range The input range to join.

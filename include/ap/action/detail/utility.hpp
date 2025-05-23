@@ -54,7 +54,7 @@ struct apply_visitor {
      * @brief The call operator overload for the *observe* action type.
      * @param action The *observe* action callable.
      */
-    void operator()(const callable_type<action_type::observe, value_type>& action) const noexcept {
+    void operator()(const callable_type<action_type::observe, value_type>& action) const {
         action(std::as_const(value));
     }
 
@@ -62,8 +62,7 @@ struct apply_visitor {
      * @brief The call operator overload for the *transform* action type.
      * @param action The *transform* action callable.
      */
-    void operator()(const callable_type<action_type::transform, value_type>& action
-    ) const noexcept {
+    void operator()(const callable_type<action_type::transform, value_type>& action) const {
         value = action(std::as_const(value));
     }
 
@@ -71,7 +70,7 @@ struct apply_visitor {
      * @brief The call operator overload for the *modify* action type.
      * @param action The *modify* action callable.
      */
-    void operator()(const callable_type<action_type::modify, value_type>& action) const noexcept {
+    void operator()(const callable_type<action_type::modify, value_type>& action) const {
         action(value);
     }
 

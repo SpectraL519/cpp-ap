@@ -2,7 +2,8 @@
 
 #include "doctest.h"
 #include "optional_argument_test_fixture.hpp"
-#include "utility.hpp"
+
+#include <ap/detail/str_utility.hpp>
 
 using namespace ap_testing;
 using namespace ap::nargs;
@@ -155,7 +156,7 @@ TEST_CASE_FIXTURE(
 
     const auto nargs_it = std::ranges::find(desc.params, "nargs", &parameter_descriptor::name);
     REQUIRE_NE(nargs_it, desc.params.end());
-    CHECK_EQ(nargs_it->value, as_string(non_default_range));
+    CHECK_EQ(nargs_it->value, ap::detail::as_string(non_default_range));
 
     const auto choices_it = std::ranges::find(desc.params, "choices", &parameter_descriptor::name);
     REQUIRE_NE(choices_it, desc.params.end());
@@ -219,6 +220,17 @@ TEST_CASE_FIXTURE(
         mark_used(sut);
 
     CHECK_EQ(get_nused(sut), nused);
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture, "argument flag usage should trigger the on-flag actions"
+) {
+    auto sut = init_arg(primary_name);
+
+    const auto throw_action = []() { throw std::runtime_error("no reason"); };
+    sut.action<ap::action_type::on_flag>(throw_action);
+
+    CHECK_THROWS_AS(mark_used(sut), std::runtime_error);
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return false by default") {
@@ -426,28 +438,44 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    optional_argument_test_fixture, "set_value(any) should perform the specified action"
+    optional_argument_test_fixture, "set_value(any) should perform the specified value action"
 ) {
     auto sut = init_arg(primary_name);
 
-    SUBCASE("valued action") {
-        const auto double_valued_action = [](const sut_value_type& value) { return 2 * value; };
-        sut.action<ap::action_type::transform>(double_valued_action);
+    SUBCASE("observe action") {
+        const auto is_power_of_two = [](const sut_value_type n) {
+            if (not ((n > 0) and (n & (n - 1)) == 0)) {
+                throw std::runtime_error(std::format("Value `{}` is not a power of 2", n));
+            }
+        };
+
+        sut.action<ap::action_type::observe>(is_power_of_two);
+
+        CHECK_THROWS_AS(set_value(sut, 3), std::runtime_error);
+
+        sut_value_type valid_value = 16;
+        REQUIRE_NOTHROW(set_value(sut, valid_value));
+        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), valid_value);
+    }
+
+    SUBCASE("transform action") {
+        const auto double_action = [](const sut_value_type& value) { return 2 * value; };
+        sut.action<ap::action_type::transform>(double_action);
 
         set_value(sut, value_1);
 
-        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), double_valued_action(value_1));
+        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), double_action(value_1));
     }
 
-    SUBCASE("void action") {
-        const auto double_void_action = [](sut_value_type& value) { value *= 2; };
-        sut.action<ap::action_type::modify>(double_void_action);
+    SUBCASE("modify action") {
+        const auto double_action = [](sut_value_type& value) { value *= 2; };
+        sut.action<ap::action_type::modify>(double_action);
 
         auto test_value = value_1;
 
         set_value(sut, test_value);
 
-        double_void_action(test_value);
+        double_action(test_value);
         CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), test_value);
     }
 }

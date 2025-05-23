@@ -262,6 +262,22 @@ TEST_CASE_FIXTURE(
 ) {
     auto sut = init_arg(primary_name);
 
+    SUBCASE("observe action") {
+        const auto is_power_of_two = [](const sut_value_type n) {
+            if (not ((n > 0) and (n & (n - 1)) == 0)) {
+                throw std::runtime_error(std::format("Value `{}` is not a power of 2", n));
+            }
+        };
+
+        sut.action<ap::action_type::observe>(is_power_of_two);
+
+        CHECK_THROWS_AS(set_value(sut, 3), std::runtime_error);
+
+        sut_value_type valid_value = 16;
+        REQUIRE_NOTHROW(set_value(sut, valid_value));
+        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), valid_value);
+    }
+
     SUBCASE("transform action") {
         const auto double_action = [](const sut_value_type& value) { return 2 * value; };
         sut.action<ap::action_type::transform>(double_action);

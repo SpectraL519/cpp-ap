@@ -252,7 +252,7 @@ private:
     }
 
     /// @brief Mark the optional argument as used.
-    void mark_used() noexcept override {
+    void mark_used() override {
         ++this->_nused;
         for (const auto& action : this->_flag_actions)
             action();
@@ -285,7 +285,7 @@ private:
 
         value_type value;
         if (not (this->_ss >> value))
-            throw error::invalid_value(this->_name, this->_ss.str());
+            throw error::invalid_value(this->_name, str_value);
 
         if (not this->_is_valid_choice(value))
             throw error::invalid_choice(this->_name, str_value);

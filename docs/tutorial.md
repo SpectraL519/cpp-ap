@@ -6,7 +6,7 @@
 - [The Parser Class](#the-parser-class)
 - [Adding Arguments](#adding-arguments)
 - [Argument Parameters](#argument-parameters)
-- [Predefined Parameter Values]()
+- [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Parsing Arguments](#parsing-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
@@ -71,14 +71,15 @@ To use the argument parser in your code you need to use the `ap::argument_parser
 
 The parameters you can specify for a parser's instance are:
 
-- Program name
-- Program description
-- [Arguments](#adding-arguments)
+- Program name and description - used in the parser's configuration output (`std::cout << parser`).
+- Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
+- [Arguments](#adding-arguments) - specify the values/options accepted by the program.
 
 ```cpp
 ap::argument_parser parser;
 parser.program_name("Name of the program")
-      .program_description("Description of the program");
+      .program_description("Description of the program")
+      .verbose();
 ```
 
 <br/>
