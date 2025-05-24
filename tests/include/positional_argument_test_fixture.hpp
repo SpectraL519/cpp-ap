@@ -59,12 +59,12 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    positional<T>& set_value(positional<T>& arg, const T& value) const {
+    bool set_value(positional<T>& arg, const T& value) const {
         return arg.set_value(std::to_string(value));
     }
 
     template <c_argument_value_type T>
-    positional<T>& set_value(positional<T>& arg, const std::string& str_value) const {
+    bool set_value(positional<T>& arg, const std::string& str_value) const {
         return arg.set_value(str_value);
     }
 

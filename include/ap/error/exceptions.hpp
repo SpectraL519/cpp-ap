@@ -12,6 +12,8 @@
 
 namespace ap {
 
+// TODO: add [] or `` around arg names in error msgs
+
 /**
  * @brief Base class for exceptions thrown by the argument parser.
  *
@@ -130,6 +132,7 @@ public:
 };
 
 /// @brief Exception thrown when there is an error deducing the argument for a given value.
+// TODO: rename to dangling_value ?
 class free_value : public argument_parser_exception {
 public:
     /**

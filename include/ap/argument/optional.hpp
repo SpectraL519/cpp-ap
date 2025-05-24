@@ -252,10 +252,11 @@ private:
     }
 
     /// @brief Mark the optional argument as used.
-    void mark_used() override {
+    bool mark_used() override {
         ++this->_nused;
         for (const auto& action : this->_flag_actions)
             action();
+        return true;
     }
 
     /// @return True if the optional argument is used, false otherwise.
@@ -276,7 +277,7 @@ private:
      * @throws ap::error::invalid_value
      * @throws ap::error::invalid_choice
      */
-    optional& set_value(const std::string& str_value) override {
+    bool set_value(const std::string& str_value) override {
         if (not (this->_nargs_range or this->_values.empty()))
             throw error::value_already_set(this->_name);
 
@@ -295,7 +296,7 @@ private:
             std::visit(apply_visitor, action);
 
         this->_values.emplace_back(std::move(value));
-        return *this;
+        return true;
     }
 
     /// @return True if the optional argument has a value, false otherwise.

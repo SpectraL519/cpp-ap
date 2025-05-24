@@ -163,7 +163,9 @@ private:
      * @brief Mark the positional argument as used.
      * @note No logic is performed for positional arguments
      */
-    void mark_used() override {}
+    bool mark_used() override {
+        return false;
+    }
 
     /// @return True if the positional argument is used, false otherwise.
     [[nodiscard]] bool is_used() const noexcept override {
@@ -183,7 +185,7 @@ private:
      * @throws ap::error::invalid_value
      * @throws ap::error::invalid_choice
      */
-    positional& set_value(const std::string& str_value) override {
+    bool set_value(const std::string& str_value) override {
         if (this->_value.has_value())
             throw error::value_already_set(this->_name);
 
@@ -202,7 +204,7 @@ private:
             std::visit(apply_visitor, action);
 
         this->_value = value;
-        return *this;
+        return true;
     }
 
     /// @return True if the positional argument has a value, false otherwise.

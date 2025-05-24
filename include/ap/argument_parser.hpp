@@ -648,7 +648,8 @@ private:
         std::optional<std::reference_wrapper<arg_ptr_t>> curr_opt_arg;
 
         while (token_it != arg_tokens.end()) {
-            if (token_it->type == detail::argument_token::t_flag) {
+            switch (token_it->type) {
+            case detail::argument_token::t_flag: {
                 auto opt_arg_it = std::ranges::find_if(
                     this->_optional_args, this->_name_match_predicate(token_it->value)
                 );
@@ -657,13 +658,20 @@ private:
                     throw error::argument_not_found(token_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
-                curr_opt_arg->get()->mark_used();
+                if (not curr_opt_arg->get()->mark_used())
+                    curr_opt_arg.reset();
+
+                break;
             }
-            else {
+            case detail::argument_token::t_value: {
                 if (not curr_opt_arg)
                     throw error::free_value(token_it->value);
 
-                curr_opt_arg->get()->set_value(token_it->value);
+                if (not curr_opt_arg->get()->set_value(token_it->value))
+                    curr_opt_arg.reset();
+
+                break;
+            }
             }
 
             ++token_it;
@@ -788,7 +796,7 @@ inline void add_default_argument(
     switch (arg_discriminator) {
     case argument::default_positional::input:
         arg_parser.add_positional_argument("input")
-            .action<action_type::modify>(action::check_file_exists())
+            .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
 

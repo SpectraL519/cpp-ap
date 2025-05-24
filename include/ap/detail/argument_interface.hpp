@@ -60,7 +60,8 @@ protected:
     virtual bool bypass_required_enabled() const noexcept = 0;
 
     /// @brief Mark the argument as used.
-    virtual void mark_used() = 0;
+    // ? return true if argument can still accept values
+    virtual bool mark_used() = 0;
 
     /// @return True if the argument has been used, false otherwise.
     virtual bool is_used() const noexcept = 0;
@@ -73,7 +74,8 @@ protected:
      * @param value The string representation of the value.
      * @return Reference to the argument_interface.
      */
-    virtual argument_interface& set_value(const std::string& value) = 0;
+    // ? return true if argument can still accept values
+    virtual bool set_value(const std::string& value) = 0;
 
     /// @return True if the argument has a value, false otherwise.
     virtual bool has_value() const noexcept = 0;
