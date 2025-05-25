@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ap/detail/argument_name.hpp"
+#include "ap/detail/str_utility.hpp"
 
 #include <format>
 
@@ -131,18 +132,17 @@ public:
     : argument_parser_exception("No values parsed for a required argument " + arg_name.str()) {}
 };
 
-/// @brief Exception thrown when there is an error deducing the argument for a given value.
-// TODO: rename to dangling_value ?
-class free_value : public argument_parser_exception {
+/// @brief Exception thrown when there is an error deducing the argument for given values.
+class argument_deduction_failure : public argument_parser_exception {
 public:
     /**
-     * @brief Constructor for the free_value class.
-     * @param value The value for which the argument deduction failed.
+     * @brief Constructor for the dangling_values class.
+     * @param values The value for which the argument deduction failed.
      */
-    explicit free_value(const std::string& value)
-    : argument_parser_exception(
-          std::format("Failed to deduce the argument for the given value `{}`", value)
-      ) {}
+    explicit argument_deduction_failure(const std::vector<std::string_view>& values)
+    : argument_parser_exception(std::format(
+          "Failed to deduce the argument for the given values [{}]", detail::join_with(values)
+      )) {}
 };
 
 /// @brief Exception thrown when an invalid number of values is provided for an argument.

@@ -608,23 +608,30 @@ private:
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
+     * @throws ap::error::argument_deduction_failure
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens) {
         arg_token_list_iterator_t token_it = arg_tokens.begin();
-        this->_parse_positional_args(arg_tokens, token_it);
-        this->_parse_optional_args(arg_tokens, token_it);
+
+        this->_parse_positional_args(token_it, arg_tokens.end());
+
+        std::vector<std::string_view> dangling_values;
+        this->_parse_optional_args(token_it, arg_tokens.end(), dangling_values);
+
+        if (not dangling_values.empty())
+            throw error::argument_deduction_failure(dangling_values);
     }
 
     /**
      * @brief Parse positional arguments based on command-line input.
-     * @param arg_tokens The list of command-line argument tokens.
      * @param token_it Iterator for iterating through command-line argument tokens.
+     * @param tokens_end The token list end iterator.
      */
     void _parse_positional_args(
-        const arg_token_list_t& arg_tokens, arg_token_list_iterator_t& token_it
+        arg_token_list_iterator_t& token_it, const arg_token_list_iterator_t& tokens_end
     ) noexcept {
         for (const auto& pos_arg : this->_positional_args) {
-            if (token_it == arg_tokens.end())
+            if (token_it == tokens_end)
                 return;
 
             if (token_it->type == detail::argument_token::t_flag)
@@ -637,19 +644,26 @@ private:
 
     /**
      * @brief Parse optional arguments based on command-line input.
-     * @param arg_tokens The list of command-line argument tokens.
      * @param token_it Iterator for iterating through command-line argument tokens.
+     * @param tokens_end The token list end iterator.
+     * @param dangling_values Reference to the vector into which the dangling values shall be collected.
      * @throws ap::error::argument_not_found
-     * @throws ap::error::free_value
+     * @throws ap::error::argument_deduction_failure
+     * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
     void _parse_optional_args(
-        const arg_token_list_t& arg_tokens, arg_token_list_iterator_t& token_it
+        arg_token_list_iterator_t& token_it,
+        const arg_token_list_iterator_t& tokens_end,
+        std::vector<std::string_view>& dangling_values
     ) {
         std::optional<std::reference_wrapper<arg_ptr_t>> curr_opt_arg;
 
-        while (token_it != arg_tokens.end()) {
+        while (token_it != tokens_end) {
             switch (token_it->type) {
             case detail::argument_token::t_flag: {
+                if (not dangling_values.empty())
+                    throw error::argument_deduction_failure(dangling_values);
+
                 auto opt_arg_it = std::ranges::find_if(
                     this->_optional_args, this->_name_match_predicate(token_it->value)
                 );
@@ -664,8 +678,10 @@ private:
                 break;
             }
             case detail::argument_token::t_value: {
-                if (not curr_opt_arg)
-                    throw error::free_value(token_it->value);
+                if (not curr_opt_arg) {
+                    dangling_values.emplace_back(token_it->value);
+                    break;
+                }
 
                 if (not curr_opt_arg->get()->set_value(token_it->value))
                     curr_opt_arg.reset();

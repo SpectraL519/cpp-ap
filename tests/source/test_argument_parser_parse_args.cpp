@@ -86,7 +86,7 @@ TEST_CASE_FIXTURE(
     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
     arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(n_positional_args)));
 
-    CHECK_THROWS_AS(parse_args_impl(arg_tokens), ap::error::free_value);
+    CHECK_THROWS_AS(parse_args_impl(arg_tokens), ap::error::argument_deduction_failure);
 }
 
 TEST_CASE_FIXTURE(
