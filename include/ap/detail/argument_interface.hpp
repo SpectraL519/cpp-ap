@@ -67,6 +67,7 @@ protected:
     virtual bool is_used() const noexcept = 0;
 
     /// @return The number of times the positional argument is used.
+    // TODO: rename to count
     virtual std::size_t nused() const noexcept = 0;
 
     /**
@@ -84,7 +85,7 @@ protected:
     virtual bool has_parsed_values() const noexcept = 0;
 
     /// @return The ordering relationship of argument range.
-    virtual std::weak_ordering nvalues_in_range() const noexcept = 0;
+    virtual std::weak_ordering nvalues_ordering() const noexcept = 0;
 
     /// @return Reference to the stored value of the argument.
     virtual const std::any& value() const = 0;

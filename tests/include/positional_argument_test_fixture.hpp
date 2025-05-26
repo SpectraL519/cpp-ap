@@ -74,8 +74,8 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    [[nodiscard]] std::weak_ordering nvalues_in_range(const positional<T>& arg) const {
-        return arg.nvalues_in_range();
+    [[nodiscard]] std::weak_ordering nvalues_ordering(const positional<T>& arg) const {
+        return arg.nvalues_ordering();
     }
 
     template <c_argument_value_type T>

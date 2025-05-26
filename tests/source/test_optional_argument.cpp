@@ -34,8 +34,7 @@ sut_type init_arg(std::string_view primary_name, std::string_view secondary_name
 constexpr std::string empty_str = "";
 constexpr std::string invalid_value_str = "invalid_value";
 
-constexpr sut_value_type value_1 = 1;
-constexpr sut_value_type value_2 = 2;
+constexpr sut_value_type arbitrary_value = 1;
 constexpr sut_value_type default_value = 0;
 constexpr sut_value_type implicit_value = -1;
 
@@ -240,7 +239,7 @@ TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return fal
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return true if value is set") {
     auto sut = init_arg(primary_name);
-    set_value(sut, value_1);
+    set_value(sut, arbitrary_value);
     CHECK(has_value(sut));
 }
 
@@ -314,7 +313,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "has_parsed_values() should true if the value is set"
 ) {
     auto sut = init_arg(primary_name);
-    set_value(sut, value_1);
+    set_value(sut, arbitrary_value);
     CHECK(has_parsed_values(sut));
 }
 
@@ -331,10 +330,10 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "value() should return the argument's value if it has been set"
 ) {
     auto sut = init_arg(primary_name);
-    set_value(sut, value_1);
+    set_value(sut, arbitrary_value);
 
     REQUIRE(has_value(sut));
-    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value_1);
+    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), arbitrary_value);
 }
 
 TEST_CASE_FIXTURE(
@@ -342,10 +341,10 @@ TEST_CASE_FIXTURE(
     "value() should return the default value if one has been provided and argument is not used"
 ) {
     auto sut = init_arg(primary_name);
-    sut.default_value(value_1);
+    sut.default_value(arbitrary_value);
 
     REQUIRE(has_value(sut));
-    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value_1);
+    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), arbitrary_value);
 }
 
 TEST_CASE_FIXTURE(
@@ -390,37 +389,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
-    "set_value(any) should accept the given value only when no value has been set yet "
-    "and if the given value is present in the choices set"
-) {
-    auto sut = init_arg(primary_name);
-    sut.choices(choices);
-
-    for (const sut_value_type& value : choices) {
-        reset_value(sut);
-        REQUIRE_FALSE(has_value(sut));
-
-        REQUIRE_NOTHROW(set_value(sut, value));
-        REQUIRE(has_value(sut));
-        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value);
-    }
-}
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
-    "set_value(any) should throw when a value has already been set (when nargs is default)"
-) {
-    auto sut = init_arg(primary_name);
-
-    REQUIRE_NOTHROW(set_value(sut, value_1));
-    REQUIRE(has_value(sut));
-    CHECK_THROWS_AS(set_value(sut, value_2), ap::error::value_already_set);
-}
-
-TEST_CASE_FIXTURE(
-    optional_argument_test_fixture,
-    "set_value(any) should accept multiple values if nargs is not detault"
+    optional_argument_test_fixture, "set_value(any) should accept any number of values by default"
 ) {
     auto sut = init_arg(primary_name);
     sut.nargs(non_default_range);
@@ -435,6 +404,20 @@ TEST_CASE_FIXTURE(
     for (std::size_t i = 0; i < stored_values.size(); ++i) {
         REQUIRE_EQ(std::any_cast<sut_value_type>(stored_values[i]), choices[i]);
     }
+}
+
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "set_value(any) should throw when adding the given value would result in exceeding the maximum "
+    "number of values specified by nargs"
+) {
+    auto sut = init_arg(primary_name).nargs(non_default_range);
+
+    for (const auto value : choices) {
+        REQUIRE_NOTHROW(set_value(sut, value));
+    }
+
+    CHECK_THROWS_AS(set_value(sut, arbitrary_value), ap::error::invalid_nvalues);
 }
 
 TEST_CASE_FIXTURE(
@@ -462,16 +445,16 @@ TEST_CASE_FIXTURE(
         const auto double_action = [](const sut_value_type& value) { return 2 * value; };
         sut.action<ap::action_type::transform>(double_action);
 
-        set_value(sut, value_1);
+        set_value(sut, arbitrary_value);
 
-        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), double_action(value_1));
+        CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), double_action(arbitrary_value));
     }
 
     SUBCASE("modify action") {
         const auto double_action = [](sut_value_type& value) { value *= 2; };
         sut.action<ap::action_type::modify>(double_action);
 
-        auto test_value = value_1;
+        auto test_value = arbitrary_value;
 
         set_value(sut, test_value);
 
@@ -482,41 +465,41 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "nvalues_in_range() should return equivalent if nargs has not been set"
+    "nvalues_ordering() should return equivalent for default nargs (any)"
 ) {
     const auto sut = init_arg(primary_name);
-    CHECK(std::is_eq(nvalues_in_range(sut)));
+    CHECK(std::is_eq(nvalues_ordering(sut)));
 }
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "nvalues_in_range() should return equivalent if a default value has been set"
+    "nvalues_ordering() should return equivalent if a default value has been set"
 ) {
     auto sut = init_arg(primary_name);
     sut.nargs(non_default_range);
 
     sut.default_value(default_value);
 
-    CHECK(std::is_eq(nvalues_in_range(sut)));
+    CHECK(std::is_eq(nvalues_ordering(sut)));
 }
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
-    "nvalues_in_range() should return equivalent only when the number of values "
+    "nvalues_ordering() should return equivalent only when the number of values "
     "is in the specified range"
 ) {
     auto sut = init_arg(primary_name);
     sut.nargs(non_default_range);
 
-    REQUIRE(std::is_lt(nvalues_in_range(sut)));
+    REQUIRE(std::is_lt(nvalues_ordering(sut)));
 
     for (const auto value : choices) {
         REQUIRE_NOTHROW(set_value(sut, value));
-        CHECK(std::is_eq(nvalues_in_range(sut)));
+        CHECK(std::is_eq(nvalues_ordering(sut)));
     }
 
-    REQUIRE_NOTHROW(set_value(sut, invalid_choice));
-    CHECK(std::is_gt(nvalues_in_range(sut)));
+    set_value_force(sut, invalid_choice);
+    CHECK(std::is_gt(nvalues_ordering(sut)));
 }
 
 TEST_SUITE_END();

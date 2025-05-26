@@ -2,6 +2,7 @@
 
 #include "argument_parser_test_fixture.hpp"
 #include "doctest.h"
+#include "utility.hpp"
 
 using namespace ap_testing;
 using namespace ap::argument;
@@ -329,7 +330,7 @@ TEST_CASE_FIXTURE(
     "value() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(sut.value(invalid_arg_name), ap::error::argument_not_found);
+    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::error::argument_not_found);
 }
 
 TEST_CASE_FIXTURE(
@@ -340,8 +341,8 @@ TEST_CASE_FIXTURE(
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
-        CHECK_THROWS_AS(sut.value(arg_name.primary), std::logic_error);
-        CHECK_THROWS_AS(sut.value(arg_name.secondary.value()), std::logic_error);
+        CHECK_THROWS_AS(discard_result(sut.value(arg_name.primary)), std::logic_error);
+        CHECK_THROWS_AS(discard_result(sut.value(arg_name.secondary.value())), std::logic_error);
     }
 }
 
@@ -363,7 +364,8 @@ TEST_CASE_FIXTURE(
 
         REQUIRE(sut.has_value(arg_name.primary));
         CHECK_THROWS_AS(
-            sut.value<invalid_value_type>(arg_name.primary), ap::error::invalid_value_type
+            discard_result(sut.value<invalid_value_type>(arg_name.primary)),
+            ap::error::invalid_value_type
         );
     }
 
@@ -422,7 +424,9 @@ TEST_CASE_FIXTURE(
     "value_or() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(sut.value_or(invalid_arg_name, empty_str), ap::error::argument_not_found);
+    CHECK_THROWS_AS(
+        discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::error::argument_not_found
+    );
 }
 
 TEST_CASE_FIXTURE(
@@ -443,7 +447,8 @@ TEST_CASE_FIXTURE(
 
         REQUIRE(sut.has_value(arg_name.primary));
         CHECK_THROWS_AS(
-            sut.value_or<invalid_value_type>(arg_name.primary, invalid_value_type{}),
+            discard_result(sut.value_or<invalid_value_type>(arg_name.primary, invalid_value_type{})
+            ),
             ap::error::invalid_value_type
         );
     }
@@ -599,8 +604,8 @@ TEST_CASE_FIXTURE(
 ) {
     sut.add_positional_argument(positional_primary_name, positional_secondary_name);
 
-    CHECK_THROWS_AS(sut.values(positional_primary_name), std::logic_error);
-    CHECK_THROWS_AS(sut.values(positional_secondary_name), std::logic_error);
+    CHECK_THROWS_AS(discard_result(sut.values(positional_primary_name)), std::logic_error);
+    CHECK_THROWS_AS(discard_result(sut.values(positional_secondary_name)), std::logic_error);
 }
 
 TEST_CASE_FIXTURE(
@@ -640,11 +645,11 @@ TEST_CASE_FIXTURE(
     sut.parse_args(argc, argv);
 
     REQUIRE_THROWS_AS(
-        sut.values<invalid_argument_value_type>(optional_primary_name),
+        discard_result(sut.values<invalid_argument_value_type>(optional_primary_name)),
         ap::error::invalid_value_type
     );
     REQUIRE_THROWS_AS(
-        sut.values<invalid_argument_value_type>(optional_secondary_name),
+        discard_result(sut.values<invalid_argument_value_type>(optional_secondary_name)),
         ap::error::invalid_value_type
     );
 

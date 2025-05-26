@@ -44,6 +44,14 @@ public:
 
     ~range() = default;
 
+    [[nodiscard]] bool is_bound() const noexcept {
+        return this->_lower_bound.has_value() or this->_upper_bound.has_value();
+    }
+
+    [[nodiscard]] bool is_unbound() const noexcept {
+        return not this->is_bound();
+    }
+
     /**
      * @brief Determines the ordering of the count against a range instance.
      *

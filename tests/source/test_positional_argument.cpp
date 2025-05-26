@@ -328,20 +328,20 @@ TEST_CASE_FIXTURE(positional_argument_test_fixture, "values() should throw logic
 }
 
 TEST_CASE_FIXTURE(
-    positional_argument_test_fixture, "nvalues_in_range() should return less by default"
+    positional_argument_test_fixture, "nvalues_ordering() should return less by default"
 ) {
     const auto sut = init_arg(primary_name);
-    CHECK(std::is_lt(nvalues_in_range(sut)));
+    CHECK(std::is_lt(nvalues_ordering(sut)));
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
-    "nvalues_in_range() should return equivalent if a value has been set"
+    "nvalues_ordering() should return equivalent if a value has been set"
 ) {
     auto sut = init_arg(primary_name);
     set_value(sut, value_1);
 
-    CHECK(std::is_eq(nvalues_in_range(sut)));
+    CHECK(std::is_eq(nvalues_ordering(sut)));
 }
 
 TEST_SUITE_END();

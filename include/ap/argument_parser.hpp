@@ -282,8 +282,8 @@ public:
         if (this->_are_required_args_bypassed())
             return;
 
-        this->_check_required_args();
-        this->_check_nvalues_in_range();
+        this->_verify_required_args();
+        this->_verify_nvalues();
     }
 
     /**
@@ -338,7 +338,7 @@ public:
      * @param arg_name The name of the argument.
      * @return True if the argument has a value, false otherwise.
      */
-    bool has_value(std::string_view arg_name) const noexcept {
+    [[nodiscard]] bool has_value(std::string_view arg_name) const noexcept {
         const auto arg_opt = this->_get_argument(arg_name);
         return arg_opt ? arg_opt->get().has_value() : false;
     }
@@ -347,7 +347,7 @@ public:
      * @param arg_name The name of the argument.
      * @return The count of times the argument has been used.
      */
-    std::size_t count(std::string_view arg_name) const noexcept {
+    [[nodiscard]] std::size_t count(std::string_view arg_name) const noexcept {
         const auto arg_opt = this->_get_argument(arg_name);
         return arg_opt ? arg_opt->get().nused() : 0ull;
     }
@@ -360,7 +360,7 @@ public:
      * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
-    T value(std::string_view arg_name) const {
+    [[nodiscard]] T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found(arg_name);
@@ -384,7 +384,7 @@ public:
      * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
-    T value_or(std::string_view arg_name, U&& default_value) const {
+    [[nodiscard]] T value_or(std::string_view arg_name, U&& default_value) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found(arg_name);
@@ -411,7 +411,7 @@ public:
      * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
-    std::vector<T> values(std::string_view arg_name) const {
+    [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found(arg_name);
@@ -708,9 +708,9 @@ private:
      * @brief Check if all required positional and optional arguments are used.
      * @throws ap::error::required_argument_not_parsed
      */
-    void _check_required_args() const {
+    void _verify_required_args() const {
         for (const auto& arg : this->_positional_args)
-            if (not arg->is_used())
+            if (not arg->is_used()) // ? use has_parsed_values
                 throw error::required_argument_not_parsed(arg->name());
 
         for (const auto& arg : this->_optional_args)
@@ -722,18 +722,14 @@ private:
      * @brief Check if the number of argument values is within the specified range.
      * @throws ap::error::invalid_nvalues
      */
-    void _check_nvalues_in_range() const {
-        for (const auto& arg : this->_positional_args) {
-            const auto nvalues_ordering = arg->nvalues_in_range();
-            if (not std::is_eq(nvalues_ordering))
-                throw error::invalid_nvalues(nvalues_ordering, arg->name());
-        }
+    void _verify_nvalues() const {
+        for (const auto& arg : this->_positional_args)
+            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
+                throw error::invalid_nvalues(nv_ord, arg->name());
 
-        for (const auto& arg : this->_optional_args) {
-            const auto nvalues_ordering = arg->nvalues_in_range();
-            if (not std::is_eq(nvalues_ordering))
-                throw error::invalid_nvalues(nvalues_ordering, arg->name());
-        }
+        for (const auto& arg : this->_optional_args)
+            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
+                throw error::invalid_nvalues(nv_ord, arg->name());
     }
 
     /**

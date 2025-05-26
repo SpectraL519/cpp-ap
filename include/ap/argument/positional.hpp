@@ -189,11 +189,8 @@ private:
         if (this->_value.has_value())
             throw error::value_already_set(this->_name);
 
-        this->_ss.clear();
-        this->_ss.str(str_value);
-
         value_type value;
-        if (not (this->_ss >> value))
+        if (not (std::istringstream(str_value) >> value))
             throw error::invalid_value(this->_name, str_value);
 
         if (not this->_is_valid_choice(value))
@@ -218,7 +215,7 @@ private:
     }
 
     /// @return Ordering relationship of positional argument range.
-    [[nodiscard]] std::weak_ordering nvalues_in_range() const noexcept override {
+    [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
         return this->_value.has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
     }
 
@@ -266,8 +263,6 @@ private:
     std::vector<value_action_type> _value_actions;
 
     std::any _value; ///< Stored value of the positional argument.
-
-    std::stringstream _ss; ///< Stringstream used for parsing values.
 };
 
 } // namespace ap::argument
