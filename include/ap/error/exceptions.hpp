@@ -39,7 +39,7 @@ public:
      */
     explicit value_already_set(const detail::argument_name& arg_name)
     : argument_parser_exception(
-          std::format("Value for argument {} has already been set.", arg_name.str())
+          std::format("Value for argument [{}] has already been set.", arg_name.str())
       ) {}
 };
 
@@ -52,7 +52,7 @@ public:
      */
     explicit invalid_value(const detail::argument_name& arg_name, const std::string& value)
     : argument_parser_exception(
-          std::format("Cannot parse value `{}` for argument {}.", value, arg_name.str())
+          std::format("Cannot parse value `{}` for argument [{}].", value, arg_name.str())
       ) {}
 };
 
@@ -65,7 +65,7 @@ public:
      */
     explicit invalid_choice(const detail::argument_name& arg_name, const std::string& value)
     : argument_parser_exception(
-          std::format("Value `{}` is not a valid choice for argument {}.", value, arg_name.str())
+          std::format("Value `{}` is not a valid choice for argument [{}].", value, arg_name.str())
       ) {}
 };
 
@@ -80,7 +80,7 @@ public:
         const std::string_view arg_name, const std::string_view reason
     )
     : argument_parser_exception(
-          std::format("Given name `{}` is invalid.\nReason: {}", arg_name, reason)
+          std::format("Given name [{}] is invalid.\nReason: {}", arg_name, reason)
       ) {}
 };
 
@@ -91,7 +91,7 @@ public:
      * @param arg_name The name of the argument causing the collision.
      */
     explicit argument_name_used(const detail::argument_name& arg_name)
-    : argument_parser_exception(std::format("Given name `{}` already used.", arg_name.str())) {}
+    : argument_parser_exception(std::format("Given name [{}] already used.", arg_name.str())) {}
 };
 
 /// @brief Exception thrown when an argument with a specific name is not found.
@@ -101,7 +101,7 @@ public:
      * @param arg_name The name of the argument that was not found.
      */
     explicit argument_not_found(const std::string_view& arg_name)
-    : argument_parser_exception(std::format("Argument with given name `{}` not found.", arg_name)) {
+    : argument_parser_exception(std::format("Argument with given name [{}] not found.", arg_name)) {
     }
 };
 
@@ -117,7 +117,7 @@ public:
         const detail::argument_name& arg_name, const std::type_info& value_type
     )
     : argument_parser_exception(std::format(
-          "Invalid value type specified for argument {} = {}.", arg_name.str(), value_type.name()
+          "Invalid value type specified for argument [{}] = {}.", arg_name.str(), value_type.name()
       )) {}
 };
 
@@ -129,7 +129,9 @@ public:
      * @param arg_name The name of the required argument that was not parsed.
      */
     explicit required_argument_not_parsed(const detail::argument_name& arg_name)
-    : argument_parser_exception("No values parsed for a required argument " + arg_name.str()) {}
+    : argument_parser_exception(
+          std::format("No values parsed for a required argument [{}]", arg_name.str())
+      ) {}
 };
 
 /// @brief Exception thrown when there is an error deducing the argument for given values.
@@ -169,9 +171,13 @@ private:
         const std::weak_ordering ordering, const detail::argument_name& arg_name
     ) {
         if (std::is_lt(ordering))
-            return "Not enought values provided for optional argument " + arg_name.str();
+            return std::format(
+                "Not enought values provided for optional argument [{}]", arg_name.str()
+            );
         else
-            return "Too many values provided for optional argument " + arg_name.str();
+            return std::format(
+                "Too many values provided for optional argument [{}]", arg_name.str()
+            );
     }
 };
 
