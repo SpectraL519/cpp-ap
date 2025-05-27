@@ -59,21 +59,24 @@ protected:
     /// @return True if bypassing the required status is enabled for the argument, false otherwise.
     virtual bool bypass_required_enabled() const noexcept = 0;
 
-    /// @brief Mark the argument as used.
-    virtual void mark_used() = 0;
+    /**
+     * @brief Mark the argument as used.
+     * @return `true` if the argument accepts further values, `false` otherwise.
+     */
+    virtual bool mark_used() = 0;
 
     /// @return True if the argument has been used, false otherwise.
     virtual bool is_used() const noexcept = 0;
 
     /// @return The number of times the positional argument is used.
-    virtual std::size_t nused() const noexcept = 0;
+    virtual std::size_t count() const noexcept = 0;
 
     /**
      * @brief Set the value for the argument.
      * @param value The string representation of the value.
-     * @return Reference to the argument_interface.
+     * @return `true` if the argument accepts further values, `false` otherwise.
      */
-    virtual argument_interface& set_value(const std::string& value) = 0;
+    virtual bool set_value(const std::string& value) = 0;
 
     /// @return True if the argument has a value, false otherwise.
     virtual bool has_value() const noexcept = 0;
@@ -82,7 +85,7 @@ protected:
     virtual bool has_parsed_values() const noexcept = 0;
 
     /// @return The ordering relationship of argument range.
-    virtual std::weak_ordering nvalues_in_range() const noexcept = 0;
+    virtual std::weak_ordering nvalues_ordering() const noexcept = 0;
 
     /// @return Reference to the stored value of the argument.
     virtual const std::any& value() const = 0;

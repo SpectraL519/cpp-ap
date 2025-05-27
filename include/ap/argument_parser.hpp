@@ -282,8 +282,8 @@ public:
         if (this->_are_required_args_bypassed())
             return;
 
-        this->_check_required_args();
-        this->_check_nvalues_in_range();
+        this->_verify_required_args();
+        this->_verify_nvalues();
     }
 
     /**
@@ -338,7 +338,7 @@ public:
      * @param arg_name The name of the argument.
      * @return True if the argument has a value, false otherwise.
      */
-    bool has_value(std::string_view arg_name) const noexcept {
+    [[nodiscard]] bool has_value(std::string_view arg_name) const noexcept {
         const auto arg_opt = this->_get_argument(arg_name);
         return arg_opt ? arg_opt->get().has_value() : false;
     }
@@ -347,9 +347,9 @@ public:
      * @param arg_name The name of the argument.
      * @return The count of times the argument has been used.
      */
-    std::size_t count(std::string_view arg_name) const noexcept {
+    [[nodiscard]] std::size_t count(std::string_view arg_name) const noexcept {
         const auto arg_opt = this->_get_argument(arg_name);
-        return arg_opt ? arg_opt->get().nused() : 0ull;
+        return arg_opt ? arg_opt->get().count() : 0ull;
     }
 
     /**
@@ -360,7 +360,7 @@ public:
      * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
-    T value(std::string_view arg_name) const {
+    [[nodiscard]] T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found(arg_name);
@@ -384,7 +384,7 @@ public:
      * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
-    T value_or(std::string_view arg_name, U&& default_value) const {
+    [[nodiscard]] T value_or(std::string_view arg_name, U&& default_value) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found(arg_name);
@@ -411,7 +411,7 @@ public:
      * @throws ap::error::invalid_value_type
      */
     template <detail::c_argument_value_type T = std::string>
-    std::vector<T> values(std::string_view arg_name) const {
+    [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw error::argument_not_found(arg_name);
@@ -608,23 +608,30 @@ private:
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
+     * @throws ap::error::argument_deduction_failure
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens) {
         arg_token_list_iterator_t token_it = arg_tokens.begin();
-        this->_parse_positional_args(arg_tokens, token_it);
-        this->_parse_optional_args(arg_tokens, token_it);
+
+        this->_parse_positional_args(token_it, arg_tokens.end());
+
+        std::vector<std::string_view> dangling_values;
+        this->_parse_optional_args(token_it, arg_tokens.end(), dangling_values);
+
+        if (not dangling_values.empty())
+            throw error::argument_deduction_failure(dangling_values);
     }
 
     /**
      * @brief Parse positional arguments based on command-line input.
-     * @param arg_tokens The list of command-line argument tokens.
      * @param token_it Iterator for iterating through command-line argument tokens.
+     * @param tokens_end The token list end iterator.
      */
     void _parse_positional_args(
-        const arg_token_list_t& arg_tokens, arg_token_list_iterator_t& token_it
+        arg_token_list_iterator_t& token_it, const arg_token_list_iterator_t& tokens_end
     ) noexcept {
         for (const auto& pos_arg : this->_positional_args) {
-            if (token_it == arg_tokens.end())
+            if (token_it == tokens_end)
                 return;
 
             if (token_it->type == detail::argument_token::t_flag)
@@ -637,18 +644,26 @@ private:
 
     /**
      * @brief Parse optional arguments based on command-line input.
-     * @param arg_tokens The list of command-line argument tokens.
      * @param token_it Iterator for iterating through command-line argument tokens.
+     * @param tokens_end The token list end iterator.
+     * @param dangling_values Reference to the vector into which the dangling values shall be collected.
      * @throws ap::error::argument_not_found
-     * @throws ap::error::free_value
+     * @throws ap::error::argument_deduction_failure
+     * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
     void _parse_optional_args(
-        const arg_token_list_t& arg_tokens, arg_token_list_iterator_t& token_it
+        arg_token_list_iterator_t& token_it,
+        const arg_token_list_iterator_t& tokens_end,
+        std::vector<std::string_view>& dangling_values
     ) {
         std::optional<std::reference_wrapper<arg_ptr_t>> curr_opt_arg;
 
-        while (token_it != arg_tokens.end()) {
-            if (token_it->type == detail::argument_token::t_flag) {
+        while (token_it != tokens_end) {
+            switch (token_it->type) {
+            case detail::argument_token::t_flag: {
+                if (not dangling_values.empty())
+                    throw error::argument_deduction_failure(dangling_values);
+
                 auto opt_arg_it = std::ranges::find_if(
                     this->_optional_args, this->_name_match_predicate(token_it->value)
                 );
@@ -657,13 +672,22 @@ private:
                     throw error::argument_not_found(token_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
-                curr_opt_arg->get()->mark_used();
-            }
-            else {
-                if (not curr_opt_arg)
-                    throw error::free_value(token_it->value);
+                if (not curr_opt_arg->get()->mark_used())
+                    curr_opt_arg.reset();
 
-                curr_opt_arg->get()->set_value(token_it->value);
+                break;
+            }
+            case detail::argument_token::t_value: {
+                if (not curr_opt_arg) {
+                    dangling_values.emplace_back(token_it->value);
+                    break;
+                }
+
+                if (not curr_opt_arg->get()->set_value(token_it->value))
+                    curr_opt_arg.reset();
+
+                break;
+            }
             }
 
             ++token_it;
@@ -684,9 +708,9 @@ private:
      * @brief Check if all required positional and optional arguments are used.
      * @throws ap::error::required_argument_not_parsed
      */
-    void _check_required_args() const {
+    void _verify_required_args() const {
         for (const auto& arg : this->_positional_args)
-            if (not arg->is_used())
+            if (not arg->is_used()) // ? use has_parsed_values
                 throw error::required_argument_not_parsed(arg->name());
 
         for (const auto& arg : this->_optional_args)
@@ -698,18 +722,14 @@ private:
      * @brief Check if the number of argument values is within the specified range.
      * @throws ap::error::invalid_nvalues
      */
-    void _check_nvalues_in_range() const {
-        for (const auto& arg : this->_positional_args) {
-            const auto nvalues_ordering = arg->nvalues_in_range();
-            if (not std::is_eq(nvalues_ordering))
-                throw error::invalid_nvalues(nvalues_ordering, arg->name());
-        }
+    void _verify_nvalues() const {
+        for (const auto& arg : this->_positional_args)
+            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
+                throw error::invalid_nvalues(nv_ord, arg->name());
 
-        for (const auto& arg : this->_optional_args) {
-            const auto nvalues_ordering = arg->nvalues_in_range();
-            if (not std::is_eq(nvalues_ordering))
-                throw error::invalid_nvalues(nvalues_ordering, arg->name());
-        }
+        for (const auto& arg : this->_optional_args)
+            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
+                throw error::invalid_nvalues(nv_ord, arg->name());
     }
 
     /**
@@ -788,7 +808,7 @@ inline void add_default_argument(
     switch (arg_discriminator) {
     case argument::default_positional::input:
         arg_parser.add_positional_argument("input")
-            .action<action_type::modify>(action::check_file_exists())
+            .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
 

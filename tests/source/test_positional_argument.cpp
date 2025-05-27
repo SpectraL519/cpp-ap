@@ -131,7 +131,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_FALSE(desc.params.empty());
     const auto& choices_param = desc.params.back();
     CHECK_EQ(choices_param.name, "choices");
-    CHECK_EQ(choices_param.value, ap::detail::join_with(choices, ", "));
+    CHECK_EQ(choices_param.value, ap::detail::join(choices, ", "));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true") {
@@ -154,18 +154,18 @@ TEST_CASE_FIXTURE(
     CHECK(is_used(sut));
 }
 
-TEST_CASE_FIXTURE(positional_argument_test_fixture, "nused() should return 0 by default") {
+TEST_CASE_FIXTURE(positional_argument_test_fixture, "count() should return 0 by default") {
     const auto sut = init_arg(primary_name);
-    CHECK_EQ(get_nused(sut), 0ull);
+    CHECK_EQ(get_count(sut), 0ull);
 }
 
 TEST_CASE_FIXTURE(
-    positional_argument_test_fixture, "nused() should return 1 when argument contains a value"
+    positional_argument_test_fixture, "count() should return 1 when argument contains a value"
 ) {
     auto sut = init_arg(primary_name);
     set_value(sut, value_1);
 
-    CHECK_EQ(get_nused(sut), 1ull);
+    CHECK_EQ(get_count(sut), 1ull);
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "has_value() should return false by default") {
@@ -328,20 +328,20 @@ TEST_CASE_FIXTURE(positional_argument_test_fixture, "values() should throw logic
 }
 
 TEST_CASE_FIXTURE(
-    positional_argument_test_fixture, "nvalues_in_range() should return less by default"
+    positional_argument_test_fixture, "nvalues_ordering() should return less by default"
 ) {
     const auto sut = init_arg(primary_name);
-    CHECK(std::is_lt(nvalues_in_range(sut)));
+    CHECK(std::is_lt(nvalues_ordering(sut)));
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
-    "nvalues_in_range() should return equivalent if a value has been set"
+    "nvalues_ordering() should return equivalent if a value has been set"
 ) {
     auto sut = init_arg(primary_name);
     set_value(sut, value_1);
 
-    CHECK(std::is_eq(nvalues_in_range(sut)));
+    CHECK(std::is_eq(nvalues_ordering(sut)));
 }
 
 TEST_SUITE_END();

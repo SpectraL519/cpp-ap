@@ -44,8 +44,8 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    [[nodiscard]] std::size_t get_nused(const positional<T>& arg) const {
-        return arg.nused();
+    [[nodiscard]] std::size_t get_count(const positional<T>& arg) const {
+        return arg.count();
     }
 
     template <c_argument_value_type T>
@@ -59,12 +59,12 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    positional<T>& set_value(positional<T>& arg, const T& value) const {
+    bool set_value(positional<T>& arg, const T& value) const {
         return arg.set_value(std::to_string(value));
     }
 
     template <c_argument_value_type T>
-    positional<T>& set_value(positional<T>& arg, const std::string& str_value) const {
+    bool set_value(positional<T>& arg, const std::string& str_value) const {
         return arg.set_value(str_value);
     }
 
@@ -74,8 +74,8 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    [[nodiscard]] std::weak_ordering nvalues_in_range(const positional<T>& arg) const {
-        return arg.nvalues_in_range();
+    [[nodiscard]] std::weak_ordering nvalues_ordering(const positional<T>& arg) const {
+        return arg.nvalues_ordering();
     }
 
     template <c_argument_value_type T>

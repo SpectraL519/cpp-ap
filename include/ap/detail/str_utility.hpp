@@ -34,11 +34,11 @@ template <c_writable T>
  * @param range The input range to join.
  * @param delimiter The separator string to insert between elements.
  * @return A single string with all elements joined by the delimiter.
- * \todo Replace with std::views::join_with after transition to C++23.
+ * \todo Replace with std::views::join after transition to C++23.
  */
 template <std::ranges::range R>
 requires(c_writable<std::ranges::range_value_t<R>>)
-[[nodiscard]] std::string join_with(const R& range, const std::string_view delimiter = ", ") {
+[[nodiscard]] std::string join(const R& range, const std::string_view delimiter = ", ") {
     std::ostringstream oss;
 
     auto it = std::ranges::begin(range);

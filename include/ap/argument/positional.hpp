@@ -163,7 +163,9 @@ private:
      * @brief Mark the positional argument as used.
      * @note No logic is performed for positional arguments
      */
-    void mark_used() override {}
+    bool mark_used() override {
+        return false;
+    }
 
     /// @return True if the positional argument is used, false otherwise.
     [[nodiscard]] bool is_used() const noexcept override {
@@ -171,7 +173,7 @@ private:
     }
 
     /// @return The number of times the positional argument is used.
-    [[nodiscard]] std::size_t nused() const noexcept override {
+    [[nodiscard]] std::size_t count() const noexcept override {
         return static_cast<std::size_t>(this->_value.has_value());
     }
 
@@ -183,15 +185,12 @@ private:
      * @throws ap::error::invalid_value
      * @throws ap::error::invalid_choice
      */
-    positional& set_value(const std::string& str_value) override {
+    bool set_value(const std::string& str_value) override {
         if (this->_value.has_value())
             throw error::value_already_set(this->_name);
 
-        this->_ss.clear();
-        this->_ss.str(str_value);
-
         value_type value;
-        if (not (this->_ss >> value))
+        if (not (std::istringstream(str_value) >> value))
             throw error::invalid_value(this->_name, str_value);
 
         if (not this->_is_valid_choice(value))
@@ -202,7 +201,7 @@ private:
             std::visit(apply_visitor, action);
 
         this->_value = value;
-        return *this;
+        return false;
     }
 
     /// @return True if the positional argument has a value, false otherwise.
@@ -216,7 +215,7 @@ private:
     }
 
     /// @return Ordering relationship of positional argument range.
-    [[nodiscard]] std::weak_ordering nvalues_in_range() const noexcept override {
+    [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
         return this->_value.has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
     }
 
@@ -264,8 +263,6 @@ private:
     std::vector<value_action_type> _value_actions;
 
     std::any _value; ///< Stored value of the positional argument.
-
-    std::stringstream _ss; ///< Stringstream used for parsing values.
 };
 
 } // namespace ap::argument

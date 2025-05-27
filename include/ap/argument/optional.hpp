@@ -227,8 +227,8 @@ private:
             desc.add_param("required", "true");
         if (this->_bypass_required)
             desc.add_param("bypass required", "true");
-        if (this->_nargs_range.has_value())
-            desc.add_param("nargs", this->_nargs_range.value());
+        if (this->_nargs_range.is_bound())
+            desc.add_param("nargs", this->_nargs_range);
         if constexpr (detail::c_writable<value_type>) {
             if (not this->_choices.empty())
                 desc.add_range_param("choices", this->_choices);
@@ -252,20 +252,21 @@ private:
     }
 
     /// @brief Mark the optional argument as used.
-    void mark_used() override {
-        ++this->_nused;
+    bool mark_used() override {
+        ++this->_count;
         for (const auto& action : this->_flag_actions)
             action();
+        return this->_accepts_further_values();
     }
 
     /// @return True if the optional argument is used, false otherwise.
     [[nodiscard]] bool is_used() const noexcept override {
-        return this->_nused > 0;
+        return this->_count > 0;
     }
 
     /// @return The number of times the optional argument is used.
-    [[nodiscard]] std::size_t nused() const noexcept override {
-        return this->_nused;
+    [[nodiscard]] std::size_t count() const noexcept override {
+        return this->_count;
     }
 
     /**
@@ -276,15 +277,12 @@ private:
      * @throws ap::error::invalid_value
      * @throws ap::error::invalid_choice
      */
-    optional& set_value(const std::string& str_value) override {
-        if (not (this->_nargs_range or this->_values.empty()))
-            throw error::value_already_set(this->_name);
-
-        this->_ss.clear();
-        this->_ss.str(str_value);
+    bool set_value(const std::string& str_value) override {
+        if (not this->_accepts_further_values())
+            throw error::invalid_nvalues(std::weak_ordering::greater, this->_name);
 
         value_type value;
-        if (not (this->_ss >> value))
+        if (not (std::istringstream(str_value) >> value))
             throw error::invalid_value(this->_name, str_value);
 
         if (not this->_is_valid_choice(value))
@@ -295,7 +293,7 @@ private:
             std::visit(apply_visitor, action);
 
         this->_values.emplace_back(std::move(value));
-        return *this;
+        return this->_accepts_further_values();
     }
 
     /// @return True if the optional argument has a value, false otherwise.
@@ -309,14 +307,11 @@ private:
     }
 
     /// @return ordering relationship of optional argument range.
-    [[nodiscard]] std::weak_ordering nvalues_in_range() const noexcept override {
-        if (not this->_nargs_range)
-            return std::weak_ordering::equivalent;
-
+    [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
         if (this->_values.empty() and this->_has_predefined_value())
             return std::weak_ordering::equivalent;
 
-        return this->_nargs_range->ordering(this->_values.size());
+        return this->_nargs_range.ordering(this->_values.size());
     }
 
     /// @return Reference to the stored value of the optional argument.
@@ -368,23 +363,25 @@ private:
             or std::ranges::find(this->_choices, choice) != this->_choices.end();
     }
 
+    [[nodiscard]] bool _accepts_further_values() const noexcept {
+        return not std::is_gt(this->_nargs_range.ordering(this->_values.size() + 1ull));
+    }
+
     static constexpr bool _optional = true;
     const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
 
     bool _required = false;
     bool _bypass_required = false;
-    std::optional<ap::nargs::range> _nargs_range;
+    ap::nargs::range _nargs_range = nargs::any();
     std::any _default_value;
     std::any _implicit_value;
     std::vector<value_type> _choices;
     std::vector<flag_action_type> _flag_actions;
     std::vector<value_action_type> _value_actions;
 
-    std::size_t _nused = 0u;
+    std::size_t _count = 0ull;
     std::vector<std::any> _values;
-
-    std::stringstream _ss;
 };
 
 } // namespace ap::argument

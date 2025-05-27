@@ -3,10 +3,12 @@
 #define AP_TESTING
 
 #include <ap/argument/optional.hpp>
+#include <ap/detail/str_utility.hpp>
 
 using ap::argument::optional;
 using ap::detail::argument_descriptor;
 using ap::detail::argument_name;
+using ap::detail::as_string;
 using ap::detail::c_argument_value_type;
 
 namespace ap_testing {
@@ -19,7 +21,7 @@ struct optional_argument_test_fixture {
     using value_type = typename optional<T>::value_type;
 
     template <c_argument_value_type T>
-    void mark_used(optional<T>& arg) const {
+    bool mark_used(optional<T>& arg) const {
         return arg.mark_used();
     }
 
@@ -29,18 +31,28 @@ struct optional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    std::size_t get_nused(const optional<T>& arg) const {
-        return arg.nused();
+    std::size_t get_count(const optional<T>& arg) const {
+        return arg.count();
     }
 
     template <c_argument_value_type T>
-    optional<T>& set_value(optional<T>& arg, const T& value) const {
-        return arg.set_value(std::to_string(value));
+    bool set_value(optional<T>& arg, const T& value) const {
+        return set_value(arg, as_string(value));
     }
 
     template <c_argument_value_type T>
-    optional<T>& set_value(optional<T>& arg, const std::string& str_value) const {
+    bool set_value(optional<T>& arg, const std::string& str_value) const {
         return arg.set_value(str_value);
+    }
+
+    template <c_argument_value_type T>
+    void set_value_force(optional<T>& arg, const T& value) const {
+        set_value_force(arg, as_string(value));
+    }
+
+    template <c_argument_value_type T>
+    void set_value_force(optional<T>& arg, const std::string& str_value) const {
+        arg._values.emplace_back(str_value);
     }
 
     template <c_argument_value_type T>
@@ -59,8 +71,8 @@ struct optional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    [[nodiscard]] std::weak_ordering nvalues_in_range(const optional<T>& arg) const {
-        return arg.nvalues_in_range();
+    [[nodiscard]] std::weak_ordering nvalues_ordering(const optional<T>& arg) const {
+        return arg.nvalues_ordering();
     }
 
     template <c_argument_value_type T>
