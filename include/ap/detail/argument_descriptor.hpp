@@ -74,7 +74,7 @@ public:
         const R& range,
         const std::string_view delimiter = default_delimiter
     ) {
-        this->params.emplace_back(name, join_with(range, delimiter));
+        this->params.emplace_back(name, join(range, delimiter));
     }
 
     /**
@@ -151,7 +151,7 @@ private:
         oss << this->get_basic(indent_width);
         if (not this->params.empty()) {
             oss << " ("
-                << join_with(this->params | std::views::transform(
+                << join(this->params | std::views::transform(
                     [](const auto& param) { return std::format("{}: {}", param.name, param.value); }
                 ))
                 << ")";

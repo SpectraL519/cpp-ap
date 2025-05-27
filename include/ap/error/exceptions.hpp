@@ -141,7 +141,7 @@ public:
      */
     explicit argument_deduction_failure(const std::vector<std::string_view>& values)
     : argument_parser_exception(std::format(
-          "Failed to deduce the argument for the given values [{}]", detail::join_with(values)
+          "Failed to deduce the argument for the given values [{}]", detail::join(values)
       )) {}
 };
 

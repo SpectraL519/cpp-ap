@@ -44,12 +44,9 @@ public:
 
     ~range() = default;
 
+    /// @brief Returns `true` if at least one bound (lower, upper) is set. Otherwise returns `false`
     [[nodiscard]] bool is_bound() const noexcept {
         return this->_lower_bound.has_value() or this->_upper_bound.has_value();
-    }
-
-    [[nodiscard]] bool is_unbound() const noexcept {
-        return not this->is_bound();
     }
 
     /**

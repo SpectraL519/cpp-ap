@@ -380,7 +380,7 @@ private:
     std::vector<flag_action_type> _flag_actions;
     std::vector<value_action_type> _value_actions;
 
-    std::size_t _nused = 0u;
+    std::size_t _nused = 0ull;
     std::vector<std::any> _values;
 };
 

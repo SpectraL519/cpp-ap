@@ -131,7 +131,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_FALSE(desc.params.empty());
     const auto& choices_param = desc.params.back();
     CHECK_EQ(choices_param.name, "choices");
-    CHECK_EQ(choices_param.value, ap::detail::join_with(choices, ", "));
+    CHECK_EQ(choices_param.value, ap::detail::join(choices, ", "));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true") {
