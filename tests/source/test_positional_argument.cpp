@@ -154,18 +154,18 @@ TEST_CASE_FIXTURE(
     CHECK(is_used(sut));
 }
 
-TEST_CASE_FIXTURE(positional_argument_test_fixture, "nused() should return 0 by default") {
+TEST_CASE_FIXTURE(positional_argument_test_fixture, "count() should return 0 by default") {
     const auto sut = init_arg(primary_name);
-    CHECK_EQ(get_nused(sut), 0ull);
+    CHECK_EQ(get_count(sut), 0ull);
 }
 
 TEST_CASE_FIXTURE(
-    positional_argument_test_fixture, "nused() should return 1 when argument contains a value"
+    positional_argument_test_fixture, "count() should return 1 when argument contains a value"
 ) {
     auto sut = init_arg(primary_name);
     set_value(sut, value_1);
 
-    CHECK_EQ(get_nused(sut), 1ull);
+    CHECK_EQ(get_count(sut), 1ull);
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "has_value() should return false by default") {

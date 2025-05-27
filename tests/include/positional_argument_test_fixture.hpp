@@ -44,8 +44,8 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    [[nodiscard]] std::size_t get_nused(const positional<T>& arg) const {
-        return arg.nused();
+    [[nodiscard]] std::size_t get_count(const positional<T>& arg) const {
+        return arg.count();
     }
 
     template <c_argument_value_type T>

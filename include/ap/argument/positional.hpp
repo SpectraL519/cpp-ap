@@ -173,7 +173,7 @@ private:
     }
 
     /// @return The number of times the positional argument is used.
-    [[nodiscard]] std::size_t nused() const noexcept override {
+    [[nodiscard]] std::size_t count() const noexcept override {
         return static_cast<std::size_t>(this->_value.has_value());
     }
 
@@ -201,7 +201,7 @@ private:
             std::visit(apply_visitor, action);
 
         this->_value = value;
-        return true;
+        return false;
     }
 
     /// @return True if the positional argument has a value, false otherwise.

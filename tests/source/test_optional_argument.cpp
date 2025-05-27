@@ -202,9 +202,9 @@ TEST_CASE_FIXTURE(
     CHECK(is_used(sut));
 }
 
-TEST_CASE_FIXTURE(optional_argument_test_fixture, "nused() should return 0 by default") {
+TEST_CASE_FIXTURE(optional_argument_test_fixture, "count() should return 0 by default") {
     const auto sut = init_arg(primary_name);
-    CHECK_EQ(get_nused(sut), 0ull);
+    CHECK_EQ(get_count(sut), 0ull);
 }
 
 TEST_CASE_FIXTURE(
@@ -214,11 +214,11 @@ TEST_CASE_FIXTURE(
 ) {
     auto sut = init_arg(primary_name);
 
-    constexpr std::size_t nused = 5ull;
-    for (std::size_t n = 0ull; n < nused; ++n)
+    constexpr std::size_t count = 5ull;
+    for (std::size_t n = 0ull; n < count; ++n)
         mark_used(sut);
 
-    CHECK_EQ(get_nused(sut), nused);
+    CHECK_EQ(get_count(sut), count);
 }
 
 TEST_CASE_FIXTURE(

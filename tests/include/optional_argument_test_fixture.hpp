@@ -31,8 +31,8 @@ struct optional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
-    std::size_t get_nused(const optional<T>& arg) const {
-        return arg.nused();
+    std::size_t get_count(const optional<T>& arg) const {
+        return arg.count();
     }
 
     template <c_argument_value_type T>

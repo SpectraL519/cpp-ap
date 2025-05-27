@@ -121,7 +121,6 @@ private:
     range(const std::optional<count_type> lower_bound, const std::optional<count_type> upper_bound)
     : _lower_bound(lower_bound), _upper_bound(upper_bound) {}
 
-    // TODO: make the bound vars public
     std::optional<count_type> _lower_bound;
     std::optional<count_type> _upper_bound;
 

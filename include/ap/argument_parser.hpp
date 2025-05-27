@@ -349,7 +349,7 @@ public:
      */
     [[nodiscard]] std::size_t count(std::string_view arg_name) const noexcept {
         const auto arg_opt = this->_get_argument(arg_name);
-        return arg_opt ? arg_opt->get().nused() : 0ull;
+        return arg_opt ? arg_opt->get().count() : 0ull;
     }
 
     /**

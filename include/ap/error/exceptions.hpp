@@ -13,8 +13,6 @@
 
 namespace ap {
 
-// TODO: add [] or `` around arg names in error msgs
-
 /**
  * @brief Base class for exceptions thrown by the argument parser.
  *

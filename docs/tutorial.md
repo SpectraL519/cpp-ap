@@ -258,9 +258,9 @@ Apart from the common parameters listed above, for optional arguments you can al
     parser.add_optional_argument("input", "i").nargs(ap::nargs::any());
     ```
 
-> [!NOTE]
+> [!IMPORTANT]
 >
-> The default nargs value is `1`.
+> The default `nargs` parameter value is `ap::nargs::any()`.
 
 #### `default_value` - The default value for an argument which will be used if no values for this argument are parsed
 

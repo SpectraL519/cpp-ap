@@ -253,20 +253,20 @@ private:
 
     /// @brief Mark the optional argument as used.
     bool mark_used() override {
-        ++this->_nused;
+        ++this->_count;
         for (const auto& action : this->_flag_actions)
             action();
-        return true;
+        return this->_accepts_further_values();
     }
 
     /// @return True if the optional argument is used, false otherwise.
     [[nodiscard]] bool is_used() const noexcept override {
-        return this->_nused > 0;
+        return this->_count > 0;
     }
 
     /// @return The number of times the optional argument is used.
-    [[nodiscard]] std::size_t nused() const noexcept override {
-        return this->_nused;
+    [[nodiscard]] std::size_t count() const noexcept override {
+        return this->_count;
     }
 
     /**
@@ -380,7 +380,7 @@ private:
     std::vector<flag_action_type> _flag_actions;
     std::vector<value_action_type> _value_actions;
 
-    std::size_t _nused = 0ull;
+    std::size_t _count = 0ull;
     std::vector<std::any> _values;
 };
 
