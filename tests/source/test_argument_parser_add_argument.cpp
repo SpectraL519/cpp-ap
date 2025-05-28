@@ -24,7 +24,7 @@ struct test_argument_parser_add_argument : public argument_parser_test_fixture {
     [[nodiscard]] auto invalid_name_pattern_err_msg(
         const std::string_view arg_name, const std::string_view reason
     ) const noexcept {
-        return ap::error::invalid_argument_name_pattern(arg_name, reason).what();
+        return ap::configuration_error::invalid_argument_name(arg_name, reason).what();
     }
 };
 
@@ -56,13 +56,13 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.add_positional_argument(primary_name),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::error::invalid_argument_name_pattern
+        ap::configuration_error
     );
 
     CHECK_THROWS_WITH_AS(
         sut.add_optional_argument(primary_name),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::error::invalid_argument_name_pattern
+        ap::configuration_error
     );
 }
 
@@ -94,13 +94,13 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.add_positional_argument(primary_name, secondary_name_1),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::error::invalid_argument_name_pattern
+        ap::configuration_error
     );
 
     CHECK_THROWS_WITH_AS(
         sut.add_optional_argument(primary_name, secondary_name_1),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::error::invalid_argument_name_pattern
+        ap::configuration_error
     );
 }
 
@@ -132,13 +132,13 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.add_positional_argument(primary_name_1, secondary_name),
         invalid_name_pattern_err_msg(secondary_name, reason),
-        ap::error::invalid_argument_name_pattern
+        ap::configuration_error
     );
 
     CHECK_THROWS_WITH_AS(
         sut.add_optional_argument(primary_name_1, secondary_name),
         invalid_name_pattern_err_msg(secondary_name, reason),
-        ap::error::invalid_argument_name_pattern
+        ap::configuration_error
     );
 }
 

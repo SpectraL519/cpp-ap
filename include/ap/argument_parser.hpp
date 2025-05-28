@@ -138,7 +138,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
-     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::configuration_error
      * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
@@ -161,7 +161,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
-     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::configuration_error
      * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
@@ -186,7 +186,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::configuration_error
      * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
@@ -209,7 +209,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::configuration_error
      * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
@@ -492,16 +492,16 @@ private:
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
-     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::configuration_error
      */
     void _verify_arg_name_pattern(const std::string_view arg_name) const {
         if (arg_name.empty())
-            throw error::invalid_argument_name_pattern(
+            throw configuration_error::invalid_argument_name(
                 arg_name, "An argument name cannot be empty."
             );
 
         if (arg_name.front() == this->_flag_prefix_char)
-            throw error::invalid_argument_name_pattern(
+            throw configuration_error::invalid_argument_name(
                 arg_name,
                 std::format(
                     "An argument name cannot begin with a flag prefix character ({}).",
@@ -510,7 +510,7 @@ private:
             );
 
         if (std::isdigit(arg_name.front()))
-            throw error::invalid_argument_name_pattern(
+            throw configuration_error::invalid_argument_name(
                 arg_name, "An argument name cannot begin with a digit."
             );
     }
