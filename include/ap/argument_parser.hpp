@@ -139,7 +139,6 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::configuration_error
-     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -149,7 +148,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw configuration_error::argument_name_used(arg_name);
 
         this->_positional_args.emplace_back(std::make_unique<argument::positional<T>>(arg_name));
         return static_cast<argument::positional<T>&>(*this->_positional_args.back());
@@ -162,7 +161,6 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::configuration_error
-     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -175,7 +173,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw configuration_error::argument_name_used(arg_name);
 
         this->_positional_args.emplace_back(std::make_unique<argument::positional<T>>(arg_name));
         return static_cast<argument::positional<T>&>(*this->_positional_args.back());
@@ -187,7 +185,6 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
      * @throws ap::configuration_error
-     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -197,7 +194,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw configuration_error::argument_name_used(arg_name);
 
         this->_optional_args.push_back(std::make_unique<argument::optional<T>>(arg_name));
         return static_cast<argument::optional<T>&>(*this->_optional_args.back());
@@ -210,7 +207,6 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      * @throws ap::configuration_error
-     * @throws ap::error::argument_name_used
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -223,7 +219,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw configuration_error::argument_name_used(arg_name);
 
         this->_optional_args.emplace_back(std::make_unique<argument::optional<T>>(arg_name));
         return static_cast<argument::optional<T>&>(*this->_optional_args.back());
@@ -608,7 +604,7 @@ private:
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
-     * @throws ap::error::argument_deduction_failure
+     * @throws ap::parsing_error
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens) {
         arg_token_list_iterator_t token_it = arg_tokens.begin();
@@ -619,7 +615,7 @@ private:
         this->_parse_optional_args(token_it, arg_tokens.end(), dangling_values);
 
         if (not dangling_values.empty())
-            throw error::argument_deduction_failure(dangling_values);
+            throw parsing_error::argument_deduction_failure(dangling_values);
     }
 
     /**
@@ -648,7 +644,7 @@ private:
      * @param tokens_end The token list end iterator.
      * @param dangling_values Reference to the vector into which the dangling values shall be collected.
      * @throws ap::error::argument_not_found
-     * @throws ap::error::argument_deduction_failure
+     * @throws ap::parsing_error
      * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
     void _parse_optional_args(
@@ -662,7 +658,7 @@ private:
             switch (token_it->type) {
             case detail::argument_token::t_flag: {
                 if (not dangling_values.empty())
-                    throw error::argument_deduction_failure(dangling_values);
+                    throw parsing_error::argument_deduction_failure(dangling_values);
 
                 auto opt_arg_it = std::ranges::find_if(
                     this->_optional_args, this->_name_match_predicate(token_it->value)
@@ -706,30 +702,30 @@ private:
 
     /**
      * @brief Check if all required positional and optional arguments are used.
-     * @throws ap::error::required_argument_not_parsed
+     * @throws ap::parsing_error
      */
     void _verify_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used()) // ? use has_parsed_values
-                throw error::required_argument_not_parsed(arg->name());
+                throw parsing_error::required_argument_not_parsed(arg->name());
 
         for (const auto& arg : this->_optional_args)
             if (arg->is_required() and not arg->has_value())
-                throw error::required_argument_not_parsed(arg->name());
+                throw parsing_error::required_argument_not_parsed(arg->name());
     }
 
     /**
      * @brief Check if the number of argument values is within the specified range.
-     * @throws ap::error::invalid_nvalues
+     * @throws ap::parsing_error
      */
     void _verify_nvalues() const {
         for (const auto& arg : this->_positional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw error::invalid_nvalues(nv_ord, arg->name());
+                throw parsing_error::invalid_nvalues(nv_ord, arg->name());
 
         for (const auto& arg : this->_optional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw error::invalid_nvalues(nv_ord, arg->name());
+                throw parsing_error::invalid_nvalues(nv_ord, arg->name());
     }
 
     /**

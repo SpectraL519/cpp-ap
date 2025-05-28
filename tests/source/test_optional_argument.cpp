@@ -412,7 +412,7 @@ TEST_CASE_FIXTURE(
         REQUIRE_NOTHROW(set_value(sut, value));
     }
 
-    CHECK_THROWS_AS(set_value(sut, arbitrary_value), ap::error::invalid_nvalues);
+    CHECK_THROWS_AS(set_value(sut, arbitrary_value), ap::parsing_error);
 }
 
 TEST_CASE_FIXTURE(

@@ -87,7 +87,7 @@ TEST_CASE_FIXTURE(
     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
     arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(n_positional_args)));
 
-    CHECK_THROWS_AS(parse_args_impl(arg_tokens), ap::error::argument_deduction_failure);
+    CHECK_THROWS_AS(parse_args_impl(arg_tokens), ap::parsing_error);
 }
 
 TEST_CASE_FIXTURE(
@@ -139,7 +139,7 @@ TEST_CASE_FIXTURE(
 
     auto argv = to_char_2d_array(argv_vec);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::parsing_error);
 
     free_argv(argc, argv);
 }
@@ -161,7 +161,7 @@ TEST_CASE_FIXTURE(
 
     auto argv = to_char_2d_array(argv_vec);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::parsing_error);
 
     free_argv(argc, argv);
 }
@@ -179,7 +179,7 @@ TEST_CASE_FIXTURE(
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::parsing_error);
 
     free_argv(argc, argv);
 }
@@ -197,7 +197,7 @@ TEST_CASE_FIXTURE(
     sut.add_optional_argument(range_arg_name.primary, range_arg_name.secondary.value())
         .nargs(at_least(1ull));
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::invalid_nvalues);
+    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::parsing_error);
 
     free_argv(argc, argv);
 }
