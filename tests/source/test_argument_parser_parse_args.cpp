@@ -330,7 +330,7 @@ TEST_CASE_FIXTURE(
     "value() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::error::argument_not_found);
+    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::lookup_failure);
 }
 
 TEST_CASE_FIXTURE(
@@ -364,8 +364,7 @@ TEST_CASE_FIXTURE(
 
         REQUIRE(sut.has_value(arg_name.primary));
         CHECK_THROWS_AS(
-            discard_result(sut.value<invalid_value_type>(arg_name.primary)),
-            ap::error::invalid_value_type
+            discard_result(sut.value<invalid_value_type>(arg_name.primary)), ap::type_error
         );
     }
 
@@ -424,9 +423,7 @@ TEST_CASE_FIXTURE(
     "value_or() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(
-        discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::error::argument_not_found
-    );
+    CHECK_THROWS_AS(discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::lookup_failure);
 }
 
 TEST_CASE_FIXTURE(
@@ -449,7 +446,7 @@ TEST_CASE_FIXTURE(
         CHECK_THROWS_AS(
             discard_result(sut.value_or<invalid_value_type>(arg_name.primary, invalid_value_type{})
             ),
-            ap::error::invalid_value_type
+            ap::type_error
         );
     }
 
@@ -644,13 +641,13 @@ TEST_CASE_FIXTURE(
     // parse args
     sut.parse_args(argc, argv);
 
-    REQUIRE_THROWS_AS(
+    CHECK_THROWS_AS(
         discard_result(sut.values<invalid_argument_value_type>(optional_primary_name)),
-        ap::error::invalid_value_type
+        ap::type_error
     );
-    REQUIRE_THROWS_AS(
+    CHECK_THROWS_AS(
         discard_result(sut.values<invalid_argument_value_type>(optional_secondary_name)),
-        ap::error::invalid_value_type
+        ap::type_error
     );
 
     free_argv(argc, argv);

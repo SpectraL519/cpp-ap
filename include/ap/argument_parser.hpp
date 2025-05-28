@@ -352,21 +352,20 @@ public:
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
-     * @throws ap::error::argument_not_found
-     * @throws ap::error::invalid_value_type
+     * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string>
     [[nodiscard]] T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found(arg_name);
+            throw lookup_failure::argument_not_found(arg_name);
 
         const auto& arg_value = arg_opt->get().value();
         try {
             return std::any_cast<T>(arg_value);
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type(arg_opt->get().name(), typeid(T));
+            throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
         }
     }
 
@@ -376,14 +375,13 @@ public:
      * @param arg_name The name of the argument.
      * @param default_value The default value.
      * @return The value of the argument.
-     * @throws ap::error::argument_not_found
-     * @throws ap::error::invalid_value_type
+     * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
     [[nodiscard]] T value_or(std::string_view arg_name, U&& default_value) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found(arg_name);
+            throw lookup_failure::argument_not_found(arg_name);
 
         try {
             const auto& arg_value = arg_opt->get().value();
@@ -395,7 +393,7 @@ public:
             return T{std::forward<U>(default_value)};
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type(arg_opt->get().name(), typeid(T));
+            throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
         }
     }
 
@@ -403,14 +401,13 @@ public:
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
-     * @throws ap::error::argument_not_found
-     * @throws ap::error::invalid_value_type
+     * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found(arg_name);
+            throw lookup_failure::argument_not_found(arg_name);
 
         const auto& arg = arg_opt->get();
 
@@ -429,7 +426,7 @@ public:
             return values;
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type(arg.name(), typeid(T));
+            throw type_error::invalid_value_type(arg.name(), typeid(T));
         }
     }
 
@@ -643,7 +640,6 @@ private:
      * @param token_it Iterator for iterating through command-line argument tokens.
      * @param tokens_end The token list end iterator.
      * @param dangling_values Reference to the vector into which the dangling values shall be collected.
-     * @throws ap::error::argument_not_found
      * @throws ap::parsing_failure
      * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
@@ -665,7 +661,7 @@ private:
                 );
 
                 if (opt_arg_it == this->_optional_args.end())
-                    throw error::argument_not_found(token_it->value);
+                    throw parsing_failure::unknown_argument(token_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 if (not curr_opt_arg->get()->mark_used())

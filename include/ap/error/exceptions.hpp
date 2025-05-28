@@ -13,23 +13,18 @@
 
 namespace ap {
 
-/**
- * @brief Base class for exceptions thrown by the argument parser.
- *
- * This class derives from `std::runtime_error` and serves as the base class for all
- * exceptions related to the argument parser functionality.
- */
+/// @brief Base type for the argument parser functionality errors/exceptions.
 class argument_parser_exception : public std::runtime_error {
 public:
-    /**
-     * @param message A descriptive error message providing information about the exception.
-     */
+    /// @param message A descriptive message providing information about the exception.
     explicit argument_parser_exception(const std::string& message) : std::runtime_error(message) {}
 };
 
+/// @brief ...
 class invalid_configuration : public argument_parser_exception {
 public:
-    explicit invalid_configuration(const std::string& message) : argument_parser_exception(message) {}
+    explicit invalid_configuration(const std::string& message)
+    : argument_parser_exception(message) {}
 
     static invalid_configuration invalid_argument_name(
         const std::string_view arg_name, const std::string_view reason
@@ -39,14 +34,20 @@ public:
         );
     }
 
-    static invalid_configuration argument_name_used(const detail::argument_name& arg_name) noexcept {
+    static invalid_configuration argument_name_used(const detail::argument_name& arg_name
+    ) noexcept {
         return invalid_configuration(std::format("Given name [{}] already used.", arg_name.str()));
     }
 };
 
+/// @brief
 class parsing_failure : public argument_parser_exception {
 public:
     explicit parsing_failure(const std::string& message) : argument_parser_exception(message) {}
+
+    static parsing_failure unknown_argument(const std::string_view arg_name) noexcept {
+        return parsing_failure(std::format("Unknown argument [{}].", arg_name));
+    }
 
     static parsing_failure value_already_set(const detail::argument_name& arg_name) noexcept {
         return parsing_failure(
@@ -98,34 +99,31 @@ public:
     }
 };
 
-namespace error {
-
-/// @brief Exception thrown when an argument with a specific name is not found.
-class argument_not_found : public argument_parser_exception {
+/// @brief ...
+/// \todo Use demangled type names
+class type_error : public argument_parser_exception {
 public:
-    /**
-     * @param arg_name The name of the argument that was not found.
-     */
-    explicit argument_not_found(const std::string_view& arg_name)
-    : argument_parser_exception(std::format("Argument with given name [{}] not found.", arg_name)) {
+    explicit type_error(const std::string& message) : argument_parser_exception(message) {}
+
+    static type_error invalid_value_type(
+        const detail::argument_name& arg_name, const std::type_info& value_type
+    ) noexcept {
+        return type_error(std::format(
+            "Invalid value type specified for argument [{}] = {}.",
+            arg_name.str(),
+            value_type.name()
+        ));
     }
 };
 
-/// @brief Exception thrown when there is an attempt to cast to an invalid type.
-class invalid_value_type : public argument_parser_exception {
+/// @brief ...
+class lookup_failure : public argument_parser_exception {
 public:
-    /**
-     * @brief Constructor for the invalid_value_type class.
-     * @param arg_name The name of the argument that had invalid value type.
-     * @param value_type The type information that failed to cast.
-     */
-    explicit invalid_value_type(
-        const detail::argument_name& arg_name, const std::type_info& value_type
-    )
-    : argument_parser_exception(std::format(
-          "Invalid value type specified for argument [{}] = {}.", arg_name.str(), value_type.name()
-      )) {}
+    explicit lookup_failure(const std::string& message) : argument_parser_exception(message) {}
+
+    static lookup_failure argument_not_found(const std::string_view& arg_name) noexcept {
+        return lookup_failure(std::format("Argument with given name [{}] not found.", arg_name));
+    }
 };
 
-} // namespace error
 } // namespace ap
