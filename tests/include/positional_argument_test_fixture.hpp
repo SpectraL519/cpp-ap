@@ -25,7 +25,7 @@ struct positional_argument_test_fixture {
 
     template <c_argument_value_type T>
     [[nodiscard]] const std::optional<std::string>& get_help(const positional<T>& arg) const {
-        return arg.help();
+        return arg._help_msg;
     }
 
     template <c_argument_value_type T>

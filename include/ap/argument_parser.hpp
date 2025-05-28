@@ -483,9 +483,9 @@ public:
 #endif
 
 private:
-    using arg_ptr_t = std::unique_ptr<detail::argument_interface>;
+    using arg_ptr_t = std::unique_ptr<detail::argument_base>;
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
-    using arg_opt_t = std::optional<std::reference_wrapper<detail::argument_interface>>;
+    using arg_opt_t = std::optional<std::reference_wrapper<detail::argument_base>>;
 
     using arg_token_list_t = std::vector<detail::argument_token>;
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;

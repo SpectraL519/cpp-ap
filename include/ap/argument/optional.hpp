@@ -8,8 +8,8 @@
 
 #include "ap/action/detail/utility.hpp"
 #include "ap/action/predefined_actions.hpp"
+#include "ap/detail/argument_base.hpp"
 #include "ap/detail/argument_descriptor.hpp"
-#include "ap/detail/argument_interface.hpp"
 #include "ap/detail/concepts.hpp"
 #include "ap/nargs/range.hpp"
 
@@ -27,11 +27,11 @@ namespace ap::argument {
  * @brief The optioanl argument class.
  * @tparam T The argument's value type.
  */
-template <ap::detail::c_argument_value_type T = std::string>
-class optional : public ap::detail::argument_interface {
+template <detail::c_argument_value_type T = std::string>
+class optional : public detail::argument_base {
 public:
     using value_type = T; ///< The argument's value type.
-    using count_type = ap::nargs::range::count_type; ///< The argument's value count type.
+    using count_type = nargs::range::count_type; ///< The argument's value count type.
 
     optional() = delete;
 
@@ -39,7 +39,7 @@ public:
      * @brief Constructor for optional argument with the `name` identifier.
      * @param name The `name` identifier of the optional argument.
      */
-    optional(const ap::detail::argument_name& name) : _name(name) {}
+    optional(const detail::argument_name& name) : argument_base(name) {}
 
     ~optional() = default;
 
@@ -87,29 +87,29 @@ public:
      * @param range The nargs range to set.
      * @return Reference to the optional argument.
      */
-    optional& nargs(const ap::nargs::range& range) noexcept {
+    optional& nargs(const nargs::range& range) noexcept {
         this->_nargs_range = range;
         return *this;
     }
 
     /**
      * @brief Set the nargs range for the optional argument.
-     * @param count The count for nargs range.
+     * @param n The exact bound for nargs range.
      * @return Reference to the optional argument.
      */
-    optional& nargs(const count_type count) noexcept {
-        this->_nargs_range = ap::nargs::range(count);
+    optional& nargs(const count_type n) noexcept {
+        this->_nargs_range = nargs::range(n);
         return *this;
     }
 
     /**
      * @brief Set the nargs range for the optional argument.
-     * @param nlow The lower bound for nargs range.
-     * @param nhigh The upper bound for nargs range.
+     * @param lower_bound The lower bound for nargs range.
+     * @param upper_bound The upper bound for nargs range.
      * @return Reference to the optional argument.
      */
-    optional& nargs(const count_type nlow, const count_type nhigh) noexcept {
-        this->_nargs_range = ap::nargs::range(nlow, nhigh);
+    optional& nargs(const count_type lower_bound, const count_type upper_bound) noexcept {
+        this->_nargs_range = nargs::range(lower_bound, upper_bound);
         return *this;
     }
 
@@ -120,10 +120,10 @@ public:
      * @param action The action function to set.
      * @return Reference to the optional argument.
      */
-    template <ap::action::detail::c_action_specifier AS, typename F>
+    template <action::detail::c_action_specifier AS, typename F>
     optional& action(F&& action) noexcept {
-        if constexpr (ap::action::detail::c_value_action_specifier<AS>) {
-            using callable_type = ap::action::detail::callable_type<AS, value_type>;
+        if constexpr (action::detail::c_value_action_specifier<AS>) {
+            using callable_type = action::detail::callable_type<AS, value_type>;
             this->_value_actions.emplace_back(std::forward<callable_type>(action));
         }
         else {
@@ -182,11 +182,6 @@ public:
         return *this;
     }
 
-    /// @return True if argument is optional, false otherwise.
-    [[nodiscard]] bool is_optional() const noexcept override {
-        return this->_optional;
-    }
-
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
@@ -199,18 +194,8 @@ public:
 
 private:
     using value_action_type =
-        ap::action::detail::value_action_variant_type<T>; ///< The argument's value action type.
-    using flag_action_type = typename ap::action_type::on_flag::type;
-
-    /// @return Reference to the name of the optional argument.
-    [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
-        return this->_name;
-    }
-
-    /// @return Reference to the optional help message for the optional argument.
-    [[nodiscard]] const std::optional<std::string>& help() const noexcept override {
-        return this->_help_msg;
-    }
+        action::detail::value_action_variant_type<T>; ///< The argument's value action type.
+    using flag_action_type = typename action_type::on_flag::type;
 
     /**
      * @param verbose The verbosity mode value.
@@ -285,7 +270,7 @@ private:
         if (not (std::istringstream(str_value) >> value))
             throw error::invalid_value(this->_name, str_value);
 
-        if (not this->_is_valid_choice(value))
+        if (not detail::is_valid_choice(value, this->_choices))
             throw error::invalid_choice(this->_name, str_value);
 
         const auto apply_visitor = action::detail::apply_visitor<value_type>{value};
@@ -352,28 +337,13 @@ private:
         return this->_default_value;
     }
 
-    /**
-     * @brief Check if the provided choice is valid for the optional argument.
-     * @param choice The value to check against choices.
-     * @return True if choice is valid, false otherwise.
-     */
-    [[nodiscard]] bool _is_valid_choice(const value_type& choice) const noexcept {
-        // TODO: replace with `std::ranges::contains` after transition to C++23
-        return this->_choices.empty()
-            or std::ranges::find(this->_choices, choice) != this->_choices.end();
-    }
-
     [[nodiscard]] bool _accepts_further_values() const noexcept {
         return not std::is_gt(this->_nargs_range.ordering(this->_values.size() + 1ull));
     }
 
-    static constexpr bool _optional = true;
-    const ap::detail::argument_name _name;
-    std::optional<std::string> _help_msg;
-
     bool _required = false;
     bool _bypass_required = false;
-    ap::nargs::range _nargs_range = nargs::any();
+    nargs::range _nargs_range = nargs::any();
     std::any _default_value;
     std::any _implicit_value;
     std::vector<value_type> _choices;
