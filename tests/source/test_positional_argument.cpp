@@ -202,7 +202,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_NOTHROW(set_value(sut, value_1));
     REQUIRE(has_value(sut));
 
-    CHECK_THROWS_AS(set_value(sut, value_2), ap::parsing_error);
+    CHECK_THROWS_AS(set_value(sut, value_2), ap::parsing_failure);
 }
 
 TEST_CASE_FIXTURE(
@@ -213,12 +213,12 @@ TEST_CASE_FIXTURE(
     auto sut = init_arg(primary_name);
 
     SUBCASE("given string is empty") {
-        REQUIRE_THROWS_AS(set_value(sut, empty_str), ap::parsing_error);
+        REQUIRE_THROWS_AS(set_value(sut, empty_str), ap::parsing_failure);
         CHECK_FALSE(has_value(sut));
     }
 
     SUBCASE("given string is non-convertible to value_type") {
-        REQUIRE_THROWS_AS(set_value(sut, invalid_value_str), ap::parsing_error);
+        REQUIRE_THROWS_AS(set_value(sut, invalid_value_str), ap::parsing_failure);
         CHECK_FALSE(has_value(sut));
     }
 }
@@ -230,7 +230,7 @@ TEST_CASE_FIXTURE(
     auto sut = init_arg(primary_name);
     sut.choices(choices);
 
-    REQUIRE_THROWS_AS(set_value(sut, invalid_choice), ap::parsing_error);
+    REQUIRE_THROWS_AS(set_value(sut, invalid_choice), ap::parsing_failure);
     CHECK_FALSE(has_value(sut));
 }
 

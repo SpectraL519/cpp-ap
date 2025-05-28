@@ -24,7 +24,7 @@ struct test_argument_parser_add_argument : public argument_parser_test_fixture {
     [[nodiscard]] auto invalid_name_pattern_err_msg(
         const std::string_view arg_name, const std::string_view reason
     ) const noexcept {
-        return ap::configuration_error::invalid_argument_name(arg_name, reason).what();
+        return ap::invalid_configuration::invalid_argument_name(arg_name, reason).what();
     }
 };
 
@@ -56,13 +56,13 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.add_positional_argument(primary_name),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::configuration_error
+        ap::invalid_configuration
     );
 
     CHECK_THROWS_WITH_AS(
         sut.add_optional_argument(primary_name),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::configuration_error
+        ap::invalid_configuration
     );
 }
 
@@ -94,13 +94,13 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.add_positional_argument(primary_name, secondary_name_1),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::configuration_error
+        ap::invalid_configuration
     );
 
     CHECK_THROWS_WITH_AS(
         sut.add_optional_argument(primary_name, secondary_name_1),
         invalid_name_pattern_err_msg(primary_name, reason),
-        ap::configuration_error
+        ap::invalid_configuration
     );
 }
 
@@ -132,13 +132,13 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.add_positional_argument(primary_name_1, secondary_name),
         invalid_name_pattern_err_msg(secondary_name, reason),
-        ap::configuration_error
+        ap::invalid_configuration
     );
 
     CHECK_THROWS_WITH_AS(
         sut.add_optional_argument(primary_name_1, secondary_name),
         invalid_name_pattern_err_msg(secondary_name, reason),
-        ap::configuration_error
+        ap::invalid_configuration
     );
 }
 
@@ -155,13 +155,13 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("adding argument with a previously used primary name") {
         CHECK_THROWS_AS(
-            sut.add_positional_argument(primary_name_1, secondary_name_2), ap::configuration_error
+            sut.add_positional_argument(primary_name_1, secondary_name_2), ap::invalid_configuration
         );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
         CHECK_THROWS_AS(
-            sut.add_positional_argument(primary_name_2, secondary_name_1), ap::configuration_error
+            sut.add_positional_argument(primary_name_2, secondary_name_1), ap::invalid_configuration
         );
     }
 }
@@ -179,13 +179,13 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("adding argument with a previously used primary name") {
         CHECK_THROWS_AS(
-            sut.add_optional_argument(primary_name_1, secondary_name_2), ap::configuration_error
+            sut.add_optional_argument(primary_name_1, secondary_name_2), ap::invalid_configuration
         );
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
         CHECK_THROWS_AS(
-            sut.add_optional_argument(primary_name_2, secondary_name_1), ap::configuration_error
+            sut.add_optional_argument(primary_name_2, secondary_name_1), ap::invalid_configuration
         );
     }
 }
@@ -228,11 +228,11 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("adding argument with a previously used primary name") {
-        CHECK_THROWS_AS(sut.add_flag(primary_name_1, secondary_name_2), ap::configuration_error);
+        CHECK_THROWS_AS(sut.add_flag(primary_name_1, secondary_name_2), ap::invalid_configuration);
     }
 
     SUBCASE("adding argument with a previously used secondary name") {
-        CHECK_THROWS_AS(sut.add_flag(primary_name_2, secondary_name_1), ap::configuration_error);
+        CHECK_THROWS_AS(sut.add_flag(primary_name_2, secondary_name_1), ap::invalid_configuration);
     }
 }
 

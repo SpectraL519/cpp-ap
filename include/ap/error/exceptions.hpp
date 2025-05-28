@@ -27,72 +27,72 @@ public:
     explicit argument_parser_exception(const std::string& message) : std::runtime_error(message) {}
 };
 
-class configuration_error : public argument_parser_exception {
+class invalid_configuration : public argument_parser_exception {
 public:
-    explicit configuration_error(const std::string& message) : argument_parser_exception(message) {}
+    explicit invalid_configuration(const std::string& message) : argument_parser_exception(message) {}
 
-    static configuration_error invalid_argument_name(
+    static invalid_configuration invalid_argument_name(
         const std::string_view arg_name, const std::string_view reason
     ) noexcept {
-        return configuration_error(
+        return invalid_configuration(
             std::format("Given name [{}] is invalid.\nReason: {}", arg_name, reason)
         );
     }
 
-    static configuration_error argument_name_used(const detail::argument_name& arg_name) noexcept {
-        return configuration_error(std::format("Given name [{}] already used.", arg_name.str()));
+    static invalid_configuration argument_name_used(const detail::argument_name& arg_name) noexcept {
+        return invalid_configuration(std::format("Given name [{}] already used.", arg_name.str()));
     }
 };
 
-class parsing_error : public argument_parser_exception {
+class parsing_failure : public argument_parser_exception {
 public:
-    explicit parsing_error(const std::string& message) : argument_parser_exception(message) {}
+    explicit parsing_failure(const std::string& message) : argument_parser_exception(message) {}
 
-    static parsing_error value_already_set(const detail::argument_name& arg_name) noexcept {
-        return parsing_error(
+    static parsing_failure value_already_set(const detail::argument_name& arg_name) noexcept {
+        return parsing_failure(
             std::format("Value for argument [{}] has already been set.", arg_name.str())
         );
     }
 
-    static parsing_error invalid_value(
+    static parsing_failure invalid_value(
         const detail::argument_name& arg_name, const std::string& value
     ) noexcept {
-        return parsing_error(
+        return parsing_failure(
             std::format("Cannot parse value `{}` for argument [{}].", value, arg_name.str())
         );
     }
 
-    static parsing_error invalid_choice(
+    static parsing_failure invalid_choice(
         const detail::argument_name& arg_name, const std::string& value
     ) noexcept {
-        return parsing_error(std::format(
+        return parsing_failure(std::format(
             "Value `{}` is not a valid choice for argument [{}].", value, arg_name.str()
         ));
     }
 
-    static parsing_error required_argument_not_parsed(const detail::argument_name& arg_name
+    static parsing_failure required_argument_not_parsed(const detail::argument_name& arg_name
     ) noexcept {
-        return parsing_error(
+        return parsing_failure(
             std::format("No values parsed for a required argument [{}]", arg_name.str())
         );
     }
 
-    static parsing_error argument_deduction_failure(const std::vector<std::string_view>& values
+    static parsing_failure argument_deduction_failure(const std::vector<std::string_view>& values
     ) noexcept {
-        return parsing_error(std::format(
+        return parsing_failure(std::format(
             "Failed to deduce the argument for the given values [{}]", detail::join(values)
         ));
     }
 
-    static parsing_error invalid_nvalues(
+    static parsing_failure invalid_nvalues(
         const std::weak_ordering ordering, const detail::argument_name& arg_name
     ) noexcept {
         if (std::is_lt(ordering))
-            return parsing_error(
+            return parsing_failure(
                 std::format("Not enough values provided for optional argument [{}]", arg_name.str())
             );
         else
-            return parsing_error(
+            return parsing_failure(
                 std::format("Too many values provided for optional argument [{}]", arg_name.str())
             );
     }

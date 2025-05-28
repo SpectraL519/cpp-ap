@@ -166,18 +166,18 @@ private:
      * @brief Set the value for the positional argument.
      * @param str_value The string representation of the value.
      * @return Reference to the positional argument.
-     * @throws ap::parsing_error
+     * @throws ap::parsing_failure
      */
     bool set_value(const std::string& str_value) override {
         if (this->_value.has_value())
-            throw parsing_error::value_already_set(this->_name);
+            throw parsing_failure::value_already_set(this->_name);
 
         value_type value;
         if (not (std::istringstream(str_value) >> value))
-            throw parsing_error::invalid_value(this->_name, str_value);
+            throw parsing_failure::invalid_value(this->_name, str_value);
 
         if (not detail::is_valid_choice(value, this->_choices))
-            throw parsing_error::invalid_choice(this->_name, str_value);
+            throw parsing_failure::invalid_choice(this->_name, str_value);
 
         const auto apply_visitor = action::detail::apply_visitor<value_type>{value};
         for (const auto& action : this->_value_actions)
