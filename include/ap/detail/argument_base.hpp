@@ -2,7 +2,10 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file argument_base.hpp
+/**
+ * @file argument_base.hpp
+ * @brief Defines the base argument class and common utility.
+ */
 
 #pragma once
 
@@ -30,11 +33,17 @@ public:
     friend class ::ap::argument_parser;
 
 protected:
-    /// @return Reference to the name of the argument.
-    virtual const argument_name& name() const noexcept = 0;
+    argument_base(const argument_name& name) : _name(name) {}
 
-    /// @return Optional help message for the argument.
-    virtual const std::optional<std::string>& help() const noexcept = 0;
+    /// @return Reference the name of the positional argument.
+    [[nodiscard]] const ap::detail::argument_name& name() const noexcept {
+        return this->_name;
+    }
+
+    /// @return Optional help message for the positional argument.
+    [[nodiscard]] const std::optional<std::string>& help() const noexcept {
+        return this->_help_msg;
+    }
 
     /**
      * @param verbose The verbosity mode value.
@@ -81,7 +90,22 @@ protected:
 
     /// @return Reference to the vector of parsed values of the argument.
     virtual const std::vector<std::any>& values() const = 0;
+
+    const ap::detail::argument_name _name;
+    std::optional<std::string> _help_msg;
 };
+
+/**
+ * @brief Checks if the provided choice is valid for the given set of choices.
+ * @param value A value, the validity of which is to be checked.
+ * @param choices The set against which the choice validity will be checked.
+ * @return `true` if the choice is valid, `false` otherwise.
+ */
+template <c_argument_value_type T>
+[[nodiscard]] bool is_valid_choice(const T& value, const std::vector<T>& choices) noexcept {
+    // TODO: replace with `std::ranges::contains` after transition to C++23
+    return choices.empty() or std::ranges::find(choices, value) != choices.end();
+}
 
 } // namespace detail
 } // namespace ap

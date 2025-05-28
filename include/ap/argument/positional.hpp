@@ -25,8 +25,8 @@ namespace ap::argument {
  * @brief The positional argument class.
  * @tparam T The argument's value type.
  */
-template <ap::detail::c_argument_value_type T = std::string>
-class positional : public ap::detail::argument_base {
+template <detail::c_argument_value_type T = std::string>
+class positional : public detail::argument_base {
 public:
     using value_type = T; ///< The argument's value type.
 
@@ -36,7 +36,7 @@ public:
      * @brief Constructor for positional argument with the `name` identifier.
      * @param name The `name` identifier of the positional argument.
      */
-    positional(const ap::detail::argument_name& name) : _name(name) {}
+    positional(const detail::argument_name& name) : argument_base(name) {}
 
     ~positional() = default;
 
@@ -95,9 +95,9 @@ public:
      * @param action The action function to set.
      * @return Reference to the positional argument.
      */
-    template <ap::action::detail::c_value_action_specifier AS, std::invocable<value_type&> F>
+    template <action::detail::c_value_action_specifier AS, std::invocable<value_type&> F>
     positional& action(F&& action) noexcept {
-        using callable_type = ap::action::detail::callable_type<AS, value_type>;
+        using callable_type = action::detail::callable_type<AS, value_type>;
         this->_value_actions.emplace_back(std::forward<callable_type>(action));
         return *this;
     }
@@ -119,17 +119,7 @@ public:
 
 private:
     using value_action_type =
-        ap::action::detail::value_action_variant_type<T>; ///< The argument's value action type.
-
-    /// @return Reference the name of the positional argument.
-    [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
-        return this->_name;
-    }
-
-    /// @return Optional help message for the positional argument.
-    [[nodiscard]] const std::optional<std::string>& help() const noexcept override {
-        return this->_help_msg;
-    }
+        action::detail::value_action_variant_type<T>; ///< The argument's value action type.
 
     /**
      * @param verbose The verbosity mode value.
@@ -193,7 +183,7 @@ private:
         if (not (std::istringstream(str_value) >> value))
             throw error::invalid_value(this->_name, str_value);
 
-        if (not this->_is_valid_choice(value))
+        if (not detail::is_valid_choice(value, this->_choices))
             throw error::invalid_choice(this->_name, str_value);
 
         const auto apply_visitor = action::detail::apply_visitor<value_type>{value};
@@ -241,21 +231,7 @@ private:
         );
     }
 
-    /**
-     * @brief Check if the provided choice is valid for the positional argument.
-     * @param choice The value to check against choices.
-     * @return True if the choice valid, false otherwise.
-     */
-    [[nodiscard]] bool _is_valid_choice(const value_type& choice) const noexcept {
-        // TODO: replace with `std::ranges::contains` after transition to C++23
-        return this->_choices.empty()
-            or std::ranges::find(this->_choices, choice) != this->_choices.end();
-    }
-
     static constexpr bool _optional = false;
-
-    const ap::detail::argument_name _name;
-    std::optional<std::string> _help_msg;
 
     static constexpr bool _required = true;
     static constexpr bool _bypass_required = false;
