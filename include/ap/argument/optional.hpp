@@ -182,11 +182,6 @@ public:
         return *this;
     }
 
-    /// @return True if argument is optional, false otherwise.
-    [[nodiscard]] bool is_optional() const noexcept override {
-        return this->_optional;
-    }
-
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
@@ -345,8 +340,6 @@ private:
     [[nodiscard]] bool _accepts_further_values() const noexcept {
         return not std::is_gt(this->_nargs_range.ordering(this->_values.size() + 1ull));
     }
-
-    static constexpr bool _optional = true;
 
     bool _required = false;
     bool _bypass_required = false;

@@ -102,11 +102,6 @@ public:
         return *this;
     }
 
-    /// @return True if argument is optional, false otherwise.
-    [[nodiscard]] bool is_optional() const noexcept override {
-        return this->_optional;
-    }
-
     /// @brief Friend class declaration for access by argument_parser.
     friend class ::ap::argument_parser;
 
@@ -230,8 +225,6 @@ private:
             std::format("Positional argument `{}` has only 1 value.", this->_name.primary)
         );
     }
-
-    static constexpr bool _optional = false;
 
     static constexpr bool _required = true;
     static constexpr bool _bypass_required = false;

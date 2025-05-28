@@ -40,11 +40,6 @@ constexpr sut_value_type invalid_choice = 4;
 
 TEST_SUITE_BEGIN("test_positional_argument");
 
-TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_optional() should return false") {
-    const auto sut = init_arg(primary_name);
-    CHECK_FALSE(sut.is_optional());
-}
-
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "name() should return the proper argument_name instance"
 ) {

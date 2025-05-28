@@ -27,9 +27,6 @@ class argument_base {
 public:
     virtual ~argument_base() = default;
 
-    /// @return `true` if the argument is optional, `false` otherwise.
-    virtual bool is_optional() const noexcept = 0;
-
     friend class ::ap::argument_parser;
 
 protected:

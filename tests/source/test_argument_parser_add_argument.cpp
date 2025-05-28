@@ -3,6 +3,7 @@
 #include "argument_parser_test_fixture.hpp"
 #include "doctest.h"
 #include "optional_argument_test_fixture.hpp"
+#include "utility.hpp"
 
 using namespace ap_testing;
 using namespace ap::argument;
@@ -143,14 +144,6 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "add_positional_argument should return a positional argument reference"
-) {
-    const auto& argument = sut.add_positional_argument(primary_name_1, secondary_name_1);
-    CHECK_FALSE(argument.is_optional());
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
     "add_positional_argument should throw only when adding an"
     "argument with a previously used name"
 ) {
@@ -173,14 +166,6 @@ TEST_CASE_FIXTURE(
             ap::error::argument_name_used
         );
     }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
-    "add_optional_argument should return an optional argument reference"
-) {
-    const auto& argument = sut.add_optional_argument(primary_name_1, secondary_name_1);
-    CHECK(argument.is_optional());
 }
 
 TEST_CASE_FIXTURE(
@@ -218,7 +203,7 @@ TEST_CASE_FIXTURE(
     SUBCASE("StoreImplicitly = true") {
         auto& argument = sut.add_flag(primary_name_1, secondary_name_1);
 
-        REQUIRE(argument.is_optional());
+        REQUIRE(is_optional<bool>(argument));
         CHECK_FALSE(sut.value<bool>(primary_name_1));
 
         opt_arg_fixture.mark_used(argument);
@@ -228,7 +213,7 @@ TEST_CASE_FIXTURE(
     SUBCASE("StoreImplicitly = false") {
         auto& argument = sut.add_flag<false>(primary_name_1, secondary_name_1);
 
-        REQUIRE(argument.is_optional());
+        REQUIRE(is_optional<bool>(argument));
         CHECK(sut.value<bool>(primary_name_1));
 
         opt_arg_fixture.mark_used(argument);
@@ -267,11 +252,11 @@ TEST_CASE_FIXTURE(
 
     const auto input_arg = get_argument("input");
     REQUIRE(input_arg);
-    REQUIRE_FALSE(input_arg->get().is_optional());
+    CHECK(is_positional<std::string>(input_arg.value()));
 
     const auto output_arg = get_argument("output");
     REQUIRE(output_arg);
-    REQUIRE_FALSE(output_arg->get().is_optional());
+    CHECK(is_positional<std::string>(output_arg.value()));
 }
 
 TEST_CASE_FIXTURE(
@@ -304,15 +289,16 @@ TEST_CASE_FIXTURE(
 
     const auto help_arg = get_argument(help_flag);
     REQUIRE(help_arg);
-    CHECK(help_arg->get().is_optional());
+    CHECK(is_optional<bool>(help_arg.value()));
 
     const auto input_arg = get_argument(input_flag);
     REQUIRE(input_arg);
-    CHECK(input_arg->get().is_optional());
+    CHECK(is_optional<std::string>(input_arg.value()));
+
 
     const auto output_arg = get_argument(output_flag);
     REQUIRE(output_arg);
-    CHECK(output_arg->get().is_optional());
+    CHECK(is_optional<std::string>(output_arg.value()));
 }
 
 TEST_SUITE_END();

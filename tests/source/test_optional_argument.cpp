@@ -47,11 +47,6 @@ const range non_default_range = range{1ull, choices.size()};
 
 TEST_SUITE_BEGIN("test_optional_argument");
 
-TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_optional() should return true") {
-    const auto sut = init_arg(primary_name);
-    CHECK(sut.is_optional());
-}
-
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "name() should return the proper argument_name instance"
 ) {
