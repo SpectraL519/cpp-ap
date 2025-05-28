@@ -2,7 +2,7 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file argument_interface.hpp
+/// @file argument_base.hpp
 
 #pragma once
 
@@ -20,23 +20,12 @@ class argument_parser;
 namespace detail {
 
 /// @brief Argument class interface
-class argument_interface {
+class argument_base {
 public:
-    virtual ~argument_interface() = default;
+    virtual ~argument_base() = default;
 
-    /// @return True if the argument is optional, false otherwise.
+    /// @return `true` if the argument is optional, `false` otherwise.
     virtual bool is_optional() const noexcept = 0;
-
-    /**
-     * @brief Overloaded stream insertion operator.
-     * @param os The output stream.
-     * @param argument The argument_interface to output.
-     * @return The output stream.
-     */
-    friend std::ostream& operator<<(std::ostream& os, const argument_interface& argument) noexcept {
-        os << argument.name() << " : " << argument.help().value_or("No help message provided");
-        return os;
-    }
 
     friend class ::ap::argument_parser;
 
@@ -53,10 +42,10 @@ protected:
      */
     virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
 
-    /// @return True if the argument is required, false otherwise
+    /// @return `true` if the argument is required, `false` otherwise
     virtual bool is_required() const noexcept = 0;
 
-    /// @return True if bypassing the required status is enabled for the argument, false otherwise.
+    /// @return `true` if bypassing the required status is enabled for the argument, `false` otherwise.
     virtual bool bypass_required_enabled() const noexcept = 0;
 
     /**
@@ -65,7 +54,7 @@ protected:
      */
     virtual bool mark_used() = 0;
 
-    /// @return True if the argument has been used, false otherwise.
+    /// @return `true` if the argument has been used, `false` otherwise.
     virtual bool is_used() const noexcept = 0;
 
     /// @return The number of times the positional argument is used.
@@ -78,10 +67,10 @@ protected:
      */
     virtual bool set_value(const std::string& value) = 0;
 
-    /// @return True if the argument has a value, false otherwise.
+    /// @return `true` if the argument has a value, `false` otherwise.
     virtual bool has_value() const noexcept = 0;
 
-    /// @return True if the argument has parsed values., false otherwise.
+    /// @return `true` if the argument has parsed values., `false` otherwise.
     virtual bool has_parsed_values() const noexcept = 0;
 
     /// @return The ordering relationship of argument range.

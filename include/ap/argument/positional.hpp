@@ -8,7 +8,7 @@
 
 #include "ap/action/detail/utility.hpp"
 #include "ap/action/predefined_actions.hpp"
-#include "ap/detail/argument_interface.hpp"
+#include "ap/detail/argument_base.hpp"
 #include "ap/detail/concepts.hpp"
 
 #ifdef AP_TESTING
@@ -26,7 +26,7 @@ namespace ap::argument {
  * @tparam T The argument's value type.
  */
 template <ap::detail::c_argument_value_type T = std::string>
-class positional : public ap::detail::argument_interface {
+class positional : public ap::detail::argument_base {
 public:
     using value_type = T; ///< The argument's value type.
 

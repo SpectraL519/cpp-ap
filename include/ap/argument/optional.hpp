@@ -8,8 +8,8 @@
 
 #include "ap/action/detail/utility.hpp"
 #include "ap/action/predefined_actions.hpp"
+#include "ap/detail/argument_base.hpp"
 #include "ap/detail/argument_descriptor.hpp"
-#include "ap/detail/argument_interface.hpp"
 #include "ap/detail/concepts.hpp"
 #include "ap/nargs/range.hpp"
 
@@ -28,7 +28,7 @@ namespace ap::argument {
  * @tparam T The argument's value type.
  */
 template <ap::detail::c_argument_value_type T = std::string>
-class optional : public ap::detail::argument_interface {
+class optional : public ap::detail::argument_base {
 public:
     using value_type = T; ///< The argument's value type.
     using count_type = ap::nargs::range::count_type; ///< The argument's value count type.
