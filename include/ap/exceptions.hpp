@@ -95,7 +95,9 @@ struct parsing_failure : public argument_parser_exception {
                 std::format("Too many values provided for optional argument [{}]", arg_name.str())
             );
 
-        return parsing_failure(std::format("Invalid number of values provided for argument [{}]", arg_name.str()));
+        return parsing_failure(
+            std::format("Invalid number of values provided for argument [{}]", arg_name.str())
+        );
     }
 };
 

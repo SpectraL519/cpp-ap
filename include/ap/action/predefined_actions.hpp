@@ -14,8 +14,6 @@
 
 namespace ap {
 
-// TODO: use std exception types
-
 class argument_parser;
 std::ostream& operator<<(std::ostream& os, const argument_parser&) noexcept;
 
@@ -39,13 +37,15 @@ inline typename ap::action_type::on_flag::type print_config(
     };
 }
 
-/**
- * @brief Returns an *observe* action which checks whether lower_bound file with the given name exists.
- */
+/// @brief Returns an *observe* action which checks whether lower_bound file with the given name exists.
 inline detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept {
     return [](const std::string& file_path) {
         if (not std::filesystem::exists(file_path))
-            throw argument_parser_exception(std::format("File `{}` does not exists!", file_path));
+            throw std::filesystem::filesystem_error(
+                "File does not exists!",
+                file_path,
+                std::make_error_code(std::errc::no_such_file_or_directory)
+            );
     };
 }
 
@@ -58,7 +58,7 @@ template <ap::detail::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (not (value > lower_bound))
-            throw argument_parser_exception(
+            throw std::out_of_range(
                 std::format("Value `{}` must be greater than `{}`!", value, lower_bound)
             );
     };
@@ -73,7 +73,7 @@ template <ap::detail::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (! (value >= lower_bound))
-            throw argument_parser_exception(
+            throw std::out_of_range(
                 std::format("Value `{}` must be greater than or equal to `{}`!", value, lower_bound)
             );
     };
@@ -88,7 +88,7 @@ template <ap::detail::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value < upper_bound))
-            throw argument_parser_exception(
+            throw std::out_of_range(
                 std::format("Value `{}` must be less than `{}`!", value, upper_bound)
             );
     };
@@ -103,7 +103,7 @@ template <ap::detail::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value <= upper_bound))
-            throw argument_parser_exception(
+            throw std::out_of_range(
                 std::format("Value `{}` must be less than or equal to `{}`!", value, upper_bound)
             );
     };
@@ -133,7 +133,7 @@ detail::callable_type<ap::action_type::observe, T> within(
             and (RightInclusive ? value <= upper_bound : value < upper_bound);
 
         if (not is_valid)
-            throw argument_parser_exception(std::format(
+            throw std::out_of_range(std::format(
                 "Value `{}` must be in interval {}{}, {}{}!",
                 value,
                 left_brace,
