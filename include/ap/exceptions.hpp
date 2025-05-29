@@ -78,7 +78,7 @@ struct parsing_failure : public argument_parser_exception {
     static parsing_failure argument_deduction_failure(const std::vector<std::string_view>& values
     ) noexcept {
         return parsing_failure(std::format(
-            "Failed to deduce the argument for the given values [{}]", detail::join(values)
+            "Failed to deduce the argument for values [{}]", detail::join(values)
         ));
     }
 
