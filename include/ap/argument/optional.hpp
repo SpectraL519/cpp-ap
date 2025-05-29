@@ -262,7 +262,7 @@ private:
      */
     bool set_value(const std::string& str_value) override {
         if (not this->_accepts_further_values())
-            throw parsing_failure::invalid_nvalues(std::weak_ordering::greater, this->_name);
+            throw parsing_failure::invalid_nvalues(this->_name, std::weak_ordering::greater);
 
         value_type value;
         if (not (std::istringstream(str_value) >> value))

@@ -14,6 +14,8 @@
 
 namespace ap {
 
+// TODO: use std exception types
+
 class argument_parser;
 std::ostream& operator<<(std::ostream& os, const argument_parser&) noexcept;
 

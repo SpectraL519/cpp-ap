@@ -14,15 +14,13 @@
 namespace ap {
 
 /// @brief Base type for the argument parser functionality errors/exceptions.
-class argument_parser_exception : public std::runtime_error {
-public:
+struct argument_parser_exception : public std::runtime_error {
     /// @param message A descriptive message providing information about the exception.
     explicit argument_parser_exception(const std::string& message) : std::runtime_error(message) {}
 };
 
-/// @brief ...
-class invalid_configuration : public argument_parser_exception {
-public:
+/// @brief Exception type used for invalid configuration of an argument parser or its arguments.
+struct invalid_configuration : public argument_parser_exception {
     explicit invalid_configuration(const std::string& message)
     : argument_parser_exception(message) {}
 
@@ -40,9 +38,8 @@ public:
     }
 };
 
-/// @brief
-class parsing_failure : public argument_parser_exception {
-public:
+/// @brief Exception type used for errors encountered during the argument parsing operation.
+struct parsing_failure : public argument_parser_exception {
     explicit parsing_failure(const std::string& message) : argument_parser_exception(message) {}
 
     static parsing_failure unknown_argument(const std::string_view arg_name) noexcept {
@@ -86,23 +83,25 @@ public:
     }
 
     static parsing_failure invalid_nvalues(
-        const std::weak_ordering ordering, const detail::argument_name& arg_name
+        const detail::argument_name& arg_name, const std::weak_ordering ordering
     ) noexcept {
         if (std::is_lt(ordering))
             return parsing_failure(
                 std::format("Not enough values provided for optional argument [{}]", arg_name.str())
             );
-        else
+
+        if (std::is_gt(ordering))
             return parsing_failure(
                 std::format("Too many values provided for optional argument [{}]", arg_name.str())
             );
+
+        return parsing_failure(std::format("Invalid number of values provided for argument [{}]", arg_name.str()));
     }
 };
 
-/// @brief ...
+/// @brief Exception type used for type-related errors.
 /// \todo Use demangled type names
-class type_error : public argument_parser_exception {
-public:
+struct type_error : public argument_parser_exception {
     explicit type_error(const std::string& message) : argument_parser_exception(message) {}
 
     static type_error invalid_value_type(
@@ -116,9 +115,8 @@ public:
     }
 };
 
-/// @brief ...
-class lookup_failure : public argument_parser_exception {
-public:
+/// @brief Exception type used for element lookup errors.
+struct lookup_failure : public argument_parser_exception {
     explicit lookup_failure(const std::string& message) : argument_parser_exception(message) {}
 
     static lookup_failure argument_not_found(const std::string_view& arg_name) noexcept {

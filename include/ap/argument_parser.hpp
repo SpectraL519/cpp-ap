@@ -717,11 +717,11 @@ private:
     void _verify_nvalues() const {
         for (const auto& arg : this->_positional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw parsing_failure::invalid_nvalues(nv_ord, arg->name());
+                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
 
         for (const auto& arg : this->_optional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw parsing_failure::invalid_nvalues(nv_ord, arg->name());
+                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
     }
 
     /**
