@@ -5,6 +5,7 @@
 
 using namespace ap_testing;
 
+using ap::parsing_failure;
 using ap::argument::positional;
 using ap::detail::argument_name;
 
@@ -14,18 +15,11 @@ constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
 constexpr std::string_view help_msg = "test help msg";
 
+const argument_name arg_name(primary_name, secondary_name);
+const argument_name arg_name_primary(primary_name);
+
 using sut_value_type = int;
 using sut_type = positional<sut_value_type>;
-
-sut_type init_arg(std::string_view primary_name) {
-    return sut_type{argument_name{primary_name}};
-}
-
-sut_type init_arg(std::string_view primary_name, std::string_view secondary_name) {
-    return sut_type{
-        argument_name{primary_name, secondary_name}
-    };
-}
 
 constexpr std::string empty_str = "";
 constexpr std::string invalid_value_str = "invalid value";
@@ -44,7 +38,7 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "name() should return the proper argument_name instance"
 ) {
     SUBCASE("initialized with the primary name only") {
-        const auto sut = init_arg(primary_name);
+        const auto sut = sut_type(arg_name_primary);
         const auto name = get_name(sut);
 
         CHECK(name.match(primary_name));
@@ -52,7 +46,7 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("initialized with the primary and secondary names") {
-        const auto sut = init_arg(primary_name, secondary_name);
+        const auto sut = sut_type(arg_name);
         const auto name = get_name(sut);
 
         CHECK(name.match(primary_name));
@@ -61,14 +55,14 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "help() should return nullopt by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(get_help(sut));
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "help() should return a massage set for the argument"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.help(help_msg);
 
     const auto stored_help_msg = get_help(sut);
@@ -83,7 +77,7 @@ TEST_CASE_FIXTURE(
 ) {
     constexpr bool verbose = false;
 
-    auto sut = init_arg(primary_name, secondary_name);
+    auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
     REQUIRE_EQ(desc.name, get_name(sut).str());
@@ -105,7 +99,7 @@ TEST_CASE_FIXTURE(
 ) {
     constexpr bool verbose = true;
 
-    auto sut = init_arg(primary_name, secondary_name);
+    auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
     REQUIRE_EQ(desc.name, get_name(sut).str());
@@ -130,19 +124,19 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true") {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     CHECK(is_required(sut));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_used() should return false by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(is_used(sut));
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "is_used() should return true when argument contains a value"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     REQUIRE_FALSE(is_used(sut));
 
     set_value(sut, value_1);
@@ -150,28 +144,28 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "count() should return 0 by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_EQ(get_count(sut), 0ull);
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "count() should return 1 when argument contains a value"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     set_value(sut, value_1);
 
     CHECK_EQ(get_count(sut), 1ull);
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "has_value() should return false by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(has_value(sut));
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "has_value() should return true if the value is set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     set_value(sut, value_1);
 
     CHECK(has_value(sut));
@@ -180,14 +174,14 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "has_parsed_values() should return false by default"
 ) {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(has_parsed_values(sut));
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "has_parsed_values() should true if the value is set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     set_value(sut, value_1);
 
     CHECK(has_parsed_values(sut));
@@ -197,12 +191,16 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
     "set_value(any) should throw when a value has already been set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     REQUIRE_NOTHROW(set_value(sut, value_1));
     REQUIRE(has_value(sut));
 
-    CHECK_THROWS_AS(set_value(sut, value_2), ap::error::value_already_set);
+    CHECK_THROWS_WITH_AS(
+        set_value(sut, value_2),
+        parsing_failure::value_already_set(arg_name_primary).what(),
+        parsing_failure
+    );
 }
 
 TEST_CASE_FIXTURE(
@@ -210,15 +208,23 @@ TEST_CASE_FIXTURE(
     "set_value(any) should throw when the given string cannot be converted to an instance of "
     "value_type"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     SUBCASE("given string is empty") {
-        REQUIRE_THROWS_AS(set_value(sut, empty_str), ap::error::invalid_value);
+        REQUIRE_THROWS_WITH_AS(
+            set_value(sut, empty_str),
+            parsing_failure::invalid_value(arg_name_primary, empty_str).what(),
+            parsing_failure
+        );
         CHECK_FALSE(has_value(sut));
     }
 
     SUBCASE("given string is non-convertible to value_type") {
-        REQUIRE_THROWS_AS(set_value(sut, invalid_value_str), ap::error::invalid_value);
+        REQUIRE_THROWS_WITH_AS(
+            set_value(sut, invalid_value_str),
+            parsing_failure::invalid_value(arg_name_primary, invalid_value_str).what(),
+            parsing_failure
+        );
         CHECK_FALSE(has_value(sut));
     }
 }
@@ -227,10 +233,14 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
     "set_value(any) should throw when the choices set does not contain the parsed value"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.choices(choices);
 
-    REQUIRE_THROWS_AS(set_value(sut, invalid_choice), ap::error::invalid_choice);
+    REQUIRE_THROWS_WITH_AS(
+        set_value(sut, invalid_choice),
+        parsing_failure::invalid_choice(arg_name_primary, std::to_string(invalid_choice)).what(),
+        parsing_failure
+    );
     CHECK_FALSE(has_value(sut));
 }
 
@@ -239,7 +249,7 @@ TEST_CASE_FIXTURE(
     "set_value(any) should accept the given value only when no value has been set yet "
     "and if the given value is present in the choices set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.choices(choices);
 
     for (const sut_value_type& value : choices) {
@@ -255,7 +265,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "set_value(any) should perform the specified action"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     SUBCASE("observe action") {
         const auto is_power_of_two = [](const sut_value_type n) {
@@ -299,7 +309,7 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
     "value() should throw if the argument's value has not been set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     REQUIRE_FALSE(has_value(sut));
     CHECK_THROWS_AS(static_cast<void>(get_value(sut)), std::logic_error);
@@ -309,7 +319,7 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
     "value() should return the argument's value if it has been set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     set_value(sut, value_1);
 
@@ -318,14 +328,14 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "values() should throw logic_error") {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     CHECK_THROWS_AS(get_values(sut), std::logic_error);
 }
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "nvalues_ordering() should return less by default"
 ) {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK(std::is_lt(nvalues_ordering(sut)));
 }
 
@@ -333,7 +343,7 @@ TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
     "nvalues_ordering() should return equivalent if a value has been set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     set_value(sut, value_1);
 
     CHECK(std::is_eq(nvalues_ordering(sut)));

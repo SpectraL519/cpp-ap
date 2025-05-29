@@ -8,6 +8,7 @@
 using namespace ap_testing;
 using namespace ap::nargs;
 
+using ap::parsing_failure;
 using ap::argument::optional;
 using ap::detail::argument_name;
 using ap::detail::parameter_descriptor;
@@ -17,19 +18,14 @@ namespace {
 constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
 
+const argument_name arg_name(primary_name, secondary_name);
+const argument_name arg_name_primary(primary_name);
+
 constexpr std::string_view help_msg = "test help msg";
 
 using sut_value_type = int;
 using invalid_value_type = double;
 using sut_type = optional<sut_value_type>;
-
-sut_type init_arg(std::string_view primary_name) {
-    return sut_type(argument_name{primary_name});
-}
-
-sut_type init_arg(std::string_view primary_name, std::string_view secondary_name) {
-    return sut_type(argument_name{primary_name, secondary_name});
-}
 
 constexpr std::string empty_str = "";
 constexpr std::string invalid_value_str = "invalid_value";
@@ -51,7 +47,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "name() should return the proper argument_name instance"
 ) {
     SUBCASE("initialized with the primary name only") {
-        const auto sut = init_arg(primary_name);
+        const auto sut = sut_type(arg_name_primary);
         const auto name = get_name(sut);
 
         CHECK(name.match(primary_name));
@@ -59,7 +55,7 @@ TEST_CASE_FIXTURE(
     }
 
     SUBCASE("initialized with the primary and secondary names") {
-        const auto sut = init_arg(primary_name, secondary_name);
+        const auto sut = sut_type(arg_name);
         const auto name = get_name(sut);
 
         CHECK(name.match(primary_name));
@@ -68,14 +64,14 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "help() should return nullopt by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(get_help(sut));
 }
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "help() should return a massage set for the argument"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.help(help_msg);
 
     const auto stored_help_msg = get_help(sut);
@@ -90,7 +86,7 @@ TEST_CASE_FIXTURE(
 ) {
     constexpr bool verbose = false;
 
-    auto sut = init_arg(primary_name, secondary_name);
+    auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
     REQUIRE_EQ(desc.name, get_name(sut).str());
@@ -112,7 +108,7 @@ TEST_CASE_FIXTURE(
 ) {
     constexpr bool verbose = true;
 
-    auto sut = init_arg(primary_name, secondary_name);
+    auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
     REQUIRE_EQ(desc.name, get_name(sut).str());
@@ -168,7 +164,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_required() should return false by default") {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(is_required(sut));
 }
 
@@ -176,13 +172,13 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "is_required() should return true if the argument is set to be required"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.required();
     CHECK(is_required(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_used() should return false by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(is_used(sut));
 }
 
@@ -190,7 +186,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "is_used() should return true if the argument's flag has been used"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     REQUIRE_FALSE(is_used(sut));
 
     mark_used(sut);
@@ -198,7 +194,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "count() should return 0 by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_EQ(get_count(sut), 0ull);
 }
 
@@ -207,7 +203,7 @@ TEST_CASE_FIXTURE(
     "is_used() should return the number of times the argument's flag has been used "
     "[number of mark_used() function calls]"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     constexpr std::size_t count = 5ull;
     for (std::size_t n = 0ull; n < count; ++n)
@@ -219,7 +215,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "argument flag usage should trigger the on-flag actions"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     const auto throw_action = []() { throw std::runtime_error("no reason"); };
     sut.action<ap::action_type::on_flag>(throw_action);
@@ -228,12 +224,12 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return false by default") {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(has_value(sut));
 }
 
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "has_value() should return true if value is set") {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     set_value(sut, arbitrary_value);
     CHECK(has_value(sut));
 }
@@ -243,7 +239,7 @@ TEST_CASE_FIXTURE(
     "has_value() should return true if a default value is set and value() should return the "
     "default value"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.default_value(default_value);
 
     REQUIRE(has_value(sut));
@@ -254,7 +250,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "has_value() should return false if only the implicit value is set but the argument is not used"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.implicit_value(implicit_value);
 
     CHECK_FALSE(has_value(sut));
@@ -264,7 +260,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "has_value() should return true if the implicit value is set and the agument is used"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.implicit_value(implicit_value);
 
     mark_used(sut);
@@ -276,7 +272,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "has_parsed_values() should return false by default"
 ) {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(has_parsed_values(sut));
 }
 
@@ -285,7 +281,7 @@ TEST_CASE_FIXTURE(
     "has_parsed_values() should return false regardles of the "
     "default_value and implicit_value parameters"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     SUBCASE("default_value") {
         sut.default_value(default_value);
@@ -307,7 +303,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "has_parsed_values() should true if the value is set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     set_value(sut, arbitrary_value);
     CHECK(has_parsed_values(sut));
 }
@@ -315,7 +311,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "value() should throw if the argument's value has not been set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     REQUIRE_FALSE(has_value(sut));
     CHECK_THROWS_AS(static_cast<void>(get_value(sut)), std::logic_error);
@@ -324,7 +320,7 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "value() should return the argument's value if it has been set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     set_value(sut, arbitrary_value);
 
     REQUIRE(has_value(sut));
@@ -335,7 +331,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "value() should return the default value if one has been provided and argument is not used"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.default_value(arbitrary_value);
 
     REQUIRE(has_value(sut));
@@ -346,7 +342,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "value() should return the implicit value if one has been provided and argument is used"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.implicit_value(implicit_value);
 
     mark_used(sut);
@@ -360,14 +356,22 @@ TEST_CASE_FIXTURE(
     "set_value(any) should throw when the given string cannot be converted to an instance of "
     "value_type"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     SUBCASE("given string is empty") {
-        REQUIRE_THROWS_AS(set_value(sut, empty_str), ap::error::invalid_value);
+        REQUIRE_THROWS_WITH_AS(
+            set_value(sut, empty_str),
+            parsing_failure::invalid_value(arg_name_primary, empty_str).what(),
+            parsing_failure
+        );
         CHECK_FALSE(has_value(sut));
     }
     SUBCASE("given string is non-convertible to value_type") {
-        REQUIRE_THROWS_AS(set_value(sut, invalid_value_str), ap::error::invalid_value);
+        REQUIRE_THROWS_WITH_AS(
+            set_value(sut, invalid_value_str),
+            parsing_failure::invalid_value(arg_name_primary, invalid_value_str).what(),
+            parsing_failure
+        );
         CHECK_FALSE(has_value(sut));
     }
 }
@@ -376,17 +380,21 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "set_value(any) should throw when the choices set does not contain the parsed value"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.choices(choices);
 
-    REQUIRE_THROWS_AS(set_value(sut, invalid_choice), ap::error::invalid_choice);
+    REQUIRE_THROWS_WITH_AS(
+        set_value(sut, invalid_choice),
+        parsing_failure::invalid_choice(arg_name_primary, as_string(invalid_choice)).what(),
+        parsing_failure
+    );
     CHECK_FALSE(has_value(sut));
 }
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "set_value(any) should accept any number of values by default"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.nargs(non_default_range);
 
     for (const auto value : choices) {
@@ -406,19 +414,23 @@ TEST_CASE_FIXTURE(
     "set_value(any) should throw when adding the given value would result in exceeding the maximum "
     "number of values specified by nargs"
 ) {
-    auto sut = init_arg(primary_name).nargs(non_default_range);
+    auto sut = sut_type(arg_name_primary).nargs(non_default_range);
 
     for (const auto value : choices) {
         REQUIRE_NOTHROW(set_value(sut, value));
     }
 
-    CHECK_THROWS_AS(set_value(sut, arbitrary_value), ap::error::invalid_nvalues);
+    CHECK_THROWS_WITH_AS(
+        set_value(sut, arbitrary_value),
+        parsing_failure::invalid_nvalues(arg_name_primary, std::weak_ordering::greater).what(),
+        parsing_failure
+    );
 }
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "set_value(any) should perform the specified value action"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
 
     SUBCASE("observe action") {
         const auto is_power_of_two = [](const sut_value_type n) {
@@ -462,7 +474,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "nvalues_ordering() should return equivalent for default nargs (any)"
 ) {
-    const auto sut = init_arg(primary_name);
+    const auto sut = sut_type(arg_name_primary);
     CHECK(std::is_eq(nvalues_ordering(sut)));
 }
 
@@ -470,7 +482,7 @@ TEST_CASE_FIXTURE(
     optional_argument_test_fixture,
     "nvalues_ordering() should return equivalent if a default value has been set"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.nargs(non_default_range);
 
     sut.default_value(default_value);
@@ -483,7 +495,7 @@ TEST_CASE_FIXTURE(
     "nvalues_ordering() should return equivalent only when the number of values "
     "is in the specified range"
 ) {
-    auto sut = init_arg(primary_name);
+    auto sut = sut_type(arg_name_primary);
     sut.nargs(non_default_range);
 
     REQUIRE(std::is_lt(nvalues_ordering(sut)));

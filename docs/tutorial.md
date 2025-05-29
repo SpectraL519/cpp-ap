@@ -483,7 +483,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!TIP]
 >
-> The `parse_args` functions may throw an `ap::argument_parser_exception` if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which automatically catch these exceptions, print the error message, and exit with a failure status.
+> The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which automatically catch these exceptions, print the error message, and exit with a failure status.
 >
 > Internally, This is equivalent to:
 >

@@ -7,6 +7,7 @@
 using namespace ap_testing;
 using namespace ap::argument;
 using namespace ap::nargs;
+using ap::parsing_failure;
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
@@ -17,6 +18,8 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::size_t n_positional_args = 6ull;
     const std::size_t n_optional_args = 4ull;
     const std::size_t n_args_total = n_positional_args + n_optional_args;
+    const std::size_t last_pos_arg_idx = n_positional_args - 1ull;
+    const std::size_t first_opt_arg_idx = n_positional_args;
 
     const std::string invalid_arg_name = "invalid_arg";
 
@@ -85,9 +88,13 @@ TEST_CASE_FIXTURE(
     add_arguments(n_positional_args, n_optional_args);
 
     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
-    arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(n_positional_args)));
+    arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(first_opt_arg_idx)));
 
-    CHECK_THROWS_AS(parse_args_impl(arg_tokens), ap::error::argument_deduction_failure);
+    CHECK_THROWS_WITH_AS(
+        parse_args_impl(arg_tokens),
+        parsing_failure::argument_deduction_failure({init_arg_value(first_opt_arg_idx)}).what(),
+        parsing_failure
+    );
 }
 
 TEST_CASE_FIXTURE(
@@ -126,26 +133,6 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should throw when there is less input values than positional arguments"
-) {
-    add_arguments(n_positional_args, no_args);
-
-    auto argc = get_argc(n_positional_args, no_args);
-    auto argv_vec = init_argv_vec(n_positional_args, no_args);
-
-    // remove the last positional value
-    --argc;
-    argv_vec.pop_back();
-
-    auto argv = to_char_2d_array(argv_vec);
-
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
     "parse_args should throw when there is not enough positional values"
 ) {
     add_arguments(n_positional_args, n_optional_args);
@@ -155,13 +142,15 @@ TEST_CASE_FIXTURE(
 
     // remove the last positional value
     --argc;
-    argv_vec.erase(
-        std::next(argv_vec.begin(), static_cast<std::ptrdiff_t>(n_positional_args - 1ull))
-    );
+    argv_vec.erase(std::next(argv_vec.begin(), static_cast<std::ptrdiff_t>(last_pos_arg_idx)));
 
     auto argv = to_char_2d_array(argv_vec);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::required_argument_not_parsed({init_arg_name(last_pos_arg_idx)}).what(),
+        parsing_failure
+    );
 
     free_argv(argc, argv);
 }
@@ -179,7 +168,11 @@ TEST_CASE_FIXTURE(
     const auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::required_argument_not_parsed);
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::required_argument_not_parsed(required_arg_name).what(),
+        parsing_failure
+    );
 
     free_argv(argc, argv);
 }
@@ -197,7 +190,11 @@ TEST_CASE_FIXTURE(
     sut.add_optional_argument(range_arg_name.primary, range_arg_name.secondary.value())
         .nargs(at_least(1ull));
 
-    CHECK_THROWS_AS(sut.parse_args(argc, argv), ap::error::invalid_nvalues);
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::invalid_nvalues(range_arg_name, std::weak_ordering::less).what(),
+        parsing_failure
+    );
 
     free_argv(argc, argv);
 }
@@ -330,7 +327,7 @@ TEST_CASE_FIXTURE(
     "value() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::error::argument_not_found);
+    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::lookup_failure);
 }
 
 TEST_CASE_FIXTURE(
@@ -364,8 +361,7 @@ TEST_CASE_FIXTURE(
 
         REQUIRE(sut.has_value(arg_name.primary));
         CHECK_THROWS_AS(
-            discard_result(sut.value<invalid_value_type>(arg_name.primary)),
-            ap::error::invalid_value_type
+            discard_result(sut.value<invalid_value_type>(arg_name.primary)), ap::type_error
         );
     }
 
@@ -424,9 +420,7 @@ TEST_CASE_FIXTURE(
     "value_or() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(
-        discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::error::argument_not_found
-    );
+    CHECK_THROWS_AS(discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::lookup_failure);
 }
 
 TEST_CASE_FIXTURE(
@@ -449,7 +443,7 @@ TEST_CASE_FIXTURE(
         CHECK_THROWS_AS(
             discard_result(sut.value_or<invalid_value_type>(arg_name.primary, invalid_value_type{})
             ),
-            ap::error::invalid_value_type
+            ap::type_error
         );
     }
 
@@ -644,13 +638,13 @@ TEST_CASE_FIXTURE(
     // parse args
     sut.parse_args(argc, argv);
 
-    REQUIRE_THROWS_AS(
+    CHECK_THROWS_AS(
         discard_result(sut.values<invalid_argument_value_type>(optional_primary_name)),
-        ap::error::invalid_value_type
+        ap::type_error
     );
-    REQUIRE_THROWS_AS(
+    CHECK_THROWS_AS(
         discard_result(sut.values<invalid_argument_value_type>(optional_secondary_name)),
-        ap::error::invalid_value_type
+        ap::type_error
     );
 
     free_argv(argc, argv);

@@ -138,8 +138,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
-     * @throws ap::error::invalid_argument_name_pattern
-     * @throws ap::error::argument_name_used
+     * @throws ap::invalid_configuration
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -149,7 +148,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw invalid_configuration::argument_name_used(arg_name);
 
         this->_positional_args.emplace_back(std::make_unique<argument::positional<T>>(arg_name));
         return static_cast<argument::positional<T>&>(*this->_positional_args.back());
@@ -161,8 +160,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
-     * @throws ap::error::invalid_argument_name_pattern
-     * @throws ap::error::argument_name_used
+     * @throws ap::invalid_configuration
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -175,7 +173,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw invalid_configuration::argument_name_used(arg_name);
 
         this->_positional_args.emplace_back(std::make_unique<argument::positional<T>>(arg_name));
         return static_cast<argument::positional<T>&>(*this->_positional_args.back());
@@ -186,8 +184,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::error::invalid_argument_name_pattern
-     * @throws ap::error::argument_name_used
+     * @throws ap::invalid_configuration
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -197,7 +194,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw invalid_configuration::argument_name_used(arg_name);
 
         this->_optional_args.push_back(std::make_unique<argument::optional<T>>(arg_name));
         return static_cast<argument::optional<T>&>(*this->_optional_args.back());
@@ -209,8 +206,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::error::invalid_argument_name_pattern
-     * @throws ap::error::argument_name_used
+     * @throws ap::invalid_configuration
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
@@ -223,7 +219,7 @@ public:
 
         const detail::argument_name arg_name = {primary_name, secondary_name};
         if (this->_is_arg_name_used(arg_name))
-            throw error::argument_name_used(arg_name);
+            throw invalid_configuration::argument_name_used(arg_name);
 
         this->_optional_args.emplace_back(std::make_unique<argument::optional<T>>(arg_name));
         return static_cast<argument::optional<T>&>(*this->_optional_args.back());
@@ -356,21 +352,20 @@ public:
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
-     * @throws ap::error::argument_not_found
-     * @throws ap::error::invalid_value_type
+     * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string>
     [[nodiscard]] T value(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found(arg_name);
+            throw lookup_failure::argument_not_found(arg_name);
 
         const auto& arg_value = arg_opt->get().value();
         try {
             return std::any_cast<T>(arg_value);
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type(arg_opt->get().name(), typeid(T));
+            throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
         }
     }
 
@@ -380,14 +375,13 @@ public:
      * @param arg_name The name of the argument.
      * @param default_value The default value.
      * @return The value of the argument.
-     * @throws ap::error::argument_not_found
-     * @throws ap::error::invalid_value_type
+     * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
     [[nodiscard]] T value_or(std::string_view arg_name, U&& default_value) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found(arg_name);
+            throw lookup_failure::argument_not_found(arg_name);
 
         try {
             const auto& arg_value = arg_opt->get().value();
@@ -399,7 +393,7 @@ public:
             return T{std::forward<U>(default_value)};
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type(arg_opt->get().name(), typeid(T));
+            throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
         }
     }
 
@@ -407,14 +401,13 @@ public:
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
-     * @throws ap::error::argument_not_found
-     * @throws ap::error::invalid_value_type
+     * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
-            throw error::argument_not_found(arg_name);
+            throw lookup_failure::argument_not_found(arg_name);
 
         const auto& arg = arg_opt->get();
 
@@ -433,7 +426,7 @@ public:
             return values;
         }
         catch (const std::bad_any_cast& err) {
-            throw error::invalid_value_type(arg.name(), typeid(T));
+            throw type_error::invalid_value_type(arg.name(), typeid(T));
         }
     }
 
@@ -492,16 +485,16 @@ private:
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
-     * @throws ap::error::invalid_argument_name_pattern
+     * @throws ap::invalid_configuration
      */
     void _verify_arg_name_pattern(const std::string_view arg_name) const {
         if (arg_name.empty())
-            throw error::invalid_argument_name_pattern(
+            throw invalid_configuration::invalid_argument_name(
                 arg_name, "An argument name cannot be empty."
             );
 
         if (arg_name.front() == this->_flag_prefix_char)
-            throw error::invalid_argument_name_pattern(
+            throw invalid_configuration::invalid_argument_name(
                 arg_name,
                 std::format(
                     "An argument name cannot begin with a flag prefix character ({}).",
@@ -510,7 +503,7 @@ private:
             );
 
         if (std::isdigit(arg_name.front()))
-            throw error::invalid_argument_name_pattern(
+            throw invalid_configuration::invalid_argument_name(
                 arg_name, "An argument name cannot begin with a digit."
             );
     }
@@ -608,7 +601,7 @@ private:
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
-     * @throws ap::error::argument_deduction_failure
+     * @throws ap::parsing_failure
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens) {
         arg_token_list_iterator_t token_it = arg_tokens.begin();
@@ -619,7 +612,7 @@ private:
         this->_parse_optional_args(token_it, arg_tokens.end(), dangling_values);
 
         if (not dangling_values.empty())
-            throw error::argument_deduction_failure(dangling_values);
+            throw parsing_failure::argument_deduction_failure(dangling_values);
     }
 
     /**
@@ -647,8 +640,7 @@ private:
      * @param token_it Iterator for iterating through command-line argument tokens.
      * @param tokens_end The token list end iterator.
      * @param dangling_values Reference to the vector into which the dangling values shall be collected.
-     * @throws ap::error::argument_not_found
-     * @throws ap::error::argument_deduction_failure
+     * @throws ap::parsing_failure
      * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
     void _parse_optional_args(
@@ -662,14 +654,14 @@ private:
             switch (token_it->type) {
             case detail::argument_token::t_flag: {
                 if (not dangling_values.empty())
-                    throw error::argument_deduction_failure(dangling_values);
+                    throw parsing_failure::argument_deduction_failure(dangling_values);
 
                 auto opt_arg_it = std::ranges::find_if(
                     this->_optional_args, this->_name_match_predicate(token_it->value)
                 );
 
                 if (opt_arg_it == this->_optional_args.end())
-                    throw error::argument_not_found(token_it->value);
+                    throw parsing_failure::unknown_argument(token_it->value);
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 if (not curr_opt_arg->get()->mark_used())
@@ -706,30 +698,30 @@ private:
 
     /**
      * @brief Check if all required positional and optional arguments are used.
-     * @throws ap::error::required_argument_not_parsed
+     * @throws ap::parsing_failure
      */
     void _verify_required_args() const {
         for (const auto& arg : this->_positional_args)
             if (not arg->is_used()) // ? use has_parsed_values
-                throw error::required_argument_not_parsed(arg->name());
+                throw parsing_failure::required_argument_not_parsed(arg->name());
 
         for (const auto& arg : this->_optional_args)
             if (arg->is_required() and not arg->has_value())
-                throw error::required_argument_not_parsed(arg->name());
+                throw parsing_failure::required_argument_not_parsed(arg->name());
     }
 
     /**
      * @brief Check if the number of argument values is within the specified range.
-     * @throws ap::error::invalid_nvalues
+     * @throws ap::parsing_failure
      */
     void _verify_nvalues() const {
         for (const auto& arg : this->_positional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw error::invalid_nvalues(nv_ord, arg->name());
+                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
 
         for (const auto& arg : this->_optional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw error::invalid_nvalues(nv_ord, arg->name());
+                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
     }
 
     /**

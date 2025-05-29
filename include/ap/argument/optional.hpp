@@ -258,20 +258,18 @@ private:
      * @brief Set the value for the optional argument.
      * @param str_value The string value to set.
      * @return Reference to the optional argument.
-     * @throws ap::error::value_already_set
-     * @throws ap::error::invalid_value
-     * @throws ap::error::invalid_choice
+     * @throws ap::parsing_failure
      */
     bool set_value(const std::string& str_value) override {
         if (not this->_accepts_further_values())
-            throw error::invalid_nvalues(std::weak_ordering::greater, this->_name);
+            throw parsing_failure::invalid_nvalues(this->_name, std::weak_ordering::greater);
 
         value_type value;
         if (not (std::istringstream(str_value) >> value))
-            throw error::invalid_value(this->_name, str_value);
+            throw parsing_failure::invalid_value(this->_name, str_value);
 
         if (not detail::is_valid_choice(value, this->_choices))
-            throw error::invalid_choice(this->_name, str_value);
+            throw parsing_failure::invalid_choice(this->_name, str_value);
 
         const auto apply_visitor = action::detail::apply_visitor<value_type>{value};
         for (const auto& action : this->_value_actions)
