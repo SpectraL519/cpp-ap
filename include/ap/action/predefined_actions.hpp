@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "ap/error/exceptions.hpp"
+#include "ap/exceptions.hpp"
 #include "detail/utility.hpp"
 
 #include <filesystem>
