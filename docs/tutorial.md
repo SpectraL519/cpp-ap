@@ -538,7 +538,7 @@ int main(int argc, char* argv[]) {
 }
 
 // compiled with:
-// g++ -o power power.cpp -I <cpp-ap-include-dir>
+// g++ -o power power.cpp -I <cpp-ap-include-dir> -std=c++20
 ```
 
 ### Argument Parsing Rules:
@@ -556,19 +556,19 @@ int main(int argc, char* argv[]) {
   ```shell
   ./power
   # out:
-  # [ERROR] : No values parsed for a required argument base
+  # [ERROR] : No values parsed for a required argument [base]
   # Program: power calculator
   #
-  #   calculates the value of an expression: base ^ exponent
+  #   Calculates the value of an expression: base ^ exponent
   #
   # Positional arguments:
   #
   #   base : the exponentation base value
   #
-  # Optional arguments: [--,-]
+  # Optional arguments:
   #
-  #   exponent, e : the exponent value
-  #   help, h     : Display the help message
+  #   --exponent, -e : the exponent value
+  #   --help, -h     : Display the help message
   ```
 
 > [!IMPORTANT]
@@ -597,19 +597,19 @@ int main(int argc, char* argv[]) {
   ```shell
   ./power 2 1 2 3
   # out:
-  # [ERROR] : Failed to deduce the argument for the given value `1`
+  # [ERROR] : Failed to deduce the argument for values [1, 2, 3]
   # Program: power calculator
   #
-  #   calculates the value of an expression: base ^ exponent
+  #   Calculates the value of an expression: base ^ exponent
   #
   # Positional arguments:
   #
   #   base : the exponentation base value
   #
-  # Optional arguments: [--,-]
+  # Optional arguments:
   #
-  #   exponent, e : the exponent value
-  #   help, h     : Display the help message
+  #   --exponent, -e : the exponent value
+  #   --help, -h     : Display the help message
   ```
 
 > [!IMPORTANT]
