@@ -97,13 +97,15 @@ struct optional_argument_test_fixture {
 
     template <c_argument_value_type T>
     [[nodiscard]] argument_descriptor get_desc(const optional<T>& arg, const bool verbose) const {
-        return arg.desc(verbose);
+        return arg.desc(verbose, flag_char);
     }
 
     template <c_argument_value_type T>
     [[nodiscard]] bool is_required(const optional<T>& arg) const {
         return arg.is_required();
     }
+
+    static constexpr char flag_char = '-';
 };
 
 } // namespace ap_testing

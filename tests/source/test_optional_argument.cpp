@@ -89,14 +89,14 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str());
+    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
     CHECK_FALSE(desc.help);
     CHECK(desc.params.empty());
 
     // with a help msg
     sut.help(help_msg);
     desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str());
+    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
     CHECK(desc.help);
     CHECK_EQ(desc.help.value(), help_msg);
     CHECK(desc.params.empty());
@@ -111,7 +111,7 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str());
+    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
     CHECK_FALSE(desc.help);
     CHECK(desc.params.empty());
 
