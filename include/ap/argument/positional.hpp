@@ -118,6 +118,7 @@ private:
 
     /**
      * @param verbose The verbosity mode value.
+     * @param flag_char The character used for the argument flag prefix.
      * @return An argument descriptor object for the argument.
      */
     [[nodiscard]] detail::argument_descriptor desc(

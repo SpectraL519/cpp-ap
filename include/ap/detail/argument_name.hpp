@@ -80,7 +80,10 @@ struct argument_name {
         return false;
     }
 
-    /// @brief Get a string representation of the argument_name.
+    /**
+     * @brief Get a string representation of the argument_name.
+     * @param flag_char The character used for the argument flag prefix.
+     */
     [[nodiscard]] std::string str(const std::optional<char> flag_char = std::nullopt)
         const noexcept {
         // if flag_char = nullopt, then the fallback character doesn't matter - the string will be empty
