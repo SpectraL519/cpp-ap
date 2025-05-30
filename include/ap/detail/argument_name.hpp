@@ -81,7 +81,8 @@ struct argument_name {
     }
 
     /// @brief Get a string representation of the argument_name.
-    [[nodiscard]] std::string str(const std::optional<char> flag_char = std::nullopt) const noexcept {
+    [[nodiscard]] std::string str(const std::optional<char> flag_char = std::nullopt)
+        const noexcept {
         // if flag_char = nullopt, then the fallback character doesn't matter - the string will be empty
         const std::string fc(flag_char.has_value(), flag_char.value_or(char()));
         return this->secondary

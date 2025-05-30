@@ -753,7 +753,8 @@ private:
     void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
         if (verbose) {
             for (const auto& arg : args)
-                os << '\n' << arg->desc(verbose, this->_flag_prefix_char).get(this->_indent_width) << '\n';
+                os << '\n'
+                   << arg->desc(verbose, this->_flag_prefix_char).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;

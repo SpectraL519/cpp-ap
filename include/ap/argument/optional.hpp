@@ -201,7 +201,8 @@ private:
      * @param verbose The verbosity mode value.
      * @return An argument_descriptor instance for the argument.
      */
-    [[nodiscard]] detail::argument_descriptor desc(const bool verbose, const char flag_char) const noexcept override {
+    [[nodiscard]] detail::argument_descriptor desc(const bool verbose, const char flag_char)
+        const noexcept override {
         detail::argument_descriptor desc(this->_name.str(flag_char), this->_help_msg);
 
         if (not verbose)
