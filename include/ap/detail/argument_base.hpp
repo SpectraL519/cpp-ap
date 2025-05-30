@@ -46,7 +46,7 @@ protected:
      * @param verbose The verbosity mode value.
      * @return An argument_descriptor instance for the argument.
      */
-    virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
+    virtual detail::argument_descriptor desc(const bool verbose, const char flag_char) const noexcept = 0;
 
     /// @return `true` if the argument is required, `false` otherwise
     virtual bool is_required() const noexcept = 0;

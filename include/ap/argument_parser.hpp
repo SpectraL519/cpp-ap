@@ -450,7 +450,7 @@ public:
         }
 
         if (not this->_optional_args.empty()) {
-            os << "\nOptional arguments: [--,-]\n";
+            os << "\nOptional arguments:\n";
             this->_print(os, this->_optional_args, verbose);
         }
     }
@@ -579,7 +579,7 @@ private:
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used({arg.substr(this->_primary_flag_prefxi_length)});
+            return this->_is_arg_name_used({arg.substr(this->_primary_flag_prefix_length)});
 
         if (arg.starts_with(this->_flag_prefix_char))
             return this->_is_arg_name_used({arg.substr(this->_secondary_flag_prefix_length)});
@@ -593,7 +593,7 @@ private:
      */
     void _strip_flag_prefix(std::string& arg_flag) const noexcept {
         if (arg_flag.starts_with(this->_flag_prefix))
-            arg_flag.erase(0, this->_primary_flag_prefxi_length);
+            arg_flag.erase(0, this->_primary_flag_prefix_length);
         else
             arg_flag.erase(0, this->_secondary_flag_prefix_length);
     }
@@ -753,14 +753,14 @@ private:
     void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
         if (verbose) {
             for (const auto& arg : args)
-                os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
+                os << '\n' << arg->desc(verbose, this->_flag_prefix_char).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
             descriptors.reserve(args.size());
 
             for (const auto& arg : args)
-                descriptors.emplace_back(arg->desc(verbose));
+                descriptors.emplace_back(arg->desc(verbose, this->_flag_prefix_char));
 
             std::size_t max_arg_name_length = 0ull;
             for (const auto& desc : descriptors)
@@ -780,8 +780,8 @@ private:
     arg_ptr_list_t _positional_args;
     arg_ptr_list_t _optional_args;
 
+    static constexpr uint8_t _primary_flag_prefix_length = 2u;
     static constexpr uint8_t _secondary_flag_prefix_length = 1u;
-    static constexpr uint8_t _primary_flag_prefxi_length = 2u;
     static constexpr char _flag_prefix_char = '-';
     static constexpr std::string _flag_prefix = "--";
     static constexpr uint8_t _indent_width = 2;
