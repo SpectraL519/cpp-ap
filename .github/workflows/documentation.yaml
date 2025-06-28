@@ -1,33 +1,78 @@
 name: documentation
+
 on:
   pull_request:
     branches:
-      - master
-
+      - '*'
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-doc:
-    name: Build documentation
+    name: Build and validate documentation
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Check out current branch
+      - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Sync submodules to HTTPS
-        run: git submodule sync --recursive
-
-      - name: Update submodules
-        run: git submodule update --init --recursive
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Install dependencies
         run: sudo apt install doxygen -y
 
+      - name: Validate the project version
+        run: |
+          VERSION=$(python3 scripts/check_version.py)
+          echo "project version = $VERSION"
+
       - name: Run doxygen
         run: doxygen Doxyfile
 
-      - name: Verify documentation
+      - name: Validate output
         run: test -d documentation && test -f documentation/index.html
+
+  deploy-doc:
+    name: Deploy documentation
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: sudo apt install doxygen -y
+
+      - name: Extract the project version
+        run: |
+          VERSION=$(python3 scripts/check_version.py)
+          echo "project version = $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Run doxygen
+        run: doxygen Doxyfile
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./documentation
+          publish_branch: gh-pages
+          destination_dir: ${{ env.VERSION }}
