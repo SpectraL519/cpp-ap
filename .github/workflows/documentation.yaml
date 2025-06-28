@@ -60,9 +60,10 @@ jobs:
       - name: Install dependencies
         run: sudo apt install doxygen -y
 
-      - name: Extract version from CMakeLists.txt
+      - name: Extract the project version
         run: |
           VERSION=$(python3 scripts/check_version.py)
+          echo "project version = $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Run doxygen

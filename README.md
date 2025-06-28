@@ -42,7 +42,7 @@ Command-line argument parser for C++20
 - [Dev notes](/docs/dev_notes.md)
   - [Building and testing](/docs/dev_notes.md#building-and-testing)
   - [Formatting](/docs/dev_notes.md#formatting)
-  - [Documentation](https://spectral519.github.io/cpp-ap/2.2.4/)
+  - [Documentation](https://spectral519.github.io/cpp-ap/2.2.5/)
 
 <br />
 
