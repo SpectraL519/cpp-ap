@@ -2,6 +2,8 @@ name: documentation
 
 on:
   pull_request:
+    branches:
+      - '*'
   push:
     tags:
       - 'v*'
