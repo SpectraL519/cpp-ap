@@ -11,6 +11,7 @@ on:
 jobs:
   build-doc:
     name: Build and validate documentation
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
 
     steps:
@@ -42,7 +43,6 @@ jobs:
   deploy-doc:
     name: Deploy documentation
     if: github.event_name == 'push'
-    needs: build-doc
     runs-on: ubuntu-24.04
 
     steps:
