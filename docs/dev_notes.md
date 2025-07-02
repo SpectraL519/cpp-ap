@@ -62,9 +62,9 @@ python scripts/format.py --help
 ## Documentation
 
 > [!INFO]
-> You can view the online documentation [here](https://spectral519.github.io/cpp-ap/).
+> You can view the online documentation for the latest version [here](https://spectral519.github.io/cpp-ap/latest/). To view the documentation for the previous versions use the following URL pattern: `https://spectral519.github.io/cpp-ap/<version>`.
 >
-> **NOTE:** The online documentation is available only for versions `>= 2.2.5`.
+> **NOTE:** The online documentation is available only for versions `>= 2.2.5` - for older versions the documentation has to be built locally.
 
 The documentation for this project can be generated using Doxygen, styled with a custom [fork](https://github.com/SpectraL519/doxygen-awesome-css/tree/theme-alignment) of the [doxygen-awesome-css](https://github.com/jothepro/doxygen-awesome-css) theme.
 

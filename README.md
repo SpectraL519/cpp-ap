@@ -1,4 +1,17 @@
-# CPP-AP-2
+<h1>
+  CPP-AP-2
+  <a href="https://github.com/SpectraL519/cpp-ap" target="_blank">
+    <i class="fa fa-github" style="font-size: 0.8em; margin-left: 0.5em;"></i>
+  </a>
+</h1>
+
+<!-- # CPP-AP-2 -->
+<!-- <i class="fa fa-github" style="font-size:36px"></i>
+<p>
+  <a href="https://github.com/SpectraL519/cpp-ap" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github" alt="GitHub Repo" />
+  </a>
+</p> -->
 
 Command-line argument parser for C++20
 
@@ -42,7 +55,7 @@ Command-line argument parser for C++20
 - [Dev notes](/docs/dev_notes.md)
   - [Building and testing](/docs/dev_notes.md#building-and-testing)
   - [Formatting](/docs/dev_notes.md#formatting)
-  - [Documentation](https://spectral519.github.io/cpp-ap/2.2.5/)
+  - [Documentation](/docs/dev_notes.md#documentation)
 
 <br />
 
