@@ -5,14 +5,6 @@
   </a>
 </h1>
 
-<!-- # CPP-AP-2 -->
-<!-- <i class="fa fa-github" style="font-size:36px"></i>
-<p>
-  <a href="https://github.com/SpectraL519/cpp-ap" target="_blank">
-    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github" alt="GitHub Repo" />
-  </a>
-</p> -->
-
 Command-line argument parser for C++20
 
 [![g++](https://github.com/SpectraL519/cpp-ap/actions/workflows/gpp.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/g++)
@@ -36,6 +28,22 @@ Command-line argument parser for C++20
 > Field of study: *Algorithmic Computer Science*
 >
 > The project has received the 1st place at the 2024 CreatiWITy competition organized by the faculty. The article in Polish can be found on the [faculty website](https://wit.pwr.edu.pl/aktualnosci/oto-laureaci-konkursu-creatiwity-273.html). Please note that this is not a technical article :)
+
+> [!TIP]
+>
+> Some text
+
+> [!IMPORTANT]
+>
+> Some text
+
+> [!WARNING]
+>
+> Some text
+
+> [!CAUTION]
+>
+> Some text
 
 <br />
 
