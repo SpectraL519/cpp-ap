@@ -1,4 +1,4 @@
-MIT License
+#### MIT License
 
 Copyright (c) 2023-2025 Jakub Musiał and other contributors
 https://github.com/SpectraL519/cpp-ap

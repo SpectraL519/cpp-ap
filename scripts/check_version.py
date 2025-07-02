@@ -29,7 +29,7 @@ def main(cmake: Path, doxygen: Path):
         sys.exit(1)
 
     if cmake_version != doxy_version:
-        print(f"Version mismatch: CMakeLists.txt = {cmake_version}, Doxyfile = {doxy_version}", file=sys.stderr)
+        print(f"Error: Version mismatch: CMakeLists.txt = {cmake_version}, Doxyfile = {doxy_version}", file=sys.stderr)
         sys.exit(1)
 
     print(cmake_version) # print the version to stdout for shell capture

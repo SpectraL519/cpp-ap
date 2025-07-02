@@ -1,4 +1,9 @@
-# CPP-AP-2
+<h1>
+  CPP-AP-2
+  <a href="https://github.com/SpectraL519/cpp-ap" target="_blank">
+    <i class="fa fa-github" style="font-size: 0.8em; margin-left: 0.5em;"></i>
+  </a>
+</h1>
 
 Command-line argument parser for C++20
 
@@ -28,7 +33,7 @@ Command-line argument parser for C++20
 
 ## Related Pages
 
-- [Tutorial](/docs/tutorial.md)
+- [Tutorial](/docs/tutorial.md#tutorial)
   - [Setting Up CPP-AP](/docs/tutorial.md#setting-up-cpp-ap)
     - [CMake Integration](/docs/tutorial.md#cmake-integration)
     - [Downloading the Library](/docs/tutorial.md#downloading-the-library)
@@ -39,10 +44,10 @@ Command-line argument parser for C++20
   - [Parsing Arguments](/docs/tutorial.md#parsing-arguments)
   - [Retrieving Argument Values](/docs/tutorial.md#retrieving-argument-values)
   - [Examples](/docs/tutorial.md#examples)
-- [Dev notes](/docs/dev_notes.md)
+- [Dev notes](/docs/dev_notes.md#dev-notes)
   - [Building and testing](/docs/dev_notes.md#building-and-testing)
   - [Formatting](/docs/dev_notes.md#formatting)
-  - [Documentation](https://spectral519.github.io/cpp-ap/2.2.5/)
+  - [Documentation](/docs/dev_notes.md#documentation)
 
 <br />
 
@@ -61,4 +66,4 @@ Command-line argument parser for C++20
 
 ## License
 
-The `CPP-AP` project uses the [MIT License](https://mit-license.org/) which can be found in the [LICENSE.md](/LICENSE.md) file
+The `CPP-AP` project uses the [MIT License](https://mit-license.org/) which can be found in the [LICENSE](/LICENSE.md#mit-license) file
