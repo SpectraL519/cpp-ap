@@ -29,22 +29,6 @@ Command-line argument parser for C++20
 >
 > The project has received the 1st place at the 2024 CreatiWITy competition organized by the faculty. The article in Polish can be found on the [faculty website](https://wit.pwr.edu.pl/aktualnosci/oto-laureaci-konkursu-creatiwity-273.html). Please note that this is not a technical article :)
 
-> [!TIP]
->
-> Some text
-
-> [!IMPORTANT]
->
-> Some text
-
-> [!WARNING]
->
-> Some text
-
-> [!CAUTION]
->
-> Some text
-
 <br />
 
 ## Related Pages

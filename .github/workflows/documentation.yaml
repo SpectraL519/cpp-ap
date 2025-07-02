@@ -74,7 +74,10 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Run doxygen
-        run: doxygen Doxyfile
+        continue-on-error: false
+        run: |
+          doxygen Doxyfile
+          python3 scripts/postprocess_doxyhtml.py ./documentation
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

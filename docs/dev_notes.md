@@ -92,4 +92,8 @@ This should create a `documentation` directory containing the project's document
 
 > [!NOTE]
 >
-> Markdown links to other files might not be rendered properly in the Doxygen output, however the referenced pages will still be generated in the *Related Pages* section.
+> Markdown links to other files or sections and the GFM-style callouts might not be rendered properly in the Doxygen output. To fix these issues you can run the postprocessing script:
+> ```
+> python3 scripts/postprocess_doxyhtml.py ./documentation
+> ```
+> or you can view those documents by using the *Related Pages* section on the navigation bar.
