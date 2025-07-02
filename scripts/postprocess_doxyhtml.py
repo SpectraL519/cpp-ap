@@ -60,10 +60,6 @@ def process_gfm(content: str) -> str:
     }
 
     for tag, (label, color, icon_class) in callouts.items():
-        # replacement = (
-        #     f'<span style="color: {color}; font-weight: bold; font-size: 1.1em;">'
-        #     f'<i class="{icon_class}" style="margin-right: 6px;"></i> {label}:</span>'
-        # )
         replacement = (
             f'<span style="color: {color}; font-weight: bold; font-size: 1.1em;">'
             f'<i class="{icon_class}" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> {label}:</span>'
