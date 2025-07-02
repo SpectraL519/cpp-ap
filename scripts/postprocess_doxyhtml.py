@@ -52,17 +52,21 @@ def process_gfm(content: str) -> str:
     Replace GFM-style callouts with styled inline HTML spans.
     """
     callouts = {
-        '[!NOTE]':      ('Note', '#1e90ff', '&#9432;'),   # ℹ
-        '[!TIP]':       ('Tip', '#28a745', '&#128161;'),  # 💡
-        '[!IMPORTANT]': ('Important', '#d63384', '&#10071;'),  # ❗
-        '[!WARNING]':   ('Warning', '#fd7e14', '&#9888;'),     # ⚠
-        '[!CAUTION]':   ('Caution', '#dc3545', '&#9940;'),     # 🚫
+        '[!NOTE]':      ('Note', '#1e90ff', 'fa fa-info-circle'),
+        '[!TIP]':       ('Tip', '#28a745', 'fa fa-lightbulb-o'),
+        '[!IMPORTANT]': ('Important', '#d63384', 'fa fa-exclamation-circle'),
+        '[!WARNING]':   ('Warning', '#fd7e14', 'fa fa-exclamation-triangle'),
+        '[!CAUTION]':   ('Caution', '#dc3545', 'fa fa-ban'),
     }
 
-    for tag, (label, color, icon) in callouts.items():
+    for tag, (label, color, icon_class) in callouts.items():
+        # replacement = (
+        #     f'<span style="color: {color}; font-weight: bold; font-size: 1.1em;">'
+        #     f'<i class="{icon_class}" style="margin-right: 6px;"></i> {label}:</span>'
+        # )
         replacement = (
             f'<span style="color: {color}; font-weight: bold; font-size: 1.1em;">'
-            f'{icon} {label}:</span>'
+            f'<i class="{icon_class}" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> {label}:</span>'
         )
         content = content.replace(tag, replacement)
 
