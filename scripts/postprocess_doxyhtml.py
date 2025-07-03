@@ -1,6 +1,7 @@
 import argparse
 import re
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 
 def encode_md_link(path_str: str) -> str:
@@ -69,10 +70,22 @@ def process_gfm(content: str) -> str:
     return content
 
 
+def remove_mainpage_title(content: str, filename: str) -> str:
+    if filename != "index.html":
+        return content
+
+    soup = BeautifulSoup(content, 'html.parser')
+    header_div = soup.find("div", class_="header")
+    if header_div:
+        header_div.decompose()
+    return str(soup)
+
+
 def process_file(f: Path):
     content = f.read_text(encoding='utf-8')
     content = process_md_refs(content)
     content = process_gfm(content)
+    content = remove_mainpage_title(content, f.name)
     f.write_text(content, encoding='utf-8')
 
 

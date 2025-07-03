@@ -27,7 +27,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: sudo apt install doxygen -y
+        run: |
+          sudo apt install doxygen -y
+          pip install beautifulsoup4
 
       - name: Validate the project version
         run: |
@@ -35,7 +37,10 @@ jobs:
           echo "project version = $VERSION"
 
       - name: Run doxygen
-        run: doxygen Doxyfile
+        continue-on-error: false
+        run: |
+          doxygen Doxyfile
+          python3 scripts/postprocess_doxyhtml.py ./documentation
 
       - name: Validate output
         run: test -d documentation && test -f documentation/index.html
@@ -58,7 +63,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: sudo apt install doxygen -y
+        run: |
+          sudo apt install doxygen -y
+          pip install beautifulsoup4
 
       - name: Extract and validate the project version
         continue-on-error: false
