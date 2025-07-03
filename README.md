@@ -1,7 +1,7 @@
 <h1>
   CPP-AP-2
   <a href="https://github.com/SpectraL519/cpp-ap" target="_blank">
-    <i class="fa fa-github" style="font-size: 0.8em; margin-left: 0.5em;"></i>
+    <i class="fa fa-github" style="font-size: 1.3em; margin-left: 6px; position: relative; top: -0.08em;"></i>
   </a>
 </h1>
 
