@@ -70,6 +70,12 @@ def process_gfm(content: str) -> str:
     return content
 
 
+def process_heading_code_blocks(content: str) -> str:
+    content = content.replace("&lt;tt&gt;", "<code>")
+    content = content.replace("&lt;/tt&gt;", "</code>")
+    return content
+
+
 def remove_mainpage_title(content: str, filename: str) -> str:
     if filename != "index.html":
         return content
@@ -85,6 +91,7 @@ def process_file(f: Path):
     content = f.read_text(encoding='utf-8')
     content = process_md_refs(content)
     content = process_gfm(content)
+    content = process_heading_code_blocks(content)
     content = remove_mainpage_title(content, f.name)
     f.write_text(content, encoding='utf-8')
 

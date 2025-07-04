@@ -153,14 +153,14 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
 
 Parameters which can be specified for both positional and optional arguments include:
 
-#### `help` - The argument's description which will be printed when printing the parser class instance.
+#### 1. `help` - The argument's description which will be printed when printing the parser class instance.
 
 ```cpp
 parser.add_positional_argument<std::size_t>("number", "n")
       .help("a positive integer value");
 ```
 
-#### `choices` - A list of valid argument values.
+#### 2. `choices` - A list of valid argument values.
 
 The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
 
@@ -172,7 +172,7 @@ parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
 >
 > The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
 
-#### Value actions - Function performed after parsing an argument's value.
+#### 3. Value actions - Function performed after parsing an argument's value.
 Actions are represented as functions, which take the argument's value as an argument. The available action types are:
 
 - `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
@@ -221,15 +221,15 @@ Actions are represented as functions, which take the argument's value as an argu
 
 Apart from the common parameters listed above, for optional arguments you can also specify the following parameters:
 
-#### `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
+#### 1. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
 ```cpp
 parser.add_optional_argument("output", "o").required();
 ```
 
-#### `bypass_required` - If this option is set for an argument, parsing it's value will overrite the `required` option for other optional arguments and all positional arguments.
+#### 2. `bypass_required` - If this option is set for an argument, parsing it's value will overrite the `required` option for other optional arguments and all positional arguments.
 
-#### `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
+#### 3. `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
 
 - Specific number:
 
@@ -262,13 +262,13 @@ parser.add_optional_argument("output", "o").required();
 >
 > The default `nargs` parameter value is `ap::nargs::any()`.
 
-#### `default_value` - The default value for an argument which will be used if no values for this argument are parsed
+#### 4. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
 
 ```cpp
 parser.add_opitonal_argument("output", "o").default_value("out.txt");
 ```
 
-#### `implicit_value` - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
+#### 5. `implicit_value` - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
 
 ```cpp
 // program.cpp
@@ -279,7 +279,7 @@ parser.add_optional_argument("save", "s")
 
 In this example if you run the program with only a `-s` or `--save` flag and no value, the value will be set to `out.txt`.
 
-#### On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
+#### 6. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
 
 ```cpp
 void print_debug_info() noexcept {
@@ -465,7 +465,11 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!IMPORTANT]
 >
-> The `parse_args(argc, argv)` method ignores the first argument (the program name) and is equivalent to calling `parse_args(std::span(argv + 1, argc - 1))`.
+> The `parse_args(argc, argv)` method ignores the first argument (the program name) and is equivalent to calling:
+>
+> ```cpp
+> parse_args(std::span(argv + 1, argc - 1));
+> ```
 
 > [!TIP]
 >
