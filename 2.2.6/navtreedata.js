@@ -50,29 +50,21 @@ var NAVTREE =
       [ "Adding Arguments", "md_docs_2tutorial.html#adding-arguments", null ],
       [ "Argument Parameters", "md_docs_2tutorial.html#argument-parameters", [
         [ "Common Parameters", "md_docs_2tutorial.html#common-parameters", [
-          [ "<tt>help</tt> - The argument's description which will be printed when printing the parser class instance.", "md_docs_2tutorial.html#help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance", null ],
-          [ "<tt>choices</tt> - A list of valid argument values.", "md_docs_2tutorial.html#choices---a-list-of-valid-argument-values", null ],
-          [ "Value actions - Function performed after parsing an argument's value.", "md_docs_2tutorial.html#value-actions---function-performed-after-parsing-an-arguments-value", null ]
+          [ "1. <tt>help</tt> - The argument's description which will be printed when printing the parser class instance.", "md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance", null ],
+          [ "2. <tt>choices</tt> - A list of valid argument values.", "md_docs_2tutorial.html#autotoc_md2-choices---a-list-of-valid-argument-values", null ],
+          [ "3. Value actions - Function performed after parsing an argument's value.", "md_docs_2tutorial.html#autotoc_md3-value-actions---function-performed-after-parsing-an-arguments-value", null ]
         ] ],
         [ "Parameters Specific for Optional Arguments", "md_docs_2tutorial.html#parameters-specific-for-optional-arguments", [
-          [ "<tt>required</tt> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.", "md_docs_2tutorial.html#required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown", null ],
-          [ "<tt>bypass_required</tt> - If this option is set for an argument, parsing it's value will overrite the <tt>required</tt> option for other optional arguments and all positional arguments.", "md_docs_2tutorial.html#bypass_required---if-this-option-is-set-for-an-argument-parsing-its-value-will-overrite-the-required-option-for-other-optional-arguments-and-all-positional-arguments", null ],
-          [ "<tt>nargs</tt> - Sets the allowed number of values to be parsed for an argument. This can be set as a:", "md_docs_2tutorial.html#nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a", null ],
-          [ "<tt>default_value</tt> - The default value for an argument which will be used if no values for this argument are parsed", "md_docs_2tutorial.html#default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed", null ],
-          [ "<tt>implicit_value</tt> - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.", "md_docs_2tutorial.html#implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow", null ],
-          [ "On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.", "md_docs_2tutorial.html#on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag", null ]
+          [ "1. <tt>required</tt> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.", "md_docs_2tutorial.html#autotoc_md1-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown", null ],
+          [ "2. <tt>bypass_required</tt> - If this option is set for an argument, parsing it's value will overrite the <tt>required</tt> option for other optional arguments and all positional arguments.", "md_docs_2tutorial.html#autotoc_md2-bypass_required---if-this-option-is-set-for-an-argument-parsing-its-value-will-overrite-the-required-option-for-other-optional-arguments-and-all-positional-arguments", null ],
+          [ "3. <tt>nargs</tt> - Sets the allowed number of values to be parsed for an argument. This can be set as a:", "md_docs_2tutorial.html#autotoc_md3-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a", null ],
+          [ "4. <tt>default_value</tt> - The default value for an argument which will be used if no values for this argument are parsed", "md_docs_2tutorial.html#autotoc_md4-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed", null ],
+          [ "5. <tt>implicit_value</tt> - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.", "md_docs_2tutorial.html#autotoc_md5-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow", null ],
+          [ "6. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.", "md_docs_2tutorial.html#autotoc_md6-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag", null ]
         ] ]
       ] ],
       [ "Predefined Parameter Values", "md_docs_2tutorial.html#predefined-parameter-values", [
-        [ "Actions", "md_docs_2tutorial.html#actions", [
-          [ "<tt>print_config</tt> | on-flag", "md_docs_2tutorial.html#print_config--on-flag", null ],
-          [ "<tt>check_file_exists</tt> | observe (value type: <tt>std::string</tt>)", "md_docs_2tutorial.html#check_file_exists--observe-value-type-stdstring", null ],
-          [ "<tt>gt</tt> | observe (value type: <a href=\"https://en.cppreference.com/w/cpp/types/is_arithmetic\" >arithmetic</a>)", "md_docs_2tutorial.html#gt--observe-value-type-arithmetichttpsencppreferencecomwcpptypesis_arithmetic", null ],
-          [ "<tt>geq</tt> | observe (value type: <a href=\"https://en.cppreference.com/w/cpp/types/is_arithmetic\" >arithmetic</a>)", "md_docs_2tutorial.html#geq--observe-value-type-arithmetichttpsencppreferencecomwcpptypesis_arithmetic", null ],
-          [ "<tt>lt</tt> | observe (value type: <a href=\"https://en.cppreference.com/w/cpp/types/is_arithmetic\" >arithmetic</a>)", "md_docs_2tutorial.html#lt--observe-value-type-arithmetichttpsencppreferencecomwcpptypesis_arithmetic", null ],
-          [ "<tt>leq</tt> | observe (value type: <a href=\"https://en.cppreference.com/w/cpp/types/is_arithmetic\" >arithmetic</a>)", "md_docs_2tutorial.html#leq--observe-value-type-arithmetichttpsencppreferencecomwcpptypesis_arithmetic", null ],
-          [ "<tt>within</tt> | observe (value type: <a href=\"https://en.cppreference.com/w/cpp/types/is_arithmetic\" >arithmetic</a>)", "md_docs_2tutorial.html#within--observe-value-type-arithmetichttpsencppreferencecomwcpptypesis_arithmetic", null ]
-        ] ]
+        [ "Actions", "md_docs_2tutorial.html#actions", null ]
       ] ],
       [ "Default Arguments", "md_docs_2tutorial.html#default-arguments", null ],
       [ "Parsing Arguments", "md_docs_2tutorial.html#parsing-arguments", [
@@ -104,8 +96,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"annotated.html",
-"structap_1_1parsing__failure.html"
+"annotated.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
