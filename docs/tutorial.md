@@ -177,15 +177,15 @@ parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
 
   - `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
 
-    ```cpp
-    void is_valid_user_tag(const std::string& tag) {
-        if (tag.empty() or tag.front() != '@')
-            throw std::runtime_error(std::format("Invalid user tag: `{}` — must start with '@'", tag));
-    }
+  ```cpp
+  void is_valid_user_tag(const std::string& tag) {
+      if (tag.empty() or tag.front() != '@')
+          throw std::runtime_error(std::format("Invalid user tag: `{}` — must start with '@'", tag));
+  }
 
-    parser.add_optional_argument<std::string>("user", "u")
-          .action<ap::action_type::observe>(is_valid_user_tag);
-    ```
+  parser.add_optional_argument<std::string>("user", "u")
+        .action<ap::action_type::observe>(is_valid_user_tag);
+  ```
 
   - `transform` actions | `value_type(const value_type&)` - applied to the parsed value. The returned value will be used to initialize the argument's value.
 
