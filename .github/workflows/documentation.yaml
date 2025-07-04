@@ -27,7 +27,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: sudo apt install doxygen -y
+        run: |
+          sudo apt install doxygen -y
+          pip install beautifulsoup4
 
       - name: Validate the project version
         run: |
@@ -35,7 +37,10 @@ jobs:
           echo "project version = $VERSION"
 
       - name: Run doxygen
-        run: doxygen Doxyfile
+        continue-on-error: false
+        run: |
+          doxygen Doxyfile
+          python3 scripts/postprocess_doxyhtml.py ./documentation
 
       - name: Validate output
         run: test -d documentation && test -f documentation/index.html
@@ -58,16 +63,28 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: sudo apt install doxygen -y
+        run: |
+          sudo apt install doxygen -y
+          pip install beautifulsoup4
 
-      - name: Extract the project version
+      - name: Extract and validate the project version
+        continue-on-error: false
         run: |
           VERSION=$(python3 scripts/check_version.py)
           echo "project version = $VERSION"
+          VERSION_TAG="${GITHUB_REF##*/}"
+          echo "git version tag = $VERSION_TAG"
+          if [[ "$VERSION_TAG" != "v$VERSION" ]]; then
+            echo "Error: Tag missmatch: git version tag = $VERSION_TAG, project version: v$VERSION"
+            exit 1
+          fi
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Run doxygen
-        run: doxygen Doxyfile
+        continue-on-error: false
+        run: |
+          doxygen Doxyfile
+          python3 scripts/postprocess_doxyhtml.py ./documentation
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -76,3 +93,28 @@ jobs:
           publish_dir: ./documentation
           publish_branch: gh-pages
           destination_dir: ${{ env.VERSION }}
+
+      - name: Deploy documantation as latest (setup)
+        if: ${{ success() }}
+        run: |
+          CURRENT_VERSION="v${VERSION}"
+          echo "Current version: $CURRENT_VERSION"
+          git fetch --tags --force
+          ALL_TAGS=$(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V)
+          LATEST_TAG=$(echo "$ALL_TAGS" | tail -n 1)
+          echo "Latest tag: $LATEST_TAG"
+          if [ "$CURRENT_VERSION" = "$LATEST_TAG" ]; then
+            echo "Current tag is the latest. Deploying to 'latest/'..."
+            echo "DEPLOY_LATEST=true" >> $GITHUB_ENV
+          else
+            echo "Current tag is NOT the latest. Skipping deployment to 'latest/'."
+          fi
+
+      - name: Deploy to GitHub Pages as 'latest'
+        if: env.DEPLOY_LATEST == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./documentation
+          publish_branch: gh-pages
+          destination_dir: latest
