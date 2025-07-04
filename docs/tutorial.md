@@ -305,86 +305,72 @@ Here the `print_debug_info` function will be called right after parsing the `--d
 
 ### Actions
 
----
+- `print_config` | on-flag
 
-#### `print_config` | on-flag
+  Prints the configuration of the parser to the output stream and optionally exits with the given code.
 
-Prints the configuration of the parser to the output stream and optionally exits with the given code.
+  ```cpp
+  typename ap::action_type::on_flag::type print_config(
+      const ap::argument_parser& parser,
+      const std::optional<int> exit_code = std::nullopt,
+      std::ostream& os = std::cout
+  ) noexcept;
+  ```
 
-```cpp
-typename ap::action_type::on_flag::type print_config(
-    const ap::argument_parser& parser,
-    const std::optional<int> exit_code = std::nullopt,
-    std::ostream& os = std::cout
-) noexcept;
-```
+- `check_file_exists` | observe (value type: `std::string`)
 
----
+  Throws if the provided file path does not exist.
 
-#### `check_file_exists` | observe (value type: `std::string`)
+  ```cpp
+  detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept;
+  ```
 
-Throws if the provided file path does not exist.
+- `gt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
 
-```cpp
-detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept;
-```
+  Validates that the value is strictly greater than `lower_bound`.
 
----
+  ```cpp
+  template <ap::detail::c_arithmetic T>
+  detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept;
+  ```
 
-#### `gt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+- `geq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
 
-Validates that the value is strictly greater than `lower_bound`.
+  Validates that the value is greater than or equal to `lower_bound`.
 
-```cpp
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept;
-```
+  ```cpp
+  template <ap::detail::c_arithmetic T>
+  detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept;
+  ```
 
----
+- `lt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
 
-#### `geq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+  Validates that the value is strictly less than `upper_bound`.
 
-Validates that the value is greater than or equal to `lower_bound`.
+  ```cpp
+  template <ap::detail::c_arithmetic T>
+  detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept
+  ```
 
-```cpp
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept;
-```
+- `leq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
 
----
+  Validates that the value is less than or equal to `upper_bound`.
 
-#### `lt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
+  ```cpp
+  template <ap::detail::c_arithmetic T>
+  detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept
+  ```
 
-Validates that the value is strictly less than `upper_bound`.
+- `within` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
 
-```cpp
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept
-```
+  Checks if the value is within the given interval. Bound inclusivity is customizable using template parameters.
 
----
-
-#### `leq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
-
-Validates that the value is less than or equal to `upper_bound`.
-
-```cpp
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept
-```
-
----
-
-#### `within` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
-
-Checks if the value is within the given interval. Bound inclusivity is customizable using template parameters.
-
-```cpp
-template <ap::detail::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
-detail::callable_type<ap::action_type::observe, T> within(
-    const T lower_bound, const T upper_bound
-) noexcept
-```
+  ```cpp
+  template <ap::detail::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
+  detail::callable_type<ap::action_type::observe, T> within(
+      const T lower_bound, const T upper_bound
+  ) noexcept
+  ```
 
 <br/>
 <br/>
