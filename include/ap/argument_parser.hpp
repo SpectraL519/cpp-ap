@@ -623,6 +623,18 @@ private:
         return false;
     }
 
+    [[nodiscard]] std::string _unstripped_token_value(const detail::argument_token& tok
+    ) const noexcept {
+        switch (tok.type) {
+        case detail::argument_token::t_flag_primary:
+            return std::format("{}{}", this->_flag_prefix, tok.value);
+        case detail::argument_token::t_flag_secondary:
+            return std::format("{}{}", this->_flag_prefix_char, tok.value);
+        default:
+            return tok.value;
+        }
+    }
+
     /**
      * @brief Remove the flag prefix from the argument.
      * @param arg_flag The argument flag to strip the prefix from.
@@ -701,7 +713,8 @@ private:
 
                 const auto opt_arg_it = this->_find_opt_arg(token_it->value, token_it->type);
                 if (opt_arg_it == this->_optional_args.end())
-                    throw parsing_failure::unknown_argument(token_it->value);
+                    throw parsing_failure::unknown_argument(this->_unstripped_token_value(*token_it)
+                    );
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 if (not curr_opt_arg->get()->mark_used())
