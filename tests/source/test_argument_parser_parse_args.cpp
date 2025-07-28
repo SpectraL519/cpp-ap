@@ -66,7 +66,7 @@ TEST_CASE_FIXTURE(
 
     std::size_t opt_arg_idx = n_positional_args;
     for (std::size_t i = n_positional_args; i < arg_tokens.size(); i += 2ull) {
-        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag);
+        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag_primary);
         CHECK(init_arg_name(opt_arg_idx).match(arg_tokens.at(i).value));
 
         REQUIRE_EQ(arg_tokens.at(i + 1ull).type, argument_token::t_value);
@@ -244,7 +244,7 @@ TEST_CASE_FIXTURE(
 
     const auto bypass_required_arg_name = init_arg_name(n_args_total);
     sut.add_optional_argument<bool>(
-           bypass_required_arg_name.primary, bypass_required_arg_name.secondary.value()
+        bypass_required_arg_name.primary, bypass_required_arg_name.secondary.value()
     )
         .default_value(false)
         .implicit_value(true)
