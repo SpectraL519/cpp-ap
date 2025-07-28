@@ -17,10 +17,9 @@
 
 #include <algorithm>
 #include <format>
+#include <iostream>
 #include <ranges>
 #include <span>
-
-#include <iostream>
 #include <utility>
 
 #ifdef AP_TESTING
@@ -513,22 +512,17 @@ private:
     }
 
     [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(
-        const std::string& name,
-        const detail::argument_token::token_type flag_token
+        const std::string& name, const detail::argument_token::token_type flag_token
     ) noexcept {
         switch (flag_token) {
         case detail::argument_token::t_flag_primary:
-            return std::ranges::find(
-                this->_optional_args,
-                name,
-                [](const auto& arg_ptr) { return arg_ptr->name().primary; }
-            );
+            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
+                return arg_ptr->name().primary;
+            });
         case detail::argument_token::t_flag_secondary:
-            return std::ranges::find(
-                this->_optional_args,
-                name,
-                [](const auto& arg_ptr) { return arg_ptr->name().secondary; }
-            );
+            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
+                return arg_ptr->name().secondary;
+            });
         default:
             return this->_optional_args.end();
         }
@@ -555,7 +549,9 @@ private:
         const detail::argument_name& arg_name,
         const detail::argument_name::match_type m_type = detail::argument_name::m_any
     ) const noexcept {
-        return [&arg_name, m_type](const arg_ptr_t& arg) { return arg->name().match(arg_name, m_type); };
+        return [&arg_name, m_type](const arg_ptr_t& arg) {
+            return arg->name().match(arg_name, m_type);
+        };
     }
 
     /**
@@ -614,10 +610,15 @@ private:
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used({arg.substr(this->_primary_flag_prefix_length)}, detail::argument_name::m_primary);
+            return this->_is_arg_name_used(
+                {arg.substr(this->_primary_flag_prefix_length)}, detail::argument_name::m_primary
+            );
 
         if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used({arg.substr(this->_secondary_flag_prefix_length)}, detail::argument_name::m_secondary);
+            return this->_is_arg_name_used(
+                {arg.substr(this->_secondary_flag_prefix_length)},
+                detail::argument_name::m_secondary
+            );
 
         return false;
     }

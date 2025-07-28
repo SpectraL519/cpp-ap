@@ -244,7 +244,7 @@ TEST_CASE_FIXTURE(
 
     const auto bypass_required_arg_name = init_arg_name(n_args_total);
     sut.add_optional_argument<bool>(
-        bypass_required_arg_name.primary, bypass_required_arg_name.secondary.value()
+           bypass_required_arg_name.primary, bypass_required_arg_name.secondary.value()
     )
         .default_value(false)
         .implicit_value(true)

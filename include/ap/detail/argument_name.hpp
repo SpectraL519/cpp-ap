@@ -6,11 +6,11 @@
 
 #pragma once
 
+#include <cstdint>
 #include <format>
 #include <optional>
 #include <string>
 #include <string_view>
-#include <cstdint>
 
 namespace ap::detail {
 
@@ -64,7 +64,8 @@ struct argument_name {
      * @param arg_name The name string to match.
      * @return True if name is equal to either the primary or the secondary name of the argument_name instance.
      */
-    [[nodiscard]] bool match(std::string_view arg_name, const match_type m_type = m_any) const noexcept {
+    [[nodiscard]] bool match(std::string_view arg_name, const match_type m_type = m_any)
+        const noexcept {
         switch (m_type) {
         case m_any:
             return this->match_primary(arg_name) or this->match_secondary(arg_name);
@@ -82,7 +83,9 @@ struct argument_name {
      * @param arg_name The argument_name instance to match.
      * @return True if arg_name's primary or secondary value matches the argument_name instance.
      */
-    [[nodiscard]] bool match(const argument_name& arg_name, [[maybe_unused]] const match_type m_type = m_any) const noexcept {
+    [[nodiscard]] bool match(
+        const argument_name& arg_name, [[maybe_unused]] const match_type m_type = m_any
+    ) const noexcept {
         if (this->match(arg_name.primary))
             return true;
 
