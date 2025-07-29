@@ -20,7 +20,6 @@
 #include <iostream>
 #include <ranges>
 #include <span>
-#include <utility>
 
 #ifdef AP_TESTING
 
@@ -281,7 +280,7 @@ public:
             return;
 
         this->_verify_required_args();
-        this->_verify_nvalues(); // should this be before the bypass check ?
+        this->_verify_nvalues();
     }
 
     /**
@@ -514,6 +513,7 @@ private:
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
+     * @param m_type The match type used within the predicate.
      * @return Argument predicate based on the provided name.
      */
     [[nodiscard]] auto _name_match_predicate(
@@ -526,6 +526,7 @@ private:
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
+     * @param m_type The match type used within the predicate.
      * @return Argument predicate based on the provided name.
      */
     [[nodiscard]] auto _name_match_predicate(
@@ -607,6 +608,18 @@ private:
         return false;
     }
 
+    /**
+     * @brief Get the unstripped token value (including the flag prefix).
+     *
+     * Given an argument token, this function reconstructs and returns the original argument string,
+     * including any flag prefix that may have been stripped during tokenization.
+     *
+     * @param tok An argument token, the value of which will be processed.
+     * @return The reconstructed argument value:
+     *   - If the token type is `t_flag_primary`, returns the value prefixed with "--".
+     *   - If the token type is `t_flag_secondary`, returns the value prefixed with "-".
+     *   - For all other token types, returns the token's value as is (without any prefix).
+     */
     [[nodiscard]] std::string _unstripped_token_value(const detail::argument_token& tok
     ) const noexcept {
         switch (tok.type) {
@@ -787,7 +800,7 @@ private:
      * @brief Find an optional argument based on a flag token.
      * @param flag_tok An argument_token instance, the value of which will be used to find the argument.
      * @return An iterator to the argument's position.
-     * @note If the `flag_tok.type` is not a valid flag token type, then the end iterator will be returned.
+     * @note If the `flag_tok.type` is not a valid flag token, then the end iterator will be returned.
      */
     [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(const detail::argument_token& flag_tok
     ) noexcept {
