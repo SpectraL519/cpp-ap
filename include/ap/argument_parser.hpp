@@ -511,23 +511,6 @@ private:
             );
     }
 
-    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(
-        const std::string& name, const detail::argument_token::token_type flag_token
-    ) noexcept {
-        switch (flag_token) {
-        case detail::argument_token::t_flag_primary:
-            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
-                return arg_ptr->name().primary;
-            });
-        case detail::argument_token::t_flag_secondary:
-            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
-                return arg_ptr->name().secondary;
-            });
-        default:
-            return this->_optional_args.end();
-        }
-    }
-
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
@@ -655,6 +638,7 @@ private:
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
      * @throws ap::parsing_failure
+     * \todo Use `c_range_of<argument_token>` instead of `arg_token_list_t` directly.
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens) {
         arg_token_list_iterator_t token_it = arg_tokens.begin();
@@ -796,6 +780,23 @@ private:
         }
 
         return std::nullopt;
+    }
+
+    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(
+        const std::string& name, const detail::argument_token::token_type flag_token
+    ) noexcept {
+        switch (flag_token) {
+        case detail::argument_token::t_flag_primary:
+            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
+                return arg_ptr->name().primary;
+            });
+        case detail::argument_token::t_flag_secondary:
+            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
+                return arg_ptr->name().secondary;
+            });
+        default:
+            return this->_optional_args.end();
+        }
     }
 
     /**
