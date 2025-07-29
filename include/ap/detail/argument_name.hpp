@@ -16,7 +16,12 @@ namespace ap::detail {
 
 /// @brief Structure holding the argument's name.
 struct argument_name {
-    enum class match_type : std::uint8_t { m_any, m_primary, m_secondary };
+    /// @brief Specifies the type of argument name match.
+    enum class match_type : std::uint8_t {
+        m_any, ///< Matches either the primary or the secondary name.
+        m_primary, ///< Matches only the primary name.
+        m_secondary ///< Matches only the secondary name.
+    };
     using enum match_type;
 
     argument_name() = delete;
@@ -51,7 +56,7 @@ struct argument_name {
      */
     bool operator==(const argument_name& other) const noexcept {
         if (not (this->secondary and other.secondary) and (this->secondary or other.secondary))
-            return false;
+            return false; // only one of the compared argument names has a secondary name
 
         if (this->primary != other.primary)
             return false;
@@ -62,7 +67,8 @@ struct argument_name {
     /**
      * @brief Matches the given string to the argument_name instance.
      * @param arg_name The name string to match.
-     * @return True if name is equal to either the primary or the secondary name of the argument_name instance.
+     * @param m_type The match type used to find the argument.
+     * @return `true` if the given name matches the primary/secondary name (depending on the match type).
      */
     [[nodiscard]] bool match(std::string_view arg_name, const match_type m_type = m_any)
         const noexcept {
@@ -81,6 +87,7 @@ struct argument_name {
     /**
      * @brief Matches the given argument name to the argument_name instance.
      * @param arg_name The argument_name instance to match.
+     * @param m_type UNUSED - necessary to match the signature of the `string_view` overload of the `match` function.
      * @return True if arg_name's primary or secondary value matches the argument_name instance.
      */
     [[nodiscard]] bool match(
@@ -105,9 +112,9 @@ struct argument_name {
     }
 
     /**
-     * @brief Matches the given string to the primary name of an argument_name instance.
+     * @brief Matches the given string to the secondary name of an argument_name instance.
      * @param arg_name The name string to match.
-     * @return True if name is equal to either the primary name of the argument_name instance.
+     * @return True if name is equal to either the secondary name of the argument_name instance.
      */
     [[nodiscard]] bool match_secondary(std::string_view arg_name) const noexcept {
         return this->secondary and arg_name == this->secondary.value();

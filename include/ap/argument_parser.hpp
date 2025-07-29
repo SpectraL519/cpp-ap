@@ -540,6 +540,7 @@ private:
     /**
      * @brief Check if an argument name is already used.
      * @param arg_name The name of the argument.
+     * @param m_type The match type used to find the argument.
      * @return True if the argument name is already used, false otherwise.
      */
     [[nodiscard]] bool _is_arg_name_used(
@@ -695,7 +696,7 @@ private:
                 if (not dangling_values.empty())
                     throw parsing_failure::argument_deduction_failure(dangling_values);
 
-                const auto opt_arg_it = this->_find_opt_arg(token_it->value, token_it->type);
+                const auto opt_arg_it = this->_find_opt_arg(*token_it);
                 if (opt_arg_it == this->_optional_args.end())
                     throw parsing_failure::unknown_argument(this->_unstripped_token_value(*token_it)
                     );
@@ -782,16 +783,21 @@ private:
         return std::nullopt;
     }
 
-    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(
-        const std::string& name, const detail::argument_token::token_type flag_token
+    /**
+     * @brief Find an optional argument based on a flag token.
+     * @param flag_tok An argument_token instance, the value of which will be used to find the argument.
+     * @return An iterator to the argument's position.
+     * @note If the `flag_tok.type` is not a valid flag token type, then the end iterator will be returned.
+     */
+    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(const detail::argument_token& flag_tok
     ) noexcept {
-        switch (flag_token) {
+        switch (flag_tok.type) {
         case detail::argument_token::t_flag_primary:
-            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
+            return std::ranges::find(this->_optional_args, flag_tok.value, [](const auto& arg_ptr) {
                 return arg_ptr->name().primary;
             });
         case detail::argument_token::t_flag_secondary:
-            return std::ranges::find(this->_optional_args, name, [](const auto& arg_ptr) {
+            return std::ranges::find(this->_optional_args, flag_tok.value, [](const auto& arg_ptr) {
                 return arg_ptr->name().secondary;
             });
         default:
