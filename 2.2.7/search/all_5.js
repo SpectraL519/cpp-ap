@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['6_20on_20flag_20actions_20for_20optional_20arguments_20apart_20from_20value_20actions_20you_20can_20specify_20on_20flag_20actions_20which_20are_20executed_20immediately_20after_20parsing_20an_20argument_20s_20flag_0',['6. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument&apos;s flag.',['../md_docs_2tutorial.html#autotoc_md6-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag',1,'']]]
+];
