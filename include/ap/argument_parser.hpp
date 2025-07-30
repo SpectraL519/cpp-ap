@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <format>
+#include <iostream>
 #include <ranges>
 #include <span>
 
@@ -478,6 +479,7 @@ public:
 private:
     using arg_ptr_t = std::unique_ptr<detail::argument_base>;
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
+    using arg_ptr_list_iter_t = typename arg_ptr_list_t::iterator;
     using arg_opt_t = std::optional<std::reference_wrapper<detail::argument_base>>;
 
     using arg_token_list_t = std::vector<detail::argument_token>;
@@ -511,28 +513,42 @@ private:
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
+     * @param m_type The match type used within the predicate.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] auto _name_match_predicate(const std::string_view arg_name) const noexcept {
-        return [arg_name](const arg_ptr_t& arg) { return arg->name().match(arg_name); };
+    [[nodiscard]] auto _name_match_predicate(
+        const std::string_view arg_name,
+        const detail::argument_name::match_type m_type = detail::argument_name::m_any
+    ) const noexcept {
+        return [=](const arg_ptr_t& arg) { return arg->name().match(arg_name, m_type); };
     }
 
     /**
      * @brief Returns a unary predicate function which checks if the given name matches the argument's name
      * @param arg_name The name of the argument.
+     * @param m_type The match type used within the predicate.
      * @return Argument predicate based on the provided name.
      */
-    [[nodiscard]] auto _name_match_predicate(const detail::argument_name& arg_name) const noexcept {
-        return [&arg_name](const arg_ptr_t& arg) { return arg->name().match(arg_name); };
+    [[nodiscard]] auto _name_match_predicate(
+        const detail::argument_name& arg_name,
+        const detail::argument_name::match_type m_type = detail::argument_name::m_any
+    ) const noexcept {
+        return [&arg_name, m_type](const arg_ptr_t& arg) {
+            return arg->name().match(arg_name, m_type);
+        };
     }
 
     /**
      * @brief Check if an argument name is already used.
      * @param arg_name The name of the argument.
+     * @param m_type The match type used to find the argument.
      * @return True if the argument name is already used, false otherwise.
      */
-    [[nodiscard]] bool _is_arg_name_used(const detail::argument_name& arg_name) const noexcept {
-        const auto predicate = this->_name_match_predicate(arg_name);
+    [[nodiscard]] bool _is_arg_name_used(
+        const detail::argument_name& arg_name,
+        const detail::argument_name::match_type m_type = detail::argument_name::m_any
+    ) const noexcept {
+        const auto predicate = this->_name_match_predicate(arg_name, m_type);
 
         if (std::ranges::find_if(this->_positional_args, predicate) != this->_positional_args.end())
             return true;
@@ -561,8 +577,8 @@ private:
         for (const auto& arg : arg_range) {
             std::string value = static_cast<std::string>(arg);
             if (this->_is_flag(value)) {
-                this->_strip_flag_prefix(value);
-                toks.emplace_back(detail::argument_token::t_flag, std::move(value));
+                const auto flag_tok = this->_strip_flag_prefix(value);
+                toks.emplace_back(flag_tok, std::move(value));
             }
             else {
                 toks.emplace_back(detail::argument_token::t_value, std::move(value));
@@ -579,29 +595,64 @@ private:
      */
     [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
         if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used({arg.substr(this->_primary_flag_prefix_length)});
+            return this->_is_arg_name_used(
+                {arg.substr(this->_primary_flag_prefix_length)}, detail::argument_name::m_primary
+            );
 
         if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used({arg.substr(this->_secondary_flag_prefix_length)});
+            return this->_is_arg_name_used(
+                {arg.substr(this->_secondary_flag_prefix_length)},
+                detail::argument_name::m_secondary
+            );
 
         return false;
     }
 
     /**
+     * @brief Get the unstripped token value (including the flag prefix).
+     *
+     * Given an argument token, this function reconstructs and returns the original argument string,
+     * including any flag prefix that may have been stripped during tokenization.
+     *
+     * @param tok An argument token, the value of which will be processed.
+     * @return The reconstructed argument value:
+     *   - If the token type is `t_flag_primary`, returns the value prefixed with "--".
+     *   - If the token type is `t_flag_secondary`, returns the value prefixed with "-".
+     *   - For all other token types, returns the token's value as is (without any prefix).
+     */
+    [[nodiscard]] std::string _unstripped_token_value(const detail::argument_token& tok
+    ) const noexcept {
+        switch (tok.type) {
+        case detail::argument_token::t_flag_primary:
+            return std::format("{}{}", this->_flag_prefix, tok.value);
+        case detail::argument_token::t_flag_secondary:
+            return std::format("{}{}", this->_flag_prefix_char, tok.value);
+        default:
+            return tok.value;
+        }
+    }
+
+    /**
      * @brief Remove the flag prefix from the argument.
      * @param arg_flag The argument flag to strip the prefix from.
+     * @return A flag argument token representing whether the prefix indicated a primary or a secondary flag.
      */
-    void _strip_flag_prefix(std::string& arg_flag) const noexcept {
-        if (arg_flag.starts_with(this->_flag_prefix))
+    detail::argument_token::token_type _strip_flag_prefix(std::string& arg_flag) const noexcept {
+        if (arg_flag.starts_with(this->_flag_prefix)) {
             arg_flag.erase(0, this->_primary_flag_prefix_length);
-        else
+            return detail::argument_token::t_flag_primary;
+        }
+        else {
             arg_flag.erase(0, this->_secondary_flag_prefix_length);
+            return detail::argument_token::t_flag_secondary;
+        }
     }
 
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
      * @throws ap::parsing_failure
+     * \todo Use `c_range_of<argument_token>` instead of `arg_token_list_t` directly.
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens) {
         arg_token_list_iterator_t token_it = arg_tokens.begin();
@@ -627,7 +678,7 @@ private:
             if (token_it == tokens_end)
                 return;
 
-            if (token_it->type == detail::argument_token::t_flag)
+            if (token_it->type != detail::argument_token::t_value)
                 return;
 
             pos_arg->set_value(token_it->value);
@@ -652,16 +703,16 @@ private:
 
         while (token_it != tokens_end) {
             switch (token_it->type) {
-            case detail::argument_token::t_flag: {
+            case detail::argument_token::t_flag_primary:
+                [[fallthrough]];
+            case detail::argument_token::t_flag_secondary: {
                 if (not dangling_values.empty())
                     throw parsing_failure::argument_deduction_failure(dangling_values);
 
-                auto opt_arg_it = std::ranges::find_if(
-                    this->_optional_args, this->_name_match_predicate(token_it->value)
-                );
-
+                const auto opt_arg_it = this->_find_opt_arg(*token_it);
                 if (opt_arg_it == this->_optional_args.end())
-                    throw parsing_failure::unknown_argument(token_it->value);
+                    throw parsing_failure::unknown_argument(this->_unstripped_token_value(*token_it)
+                    );
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 if (not curr_opt_arg->get()->mark_used())
@@ -743,6 +794,28 @@ private:
         }
 
         return std::nullopt;
+    }
+
+    /**
+     * @brief Find an optional argument based on a flag token.
+     * @param flag_tok An argument_token instance, the value of which will be used to find the argument.
+     * @return An iterator to the argument's position.
+     * @note If the `flag_tok.type` is not a valid flag token, then the end iterator will be returned.
+     */
+    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(const detail::argument_token& flag_tok
+    ) noexcept {
+        switch (flag_tok.type) {
+        case detail::argument_token::t_flag_primary:
+            return std::ranges::find(this->_optional_args, flag_tok.value, [](const auto& arg_ptr) {
+                return arg_ptr->name().primary;
+            });
+        case detail::argument_token::t_flag_secondary:
+            return std::ranges::find(this->_optional_args, flag_tok.value, [](const auto& arg_ptr) {
+                return arg_ptr->name().secondary;
+            });
+        default:
+            return this->_optional_args.end();
+        }
     }
 
     /**

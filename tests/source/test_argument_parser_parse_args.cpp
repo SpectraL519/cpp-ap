@@ -66,7 +66,7 @@ TEST_CASE_FIXTURE(
 
     std::size_t opt_arg_idx = n_positional_args;
     for (std::size_t i = n_positional_args; i < arg_tokens.size(); i += 2ull) {
-        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag);
+        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag_primary);
         CHECK(init_arg_name(opt_arg_idx).match(arg_tokens.at(i).value));
 
         REQUIRE_EQ(arg_tokens.at(i + 1ull).type, argument_token::t_value);
@@ -193,6 +193,47 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
         parsing_failure::invalid_nvalues(range_arg_name, std::weak_ordering::less).what(),
+        parsing_failure
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should throw when an optional argument's flag uses the correct name but an "
+    "incorrect flag prefix"
+) {
+    constexpr std::size_t n_opt_args = 1ull;
+    constexpr std::size_t opt_arg_idx = 0ull;
+    add_arguments(no_args, n_opt_args);
+
+    auto argc = get_argc(no_args, n_opt_args);
+    auto argv_vec = init_argv_vec(no_args, n_opt_args);
+
+    const auto opt_arg_name = init_arg_name(opt_arg_idx);
+
+    std::string invalid_flag;
+
+    SUBCASE("primary name with a secondary flag prefix") {
+        invalid_flag = "-" + opt_arg_name.primary;
+    }
+    SUBCASE("secondary name with a primary flag prefix") {
+        invalid_flag = "--" + opt_arg_name.secondary.value();
+    }
+
+    CAPTURE(invalid_flag);
+
+    auto arg_flag_it = std::ranges::find(argv_vec, init_arg_flag_primary(opt_arg_idx));
+    if (arg_flag_it == argv_vec.end())
+        FAIL("could not find the optional argument flag");
+
+    *arg_flag_it = invalid_flag;
+    auto argv = to_char_2d_array(argv_vec);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::unknown_argument(invalid_flag).what(),
         parsing_failure
     );
 

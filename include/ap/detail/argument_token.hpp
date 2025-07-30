@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 namespace ap::detail {
@@ -13,7 +14,11 @@ namespace ap::detail {
 /// @brief Structure representing a single command-line argument token.
 struct argument_token {
     /// @brief The token type discriminator.
-    enum class token_type : bool { t_flag, t_value };
+    enum class token_type : std::uint8_t {
+        t_flag_primary, ///< Represents the primary (--) flag argument.
+        t_flag_secondary, ///< Represents the secondary (-) flag argument.
+        t_value ///< Represents a value argument.
+    };
     using enum token_type;
 
     argument_token() = delete;

@@ -17,7 +17,7 @@ foreach(SOURCE_DIR ${SOURCE_DIRS})
 endforeach()
 
 # Set compile options
-set(DEFAULT_CXX_FLAGS "-Werror -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O2")
+set(DEFAULT_CXX_FLAGS "-Werror -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O0")
 if (NOT CMAKE_CXX_FLAGS)
     set(CMAKE_CXX_FLAGS "${DEFAULT_CXX_FLAGS}" CACHE STRING "Default C++ compiler flags" FORCE)
 endif()
