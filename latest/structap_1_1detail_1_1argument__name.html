@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.2.6</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.2.7</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -93,6 +93,7 @@ $(document).ready(function(){initNavTree('structap_1_1detail_1_1argument__name.h
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
@@ -106,6 +107,15 @@ $(document).ready(function(){initNavTree('structap_1_1detail_1_1argument__name.h
 
 <p><code>#include &lt;<a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a6b265e8fa84ef4aa4f69309c39b909ce" id="r_a6b265e8fa84ef4aa4f69309c39b909ce"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce">match_type</a> : std::uint8_t { <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43">m_any</a>
+, <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea1259d2e32ec8785dba837d4009bbab15">m_primary</a>
+, <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea897ae212b5ff9c86b311d0b062310e1c">m_secondary</a>
+ }</td></tr>
+<tr class="memdesc:a6b265e8fa84ef4aa4f69309c39b909ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the type of argument name match.  <a href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce">More...</a><br /></td></tr>
+<tr class="separator:a6b265e8fa84ef4aa4f69309c39b909ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1514d659e9189af776edcaa88b648aae" id="r_a1514d659e9189af776edcaa88b648aae"><td class="memItemLeft" align="right" valign="top"><a id="a1514d659e9189af776edcaa88b648aae" name="a1514d659e9189af776edcaa88b648aae"></a>
@@ -133,12 +143,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a39c467231e068be443da283c1ba7b836" id="r_a39c467231e068be443da283c1ba7b836"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#a39c467231e068be443da283c1ba7b836">operator==</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;other) const noexcept</td></tr>
 <tr class="memdesc:a39c467231e068be443da283c1ba7b836"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison operator.  <br /></td></tr>
 <tr class="separator:a39c467231e068be443da283c1ba7b836"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae921e4acf603c4aad9f7224170283fe4" id="r_ae921e4acf603c4aad9f7224170283fe4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#ae921e4acf603c4aad9f7224170283fe4">match</a> (std::string_view arg_name) const noexcept</td></tr>
-<tr class="memdesc:ae921e4acf603c4aad9f7224170283fe4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matches the given string to the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance.  <br /></td></tr>
-<tr class="separator:ae921e4acf603c4aad9f7224170283fe4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f1ddee0f086162a4ccdc58f37d5c3c8" id="r_a3f1ddee0f086162a4ccdc58f37d5c3c8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#a3f1ddee0f086162a4ccdc58f37d5c3c8">match</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;arg_name) const noexcept</td></tr>
-<tr class="memdesc:a3f1ddee0f086162a4ccdc58f37d5c3c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matches the given argument name to the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance.  <br /></td></tr>
-<tr class="separator:a3f1ddee0f086162a4ccdc58f37d5c3c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addd769d97a515df50970c6afd0797e98" id="r_addd769d97a515df50970c6afd0797e98"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#addd769d97a515df50970c6afd0797e98">match</a> (std::string_view arg_name, const <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce">match_type</a> m_type=<a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43">m_any</a>) const noexcept</td></tr>
+<tr class="memdesc:addd769d97a515df50970c6afd0797e98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matches the given string to the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance.  <br /></td></tr>
+<tr class="separator:addd769d97a515df50970c6afd0797e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a191cdc047ad5b5c6da5e0c47c1b35913" id="r_a191cdc047ad5b5c6da5e0c47c1b35913"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#a191cdc047ad5b5c6da5e0c47c1b35913">match</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;arg_name, const <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce">match_type</a> m_type=<a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43">m_any</a>) const noexcept</td></tr>
+<tr class="memdesc:a191cdc047ad5b5c6da5e0c47c1b35913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matches the given argument name to the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance.  <br /></td></tr>
+<tr class="separator:a191cdc047ad5b5c6da5e0c47c1b35913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad71e815a3804f738827a49f18dd9832e" id="r_ad71e815a3804f738827a49f18dd9832e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#ad71e815a3804f738827a49f18dd9832e">match_primary</a> (std::string_view arg_name) const noexcept</td></tr>
+<tr class="memdesc:ad71e815a3804f738827a49f18dd9832e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matches the given string to the primary name of an <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance.  <br /></td></tr>
+<tr class="separator:ad71e815a3804f738827a49f18dd9832e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60c9827389b08281c61a743a52688764" id="r_a60c9827389b08281c61a743a52688764"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#a60c9827389b08281c61a743a52688764">match_secondary</a> (std::string_view arg_name) const noexcept</td></tr>
+<tr class="memdesc:a60c9827389b08281c61a743a52688764"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matches the given string to the secondary name of an <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance.  <br /></td></tr>
+<tr class="separator:a60c9827389b08281c61a743a52688764"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b1c696b69aa8c6842e4411ca44b8424" id="r_a3b1c696b69aa8c6842e4411ca44b8424"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__name.html#a3b1c696b69aa8c6842e4411ca44b8424">str</a> (const std::optional&lt; char &gt; flag_char=std::nullopt) const noexcept</td></tr>
 <tr class="memdesc:a3b1c696b69aa8c6842e4411ca44b8424"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a string representation of the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a>.  <br /></td></tr>
 <tr class="separator:a3b1c696b69aa8c6842e4411ca44b8424"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,8 +177,43 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Structure holding the argument's name. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00017">17</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00018">18</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a6b265e8fa84ef4aa4f69309c39b909ce" name="a6b265e8fa84ef4aa4f69309c39b909ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b265e8fa84ef4aa4f69309c39b909ce">&#9670;&#160;</a></span>match_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce">ap::detail::argument_name::match_type</a> : std::uint8_t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Specifies the type of argument name match. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43" name="a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43"></a>m_any&#160;</td><td class="fielddoc"><p>Matches either the primary or the secondary name. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6b265e8fa84ef4aa4f69309c39b909cea1259d2e32ec8785dba837d4009bbab15" name="a6b265e8fa84ef4aa4f69309c39b909cea1259d2e32ec8785dba837d4009bbab15"></a>m_primary&#160;</td><td class="fielddoc"><p>Matches only the primary name. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6b265e8fa84ef4aa4f69309c39b909cea897ae212b5ff9c86b311d0b062310e1c" name="a6b265e8fa84ef4aa4f69309c39b909cea897ae212b5ff9c86b311d0b062310e1c"></a>m_secondary&#160;</td><td class="fielddoc"><p>Matches only the secondary name. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00020">20</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aec577ae5f759dc74fdd47b350cc01e10" name="aec577ae5f759dc74fdd47b350cc01e10"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aec577ae5f759dc74fdd47b350cc01e10">&#9670;&#160;</a></span>argument_name() <span class="overload">[1/2]</span></h2>
 
@@ -195,7 +246,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00030">30</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00039">39</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -242,13 +293,13 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00037">37</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00046">46</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3f1ddee0f086162a4ccdc58f37d5c3c8" name="a3f1ddee0f086162a4ccdc58f37d5c3c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f1ddee0f086162a4ccdc58f37d5c3c8">&#9670;&#160;</a></span>match() <span class="overload">[1/2]</span></h2>
+<a id="a191cdc047ad5b5c6da5e0c47c1b35913" name="a191cdc047ad5b5c6da5e0c47c1b35913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a191cdc047ad5b5c6da5e0c47c1b35913">&#9670;&#160;</a></span>match() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,8 +311,18 @@ Friends</h2></td></tr>
           <td class="memname">bool ap::detail::argument_name::match </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;&#160;</td>
-          <td class="paramname"><em>arg_name</em></td><td>)</td>
-          <td> const</td>
+          <td class="paramname"><em>arg_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce">match_type</a>&#160;</td>
+          <td class="paramname"><em>m_type</em> = <code><a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43">m_any</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -275,17 +336,18 @@ Friends</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arg_name</td><td>The <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance to match. </td></tr>
+    <tr><td class="paramname">m_type</td><td>UNUSED - necessary to match the signature of the <code>string_view</code> overload of the <code>match</code> function. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if arg_name's primary or secondary value matches the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00073">73</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00093">93</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
-<a id="ae921e4acf603c4aad9f7224170283fe4" name="ae921e4acf603c4aad9f7224170283fe4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae921e4acf603c4aad9f7224170283fe4">&#9670;&#160;</a></span>match() <span class="overload">[2/2]</span></h2>
+<a id="addd769d97a515df50970c6afd0797e98" name="addd769d97a515df50970c6afd0797e98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addd769d97a515df50970c6afd0797e98">&#9670;&#160;</a></span>match() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -297,8 +359,18 @@ Friends</h2></td></tr>
           <td class="memname">bool ap::detail::argument_name::match </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>arg_name</em></td><td>)</td>
-          <td> const</td>
+          <td class="paramname"><em>arg_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce">match_type</a>&#160;</td>
+          <td class="paramname"><em>m_type</em> = <code><a class="el" href="structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43">m_any</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -312,12 +384,87 @@ Friends</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arg_name</td><td>The name string to match. </td></tr>
+    <tr><td class="paramname">m_type</td><td>The match type used to find the argument. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if name is equal to either the primary or the secondary name of the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the given name matches the primary/secondary name (depending on the match type). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00063">63</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00073">73</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ad71e815a3804f738827a49f18dd9832e" name="ad71e815a3804f738827a49f18dd9832e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad71e815a3804f738827a49f18dd9832e">&#9670;&#160;</a></span>match_primary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ap::detail::argument_name::match_primary </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>arg_name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Matches the given string to the primary name of an <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arg_name</td><td>The name string to match. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if name is equal to either the primary name of the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00110">110</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a60c9827389b08281c61a743a52688764" name="a60c9827389b08281c61a743a52688764"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60c9827389b08281c61a743a52688764">&#9670;&#160;</a></span>match_secondary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ap::detail::argument_name::match_secondary </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>arg_name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Matches the given string to the secondary name of an <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arg_name</td><td>The name string to match. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if name is equal to either the secondary name of the <a class="el" href="structap_1_1detail_1_1argument__name.html" title="Structure holding the argument&#39;s name.">argument_name</a> instance. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00119">119</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -354,7 +501,7 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Equality of argument names. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00048">48</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00057">57</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -390,7 +537,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00087">87</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00127">127</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -439,7 +586,7 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The modified output stream. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00102">102</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00142">142</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -458,7 +605,7 @@ Friends</h2></td></tr>
 
 <p>The primary name of the argument. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00107">107</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00147">147</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -476,7 +623,7 @@ Friends</h2></td></tr>
 
 <p>The optional (short) name of the argument. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00108">108</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__name_8hpp_source.html#l00148">148</a> of file <a class="el" href="argument__name_8hpp_source.html">argument_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -489,7 +636,7 @@ Friends</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a></li>
-    <li class="footer">Generated on Fri Jul 4 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Wed Jul 30 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
