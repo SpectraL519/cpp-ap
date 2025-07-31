@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.2.7</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -233,17 +233,169 @@ Common Parameters</h2>
 <div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d">add_positional_argument</a>&lt;std::size_t&gt;(<span class="stringliteral">&quot;number&quot;</span>, <span class="stringliteral">&quot;n&quot;</span>)</div>
 <div class="line">      .help(<span class="stringliteral">&quot;a positive integer value&quot;</span>);</div>
 <div class="ttc" id="aclassap_1_1argument__parser_html_a95afc3f8d90d0f18e10a3d328d2e888d"><div class="ttname"><a href="classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d">ap::argument_parser::add_positional_argument</a></div><div class="ttdeci">argument::positional&lt; T &gt; &amp; add_positional_argument(std::string_view primary_name)</div><div class="ttdoc">Adds a positional argument to the parser's configuration.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00147">argument_parser.hpp:147</a></div></div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md2-choices---a-list-of-valid-argument-values"></a>
-2. <code>choices</code> - A list of valid argument values.</h3>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md2-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown"></a>
+2. <code>required</code> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.</h3>
+<blockquote class="doxtable">
+<p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
+<ul>
+<li>By default positional arguments are set to be required, while optional arguments have this option disabled by default.</li>
+<li>The default value of the value parameter of the <code>required(bool)</code> function is <code>true</code> for both positional and optional arguments. </li>
+</ul>
+</blockquote>
+<blockquote class="doxtable">
+<p>&zwj;<span style="color: #fd7e14; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-triangle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Warning:</span></p>
+<ul>
+<li>If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).</li>
+<li>For both positional and optional arguments:<ul>
+<li>enabling the <code>required</code> option disables the <code>bypass_required</code> option</li>
+<li>disabling the <code>required</code> option has no effect on the <code>bypass_required</code> option. </li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<div class="fragment"><div class="line"><span class="comment">// example: positional arguments</span></div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d">add_positional_argument</a>(<span class="stringliteral">&quot;input&quot;</span>);</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d">add_positional_argument</a>(<span class="stringliteral">&quot;output&quot;</span>).required(<span class="keyword">false</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">parse_args</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// input is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;input&quot;</span>));</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">has_value</a>(<span class="stringliteral">&quot;output&quot;</span>)) {</div>
+<div class="line">    std::ofstream os(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;output&quot;</span>));</div>
+<div class="line">    os &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> {</div>
+<div class="line">    std::cout &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment">Command                           Result</span></div>
+<div class="line"><span class="comment">-----------------------------------------------------------------------------------------</span></div>
+<div class="line"><span class="comment">./program                         Parsing error (no value for the input argument)</span></div>
+<div class="line"><span class="comment">./program input.txt               Parsing success; Printing data to stdout</span></div>
+<div class="line"><span class="comment">./program input.txt output.txt    Parsing success; Printing data to the `output.txt` file</span></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a5a51e8b54c96d6bddbeabd9bc4ff7cb7"><div class="ttname"><a href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">ap::argument_parser::value</a></div><div class="ttdeci">T value(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00360">argument_parser.hpp:360</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a6c2a8328773c498294fafd746ce4a364"><div class="ttname"><a href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">ap::argument_parser::has_value</a></div><div class="ttdeci">bool has_value(std::string_view arg_name) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00339">argument_parser.hpp:339</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_af1ba2d20583be8bfa9cfb61eac4b602a"><div class="ttname"><a href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">ap::argument_parser::parse_args</a></div><div class="ttdeci">void parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00266">argument_parser.hpp:266</a></div></div>
+</div><!-- fragment --><div class="fragment"><div class="line"><span class="comment">// example: optional arguments</span></div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;input&quot;</span>, <span class="stringliteral">&quot;i&quot;</span>).required();</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">parse_args</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;input&quot;</span>));</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">has_value</a>(<span class="stringliteral">&quot;output&quot;</span>)) {</div>
+<div class="line">    std::ofstream os(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;output&quot;</span>));</div>
+<div class="line">    os &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> {</div>
+<div class="line">    std::cout &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment">Command                                 Result</span></div>
+<div class="line"><span class="comment">-----------------------------------------------------------------------------------------------</span></div>
+<div class="line"><span class="comment">./program                               Parsing error (no value for the input argument)</span></div>
+<div class="line"><span class="comment">./program --input input.txt             Parsing success; Printing data to stdout</span></div>
+<div class="line"><span class="comment">./program -i input.txt -o output.txt    Parsing success; Printing data to the `output.txt` file</span></div>
+<div class="line"><span class="comment">*/</span></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a3841ee5aafb1bef6434fd790f6fa96d6"><div class="ttname"><a href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">ap::argument_parser::add_optional_argument</a></div><div class="ttdeci">argument::optional&lt; T &gt; &amp; add_optional_argument(std::string_view primary_name)</div><div class="ttdoc">Adds a positional argument to the parser's configuration.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00193">argument_parser.hpp:193</a></div></div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md3-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line"></a>
+3. <code>bypass_required</code> - If this option is set for an argument, the <code>required</code> option for other arguments will be discarded if the bypassing argument is used in the command-line.</h3>
+<blockquote class="doxtable">
+<p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
+<ul>
+<li>Both positional and optional arguments have the <code>bypass_required</code> option disabled.</li>
+<li>The default value of the value parameter of the <code>bypass_required(bool)</code> function is <code>true</code> for both positional and optional arguments. </li>
+</ul>
+</blockquote>
+<blockquote class="doxtable">
+<p>&zwj;<span style="color: #fd7e14; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-triangle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Warning:</span></p>
+<p>For both positional and optional arguments:</p><ul>
+<li>enabling the <code>bypass_required</code> option disables the <code>required</code> option</li>
+<li>disabling the <code>bypass_required</code> option has no effect on the <code>required</code> option. </li>
+</ul>
+</blockquote>
+<div class="fragment"><div class="line"><span class="comment">// example: optional arguments</span></div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d">add_positional_argument</a>(<span class="stringliteral">&quot;input&quot;</span>);</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>).required();</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;version&quot;</span>, <span class="stringliteral">&quot;v&quot;</span>).bypass_required();</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">parse_args</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (parser.<a class="code hl_function" href="classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325">count</a>(<span class="stringliteral">&quot;version&quot;</span>)) {</div>
+<div class="line">    std::cout &lt;&lt; PROJECT_VERSION &lt;&lt; std::endl;</div>
+<div class="line">    std::exit(EXIT_SUCCESS);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// may result in an `ap::argument_parser_exception`:</span></div>
+<div class="line"><span class="comment">// `input` is not guaranteed to have a value at this point</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;input&quot;</span>));</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// may result in an `ap::argument_parser_exception`:</span></div>
+<div class="line"><span class="comment">// `output` is not guaranteed to have a value at this point</span></div>
+<div class="line">std::ofstream os(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;output&quot;</span>));</div>
+<div class="line">os &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_ae42161f9323643d6b6e63d361f974325"><div class="ttname"><a href="classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325">ap::argument_parser::count</a></div><div class="ttdeci">std::size_t count(std::string_view arg_name) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00348">argument_parser.hpp:348</a></div></div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md4-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed"></a>
+4. <code>default_value</code> - The default value for an argument which will be used if no values for this argument are parsed</h3>
+<blockquote class="doxtable">
+<p>&zwj;<span style="color: #fd7e14; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-triangle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Warning:</span></p>
+<p>For both positional and optional arguments, setting the <code>default_value</code> parameter disables the <code>required</code> option. </p>
+</blockquote>
+<div class="fragment"><div class="line"><span class="comment">// example: positional arguments</span></div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d">add_positional_argument</a>(<span class="stringliteral">&quot;input&quot;</span>);</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d">add_positional_argument</a>(<span class="stringliteral">&quot;output&quot;</span>).default_value(<span class="stringliteral">&quot;output.txt&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">parse_args</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;input&quot;</span>));</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// `output` is guaranteed to have a value even if one was not specified in the command-line</span></div>
+<div class="line">std::ofstream os(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;output&quot;</span>));</div>
+<div class="line">os &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment">Command                           Result</span></div>
+<div class="line"><span class="comment">-----------------------------------------------------------------------------------------</span></div>
+<div class="line"><span class="comment">./program                         Parsing error (no value for the input argument)</span></div>
+<div class="line"><span class="comment">./program input.txt               Parsing success; Printing data to `output.txt`</span></div>
+<div class="line"><span class="comment">./program input.txt myfile.txt    Parsing success; Printing data to the `myfile.txt` file</span></div>
+</div><!-- fragment --><div class="fragment"><div class="line"><span class="comment">// example: optional arguments</span></div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;input&quot;</span>, <span class="stringliteral">&quot;i&quot;</span>).required();</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>).default_value(<span class="stringliteral">&quot;output.txt&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">parse_args</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;input&quot;</span>));</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// `output` is guaranteed to have a value even if one was not specified in the command-line</span></div>
+<div class="line">std::ofstream os(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;output&quot;</span>));</div>
+<div class="line">os &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment">Command                                 Result</span></div>
+<div class="line"><span class="comment">-----------------------------------------------------------------------------------------------</span></div>
+<div class="line"><span class="comment">./program                               Parsing error (no value for the input argument)</span></div>
+<div class="line"><span class="comment">./program --input input.txt             Parsing success; Printing data to `output.txt`</span></div>
+<div class="line"><span class="comment">./program -i input.txt -o myfile.txt    Parsing success; Printing data to the `myfile.txt` file</span></div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md5-choices---a-list-of-valid-argument-values"></a>
+5. <code>choices</code> - A list of valid argument values.</h3>
 <p>The <code>choices</code> parameter takes as an argument an instance of <code>std::initializer_list</code> or any <code>std::ranges::range</code> type such that its value type is convertible to the argument's <code>value_type</code>.</p>
 <div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>&lt;<span class="keywordtype">char</span>&gt;(<span class="stringliteral">&quot;method&quot;</span>, <span class="stringliteral">&quot;m&quot;</span>).choices({<span class="charliteral">&#39;a&#39;</span>, <span class="charliteral">&#39;b&#39;</span>, <span class="charliteral">&#39;c&#39;</span>});</div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a3841ee5aafb1bef6434fd790f6fa96d6"><div class="ttname"><a href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">ap::argument_parser::add_optional_argument</a></div><div class="ttdeci">argument::optional&lt; T &gt; &amp; add_optional_argument(std::string_view primary_name)</div><div class="ttdoc">Adds a positional argument to the parser's configuration.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00193">argument_parser.hpp:193</a></div></div>
+<div class="line"><span class="comment">// passing a value other than a, b or c for the `method` argument will result in an error</span></div>
 </div><!-- fragment --><blockquote class="doxtable">
 <p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span></p>
 <p>The <code>choices</code> function can be used only if the argument's <code>value_type</code> is equality comparable (defines the <code>==</code> operator). </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md3-value-actions---function-performed-after-parsing-an-arguments-value"></a>
-3. Value actions - Function performed after parsing an argument's value.</h3>
+<h3><a class="anchor" id="autotoc_md6-value-actions---function-performed-after-parsing-an-arguments-value"></a>
+6. Value actions - Function performed after parsing an argument's value.</h3>
 <p>Actions are represented as functions, which take the argument's value as an argument. The available action types are:</p>
 <ul>
 <li><p class="startli"><code>observe</code> actions | <code>void(const value_type&amp;)</code> - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.</p>
@@ -283,13 +435,8 @@ Common Parameters</h2>
 <h2><a class="anchor" id="parameters-specific-for-optional-arguments"></a>
 Parameters Specific for Optional Arguments</h2>
 <p>Apart from the common parameters listed above, for optional arguments you can also specify the following parameters:</p>
-<h3><a class="anchor" id="autotoc_md1-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown"></a>
-1. <code>required</code> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.</h3>
-<div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>).required();</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md2-bypass_required---if-this-option-is-set-for-an-argument-parsing-its-value-will-overrite-the-required-option-for-other-optional-arguments-and-all-positional-arguments"></a>
-2. <code>bypass_required</code> - If this option is set for an argument, parsing it's value will overrite the <code>required</code> option for other optional arguments and all positional arguments.</h3>
-<h3><a class="anchor" id="autotoc_md3-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a"></a>
-3. <code>nargs</code> - Sets the allowed number of values to be parsed for an argument. This can be set as a:</h3>
+<h3><a class="anchor" id="autotoc_md1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a"></a>
+1. <code>nargs</code> - Sets the allowed number of values to be parsed for an argument. This can be set as a:</h3>
 <ul>
 <li><p class="startli">Specific number:</p>
 <div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;input&quot;</span>, <span class="stringliteral">&quot;i&quot;</span>).nargs(1);</div>
@@ -311,18 +458,33 @@ Parameters Specific for Optional Arguments</h2>
 <p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span></p>
 <p>The default <code>nargs</code> parameter value is <code><a class="el" href="range_8hpp.html#a6809359a8f003c4d636330352e66be47" title="range class builder function. Creates a range [0, inf].">ap::nargs::any()</a></code>. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md4-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed"></a>
-4. <code>default_value</code> - The default value for an argument which will be used if no values for this argument are parsed</h3>
-<div class="fragment"><div class="line">parser.add_opitonal_argument(<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>).default_value(<span class="stringliteral">&quot;out.txt&quot;</span>);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md5-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow"></a>
-5. <code>implicit_value</code> - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.</h3>
-<div class="fragment"><div class="line"><span class="comment">// program.cpp</span></div>
-<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;save&quot;</span>, <span class="stringliteral">&quot;s&quot;</span>)</div>
-<div class="line">      .implicit_value(<span class="stringliteral">&quot;out.txt&quot;</span>)</div>
-<div class="line">      .help(<span class="stringliteral">&quot;save the program&#39;s output to a file&quot;</span>);</div>
-</div><!-- fragment --><p>In this example if you run the program with only a <code>-s</code> or <code>--save</code> flag and no value, the value will be set to <code>out.txt</code>.</p>
-<h3><a class="anchor" id="autotoc_md6-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag"></a>
-6. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.</h3>
+<h3><a class="anchor" id="autotoc_md2-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow"></a>
+2. <code>implicit_value</code> - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.</h3>
+<div class="fragment"><div class="line"><span class="comment">// example</span></div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;save&quot;</span>, <span class="stringliteral">&quot;s&quot;</span>).implicit_value(<span class="stringliteral">&quot;output.txt&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">parse_args</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = get_data(); <span class="comment">// arbitrary program data</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// `output` is not guaranteed to have a value</span></div>
+<div class="line"><span class="keywordflow">if</span> (parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">has_value</a>(<span class="stringliteral">&quot;save&quot;</span>)) {</div>
+<div class="line">    std::ofstream os(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;save&quot;</span>));</div>
+<div class="line">    os &lt;&lt; data &lt;&lt; std::endl;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment">Command                       Result</span></div>
+<div class="line"><span class="comment">--------------------------------------------------------------------</span></div>
+<div class="line"><span class="comment">./program                     No data will be saved</span></div>
+<div class="line"><span class="comment">./program -s                  The data will be saved to `output.txt`</span></div>
+<div class="line"><span class="comment">./program --save myfile.txt   The data will be saved to `myfile.txt`</span></div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
+<p>The <code>implicit_value</code> parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see <a class="el" href="md_docs_2tutorial.html#adding-arguments">Adding Arguments</a>). </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md4-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag"></a>
+4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.</h3>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> print_debug_info() noexcept {</div>
 <div class="line"><span class="preprocessor">#ifdef NDEBUG</span></div>
 <div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;Running in release mode.\n&quot;</span>;</div>
@@ -474,7 +636,6 @@ Parsing Arguments</h1>
 <div class="line">    std::cerr &lt;&lt; <span class="stringliteral">&quot;[ERROR] : &quot;</span> &lt;&lt; err.what() &lt;&lt; std::endl &lt;&lt; parser &lt;&lt; std::endl;</div>
 <div class="line">    std::exit(EXIT_FAILURE);</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_af1ba2d20583be8bfa9cfb61eac4b602a"><div class="ttname"><a href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">ap::argument_parser::parse_args</a></div><div class="ttdeci">void parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00266">argument_parser.hpp:266</a></div></div>
 <div class="ttc" id="astructap_1_1argument__parser__exception_html"><div class="ttname"><a href="structap_1_1argument__parser__exception.html">ap::argument_parser_exception</a></div><div class="ttdoc">Base type for the argument parser functionality errors/exceptions.</div><div class="ttdef"><b>Definition</b> <a href="exceptions_8hpp_source.html#l00017">exceptions.hpp:17</a></div></div>
 </div><!-- fragment --> </blockquote>
 <div class="fragment"><div class="line"><span class="comment">// power.cpp</span></div>
@@ -519,11 +680,9 @@ Parsing Arguments</h1>
 <div class="line"><span class="comment">// compiled with:</span></div>
 <div class="line"><span class="comment">// g++ -o power power.cpp -I &lt;cpp-ap-include-dir&gt; -std=c++20</span></div>
 <div class="ttc" id="aargument__parser_8hpp_html"><div class="ttname"><a href="argument__parser_8hpp.html">argument_parser.hpp</a></div><div class="ttdoc">Main library header file. Defines the argument_parser class.</div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a5a51e8b54c96d6bddbeabd9bc4ff7cb7"><div class="ttname"><a href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">ap::argument_parser::value</a></div><div class="ttdeci">T value(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00359">argument_parser.hpp:359</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a6c2a8328773c498294fafd746ce4a364"><div class="ttname"><a href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">ap::argument_parser::has_value</a></div><div class="ttdeci">bool has_value(std::string_view arg_name) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00338">argument_parser.hpp:338</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a80270803f7f3c59c3aeac9f6d33205ce"><div class="ttname"><a href="classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce">ap::argument_parser::values</a></div><div class="ttdeci">std::vector&lt; T &gt; values(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00408">argument_parser.hpp:408</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a80270803f7f3c59c3aeac9f6d33205ce"><div class="ttname"><a href="classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce">ap::argument_parser::values</a></div><div class="ttdeci">std::vector&lt; T &gt; values(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00409">argument_parser.hpp:409</a></div></div>
 <div class="ttc" id="aclassap_1_1argument__parser_html_aa17bf6579d8343e8e593e43f105f64fc"><div class="ttname"><a href="classap_1_1argument__parser.html#aa17bf6579d8343e8e593e43f105f64fc">ap::argument_parser::default_optional_arguments</a></div><div class="ttdeci">argument_parser &amp; default_optional_arguments(const AR &amp;arg_discriminator_range) noexcept</div><div class="ttdoc">Set default optional arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00120">argument_parser.hpp:120</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_aabce061e6d7294e4b5b71c6e885fdabe"><div class="ttname"><a href="classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe">ap::argument_parser::try_parse_args</a></div><div class="ttdeci">void try_parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments and exits on error.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00292">argument_parser.hpp:292</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_aabce061e6d7294e4b5b71c6e885fdabe"><div class="ttname"><a href="classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe">ap::argument_parser::try_parse_args</a></div><div class="ttdeci">void try_parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments and exits on error.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00293">argument_parser.hpp:293</a></div></div>
 </div><!-- fragment --><h2><a class="anchor" id="argument-parsing-rules"></a>
 Argument Parsing Rules:</h2>
 <ul>
@@ -594,7 +753,7 @@ Retrieving Argument Values</h1>
 <p>You can retrieve the argument's value with:</p>
 <div class="fragment"><div class="line">(<span class="keyword">const</span>) <span class="keyword">auto</span> value = parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>&lt;value_type&gt;(<span class="stringliteral">&quot;argument_name&quot;</span>); <span class="comment">// (1)</span></div>
 <div class="line">(<span class="keyword">const</span>) <span class="keyword">auto</span> value = parser.<a class="code hl_function" href="classap_1_1argument__parser.html#ad2da93974b1e272fb54aa8fb6cc93e21">value_or</a>&lt;value_type&gt;(<span class="stringliteral">&quot;argument_name&quot;</span>, default_value); <span class="comment">// (2)</span></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_ad2da93974b1e272fb54aa8fb6cc93e21"><div class="ttname"><a href="classap_1_1argument__parser.html#ad2da93974b1e272fb54aa8fb6cc93e21">ap::argument_parser::value_or</a></div><div class="ttdeci">T value_or(std::string_view arg_name, U &amp;&amp;default_value) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00382">argument_parser.hpp:382</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_ad2da93974b1e272fb54aa8fb6cc93e21"><div class="ttname"><a href="classap_1_1argument__parser.html#ad2da93974b1e272fb54aa8fb6cc93e21">ap::argument_parser::value_or</a></div><div class="ttdeci">T value_or(std::string_view arg_name, U &amp;&amp;default_value) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00383">argument_parser.hpp:383</a></div></div>
 </div><!-- fragment --><ol type="1">
 <li><p class="startli">This will return the value parsed for the given argument.</p>
 <p class="startli">For optional arguments this will return the argument's predefined value if no value has been parsed. Additionaly, if more than one value has been parsed for an optional argument, this function will return the first parsed value.</p>
@@ -623,7 +782,7 @@ Examples</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Jul 30 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Thu Jul 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

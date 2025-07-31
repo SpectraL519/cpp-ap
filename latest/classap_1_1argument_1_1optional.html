@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.2.7</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -135,12 +135,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a13e689c1e84e0ae9461de8695e8d6787" id="r_a13e689c1e84e0ae9461de8695e8d6787"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a13e689c1e84e0ae9461de8695e8d6787">help</a> (std::string_view help_msg) noexcept</td></tr>
 <tr class="memdesc:a13e689c1e84e0ae9461de8695e8d6787"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the help message for the optional argument.  <br /></td></tr>
 <tr class="separator:a13e689c1e84e0ae9461de8695e8d6787"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f5622148d2dbd4550b6f7c53992f093" id="r_a5f5622148d2dbd4550b6f7c53992f093"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a5f5622148d2dbd4550b6f7c53992f093">required</a> () noexcept</td></tr>
-<tr class="memdesc:a5f5622148d2dbd4550b6f7c53992f093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark the optional argument as required.  <br /></td></tr>
-<tr class="separator:a5f5622148d2dbd4550b6f7c53992f093"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa083c9af3587bac2da2c59d38efd8605" id="r_aa083c9af3587bac2da2c59d38efd8605"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#aa083c9af3587bac2da2c59d38efd8605">bypass_required</a> () noexcept</td></tr>
-<tr class="memdesc:aa083c9af3587bac2da2c59d38efd8605"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable bypassing the required status for the optional argument.  <br /></td></tr>
-<tr class="separator:aa083c9af3587bac2da2c59d38efd8605"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97ad92b2b3bed8409e9be31813a32b14" id="r_a97ad92b2b3bed8409e9be31813a32b14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a97ad92b2b3bed8409e9be31813a32b14">required</a> (const bool r=true) noexcept</td></tr>
+<tr class="memdesc:a97ad92b2b3bed8409e9be31813a32b14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <code>required</code> parameter of the optional argument.  <br /></td></tr>
+<tr class="separator:a97ad92b2b3bed8409e9be31813a32b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00e95e6b3a0b17a30647e3d2928d3ee0" id="r_a00e95e6b3a0b17a30647e3d2928d3ee0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a00e95e6b3a0b17a30647e3d2928d3ee0">bypass_required</a> (const bool br=true) noexcept</td></tr>
+<tr class="memdesc:a00e95e6b3a0b17a30647e3d2928d3ee0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/disable bypassing the <code>required</code> flag for the optional argument.  <br /></td></tr>
+<tr class="separator:a00e95e6b3a0b17a30647e3d2928d3ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9afbe48044e689c917740b9175c43c9c" id="r_a9afbe48044e689c917740b9175c43c9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a9afbe48044e689c917740b9175c43c9c">nargs</a> (const <a class="el" href="classap_1_1nargs_1_1range.html">nargs::range</a> &amp;range) noexcept</td></tr>
 <tr class="memdesc:a9afbe48044e689c917740b9175c43c9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the nargs range for the optional argument.  <br /></td></tr>
 <tr class="separator:a9afbe48044e689c917740b9175c43c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -178,17 +178,25 @@ Friends</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classap_1_1detail_1_1argument__base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classap_1_1detail_1_1argument__base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classap_1_1detail_1_1argument__base.html">ap::detail::argument_base</a></td></tr>
-<tr class="memitem:ace5ddef12e33fa795445279ff0a1cfa4 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_ace5ddef12e33fa795445279ff0a1cfa4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ace5ddef12e33fa795445279ff0a1cfa4">argument_base</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;<a class="el" href="classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f">name</a>)</td></tr>
-<tr class="separator:ace5ddef12e33fa795445279ff0a1cfa4 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc5a437d701d15ee0e838ac6085ab893 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_afc5a437d701d15ee0e838ac6085ab893"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#afc5a437d701d15ee0e838ac6085ab893">argument_base</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;<a class="el" href="classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f">name</a>, const bool required=false)</td></tr>
+<tr class="separator:afc5a437d701d15ee0e838ac6085ab893 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76bcb06030370fc7aa4098785cd4074f inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_a76bcb06030370fc7aa4098785cd4074f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structap_1_1detail_1_1argument__name.html">ap::detail::argument_name</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f">name</a> () const noexcept</td></tr>
 <tr class="separator:a76bcb06030370fc7aa4098785cd4074f inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1524b68c9cf9a7cd22400d7013b4ec9 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_ac1524b68c9cf9a7cd22400d7013b4ec9"><td class="memItemLeft" align="right" valign="top">const std::optional&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ac1524b68c9cf9a7cd22400d7013b4ec9">help</a> () const noexcept</td></tr>
 <tr class="separator:ac1524b68c9cf9a7cd22400d7013b4ec9 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ad463f1cc48791cfcc50374433d11a6 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_a3ad463f1cc48791cfcc50374433d11a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a3ad463f1cc48791cfcc50374433d11a6">is_required</a> () const noexcept</td></tr>
+<tr class="separator:a3ad463f1cc48791cfcc50374433d11a6 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95de6f34fbad86c4eff854b243764141 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_a95de6f34fbad86c4eff854b243764141"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a95de6f34fbad86c4eff854b243764141">bypass_required_enabled</a> () const noexcept</td></tr>
+<tr class="separator:a95de6f34fbad86c4eff854b243764141 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classap_1_1detail_1_1argument__base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classap_1_1detail_1_1argument__base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classap_1_1detail_1_1argument__base.html">ap::detail::argument_base</a></td></tr>
 <tr class="memitem:a2c1c24f01fb2f873ee4310eb51c1a924 inherit pro_attribs_classap_1_1detail_1_1argument__base" id="r_a2c1c24f01fb2f873ee4310eb51c1a924"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structap_1_1detail_1_1argument__name.html">ap::detail::argument_name</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a2c1c24f01fb2f873ee4310eb51c1a924">_name</a></td></tr>
 <tr class="separator:a2c1c24f01fb2f873ee4310eb51c1a924 inherit pro_attribs_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7218b75388847e468b1356bd2439e8c inherit pro_attribs_classap_1_1detail_1_1argument__base" id="r_ae7218b75388847e468b1356bd2439e8c"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ae7218b75388847e468b1356bd2439e8c">_help_msg</a></td></tr>
 <tr class="separator:ae7218b75388847e468b1356bd2439e8c inherit pro_attribs_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a731038fe58bf6fd6054d01b63e2973bf inherit pro_attribs_classap_1_1detail_1_1argument__base" id="r_a731038fe58bf6fd6054d01b63e2973bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a731038fe58bf6fd6054d01b63e2973bf">_required</a>: 1</td></tr>
+<tr class="separator:a731038fe58bf6fd6054d01b63e2973bf inherit pro_attribs_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5adf5895f5fcbfb44c3b7a7237301c04 inherit pro_attribs_classap_1_1detail_1_1argument__base" id="r_a5adf5895f5fcbfb44c3b7a7237301c04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a5adf5895f5fcbfb44c3b7a7237301c04">_bypass_required</a>: 1 = false</td></tr>
+<tr class="separator:a5adf5895f5fcbfb44c3b7a7237301c04 inherit pro_attribs_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;detail::c_argument_value_type T = std::string&gt;<br />
@@ -326,12 +334,12 @@ template&lt;action::detail::c_action_specifier AS, typename F &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00124">124</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00130">130</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aa083c9af3587bac2da2c59d38efd8605" name="aa083c9af3587bac2da2c59d38efd8605"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa083c9af3587bac2da2c59d38efd8605">&#9670;&#160;</a></span>bypass_required()</h2>
+<a id="a00e95e6b3a0b17a30647e3d2928d3ee0" name="a00e95e6b3a0b17a30647e3d2928d3ee0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00e95e6b3a0b17a30647e3d2928d3ee0">&#9670;&#160;</a></span>bypass_required()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -344,7 +352,8 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::bypass_required </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>br</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -355,10 +364,17 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Enable bypassing the required status for the optional argument. </p>
+<p>Enable/disable bypassing the <code>required</code> flag for the optional argument. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">br</td><td>The parameter value. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
+<dl class="section attention"><dt>Attention</dt><dd>Setting the <code>bypass_required</code> option to true disables the <code>required</code> flag. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00080">80</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00084">84</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -409,7 +425,7 @@ requires (std::equality_comparable&lt;<a class="el" href="classap_1_1argument_1_
 <dd>
 <code>CR</code> must be a range such that its value type is convertible to <code>value_type</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00145">145</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00151">151</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -449,7 +465,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd><code>value_type</code> must be equality comparable. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00159">159</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00165">165</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -487,8 +503,9 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
+<dl class="section attention"><dt>Attention</dt><dd>Setting the default value disables the <code>required</code> flag. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00170">170</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00177">177</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -566,7 +583,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00180">180</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00188">188</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -616,7 +633,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00111">111</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00117">117</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -655,7 +672,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00100">100</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00106">106</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -694,7 +711,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00090">90</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00096">96</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -737,8 +754,8 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 </div>
 </div>
-<a id="a5f5622148d2dbd4550b6f7c53992f093" name="a5f5622148d2dbd4550b6f7c53992f093"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f5622148d2dbd4550b6f7c53992f093">&#9670;&#160;</a></span>required()</h2>
+<a id="a97ad92b2b3bed8409e9be31813a32b14" name="a97ad92b2b3bed8409e9be31813a32b14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97ad92b2b3bed8409e9be31813a32b14">&#9670;&#160;</a></span>required()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -751,7 +768,8 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::required </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>r</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -762,9 +780,15 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Mark the optional argument as required. </p>
-<dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument.</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Add a <code>const bool</code> parameter to enable explicit enabling/disabling of this option. </dd></dl>
+<p>Set the <code>required</code> parameter of the optional argument. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">r</td><td>The parameter value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
+<dl class="section attention"><dt>Attention</dt><dd>Setting the <code>required</code> parameter to true disables the <code>bypass_required</code> flag. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00071">71</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
@@ -795,7 +819,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 <p>Friend class declaration for access by <a class="el" href="classap_1_1argument__parser.html" title="Main argument parser class.">argument_parser</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00186">186</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00194">194</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -808,7 +832,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><b>argument</b></li><li class="navelem"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a></li>
-    <li class="footer">Generated on Wed Jul 30 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Thu Jul 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
