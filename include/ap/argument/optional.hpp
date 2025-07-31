@@ -63,22 +63,28 @@ public:
     }
 
     /**
-     * @brief Mark the optional argument as required.
+     * @brief Set the `required` parameter of the optional argument
+     * @param r The parameter value.
      * @return Reference to the optional argument.
-     *
-     * \todo Add a `const bool` parameter to enable explicit enabling/disabling of this option.
+     * @attention Setting the `required` parameter to true disables the `bypass_required` flag.
      */
-    optional& required() noexcept {
-        this->_required = true;
+    optional& required(const bool r = true) noexcept {
+        this->_required = r;
+        if (this->_required)
+            this->_bypass_required = false;
         return *this;
     }
 
     /**
-     * @brief Enable bypassing the required status for the optional argument.
+     * @brief Enable/disable bypassing the `required` flag for the optional argument.
+     * @param br The parameter value.
      * @return Reference to the optional argument.
+     * @attention Setting the `bypass_required` option to true disables the `required` flag.
      */
-    optional& bypass_required() noexcept {
-        this->_bypass_required = true;
+    optional& bypass_required(const bool br = true) noexcept {
+        this->_bypass_required = br;
+        if (this->_bypass_required)
+            this->_required = false;
         return *this;
     }
 
@@ -166,9 +172,11 @@ public:
      * @brief Set the default value for the optional argument.
      * @param default_value The default value to set.
      * @return Reference to the optional argument.
+     * @attention Setting the default value disables the `required` flag.
      */
     optional& default_value(const value_type& default_value) noexcept {
         this->_default_value = default_value;
+        this->_required = false;
         return *this;
     }
 
@@ -212,7 +220,7 @@ private:
         desc.params.reserve(6);
         if (this->_required)
             desc.add_param("required", "true");
-        if (this->_bypass_required)
+        if (this->bypass_required_enabled())
             desc.add_param("bypass required", "true");
         if (this->_nargs_range.is_bound())
             desc.add_param("nargs", this->_nargs_range);
@@ -228,16 +236,6 @@ private:
         return desc;
     }
 
-    /// @return True if the optional argument is required, false otherwise.
-    [[nodiscard]] bool is_required() const noexcept override {
-        return this->_required;
-    }
-
-    /// @return True if bypassing the required status is enabled for the optional argument, false otherwise.
-    [[nodiscard]] bool bypass_required_enabled() const noexcept override {
-        return this->_bypass_required;
-    }
-
     /// @brief Mark the optional argument as used.
     bool mark_used() override {
         ++this->_count;
@@ -251,7 +249,7 @@ private:
         return this->_count > 0;
     }
 
-    /// @return The number of times the optional argument is used.
+    /// @return The number of times the optional argument flag has been used.
     [[nodiscard]] std::size_t count() const noexcept override {
         return this->_count;
     }
@@ -341,8 +339,6 @@ private:
         return not std::is_gt(this->_nargs_range.ordering(this->_values.size() + 1ull));
     }
 
-    bool _required = false;
-    bool _bypass_required = false;
     nargs::range _nargs_range = nargs::any();
     std::any _default_value;
     std::any _implicit_value;

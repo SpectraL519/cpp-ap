@@ -36,6 +36,20 @@ struct invalid_configuration : public argument_parser_exception {
     ) noexcept {
         return invalid_configuration(std::format("Given name [{}] already used.", arg_name.str()));
     }
+
+    struct positional {
+        static invalid_configuration required_after_non_required(
+            const detail::argument_name& required_arg_name,
+            const detail::argument_name& non_required_arg_name
+        ) noexcept {
+            return invalid_configuration(std::format(
+                "Required positional argument [{}] cannot be defined after a non-required "
+                "positional argument [{}].",
+                required_arg_name.str(),
+                non_required_arg_name.str()
+            ));
+        }
+    };
 };
 
 /// @brief Exception type used for errors encountered during the argument parsing operation.

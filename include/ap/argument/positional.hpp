@@ -36,7 +36,7 @@ public:
      * @brief Constructor for positional argument with the `name` identifier.
      * @param name The `name` identifier of the positional argument.
      */
-    positional(const detail::argument_name& name) : argument_base(name) {}
+    positional(const detail::argument_name& name) : argument_base(name, true) {}
 
     ~positional() = default;
 
@@ -56,6 +56,32 @@ public:
      */
     positional& help(std::string_view help_msg) noexcept {
         this->_help_msg = help_msg;
+        return *this;
+    }
+
+    /**
+     * @brief Set the `required` flag of the positional argument
+     * @param r The parameter value.
+     * @return Reference to the positional argument.
+     * @attention Setting the `required` parameter to true disables the `bypass_required` flag.
+     */
+    positional& required(const bool r = true) noexcept {
+        this->_required = r;
+        if (this->_required)
+            this->_bypass_required = false;
+        return *this;
+    }
+
+    /**
+     * @brief Enable/disable bypassing the `required` flag for the positional argument.
+     * @param br The parameter value.
+     * @return Reference to the positional argument.
+     * @attention Setting the `bypass_required` parameter to true disables the `required` flag.
+     */
+    positional& bypass_required(const bool br = true) noexcept {
+        this->_bypass_required = br;
+        if (this->_bypass_required)
+            this->_required = false;
         return *this;
     }
 
@@ -86,6 +112,18 @@ public:
     requires(std::equality_comparable<value_type>)
     {
         return this->choices<>(choices);
+    }
+
+    /**
+     * @brief Set the default value for the positional argument.
+     * @param default_value The default value to set.
+     * @return Reference to the positional argument.
+     * @attention Setting the default value disables the `required` flag.
+     */
+    positional& default_value(const value_type& default_value) noexcept {
+        this->_default_value = default_value;
+        this->_required = false;
+        return *this;
     }
 
     /**
@@ -129,27 +167,23 @@ private:
         if (not verbose)
             return desc;
 
+        if (not this->_required)
+            desc.add_param("required", "false");
+        if (this->bypass_required_enabled())
+            desc.add_param("bypass required", "true");
         if constexpr (detail::c_writable<value_type>) {
             if (not this->_choices.empty())
                 desc.add_range_param("choices", this->_choices);
+            if (this->_default_value.has_value())
+                desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
         }
 
         return desc;
     }
 
-    /// @return True if the positional argument is required, false otherwise
-    [[nodiscard]] bool is_required() const noexcept override {
-        return this->_required;
-    }
-
-    /// @return True if bypassing the required status is enabled for the positional argument, false otherwise.
-    [[nodiscard]] bool bypass_required_enabled() const noexcept override {
-        return this->_bypass_required;
-    }
-
     /**
      * @brief Mark the positional argument as used.
-     * @note No logic is performed for positional arguments
+     * @remark No logic is performed for positional arguments
      */
     bool mark_used() override {
         return false;
@@ -160,9 +194,9 @@ private:
         return this->_value.has_value();
     }
 
-    /// @return The number of times the positional argument is used.
+    /// @return 1 if a value has been parsed for the positional argument, 0 otherwise.
     [[nodiscard]] std::size_t count() const noexcept override {
-        return static_cast<std::size_t>(this->_value.has_value());
+        return static_cast<std::size_t>(this->has_parsed_values());
     }
 
     /**
@@ -192,17 +226,20 @@ private:
 
     /// @return True if the positional argument has a value, false otherwise.
     [[nodiscard]] bool has_value() const noexcept override {
-        return this->_value.has_value();
+        return this->has_parsed_values() or this->_default_value.has_value();
     }
 
     /// @return True if the positional argument has parsed values, false otherwise.
     [[nodiscard]] bool has_parsed_values() const noexcept override {
-        return this->has_value();
+        return this->_value.has_value();
     }
 
     /// @return Ordering relationship of positional argument range.
     [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
-        return this->_value.has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
+        if (not this->_required)
+            return std::weak_ordering::equivalent;
+
+        return this->has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
     }
 
     /**
@@ -210,11 +247,15 @@ private:
      * @throws std::logic_error
      */
     [[nodiscard]] const std::any& value() const override {
-        if (not this->_value.has_value())
-            throw std::logic_error(
-                std::format("No value parsed for the `{}` positional argument.", this->_name.str())
-            );
-        return this->_value;
+        if (this->has_parsed_values())
+            return this->_value;
+
+        if (this->_default_value.has_value())
+            return this->_default_value;
+
+        throw std::logic_error(
+            std::format("No value parsed for the `{}` positional argument.", this->_name.str())
+        );
     }
 
     /**
@@ -227,8 +268,7 @@ private:
         );
     }
 
-    static constexpr bool _required = true;
-    static constexpr bool _bypass_required = false;
+    std::any _default_value;
     std::vector<value_type> _choices;
     std::vector<value_action_type> _value_actions;
 

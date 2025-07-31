@@ -8,6 +8,7 @@ using namespace ap_testing;
 using ap::parsing_failure;
 using ap::argument::positional;
 using ap::detail::argument_name;
+using ap::detail::parameter_descriptor;
 
 namespace {
 
@@ -24,6 +25,7 @@ using sut_type = positional<sut_value_type>;
 constexpr std::string empty_str = "";
 constexpr std::string invalid_value_str = "invalid value";
 
+constexpr sut_value_type default_value = 0;
 constexpr sut_value_type value_1 = 1;
 constexpr sut_value_type value_2 = 2;
 
@@ -114,18 +116,109 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(desc.help.value(), help_msg);
     CHECK(desc.params.empty());
 
-    // with the choices parameter
+    // other parameters
+    sut.bypass_required();
     sut.choices(choices);
+    sut.default_value(default_value);
+
+    // check the descriptor parameters
     desc = get_desc(sut, verbose);
-    REQUIRE_FALSE(desc.params.empty());
-    const auto& choices_param = desc.params.back();
-    CHECK_EQ(choices_param.name, "choices");
-    CHECK_EQ(choices_param.value, ap::detail::join(choices, ", "));
+
+    const auto bypass_required_it =
+        std::ranges::find(desc.params, "bypass required", &parameter_descriptor::name);
+    REQUIRE_NE(bypass_required_it, desc.params.end());
+    CHECK_EQ(bypass_required_it->value, "true");
+
+    // automatically set to false with bypass_required
+    const auto required_it =
+        std::ranges::find(desc.params, "required", &parameter_descriptor::name);
+    REQUIRE_NE(required_it, desc.params.end());
+    CHECK_EQ(required_it->value, "false");
+
+    const auto choices_it = std::ranges::find(desc.params, "choices", &parameter_descriptor::name);
+    REQUIRE_NE(choices_it, desc.params.end());
+    CHECK_EQ(choices_it->value, ap::detail::join(choices, ", "));
+
+    const auto default_value_it =
+        std::ranges::find(desc.params, "default value", &parameter_descriptor::name);
+    REQUIRE_NE(default_value_it, desc.params.end());
+    CHECK_EQ(default_value_it->value, std::to_string(default_value));
 }
 
-TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true") {
+TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true by default") {
     auto sut = sut_type(arg_name_primary);
     CHECK(is_required(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "is_required() should return the value set using the `required` param setter"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    sut.required(false);
+    CHECK_FALSE(is_required(sut));
+
+    sut.required();
+    CHECK(is_required(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "bypass_required() should return the value set using the `bypass_required` param setter"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    sut.bypass_required(true);
+    CHECK(is_bypass_required_enabled(sut));
+
+    sut.bypass_required(false);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "bypass_required_enabled() should return true only if the `required` flag is set to false and "
+    "the `bypass_required` flags is set to true"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    // disabled
+    set_required(sut, false);
+    set_bypass_required(sut, false);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+
+    set_required(sut, true);
+    set_bypass_required(sut, false);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+
+    set_required(sut, true);
+    set_bypass_required(sut, true);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+
+    // enabled
+    set_required(sut, false);
+    set_bypass_required(sut, true);
+    CHECK(is_bypass_required_enabled(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "required(true) should disable `bypass_required` option and bypass_required(true) should "
+    "disable the `required` option"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    REQUIRE(is_required(sut));
+    REQUIRE_FALSE(is_bypass_required_enabled(sut));
+
+    sut.bypass_required();
+    CHECK(is_bypass_required_enabled(sut));
+    CHECK_FALSE(is_required(sut));
+
+    sut.required();
+    CHECK(is_required(sut));
+    CHECK_FALSE(is_bypass_required_enabled(sut));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_used() should return false by default") {
@@ -172,9 +265,28 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
+    positional_argument_test_fixture, "has_value() should return true if the default value is set"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+
+    CHECK(has_value(sut));
+}
+
+TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "has_parsed_values() should return false by default"
 ) {
     const auto sut = sut_type(arg_name_primary);
+    CHECK_FALSE(has_parsed_values(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "has_parsed_values() should false if only the default value is set"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+
     CHECK_FALSE(has_parsed_values(sut));
 }
 
@@ -317,10 +429,34 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
+    "value() should return the default argument's value if it has been set and no values were "
+    "parsed"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+
+    REQUIRE(has_value(sut));
+    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), default_value);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
     "value() should return the argument's value if it has been set"
 ) {
     auto sut = sut_type(arg_name_primary);
+    set_value(sut, value_1);
 
+    REQUIRE(has_value(sut));
+    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value_1);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "value() should return the argument's parsed value if it has been set (with a defined default "
+    "value)"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
     set_value(sut, value_1);
 
     REQUIRE(has_value(sut));

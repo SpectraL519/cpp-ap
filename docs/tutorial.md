@@ -160,19 +160,173 @@ parser.add_positional_argument<std::size_t>("number", "n")
       .help("a positive integer value");
 ```
 
-#### 2. `choices` - A list of valid argument values.
+#### 2. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
+
+> [!NOTE]
+>
+> - By default positional arguments are set to be required, while optional arguments have this option disabled by default.
+> - The default value of the value parameter of the `required(bool)` function is `true` for both positional and optional arguments.
+
+> [!WARNING]
+>
+> - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
+> - For both positional and optional arguments:
+>   - enabling the `required` option disables the `bypass_required` option
+>   - disabling the `required` option has no effect on the `bypass_required` option.
+
+```cpp
+// example: positional arguments
+parser.add_positional_argument("input");
+parser.add_positional_argument("output").required(false);
+
+parser.parse_args(argc, argv);
+
+// input is guaranteed to have a value if parsing was successfull
+const auto data = read_data(parser.value("input"));
+
+if (parser.has_value("output")) {
+    std::ofstream os(parser.value("output"));
+    os << data << std::endl;
+}
+else {
+    std::cout << data << std::endl;
+}
+
+/*
+Command                           Result
+-----------------------------------------------------------------------------------------
+./program                         Parsing error (no value for the input argument)
+./program input.txt               Parsing success; Printing data to stdout
+./program input.txt output.txt    Parsing success; Printing data to the `output.txt` file
+```
+
+```cpp
+// example: optional arguments
+parser.add_optional_argument("input", "i").required();
+parser.add_optional_argument("output", "o");
+
+parser.parse_args(argc, argv);
+
+// `input` is guaranteed to have a value if parsing was successfull
+const auto data = read_data(parser.value("input"));
+
+if (parser.has_value("output")) {
+    std::ofstream os(parser.value("output"));
+    os << data << std::endl;
+}
+else {
+    std::cout << data << std::endl;
+}
+
+/*
+Command                                 Result
+-----------------------------------------------------------------------------------------------
+./program                               Parsing error (no value for the input argument)
+./program --input input.txt             Parsing success; Printing data to stdout
+./program -i input.txt -o output.txt    Parsing success; Printing data to the `output.txt` file
+*/
+```
+
+#### 3. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
+
+> [!NOTE]
+>
+> - Both positional and optional arguments have the `bypass_required` option disabled.
+> - The default value of the value parameter of the `bypass_required(bool)` function is `true` for both positional and optional arguments.
+
+> [!WARNING]
+>
+> For both positional and optional arguments:
+> - enabling the `bypass_required` option disables the `required` option
+> - disabling the `bypass_required` option has no effect on the `required` option.
+
+```cpp
+// example: optional arguments
+parser.add_positional_argument("input");
+parser.add_optional_argument("output", "o").required();
+parser.add_optional_argument("version", "v").bypass_required();
+
+parser.parse_args(argc, argv);
+
+if (parser.count("version")) {
+    std::cout << PROJECT_VERSION << std::endl;
+    std::exit(EXIT_SUCCESS);
+}
+
+// may result in an `ap::argument_parser_exception`:
+// `input` is not guaranteed to have a value at this point
+const auto data = read_data(parser.value("input"));
+
+// may result in an `ap::argument_parser_exception`:
+// `output` is not guaranteed to have a value at this point
+std::ofstream os(parser.value("output"));
+os << data << std::endl;
+```
+
+#### 4. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
+
+> [!WARNING]
+>
+> For both positional and optional arguments, setting the `default_value` parameter disables the `required` option.
+
+```cpp
+// example: positional arguments
+parser.add_positional_argument("input");
+parser.add_positional_argument("output").default_value("output.txt");
+
+parser.parse_args(argc, argv);
+
+// `input` is guaranteed to have a value if parsing was successfull
+const auto data = read_data(parser.value("input"));
+
+// `output` is guaranteed to have a value even if one was not specified in the command-line
+std::ofstream os(parser.value("output"));
+os << data << std::endl;
+
+/*
+Command                           Result
+-----------------------------------------------------------------------------------------
+./program                         Parsing error (no value for the input argument)
+./program input.txt               Parsing success; Printing data to `output.txt`
+./program input.txt myfile.txt    Parsing success; Printing data to the `myfile.txt` file
+```
+
+```cpp
+// example: optional arguments
+parser.add_optional_argument("input", "i").required();
+parser.add_optional_argument("output", "o").default_value("output.txt");
+
+parser.parse_args(argc, argv);
+
+// `input` is guaranteed to have a value if parsing was successfull
+const auto data = read_data(parser.value("input"));
+
+// `output` is guaranteed to have a value even if one was not specified in the command-line
+std::ofstream os(parser.value("output"));
+os << data << std::endl;
+
+/*
+Command                                 Result
+-----------------------------------------------------------------------------------------------
+./program                               Parsing error (no value for the input argument)
+./program --input input.txt             Parsing success; Printing data to `output.txt`
+./program -i input.txt -o myfile.txt    Parsing success; Printing data to the `myfile.txt` file
+```
+
+#### 5. `choices` - A list of valid argument values.
 
 The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
 
 ```cpp
 parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
+// passing a value other than a, b or c for the `method` argument will result in an error
 ```
 
 > [!IMPORTANT]
 >
 > The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
 
-#### 3. Value actions - Function performed after parsing an argument's value.
+#### 6. Value actions - Function performed after parsing an argument's value.
 Actions are represented as functions, which take the argument's value as an argument. The available action types are:
 
 - `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
@@ -221,15 +375,7 @@ Actions are represented as functions, which take the argument's value as an argu
 
 Apart from the common parameters listed above, for optional arguments you can also specify the following parameters:
 
-#### 1. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
-
-```cpp
-parser.add_optional_argument("output", "o").required();
-```
-
-#### 2. `bypass_required` - If this option is set for an argument, parsing it's value will overrite the `required` option for other optional arguments and all positional arguments.
-
-#### 3. `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
+#### 1. `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
 
 - Specific number:
 
@@ -262,24 +408,35 @@ parser.add_optional_argument("output", "o").required();
 >
 > The default `nargs` parameter value is `ap::nargs::any()`.
 
-#### 4. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
+#### 2. `implicit_value` - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
 
 ```cpp
-parser.add_opitonal_argument("output", "o").default_value("out.txt");
+// example
+parser.add_optional_argument("save", "s").implicit_value("output.txt");
+
+parser.parse_args(argc, argv);
+
+const auto data = get_data(); // arbitrary program data
+
+// `output` is not guaranteed to have a value
+if (parser.has_value("save")) {
+    std::ofstream os(parser.value("save"));
+    os << data << std::endl;
+}
+
+/*
+Command                       Result
+--------------------------------------------------------------------
+./program                     No data will be saved
+./program -s                  The data will be saved to `output.txt`
+./program --save myfile.txt   The data will be saved to `myfile.txt`
 ```
 
-#### 5. `implicit_value` - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
+> [!TIP]
+>
+> The `implicit_value` parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see [Adding Arguments](#adding-arguments)).
 
-```cpp
-// program.cpp
-parser.add_optional_argument("save", "s")
-      .implicit_value("out.txt")
-      .help("save the program's output to a file");
-```
-
-In this example if you run the program with only a `-s` or `--save` flag and no value, the value will be set to `out.txt`.
-
-#### 6. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
+#### 4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
 
 ```cpp
 void print_debug_info() noexcept {

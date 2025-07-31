@@ -274,6 +274,7 @@ public:
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
     void parse_args(const AR& argv) {
+        this->_validate_argument_configuration();
         this->_parse_args_impl(this->_tokenize(argv));
 
         if (this->_are_required_args_bypassed())
@@ -481,6 +482,7 @@ private:
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
     using arg_ptr_list_iter_t = typename arg_ptr_list_t::iterator;
     using arg_opt_t = std::optional<std::reference_wrapper<detail::argument_base>>;
+    using const_arg_opt_t = std::optional<std::reference_wrapper<const detail::argument_base>>;
 
     using arg_token_list_t = std::vector<detail::argument_token>;
     using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
@@ -557,6 +559,28 @@ private:
             return true;
 
         return false;
+    }
+
+    /**
+     * @brief Validate whether the definition/configuration of the parser's arguments is correct.
+     *
+     * What is verified:
+     * 1. No required positional argument can be added after a non-required positional argument.
+     */
+    void _validate_argument_configuration() const {
+        // Step: 1
+        const_arg_opt_t non_required_arg = std::nullopt;
+        for (const auto& arg : this->_positional_args) {
+            if (not arg->is_required()) {
+                non_required_arg = std::ref(*arg);
+                continue;
+            }
+
+            if (non_required_arg and arg->is_required())
+                throw invalid_configuration::positional::required_after_non_required(
+                    arg->name(), non_required_arg->get().name()
+                );
+        }
     }
 
     /**
@@ -738,13 +762,20 @@ private:
     }
 
     /**
-     * @brief Check if optional arguments can bypass the required arguments.
-     * @return True if optional arguments can bypass required arguments, false otherwise.
+     * @brief Check whether required argument bypassing is enabled
+     * @return true if at least one argument with enabled required argument bypassing is used, false otherwise.
      */
     [[nodiscard]] bool _are_required_args_bypassed() const noexcept {
-        return std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
-            return arg->is_used() and arg->bypass_required_enabled();
-        });
+        // TODO: use std::views::join after the transition to C++23
+        return std::ranges::any_of(
+                   this->_positional_args,
+                   [](const arg_ptr_t& arg) {
+                       return arg->is_used() and arg->bypass_required_enabled();
+                   }
+               )
+            or std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
+                   return arg->is_used() and arg->bypass_required_enabled();
+               });
     }
 
     /**
@@ -752,8 +783,9 @@ private:
      * @throws ap::parsing_failure
      */
     void _verify_required_args() const {
+        // TODO: use std::views::join after the transition to C++23
         for (const auto& arg : this->_positional_args)
-            if (not arg->is_used()) // ? use has_parsed_values
+            if (arg->is_required() and not arg->has_value())
                 throw parsing_failure::required_argument_not_parsed(arg->name());
 
         for (const auto& arg : this->_optional_args)
@@ -766,6 +798,7 @@ private:
      * @throws ap::parsing_failure
      */
     void _verify_nvalues() const {
+        // TODO: use std::views::join after the transition to C++23
         for (const auto& arg : this->_positional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
                 throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);

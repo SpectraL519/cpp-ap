@@ -7,6 +7,7 @@
 using namespace ap_testing;
 using namespace ap::argument;
 using namespace ap::nargs;
+using ap::invalid_configuration;
 using ap::parsing_failure;
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
@@ -157,6 +158,35 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
+    "parse_args should throw if a required positional argument is defined after a non-require "
+    "posisitonal argument"
+) {
+    const auto non_required_arg_name = init_arg_name(0ull);
+    sut.add_positional_argument(
+           non_required_arg_name.primary, non_required_arg_name.secondary.value()
+    )
+        .required(false);
+
+    const auto required_arg_name = init_arg_name(1ull);
+    sut.add_positional_argument(required_arg_name.primary, required_arg_name.secondary.value());
+
+    const auto argc = get_argc(no_args, no_args);
+    auto argv = init_argv(no_args, no_args);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        invalid_configuration::positional::required_after_non_required(
+            required_arg_name, non_required_arg_name
+        )
+            .what(),
+        invalid_configuration
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
     "parse_args should throw when there is no value specified for a required optional argument"
 ) {
     add_arguments(n_positional_args, n_optional_args);
@@ -278,8 +308,31 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should not throw if there is an argument which has the bypass_required option "
-    "enabled and is used"
+    "parse_args should not throw if there is an positional argument which has the bypass_required "
+    "option enabled and is used"
+) {
+    const std::size_t n_positional_args = 1ull;
+    const auto bypass_required_arg_name = init_arg_name(n_positional_args - 1ull).primary;
+    sut.add_positional_argument(bypass_required_arg_name).bypass_required();
+    const std::string bypass_required_arg_value = "bypass_required_arg_value";
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        sut.add_optional_argument(init_arg_name(n_positional_args + i).primary).required();
+
+    std::vector<std::string> argv_vec{"program", bypass_required_arg_value};
+    const int argc = static_cast<int>(argv_vec.size());
+    const auto argv = to_char_2d_array(argv_vec);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+    CHECK_EQ(sut.value(bypass_required_arg_name), bypass_required_arg_value);
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should not throw if there is an optional argument which has the bypass_required "
+    "option enabled and is used"
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
