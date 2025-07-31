@@ -63,7 +63,7 @@ public:
      * @brief Set the `required` flag of the positional argument
      * @param r The parameter value.
      * @return Reference to the positional argument.
-     * @note Setting the `required` parameter to true disables the `bypass_required` flag.
+     * @attention Setting the `required` parameter to true disables the `bypass_required` flag.
      */
     positional& required(const bool r = true) noexcept {
         this->_required = r;
@@ -76,7 +76,7 @@ public:
      * @brief Enable/disable bypassing the `required` flag for the positional argument.
      * @param br The parameter value.
      * @return Reference to the positional argument.
-     * @note Setting the `bypass_required` parameter to true disables the `required` flag.
+     * @attention Setting the `bypass_required` parameter to true disables the `required` flag.
      */
     positional& bypass_required(const bool br = true) noexcept {
         this->_bypass_required = br;
@@ -118,7 +118,7 @@ public:
      * @brief Set the default value for the positional argument.
      * @param default_value The default value to set.
      * @return Reference to the positional argument.
-     * @note Setting the default value disables the `required` flag.
+     * @attention Setting the default value disables the `required` flag.
      */
     positional& default_value(const value_type& default_value) noexcept {
         this->_default_value = default_value;
@@ -183,7 +183,7 @@ private:
 
     /**
      * @brief Mark the positional argument as used.
-     * @note No logic is performed for positional arguments
+     * @remark No logic is performed for positional arguments
      */
     bool mark_used() override {
         return false;
