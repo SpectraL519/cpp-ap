@@ -63,7 +63,8 @@ public:
     }
 
     /**
-     * @brief Set the `required` flag of the optional argument
+     * @brief Set the `required` parameter of the optional argument
+     * @param r The parameter value.
      * @return Reference to the optional argument.
      * @note Setting the `required` parameter to true disables the `bypass_required` flag.
      */
@@ -76,6 +77,7 @@ public:
 
     /**
      * @brief Enable/disable bypassing the `required` flag for the optional argument.
+     * @param br The parameter value.
      * @return Reference to the optional argument.
      * @note Setting the `bypass_required` option to true disables the `required` flag.
      */

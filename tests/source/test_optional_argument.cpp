@@ -132,7 +132,7 @@ TEST_CASE_FIXTURE(
     REQUIRE_NE(required_it, desc.params.end());
     CHECK_EQ(required_it->value, "true");
 
-    // set the parameters
+    // other parameters
     sut.bypass_required();
     sut.nargs(non_default_range);
     sut.choices(choices);

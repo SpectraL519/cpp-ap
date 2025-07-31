@@ -565,10 +565,10 @@ private:
      * @brief Validate whether the definition/configuration of the parser's arguments is correct.
      *
      * What is verified:
-     * - No required positional argument can be added after a non-required positional argument.
+     * 1. No required positional argument can be added after a non-required positional argument.
      */
     void _validate_argument_configuration() const {
-        // not required positional arguments must be at the end of the positional argument list
+        // Step: 1
         const_arg_opt_t non_required_arg = std::nullopt;
         for (const auto& arg : this->_positional_args) {
             if (not arg->is_required()) {

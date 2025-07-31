@@ -162,6 +162,18 @@ parser.add_positional_argument<std::size_t>("number", "n")
 
 #### 2. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
+> [!NOTE]
+>
+> - By default positional arguments are set to be required, while optional arguments have this option disabled by default.
+> - The default value of the value parameter of the `required(bool)` function is `true` for both positional and optional arguments.
+
+> [!CAUTION]
+>
+> - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
+> - For both positional and optional arguments:
+>   - enabling the `required` option disables the `bypass_required` option
+>   - disabling the `required` option has no effect on the `bypass_required` option.
+
 ```cpp
 // example: positional arguments
 parser.add_positional_argument("input");
@@ -215,17 +227,18 @@ Command                                 Result
 */
 ```
 
+#### 3. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
+
 > [!NOTE]
 >
-> - By default positional arguments are set to be required, while optional arguments have this option disabled by default.
-> - The default value of the value parameter of the `required(bool)` function is `true` for both positional and optional arguments.
+> - Both positional and optional arguments have the `bypass_required` option disabled.
+> - The default value of the value parameter of the `bypass_required(bool)` function is `true` for both positional and optional arguments.
 
 > [!CAUTION]
 >
-> - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
-> - For both positional and optional arguments, enabling the `required` option disables the `bypass_required` option and disabling the `required` option has no effect on the `bypass_required` option.
-
-#### 3. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
+> For both positional and optional arguments:
+> - enabling the `bypass_required` option disables the `required` option
+> - disabling the `bypass_required` option has no effect on the `required` option.
 
 ```cpp
 // example: optional arguments
@@ -251,6 +264,10 @@ os << data << std::endl;
 ```
 
 #### 4. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
+
+> [!CAUTION]
+>
+> For both positional and optional arguments, setting the `default_value` parameter disables the `required` option.
 
 ```cpp
 // example: positional arguments
@@ -295,10 +312,6 @@ Command                                 Result
 ./program --input input.txt             Parsing success; Printing data to `output.txt`
 ./program -i input.txt -o myfile.txt    Parsing success; Printing data to the `myfile.txt` file
 ```
-
-> [!CAUTION]
->
-> For both positional and optional arguments, setting the `default_value` parameter disables the `required` option for an argument.
 
 #### 5. `choices` - A list of valid argument values.
 

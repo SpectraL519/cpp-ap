@@ -8,6 +8,7 @@ using namespace ap_testing;
 using ap::parsing_failure;
 using ap::argument::positional;
 using ap::detail::argument_name;
+using ap::detail::parameter_descriptor;
 
 namespace {
 
@@ -115,13 +116,33 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(desc.help.value(), help_msg);
     CHECK(desc.params.empty());
 
-    // with the choices parameter
+    // other parameters
+    sut.bypass_required();
     sut.choices(choices);
+    sut.default_value(default_value);
+
+    // check the descriptor parameters
     desc = get_desc(sut, verbose);
-    REQUIRE_FALSE(desc.params.empty());
-    const auto& choices_param = desc.params.back();
-    CHECK_EQ(choices_param.name, "choices");
-    CHECK_EQ(choices_param.value, ap::detail::join(choices, ", "));
+
+    const auto bypass_required_it =
+        std::ranges::find(desc.params, "bypass required", &parameter_descriptor::name);
+    REQUIRE_NE(bypass_required_it, desc.params.end());
+    CHECK_EQ(bypass_required_it->value, "true");
+
+    // automatically set to false with bypass_required
+    const auto required_it =
+        std::ranges::find(desc.params, "required", &parameter_descriptor::name);
+    REQUIRE_NE(required_it, desc.params.end());
+    CHECK_EQ(required_it->value, "false");
+
+    const auto choices_it = std::ranges::find(desc.params, "choices", &parameter_descriptor::name);
+    REQUIRE_NE(choices_it, desc.params.end());
+    CHECK_EQ(choices_it->value, ap::detail::join(choices, ", "));
+
+    const auto default_value_it =
+        std::ranges::find(desc.params, "default value", &parameter_descriptor::name);
+    REQUIRE_NE(default_value_it, desc.params.end());
+    CHECK_EQ(default_value_it->value, std::to_string(default_value));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true by default") {

@@ -61,6 +61,7 @@ public:
 
     /**
      * @brief Set the `required` flag of the positional argument
+     * @param r The parameter value.
      * @return Reference to the positional argument.
      * @note Setting the `required` parameter to true disables the `bypass_required` flag.
      */
@@ -73,6 +74,7 @@ public:
 
     /**
      * @brief Enable/disable bypassing the `required` flag for the positional argument.
+     * @param br The parameter value.
      * @return Reference to the positional argument.
      * @note Setting the `bypass_required` parameter to true disables the `required` flag.
      */
