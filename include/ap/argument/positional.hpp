@@ -62,18 +62,24 @@ public:
     /**
      * @brief Set the `required` flag of the positional argument
      * @return Reference to the positional argument.
+     * @note Setting the `required` parameter to true disables the `bypass_required` flag.
      */
     positional& required(const bool r = true) noexcept {
         this->_required = r;
+        if (this->_required)
+            this->_bypass_required = false;
         return *this;
     }
 
     /**
      * @brief Enable/disable bypassing the `required` flag for the positional argument.
      * @return Reference to the positional argument.
+     * @note Setting the `bypass_required` parameter to true disables the `required` flag.
      */
     positional& bypass_required(const bool br = true) noexcept {
         this->_bypass_required = br;
+        if (this->_bypass_required)
+            this->_required = false;
         return *this;
     }
 
@@ -159,9 +165,15 @@ private:
         if (not verbose)
             return desc;
 
+        if (not this->_required)
+            desc.add_param("required", "false");
+        if (this->bypass_required_enabled())
+            desc.add_param("bypass required", "true");
         if constexpr (detail::c_writable<value_type>) {
             if (not this->_choices.empty())
                 desc.add_range_param("choices", this->_choices);
+            if (this->_default_value.has_value())
+                desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
         }
 
         return desc;
@@ -180,9 +192,9 @@ private:
         return this->_value.has_value();
     }
 
-    /// @return The number of times the positional argument is used.
+    /// @return 1 if a value has been parsed for the positional argument, 0 otherwise.
     [[nodiscard]] std::size_t count() const noexcept override {
-        return static_cast<std::size_t>(this->_value.has_value());
+        return static_cast<std::size_t>(this->has_parsed_values());
     }
 
     /**

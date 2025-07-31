@@ -64,6 +64,16 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
+    bool set_required(positional<T>& arg, const bool r) const {
+        return arg._required = r;
+    }
+
+    template <c_argument_value_type T>
+    bool set_bypass_required(positional<T>& arg, const bool br) const {
+        return arg._bypass_required = br;
+    }
+
+    template <c_argument_value_type T>
     bool set_value(positional<T>& arg, const T& value) const {
         return arg.set_value(std::to_string(value));
     }

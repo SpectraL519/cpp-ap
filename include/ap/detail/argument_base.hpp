@@ -73,7 +73,7 @@ protected:
     /// @return `true` if the argument has been used, `false` otherwise.
     virtual bool is_used() const noexcept = 0;
 
-    /// @return The number of times the positional argument is used.
+    /// @return The number of times an argument has been used.
     virtual std::size_t count() const noexcept = 0;
 
     /**

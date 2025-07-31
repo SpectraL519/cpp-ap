@@ -36,6 +36,16 @@ struct optional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
+    bool set_required(optional<T>& arg, const bool r) const {
+        return arg._required = r;
+    }
+
+    template <c_argument_value_type T>
+    bool set_bypass_required(optional<T>& arg, const bool br) const {
+        return arg._bypass_required = br;
+    }
+
+    template <c_argument_value_type T>
     bool set_value(optional<T>& arg, const T& value) const {
         return set_value(arg, as_string(value));
     }

@@ -65,18 +65,24 @@ public:
     /**
      * @brief Set the `required` flag of the optional argument
      * @return Reference to the optional argument.
+     * @note Setting the `required` parameter to true disables the `bypass_required` flag.
      */
     optional& required(const bool r = true) noexcept {
         this->_required = r;
+        if (this->_required)
+            this->_bypass_required = false;
         return *this;
     }
 
     /**
      * @brief Enable/disable bypassing the `required` flag for the optional argument.
      * @return Reference to the optional argument.
+     * @note Setting the `bypass_required` option to true disables the `required` flag.
      */
     optional& bypass_required(const bool br = true) noexcept {
         this->_bypass_required = br;
+        if (this->_bypass_required)
+            this->_required = false;
         return *this;
     }
 
@@ -212,7 +218,7 @@ private:
         desc.params.reserve(6);
         if (this->_required)
             desc.add_param("required", "true");
-        if (this->_bypass_required)
+        if (this->bypass_required_enabled())
             desc.add_param("bypass required", "true");
         if (this->_nargs_range.is_bound())
             desc.add_param("nargs", this->_nargs_range);
@@ -241,7 +247,7 @@ private:
         return this->_count > 0;
     }
 
-    /// @return The number of times the optional argument is used.
+    /// @return The number of times the optional argument flag has been used.
     [[nodiscard]] std::size_t count() const noexcept override {
         return this->_count;
     }

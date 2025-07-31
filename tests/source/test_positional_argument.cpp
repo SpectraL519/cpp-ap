@@ -144,28 +144,60 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
+    "bypass_required() should return the value set using the `bypass_required` param setter"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    sut.bypass_required(true);
+    CHECK(is_bypass_required_enabled(sut));
+
+    sut.bypass_required(false);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
     "bypass_required_enabled() should return true only if the `required` flag is set to false and "
     "the `bypass_required` flags is set to true"
 ) {
     auto sut = sut_type(arg_name_primary);
 
     // disabled
-    sut.required(false);
-    sut.bypass_required(false);
+    set_required(sut, false);
+    set_bypass_required(sut, false);
     CHECK_FALSE(is_bypass_required_enabled(sut));
 
-    sut.required(true);
-    sut.bypass_required(false);
+    set_required(sut, true);
+    set_bypass_required(sut, false);
     CHECK_FALSE(is_bypass_required_enabled(sut));
 
-    sut.required(true);
-    sut.bypass_required(true);
+    set_required(sut, true);
+    set_bypass_required(sut, true);
     CHECK_FALSE(is_bypass_required_enabled(sut));
 
     // enabled
-    sut.required(false);
-    sut.bypass_required(true);
+    set_required(sut, false);
+    set_bypass_required(sut, true);
     CHECK(is_bypass_required_enabled(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "required(true) should disable `bypass_required` option and bypass_required(true) should "
+    "disable the `required` option"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    REQUIRE(is_required(sut));
+    REQUIRE_FALSE(is_bypass_required_enabled(sut));
+
+    sut.bypass_required();
+    CHECK(is_bypass_required_enabled(sut));
+    CHECK_FALSE(is_required(sut));
+
+    sut.required();
+    CHECK(is_required(sut));
+    CHECK_FALSE(is_bypass_required_enabled(sut));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_used() should return false by default") {

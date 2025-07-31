@@ -756,13 +756,20 @@ private:
     }
 
     /**
-     * @brief Check if optional arguments can bypass the required arguments.
-     * @return True if optional arguments can bypass required arguments, false otherwise.
+     * @brief Check whether required argument bypassing is enabled
+     * @return true if at least one argument with enabled required argument bypassing is used, false otherwise.
      */
     [[nodiscard]] bool _are_required_args_bypassed() const noexcept {
-        return std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
-            return arg->is_used() and arg->bypass_required_enabled();
-        });
+        // TODO: use std::views::join after the transition to C++23
+        return std::ranges::any_of(
+                   this->_positional_args,
+                   [](const arg_ptr_t& arg) {
+                       return arg->is_used() and arg->bypass_required_enabled();
+                   }
+               )
+            or std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
+                   return arg->is_used() and arg->bypass_required_enabled();
+               });
     }
 
     /**
