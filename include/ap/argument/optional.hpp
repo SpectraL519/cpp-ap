@@ -164,9 +164,11 @@ public:
      * @brief Set the default value for the optional argument.
      * @param default_value The default value to set.
      * @return Reference to the optional argument.
+     * @note Setting the default value disables the `required` flag.
      */
     optional& default_value(const value_type& default_value) noexcept {
         this->_default_value = default_value;
+        this->_required = false;
         return *this;
     }
 

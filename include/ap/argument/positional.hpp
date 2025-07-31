@@ -110,9 +110,11 @@ public:
      * @brief Set the default value for the positional argument.
      * @param default_value The default value to set.
      * @return Reference to the positional argument.
+     * @note Setting the default value disables the `required` flag.
      */
     positional& default_value(const value_type& default_value) noexcept {
         this->_default_value = default_value;
+        this->_required = false;
         return *this;
     }
 
@@ -220,7 +222,10 @@ private:
 
     /// @return Ordering relationship of positional argument range.
     [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
-        return this->_value.has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
+        if (not this->_required)
+            return std::weak_ordering::equivalent;
+
+        return this->has_value() ? std::weak_ordering::equivalent : std::weak_ordering::less;
     }
 
     /**
