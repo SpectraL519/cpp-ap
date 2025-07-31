@@ -167,7 +167,7 @@ parser.add_positional_argument<std::size_t>("number", "n")
 > - By default positional arguments are set to be required, while optional arguments have this option disabled by default.
 > - The default value of the value parameter of the `required(bool)` function is `true` for both positional and optional arguments.
 
-> [!CAUTION]
+> [!WARNING]
 >
 > - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
 > - For both positional and optional arguments:
@@ -234,7 +234,7 @@ Command                                 Result
 > - Both positional and optional arguments have the `bypass_required` option disabled.
 > - The default value of the value parameter of the `bypass_required(bool)` function is `true` for both positional and optional arguments.
 
-> [!CAUTION]
+> [!WARNING]
 >
 > For both positional and optional arguments:
 > - enabling the `bypass_required` option disables the `required` option
@@ -265,7 +265,7 @@ os << data << std::endl;
 
 #### 4. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
 
-> [!CAUTION]
+> [!WARNING]
 >
 > For both positional and optional arguments, setting the `default_value` parameter disables the `required` option.
 
