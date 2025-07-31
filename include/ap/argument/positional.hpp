@@ -107,6 +107,16 @@ public:
     }
 
     /**
+     * @brief Set the default value for the positional argument.
+     * @param default_value The default value to set.
+     * @return Reference to the positional argument.
+     */
+    positional& default_value(const value_type& default_value) noexcept {
+        this->_default_value = default_value;
+        return *this;
+    }
+
+    /**
      * @brief Set the action for the positional argument.
      * @tparam AS The value action specifier type (valued_action or void_action).
      * @tparam F The type of the action function.

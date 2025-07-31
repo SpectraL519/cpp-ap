@@ -24,6 +24,7 @@ using sut_type = positional<sut_value_type>;
 constexpr std::string empty_str = "";
 constexpr std::string invalid_value_str = "invalid value";
 
+constexpr sut_value_type default_value = 0;
 constexpr sut_value_type value_1 = 1;
 constexpr sut_value_type value_2 = 2;
 
@@ -211,9 +212,28 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
+    positional_argument_test_fixture, "has_value() should return true if the default value is set"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+
+    CHECK(has_value(sut));
+}
+
+TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "has_parsed_values() should return false by default"
 ) {
     const auto sut = sut_type(arg_name_primary);
+    CHECK_FALSE(has_parsed_values(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "has_parsed_values() should false if only the default value is set"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+
     CHECK_FALSE(has_parsed_values(sut));
 }
 
@@ -356,10 +376,34 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture,
+    "value() should return the default argument's value if it has been set and no values were "
+    "parsed"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+
+    REQUIRE(has_value(sut));
+    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), default_value);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
     "value() should return the argument's value if it has been set"
 ) {
     auto sut = sut_type(arg_name_primary);
+    set_value(sut, value_1);
 
+    REQUIRE(has_value(sut));
+    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value_1);
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "value() should return the argument's parsed value if it has been set (with a defined default "
+    "value)"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
     set_value(sut, value_1);
 
     REQUIRE(has_value(sut));
