@@ -63,22 +63,20 @@ public:
     }
 
     /**
-     * @brief Mark the optional argument as required.
+     * @brief Set the `required` flag of the optional argument
      * @return Reference to the optional argument.
-     *
-     * \todo Add a `const bool` parameter to enable explicit enabling/disabling of this option.
      */
-    optional& required() noexcept {
-        this->_required = true;
+    optional& required(const bool r = true) noexcept {
+        this->_required = r;
         return *this;
     }
 
     /**
-     * @brief Enable bypassing the required status for the optional argument.
+     * @brief Enable/disable bypassing the `required` flag for the optional argument.
      * @return Reference to the optional argument.
      */
-    optional& bypass_required() noexcept {
-        this->_bypass_required = true;
+    optional& bypass_required(const bool br = true) noexcept {
+        this->_bypass_required = br;
         return *this;
     }
 
@@ -228,16 +226,6 @@ private:
         return desc;
     }
 
-    /// @return True if the optional argument is required, false otherwise.
-    [[nodiscard]] bool is_required() const noexcept override {
-        return this->_required;
-    }
-
-    /// @return True if bypassing the required status is enabled for the optional argument, false otherwise.
-    [[nodiscard]] bool bypass_required_enabled() const noexcept override {
-        return this->_bypass_required;
-    }
-
     /// @brief Mark the optional argument as used.
     bool mark_used() override {
         ++this->_count;
@@ -341,8 +329,6 @@ private:
         return not std::is_gt(this->_nargs_range.ordering(this->_values.size() + 1ull));
     }
 
-    bool _required = false;
-    bool _bypass_required = false;
     nargs::range _nargs_range = nargs::any();
     std::any _default_value;
     std::any _implicit_value;

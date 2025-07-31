@@ -123,9 +123,48 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(choices_param.value, ap::detail::join(choices, ", "));
 }
 
-TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true") {
+TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_required() should return true by default") {
     auto sut = sut_type(arg_name_primary);
     CHECK(is_required(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "is_required() should return the value set using the `required` param setter"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    sut.required(false);
+    CHECK_FALSE(is_required(sut));
+
+    sut.required();
+    CHECK(is_required(sut));
+}
+
+TEST_CASE_FIXTURE(
+    positional_argument_test_fixture,
+    "bypass_required_enabled() should return true only if the `required` flag is set to false and "
+    "the `bypass_required` flags is set to true"
+) {
+    auto sut = sut_type(arg_name_primary);
+
+    // disabled
+    sut.required(false);
+    sut.bypass_required(false);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+
+    sut.required(true);
+    sut.bypass_required(false);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+
+    sut.required(true);
+    sut.bypass_required(true);
+    CHECK_FALSE(is_bypass_required_enabled(sut));
+
+    // enabled
+    sut.required(false);
+    sut.bypass_required(true);
+    CHECK(is_bypass_required_enabled(sut));
 }
 
 TEST_CASE_FIXTURE(positional_argument_test_fixture, "is_used() should return false by default") {

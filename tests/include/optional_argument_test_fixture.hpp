@@ -105,6 +105,11 @@ struct optional_argument_test_fixture {
         return arg.is_required();
     }
 
+    template <c_argument_value_type T>
+    [[nodiscard]] bool is_bypass_required_enabled(const optional<T>& arg) const {
+        return arg.bypass_required_enabled();
+    }
+
     static constexpr char flag_char = '-';
 };
 

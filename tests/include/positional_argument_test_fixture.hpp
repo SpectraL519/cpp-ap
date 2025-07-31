@@ -39,6 +39,11 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
+    [[nodiscard]] bool is_bypass_required_enabled(const positional<T>& arg) const {
+        return arg.bypass_required_enabled();
+    }
+
+    template <c_argument_value_type T>
     [[nodiscard]] bool is_used(const positional<T>& arg) const {
         return arg.is_used();
     }

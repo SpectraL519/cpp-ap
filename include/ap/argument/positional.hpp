@@ -36,7 +36,7 @@ public:
      * @brief Constructor for positional argument with the `name` identifier.
      * @param name The `name` identifier of the positional argument.
      */
-    positional(const detail::argument_name& name) : argument_base(name) {}
+    positional(const detail::argument_name& name) : argument_base(name, true) {}
 
     ~positional() = default;
 
@@ -56,6 +56,24 @@ public:
      */
     positional& help(std::string_view help_msg) noexcept {
         this->_help_msg = help_msg;
+        return *this;
+    }
+
+    /**
+     * @brief Set the `required` flag of the positional argument
+     * @return Reference to the positional argument.
+     */
+    positional& required(const bool r = true) noexcept {
+        this->_required = r;
+        return *this;
+    }
+
+    /**
+     * @brief Enable/disable bypassing the `required` flag for the positional argument.
+     * @return Reference to the positional argument.
+     */
+    positional& bypass_required(const bool br = true) noexcept {
+        this->_bypass_required = br;
         return *this;
     }
 
@@ -137,16 +155,6 @@ private:
         return desc;
     }
 
-    /// @return True if the positional argument is required, false otherwise
-    [[nodiscard]] bool is_required() const noexcept override {
-        return this->_required;
-    }
-
-    /// @return True if bypassing the required status is enabled for the positional argument, false otherwise.
-    [[nodiscard]] bool bypass_required_enabled() const noexcept override {
-        return this->_bypass_required;
-    }
-
     /**
      * @brief Mark the positional argument as used.
      * @note No logic is performed for positional arguments
@@ -192,12 +200,12 @@ private:
 
     /// @return True if the positional argument has a value, false otherwise.
     [[nodiscard]] bool has_value() const noexcept override {
-        return this->_value.has_value();
+        return this->has_parsed_values() or this->_default_value.has_value();
     }
 
     /// @return True if the positional argument has parsed values, false otherwise.
     [[nodiscard]] bool has_parsed_values() const noexcept override {
-        return this->has_value();
+        return this->_value.has_value();
     }
 
     /// @return Ordering relationship of positional argument range.
@@ -210,11 +218,15 @@ private:
      * @throws std::logic_error
      */
     [[nodiscard]] const std::any& value() const override {
-        if (not this->_value.has_value())
-            throw std::logic_error(
-                std::format("No value parsed for the `{}` positional argument.", this->_name.str())
-            );
-        return this->_value;
+        if (this->has_parsed_values())
+            return this->_value;
+
+        if (this->_default_value.has_value())
+            return this->_default_value;
+
+        throw std::logic_error(
+            std::format("No value parsed for the `{}` positional argument.", this->_name.str())
+        );
     }
 
     /**
@@ -227,8 +239,7 @@ private:
         );
     }
 
-    static constexpr bool _required = true;
-    static constexpr bool _bypass_required = false;
+    std::any _default_value;
     std::vector<value_type> _choices;
     std::vector<value_action_type> _value_actions;
 
