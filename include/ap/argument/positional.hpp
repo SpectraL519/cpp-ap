@@ -120,8 +120,8 @@ public:
      * @return Reference to the positional argument.
      * @attention Setting the default value disables the `required` flag.
      */
-    positional& default_value(const value_type& default_value) noexcept {
-        this->_default_value = default_value;
+    positional& default_value(const std::convertible_to<value_type> auto& default_value) noexcept {
+        this->_default_value = std::make_any<value_type>(default_value);
         this->_required = false;
         return *this;
     }

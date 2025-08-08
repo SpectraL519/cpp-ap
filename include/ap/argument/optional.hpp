@@ -174,8 +174,8 @@ public:
      * @return Reference to the optional argument.
      * @attention Setting the default value disables the `required` flag.
      */
-    optional& default_value(const value_type& default_value) noexcept {
-        this->_default_value = default_value;
+    optional& default_value(const std::convertible_to<value_type> auto& default_value) noexcept {
+        this->_default_value = std::make_any<value_type>(default_value);
         this->_required = false;
         return *this;
     }
@@ -185,8 +185,8 @@ public:
      * @param implicit_value The implicit value to set.
      * @return Reference to the optional argument.
      */
-    optional& implicit_value(const value_type& implicit_value) noexcept {
-        this->_implicit_value = implicit_value;
+    optional& implicit_value(const std::convertible_to<value_type> auto& implicit_value) noexcept {
+        this->_implicit_value = std::make_any<value_type>(implicit_value);
         return *this;
     }
 
