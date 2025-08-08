@@ -313,6 +313,10 @@ Command                                 Result
 ./program -i input.txt -o myfile.txt    Parsing success; Printing data to the `myfile.txt` file
 ```
 
+> [!TIP]
+>
+> The setter of the `default_value` parameter accepts any type that is convertible to the argument's value type.
+
 #### 5. `choices` - A list of valid argument values.
 
 The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
@@ -367,7 +371,7 @@ Actions are represented as functions, which take the argument's value as an argu
 
 > [!TIP]
 >
-> A single argument can have multiple value actions. Instead of writing complex logic in one action, consider composing several simple, focused actions for better readability and reuse.
+> A single argument can have multiple value actions. Instead of writing complex logic in one action, consider composing several simple, focused actions for better readability and reusability.
 
 <br/>
 
@@ -434,7 +438,8 @@ Command                       Result
 
 > [!TIP]
 >
-> The `implicit_value` parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see [Adding Arguments](#adding-arguments)).
+> - The `implicit_value` parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see [Adding Arguments](#adding-arguments)).
+> - The setter of the `implicit_value` parameter accepts any type that is convertible to the argument's value type.
 
 #### 4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
 
