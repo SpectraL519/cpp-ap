@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.1</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -146,9 +146,9 @@ requires (std::equality_comparable&lt;<a class="el" href="classap_1_1argument_1_
 <tr class="memitem:a946613fecd20431b6f4e14781bf264ee" id="r_a946613fecd20431b6f4e14781bf264ee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#a946613fecd20431b6f4e14781bf264ee">choices</a> (std::initializer_list&lt; <a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a> &gt; choices) noexcept</td></tr>
 <tr class="memdesc:a946613fecd20431b6f4e14781bf264ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the choices for the positional argument.  <br /></td></tr>
 <tr class="separator:a946613fecd20431b6f4e14781bf264ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae77db1cb36679072140be82978eef9f8" id="r_ae77db1cb36679072140be82978eef9f8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#ae77db1cb36679072140be82978eef9f8">default_value</a> (const <a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a> &amp;default_value) noexcept</td></tr>
-<tr class="memdesc:ae77db1cb36679072140be82978eef9f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the default value for the positional argument.  <br /></td></tr>
-<tr class="separator:ae77db1cb36679072140be82978eef9f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3690c688737b29c6a682a8655ca03fd5" id="r_a3690c688737b29c6a682a8655ca03fd5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#a3690c688737b29c6a682a8655ca03fd5">default_value</a> (const std::convertible_to&lt; <a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a> &gt; auto &amp;default_value) noexcept</td></tr>
+<tr class="memdesc:a3690c688737b29c6a682a8655ca03fd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the default value for the positional argument.  <br /></td></tr>
+<tr class="separator:a3690c688737b29c6a682a8655ca03fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a384536a639f670ffe11716ecee6cd5b1" id="r_a384536a639f670ffe11716ecee6cd5b1"><td class="memTemplParams" colspan="2">template&lt;action::detail::c_value_action_specifier AS, std::invocable&lt; <a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a> &amp; &gt; F&gt; </td></tr>
 <tr class="memitem:a384536a639f670ffe11716ecee6cd5b1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#a384536a639f670ffe11716ecee6cd5b1">action</a> (F &amp;&amp;action) noexcept</td></tr>
 <tr class="memdesc:a384536a639f670ffe11716ecee6cd5b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the action for the positional argument.  <br /></td></tr>
@@ -434,8 +434,8 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 </div>
 </div>
-<a id="ae77db1cb36679072140be82978eef9f8" name="ae77db1cb36679072140be82978eef9f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae77db1cb36679072140be82978eef9f8">&#9670;&#160;</a></span>default_value()</h2>
+<a id="a3690c688737b29c6a682a8655ca03fd5" name="a3690c688737b29c6a682a8655ca03fd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3690c688737b29c6a682a8655ca03fd5">&#9670;&#160;</a></span>default_value()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -448,7 +448,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp; <a class="el" href="classap_1_1argument_1_1positional.html">ap::argument::positional</a>&lt; T &gt;::default_value </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a> &amp;&#160;</td>
+          <td class="paramtype">const std::convertible_to&lt; <a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a> &gt; auto &amp;&#160;</td>
           <td class="paramname"><em>default_value</em></td><td>)</td>
           <td></td>
         </tr>
@@ -630,7 +630,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><b>argument</b></li><li class="navelem"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a></li>
-    <li class="footer">Generated on Thu Jul 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Aug 8 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.1</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -385,7 +385,11 @@ Common Parameters</h2>
 <div class="line"><span class="comment">./program                               Parsing error (no value for the input argument)</span></div>
 <div class="line"><span class="comment">./program --input input.txt             Parsing success; Printing data to `output.txt`</span></div>
 <div class="line"><span class="comment">./program -i input.txt -o myfile.txt    Parsing success; Printing data to the `myfile.txt` file</span></div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md5-choices---a-list-of-valid-argument-values"></a>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
+<p>The setter of the <code>default_value</code> parameter accepts any type that is convertible to the argument's value type. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md5-choices---a-list-of-valid-argument-values"></a>
 5. <code>choices</code> - A list of valid argument values.</h3>
 <p>The <code>choices</code> parameter takes as an argument an instance of <code>std::initializer_list</code> or any <code>std::ranges::range</code> type such that its value type is convertible to the argument's <code>value_type</code>.</p>
 <div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>&lt;<span class="keywordtype">char</span>&gt;(<span class="stringliteral">&quot;method&quot;</span>, <span class="stringliteral">&quot;m&quot;</span>).choices({<span class="charliteral">&#39;a&#39;</span>, <span class="charliteral">&#39;b&#39;</span>, <span class="charliteral">&#39;c&#39;</span>});</div>
@@ -428,7 +432,7 @@ Common Parameters</h2>
 </ul>
 <blockquote class="doxtable">
 <p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
-<p>A single argument can have multiple value actions. Instead of writing complex logic in one action, consider composing several simple, focused actions for better readability and reuse. </p>
+<p>A single argument can have multiple value actions. Instead of writing complex logic in one action, consider composing several simple, focused actions for better readability and reusability. </p>
 </blockquote>
 <p><br  />
 </p>
@@ -481,7 +485,10 @@ Parameters Specific for Optional Arguments</h2>
 <div class="line"><span class="comment">./program --save myfile.txt   The data will be saved to `myfile.txt`</span></div>
 </div><!-- fragment --><blockquote class="doxtable">
 <p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
-<p>The <code>implicit_value</code> parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see <a class="el" href="md_docs_2tutorial.html#adding-arguments">Adding Arguments</a>). </p>
+<ul>
+<li>The <code>implicit_value</code> parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see <a class="el" href="md_docs_2tutorial.html#adding-arguments">Adding Arguments</a>).</li>
+<li>The setter of the <code>implicit_value</code> parameter accepts any type that is convertible to the argument's value type. </li>
+</ul>
 </blockquote>
 <h3><a class="anchor" id="autotoc_md4-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag"></a>
 4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.</h3>
@@ -782,7 +789,7 @@ Examples</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Aug 8 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
