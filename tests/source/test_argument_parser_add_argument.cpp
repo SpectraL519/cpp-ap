@@ -7,8 +7,6 @@ using namespace ap_testing;
 using namespace ap::argument;
 using ap::invalid_configuration;
 
-TEST_SUITE_BEGIN("test_argument_parser_add_argument");
-
 struct test_argument_parser_add_argument : public argument_parser_test_fixture {
     const char flag_char = '-';
 
@@ -321,5 +319,3 @@ TEST_CASE_FIXTURE(
     REQUIRE(output_arg);
     CHECK(is_optional<std::string>(output_arg.value()));
 }
-
-TEST_SUITE_END();

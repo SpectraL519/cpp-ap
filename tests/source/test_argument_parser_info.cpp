@@ -3,8 +3,6 @@
 
 using namespace ap_testing;
 
-TEST_SUITE_BEGIN("test_argument_parser_info");
-
 struct test_argument_parser_info : public argument_parser_test_fixture {
     const std::string test_name = "test program name";
     const std::string test_description = "test program description";
@@ -41,5 +39,3 @@ TEST_CASE_FIXTURE(test_argument_parser_info, "name() should set the program name
     REQUIRE(stored_program_description);
     CHECK_EQ(stored_program_description.value(), test_description);
 }
-
-TEST_SUITE_END();

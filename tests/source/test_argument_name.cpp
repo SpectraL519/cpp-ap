@@ -22,8 +22,6 @@ const argument_name arg_name_full_2{primary_2, secondary_2};
 
 } // namespace
 
-TEST_SUITE_BEGIN("test_argument_name");
-
 TEST_CASE("argument_name.primary member should be correctly initialized") {
     CHECK_EQ(arg_name_primary_1.primary, primary_1);
     CHECK_EQ(arg_name_primary_2.primary, primary_2);
@@ -141,5 +139,3 @@ TEST_CASE("operator<< should push correct data to the output stream") {
 
     REQUIRE_EQ(ss.str(), expected_ss.str());
 }
-
-TEST_SUITE_END();

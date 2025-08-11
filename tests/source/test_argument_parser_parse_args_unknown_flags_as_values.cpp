@@ -8,8 +8,6 @@ using namespace ap::nargs;
 using ap::invalid_configuration;
 using ap::parsing_failure;
 
-TEST_SUITE_BEGIN("test_argument_parser_parse_args_unknown_flags_as_values");
-
 struct test_argument_parser_parse_args_unknown_flags_as_values
 : public argument_parser_test_fixture {
     const std::string test_program_name = "test program name";
@@ -58,5 +56,3 @@ TEST_CASE_FIXTURE(
 
     free_argv(argc, argv);
 }
-
-TEST_SUITE_END(); // test_argument_parser_parse_args_unknown_flags_as_values

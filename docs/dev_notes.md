@@ -12,22 +12,26 @@
 
 ```shell
 cmake -B build -DBUILD_TESTS=ON
-cd build
-make # -j <n>
+cmake --build build/ # -j <njobs>
 ```
 
-This will build the test executable `run` in the `<project-root>/build/tests` directory.
+This will build each test file as a separate executable in the `build/tests/` directory.
 
 ### Run the tests
 
+You can run tests from each test file manually with:
+
 ```shell
-cd build
-./tests/run # -ts=<test-suite-name>
+./build/tests/<test-name>
 ```
 
-> [!NOTE]
->
-> Test suites in the project have the same names as the files they're in except for the `test_extarnal_libs_config.cpp` file which defines the `test_doctest_config` test suite.
+where `<test-name>` is the name of the test file without the extension.
+
+To run all tests at once run:
+
+```shell
+ctest --test-dir build/tests/ # -V (to capture output from each test executable)
+```
 
 <br />
 <br />

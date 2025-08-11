@@ -24,8 +24,6 @@ std::ostream& operator<<(std::ostream& os, const dummy_writable& dw) {
 
 } // namespace
 
-TEST_SUITE_BEGIN("test_str_utility");
-
 TEST_CASE("as_string should convert the given writable object to string") {
     int value = 5;
     CHECK_EQ(as_string(value), std::to_string(value));
@@ -59,5 +57,3 @@ TEST_CASE("join should return a proper range representation for a multi element 
     std::vector<int> range = {1, 2, 3};
     CHECK_EQ(join(range, delimiter), "1,2,3");
 }
-
-TEST_SUITE_END(); // test_str_utility

@@ -40,8 +40,6 @@ const range non_default_range = range{1ull, choices.size()};
 
 } // namespace
 
-TEST_SUITE_BEGIN("test_optional_argument");
-
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "name() should return the proper argument_name instance"
 ) {
@@ -576,5 +574,3 @@ TEST_CASE_FIXTURE(
     set_value_force(sut, invalid_choice);
     CHECK(std::is_gt(nvalues_ordering(sut)));
 }
-
-TEST_SUITE_END();

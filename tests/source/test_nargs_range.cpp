@@ -18,8 +18,6 @@ constexpr range::count_type max_bound = std::numeric_limits<range::count_type>::
 
 } // namespace
 
-TEST_SUITE_BEGIN("test_nargs_range");
-
 TEST_CASE("is_bound should return true only if at least one bound is set") {
     CHECK_FALSE(any().is_bound());
 
@@ -116,5 +114,3 @@ TEST_CASE("range builders should return correct range objects") {
         REQUIRE(std::is_eq(sut.ordering(max_bound)));
     }
 }
-
-TEST_SUITE_END(); // test_nargs_range
