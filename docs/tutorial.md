@@ -110,8 +110,8 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 >
 > The library supports any argument value types which meet the following requirements:
 >
-> - The `std::ostream& operator<<` is overloaded for the value type
-> - The value type has a copy constructor and an assignment operator
+> - The type is [constructible from](https://en.cppreference.com/w/cpp/concepts/constructible_from) `const std::string&` or the stream extraction operator - `std::istream& operator>>` is defined for the type.
+> - The type satisfies the [`std::semiregular`](https://en.cppreference.com/w/cpp/concepts/semiregular.html) concept - is default initializable and copyable.
 
 > [!IMPORTANT]
 >
