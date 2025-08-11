@@ -633,6 +633,10 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 > parse_args(std::span(argv + 1, argc - 1));
 > ```
 
+> [!WARNING]
+>
+> TODO: describe the default argument flag detection behaviour and the use of the `AP_UNKNOWN_FLAGS_AS_VALUES` macro
+
 > [!TIP]
 >
 > The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which automatically catch these exceptions, print the error message, and exit with a failure status.

@@ -40,41 +40,41 @@ public:
 
     /**
      * @brief Adds a parameter descriptor with the given string value.
-     * @param name The parameter's name.
+     * @param param_name The parameter's name.
      * @param value The parameter's value's string representation.
      */
-    void add_param(const std::string& name, const std::string& value) {
-        this->params.emplace_back(name, value);
+    void add_param(const std::string& param_name, const std::string& value) {
+        this->params.emplace_back(param_name, value);
     }
 
     /**
      * @brief Adds a parameter descriptor with the given value.
      * @tparam T The type of the parameter; must satisfy the @ref ap::detail::c_writable concept.
-     * @param name The parameter's name.
+     * @param param_name The parameter's name.
      * @param value The parameter's value.
      */
     template <c_writable T>
-    void add_param(const std::string& name, const T& value) {
+    void add_param(const std::string& param_name, const T& value) {
         std::ostringstream oss;
         oss << std::boolalpha << value;
-        this->params.emplace_back(name, oss.str());
+        this->params.emplace_back(param_name, oss.str());
     }
 
     /**
      * @brief Adds a range parameter descriptor with the given value.
      * @tparam R The type of the parameter range. The value type of R must satisfy the @ref ap::detail::c_writable concept.
-     * @param name The parameter's name.
+     * @param param_name The parameter's name.
      * @param range The parameter value range.
      * @param delimiter The delimiter used to separate the range values.
      */
     template <std::ranges::range R>
     requires(c_writable<std::ranges::range_value_t<R>>)
     void add_range_param(
-        const std::string& name,
+        const std::string& param_name,
         const R& range,
         const std::string_view delimiter = default_delimiter
     ) {
-        this->params.emplace_back(name, join(range, delimiter));
+        this->params.emplace_back(param_name, join(range, delimiter));
     }
 
     /**

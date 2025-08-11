@@ -193,7 +193,7 @@ public:
     argument::optional<T>& add_optional_argument(std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
-        const detail::argument_name arg_name = {primary_name};
+        const detail::argument_name arg_name(primary_name, std::nullopt, this->_flag_prefix_char);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -218,7 +218,7 @@ public:
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
-        const detail::argument_name arg_name = {primary_name, secondary_name};
+        const detail::argument_name arg_name(primary_name, secondary_name, this->_flag_prefix_char);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -510,6 +510,8 @@ private:
             throw invalid_configuration::invalid_argument_name(
                 arg_name, "An argument name cannot begin with a digit."
             );
+
+        // TODO: cannot contain whitespace characters
     }
 
     /**
@@ -859,15 +861,14 @@ private:
     void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
         if (verbose) {
             for (const auto& arg : args)
-                os << '\n'
-                   << arg->desc(verbose, this->_flag_prefix_char).get(this->_indent_width) << '\n';
+                os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
             descriptors.reserve(args.size());
 
             for (const auto& arg : args)
-                descriptors.emplace_back(arg->desc(verbose, this->_flag_prefix_char));
+                descriptors.emplace_back(arg->desc(verbose));
 
             std::size_t max_arg_name_length = 0ull;
             for (const auto& desc : descriptors)

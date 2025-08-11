@@ -15,11 +15,12 @@ using ap::detail::parameter_descriptor;
 
 namespace {
 
+constexpr char flag_char = '-';
 constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
 
-const argument_name arg_name(primary_name, secondary_name);
-const argument_name arg_name_primary(primary_name);
+const argument_name arg_name(primary_name, secondary_name, flag_char);
+const argument_name arg_name_primary(primary_name, std::nullopt, flag_char);
 
 constexpr std::string_view help_msg = "test help msg";
 
@@ -89,14 +90,14 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
+    REQUIRE_EQ(desc.name, get_name(sut).str());
     CHECK_FALSE(desc.help);
     CHECK(desc.params.empty());
 
     // with a help msg
     sut.help(help_msg);
     desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
+    REQUIRE_EQ(desc.name, get_name(sut).str());
     CHECK(desc.help);
     CHECK_EQ(desc.help.value(), help_msg);
     CHECK(desc.params.empty());
@@ -111,7 +112,7 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
+    REQUIRE_EQ(desc.name, get_name(sut).str());
     CHECK_FALSE(desc.help);
     CHECK(desc.params.empty());
 

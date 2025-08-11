@@ -88,8 +88,12 @@ struct argument_parser_test_fixture {
         delete[] argv;
     }
 
-    [[nodiscard]] argument_name init_arg_name(std::size_t i) const {
-        return argument_name{std::format("test_arg_{}", i), std::format("ta_{}", i)};
+    [[nodiscard]] argument_name init_arg_name(
+        std::size_t i, std::optional<char> flag_char = std::nullopt
+    ) const {
+        return argument_name(
+            std::format("test_arg_{}", i), std::format("ta_{}", i), std::move(flag_char)
+        );
     }
 
     template <c_argument_value_type T = std::string>
