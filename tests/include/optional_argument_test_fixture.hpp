@@ -1,7 +1,5 @@
 #pragma once
 
-#define AP_TESTING
-
 #include <ap/argument/optional.hpp>
 #include <ap/detail/str_utility.hpp>
 

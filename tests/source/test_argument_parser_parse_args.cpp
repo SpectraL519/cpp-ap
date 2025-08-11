@@ -1,5 +1,3 @@
-#define AP_TESTING
-
 #include "argument_parser_test_fixture.hpp"
 #include "doctest.h"
 #include "utility.hpp"
@@ -225,6 +223,28 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
         parsing_failure::invalid_nvalues(range_arg_name, std::weak_ordering::less).what(),
+        parsing_failure
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args, "parse_args should throw when an unknown argument flag is used"
+) {
+    add_arguments(no_args, no_args);
+
+    constexpr std::size_t n_opt_clargs = 1ull;
+    constexpr std::size_t opt_arg_idx = 0ull;
+
+    auto argc = get_argc(no_args, n_opt_clargs);
+    auto argv = init_argv(no_args, n_opt_clargs);
+
+    const auto unknown_arg_name = init_arg_flag_primary(opt_arg_idx);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::unknown_argument(unknown_arg_name).what(),
         parsing_failure
     );
 

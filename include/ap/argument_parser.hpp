@@ -31,8 +31,6 @@ struct argument_parser_test_fixture;
 
 namespace ap {
 
-// TODO: argument namespace alias
-
 class argument_parser;
 
 namespace detail {
@@ -515,8 +513,6 @@ private:
             throw invalid_configuration::invalid_argument_name(
                 arg_name, "An argument name cannot begin with a digit."
             );
-
-        // TODO: cannot contain whitespace characters
     }
 
     /**
@@ -597,7 +593,7 @@ private:
      * @return A list of preprocessed command-line argument tokens.
      */
     template <detail::c_sized_range_of<std::string_view, detail::type_validator::convertible> AR>
-    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const noexcept {
+    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const {
         const auto n_args = std::ranges::size(arg_range);
         if (n_args == 0ull)
             return arg_token_list_t{};
@@ -701,11 +697,11 @@ private:
 
         this->_parse_positional_args(token_it, arg_tokens.end());
 
-        std::vector<std::string_view> dangling_values;
-        this->_parse_optional_args(token_it, arg_tokens.end(), dangling_values);
+        std::vector<std::string_view> unknown_args;
+        this->_parse_optional_args(token_it, arg_tokens.end(), unknown_args);
 
-        if (not dangling_values.empty())
-            throw parsing_failure::argument_deduction_failure(dangling_values);
+        if (not unknown_args.empty())
+            throw parsing_failure::argument_deduction_failure(unknown_args);
     }
 
     /**
@@ -732,14 +728,14 @@ private:
      * @brief Parse optional arguments based on command-line input.
      * @param token_it Iterator for iterating through command-line argument tokens.
      * @param tokens_end The token list end iterator.
-     * @param dangling_values Reference to the vector into which the dangling values shall be collected.
+     * @param unknown_args Reference to the vector into which the dangling values shall be collected.
      * @throws ap::parsing_failure
      * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
     void _parse_optional_args(
         arg_token_list_iterator_t& token_it,
         const arg_token_list_iterator_t& tokens_end,
-        std::vector<std::string_view>& dangling_values
+        std::vector<std::string_view>& unknown_args
     ) {
         std::optional<std::reference_wrapper<arg_ptr_t>> curr_opt_arg;
 
@@ -748,8 +744,9 @@ private:
             case detail::argument_token::t_flag_primary:
                 [[fallthrough]];
             case detail::argument_token::t_flag_secondary: {
-                if (not dangling_values.empty())
-                    throw parsing_failure::argument_deduction_failure(dangling_values);
+                // TODO: remove
+                if (not unknown_args.empty())
+                    throw parsing_failure::argument_deduction_failure(unknown_args);
 
                 const auto opt_arg_it = this->_find_opt_arg(*token_it);
                 if (opt_arg_it == this->_optional_args.end())
@@ -764,7 +761,7 @@ private:
             }
             case detail::argument_token::t_value: {
                 if (not curr_opt_arg) {
-                    dangling_values.emplace_back(token_it->value);
+                    unknown_args.emplace_back(token_it->value);
                     break;
                 }
 

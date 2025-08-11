@@ -1,5 +1,3 @@
-#define AP_TESTING
-
 #include "doctest.h"
 
 #include <ap/detail/argument_name.hpp>

@@ -1,7 +1,5 @@
 #pragma once
 
-#define AP_TESTING
-
 #include <ap/argument/positional.hpp>
 
 using ap::argument::positional;
