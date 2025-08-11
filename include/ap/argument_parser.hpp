@@ -497,6 +497,12 @@ private:
                 arg_name, "An argument name cannot be empty."
             );
 
+        // TODO: add tests
+        if (detail::contains_whitespaces(arg_name))
+            throw invalid_configuration::invalid_argument_name(
+                arg_name, "An argument name cannot contain whitespaces."
+            );
+
         if (arg_name.front() == this->_flag_prefix_char)
             throw invalid_configuration::invalid_argument_name(
                 arg_name,
@@ -570,7 +576,7 @@ private:
      * 1. No required positional argument can be added after a non-required positional argument.
      */
     void _validate_argument_configuration() const {
-        // Step: 1
+        // step 1
         const_arg_opt_t non_required_arg = std::nullopt;
         for (const auto& arg : this->_positional_args) {
             if (not arg->is_required()) {
@@ -591,7 +597,7 @@ private:
      * @param arg_range The command-line argument value range.
      * @return A list of preprocessed command-line argument tokens.
      */
-    template <detail::c_sized_range_of<std::string, detail::type_validator::convertible> AR>
+    template <detail::c_sized_range_of<std::string_view, detail::type_validator::convertible> AR>
     [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const noexcept {
         const auto n_args = std::ranges::size(arg_range);
         if (n_args == 0ull)
@@ -599,39 +605,66 @@ private:
 
         arg_token_list_t toks;
         toks.reserve(n_args);
-
-        for (const auto& arg : arg_range) {
-            std::string value = static_cast<std::string>(arg);
-            if (this->_is_flag(value)) {
-                const auto flag_tok = this->_strip_flag_prefix(value);
-                toks.emplace_back(flag_tok, std::move(value));
-            }
-            else {
-                toks.emplace_back(detail::argument_token::t_value, std::move(value));
-            }
-        }
-
+        std::ranges::for_each(
+            arg_range, std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(toks))
+        );
         return toks;
     }
 
     /**
-     * @brief Check if an argument is a flag based on its value.
-     * @param arg The cmd argument's value.
-     * @return True if the argument is a flag, false otherwise.
+     * @brief Appends an argument token created from `arg_value` to the `toks` vector.
+     * @param toks The argument token list to which the processed token(s) will be appended.
+     * @param arg_value The command-line argument's value to be processed.
      */
-    [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
-        if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used(
-                {arg.substr(this->_primary_flag_prefix_length)}, detail::argument_name::m_primary
-            );
+    void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) const {
+        auto tok = this->_build_token(arg_value);
+        if (tok.is_flag_token() and not this->_is_valid_flag(tok)) {
+#ifdef AP_UNKNOWN_FLAGS_AS_VALUES
+            toks.emplace_back(detail::argument_token::t_value, std::string(arg_value));
+            return;
+#else
+            throw parsing_failure::unknown_argument(arg_value);
+#endif
+        }
 
-        if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used(
-                {arg.substr(this->_secondary_flag_prefix_length)},
-                detail::argument_name::m_secondary
-            );
+        toks.emplace_back(std::move(tok));
+    }
 
-        return false;
+    /**
+     * @brief Builds an argument token from the given value.
+     * @param arg_value The command-line argument's value to be processed.
+     * @return An argument token with removed flag prefix (if present) and an adequate token type.
+     */
+    [[nodiscard]] detail::argument_token _build_token(const std::string_view arg_value
+    ) const noexcept {
+        if (detail::contains_whitespaces(arg_value))
+            return {.type = detail::argument_token::t_value, .value = std::string(arg_value)};
+
+        if (arg_value.starts_with(this->_flag_prefix))
+            return {
+                .type = detail::argument_token::t_flag_primary,
+                .value = std::string(arg_value.substr(this->_primary_flag_prefix_length))
+            };
+
+        if (arg_value.starts_with(this->_flag_prefix_char))
+            return {
+                .type = detail::argument_token::t_flag_secondary,
+                .value = std::string(arg_value.substr(this->_secondary_flag_prefix_length))
+            };
+
+        return {.type = detail::argument_token::t_value, .value = std::string(arg_value)};
+    }
+
+    /**
+     * @brief Check if a flag token is valid based on its value.
+     * @param tok The processed argument token.
+     * @return true if the token's value matches an argument name specified within the parser, false otherwise.
+     */
+    [[nodiscard]] bool _is_valid_flag(const detail::argument_token& tok) const noexcept {
+        if (tok.type == detail::argument_token::t_flag_primary)
+            return this->_is_arg_name_used({tok.value}, detail::argument_name::m_primary);
+        else
+            return this->_is_arg_name_used({tok.value}, detail::argument_name::m_secondary);
     }
 
     /**
@@ -655,22 +688,6 @@ private:
             return std::format("{}{}", this->_flag_prefix_char, tok.value);
         default:
             return tok.value;
-        }
-    }
-
-    /**
-     * @brief Remove the flag prefix from the argument.
-     * @param arg_flag The argument flag to strip the prefix from.
-     * @return A flag argument token representing whether the prefix indicated a primary or a secondary flag.
-     */
-    detail::argument_token::token_type _strip_flag_prefix(std::string& arg_flag) const noexcept {
-        if (arg_flag.starts_with(this->_flag_prefix)) {
-            arg_flag.erase(0, this->_primary_flag_prefix_length);
-            return detail::argument_token::t_flag_primary;
-        }
-        else {
-            arg_flag.erase(0, this->_secondary_flag_prefix_length);
-            return detail::argument_token::t_flag_secondary;
         }
     }
 

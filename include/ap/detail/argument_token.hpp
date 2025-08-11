@@ -21,23 +21,6 @@ struct argument_token {
     };
     using enum token_type;
 
-    argument_token() = delete;
-
-    argument_token(const argument_token&) = default;
-    argument_token(argument_token&&) = default;
-
-    argument_token& operator=(const argument_token&) = default;
-    argument_token& operator=(argument_token&&) = default;
-
-    /**
-     * @brief Constructor of a command-line argument.
-     * @param type Type type of the token (flag or value).
-     * @param value The value of the argument.
-     */
-    argument_token(const token_type type, const std::string& value) : type(type), value(value) {}
-
-    ~argument_token() = default;
-
     /**
      * @brief Equality operator for comparing argument_token instances.
      * @param other An argument_token instance to compare with.
@@ -45,6 +28,14 @@ struct argument_token {
      */
     bool operator==(const argument_token& other) const noexcept {
         return this->type == other.type and this->value == other.value;
+    }
+
+    /**
+     * @brief Checks whether the `type` member is a flag token type.
+     * @return true if `type` is either `t_flag_primary` or `t_flag_secondary`, false otherwise.
+     */
+    [[nodiscard]] bool is_flag_token() const noexcept {
+        return this->type == t_flag_primary or this->type == t_flag_secondary;
     }
 
     token_type type;
