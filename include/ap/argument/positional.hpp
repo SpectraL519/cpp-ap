@@ -207,8 +207,13 @@ private:
             throw parsing_failure::value_already_set(this->_name);
 
         value_type value;
-        if (not (std::istringstream(str_value) >> value))
-            throw parsing_failure::invalid_value(this->_name, str_value);
+        if constexpr (detail::c_trivially_readable<value_type>) {
+            value = value_type(str_value);
+        }
+        else {
+            if (not (std::istringstream(str_value) >> value))
+                throw parsing_failure::invalid_value(this->_name, str_value);
+        }
 
         if (not detail::is_valid_choice(value, this->_choices))
             throw parsing_failure::invalid_choice(this->_name, str_value);

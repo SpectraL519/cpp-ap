@@ -22,6 +22,13 @@ template <typename T>
 concept c_readable = requires(T value, std::istream& input_stream) { input_stream >> value; };
 
 /**
+ * @brief The concept is satisfied when `T` can be constructed from `const std::string&`.
+ * @tparam T Type to check.
+ */
+template <typename T>
+concept c_trivially_readable = std::constructible_from<T, const std::string&>;
+
+/**
  * @brief The concept is satisfied when `T` overloads the std::ostream operator `<<`.
  * @tparam T Type to check.
  */
@@ -40,7 +47,7 @@ concept c_arithmetic = std::is_arithmetic_v<T>;
  * @tparam T Type to check.
  */
 template <typename T>
-concept c_argument_value_type = c_readable<T> and std::semiregular<T>;
+concept c_argument_value_type = std::semiregular<T> and (c_trivially_readable<T> or c_readable<T>);
 
 /**
  * @brief Validates that `T` is the same as one of the types defined by `Types`.
