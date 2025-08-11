@@ -21,7 +21,7 @@ var classap_1_1argument__parser =
     [ "try_parse_args", "classap_1_1argument__parser.html#ac0fa4e12145301b0dd932a7b8e2469ad", null ],
     [ "try_parse_args", "classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe", null ],
     [ "value", "classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7", null ],
-    [ "value_or", "classap_1_1argument__parser.html#ad2da93974b1e272fb54aa8fb6cc93e21", null ],
+    [ "value_or", "classap_1_1argument__parser.html#a6b47a2a3db577ef0ea8c00264de480a9", null ],
     [ "values", "classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce", null ],
     [ "verbose", "classap_1_1argument__parser.html#aa0e0f6e7fff9878c25f8453eab99bd5a", null ],
     [ "operator<<", "classap_1_1argument__parser.html#aeae32e2a82ba92d715da825b1086ced8", null ]

@@ -8,6 +8,7 @@ var searchData=
   ['ap_3a_3adetail_3a_3ac_5frange_5fof_5',['c_range_of',['../conceptap_1_1detail_1_1c__range__of.html',1,'ap::detail']]],
   ['ap_3a_3adetail_3a_3ac_5freadable_6',['c_readable',['../conceptap_1_1detail_1_1c__readable.html',1,'ap::detail']]],
   ['ap_3a_3adetail_3a_3ac_5fsized_5frange_5fof_7',['c_sized_range_of',['../conceptap_1_1detail_1_1c__sized__range__of.html',1,'ap::detail']]],
-  ['ap_3a_3adetail_3a_3ac_5fvalid_5ftype_8',['c_valid_type',['../conceptap_1_1detail_1_1c__valid__type.html',1,'ap::detail']]],
-  ['ap_3a_3adetail_3a_3ac_5fwritable_9',['c_writable',['../conceptap_1_1detail_1_1c__writable.html',1,'ap::detail']]]
+  ['ap_3a_3adetail_3a_3ac_5ftrivially_5freadable_8',['c_trivially_readable',['../conceptap_1_1detail_1_1c__trivially__readable.html',1,'ap::detail']]],
+  ['ap_3a_3adetail_3a_3ac_5fvalid_5ftype_9',['c_valid_type',['../conceptap_1_1detail_1_1c__valid__type.html',1,'ap::detail']]],
+  ['ap_3a_3adetail_3a_3ac_5fwritable_10',['c_writable',['../conceptap_1_1detail_1_1c__writable.html',1,'ap::detail']]]
 ];

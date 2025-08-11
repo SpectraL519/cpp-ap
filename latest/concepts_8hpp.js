@@ -1,6 +1,7 @@
 var concepts_8hpp =
 [
     [ "ap::detail::c_readable", "conceptap_1_1detail_1_1c__readable.html", null ],
+    [ "ap::detail::c_trivially_readable", "conceptap_1_1detail_1_1c__trivially__readable.html", null ],
     [ "ap::detail::c_writable", "conceptap_1_1detail_1_1c__writable.html", null ],
     [ "ap::detail::c_arithmetic", "conceptap_1_1detail_1_1c__arithmetic.html", null ],
     [ "ap::detail::c_argument_value_type", "conceptap_1_1detail_1_1c__argument__value__type.html", null ],

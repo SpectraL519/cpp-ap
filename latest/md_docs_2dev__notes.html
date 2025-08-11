@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.4.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -106,18 +106,15 @@ Building and testing</h1>
 <h2><a class="anchor" id="build-the-testing-executable"></a>
 Build the testing executable</h2>
 <div class="fragment"><div class="line">cmake -B build -DBUILD_TESTS=ON</div>
-<div class="line">cd build</div>
-<div class="line">make # -j &lt;n&gt;</div>
-</div><!-- fragment --><p>This will build the test executable <code>run</code> in the <code>&lt;project-root&gt;/build/tests</code> directory.</p>
+<div class="line">cmake --build build/ # -j &lt;njobs&gt;</div>
+</div><!-- fragment --><p>This will build each test file as a separate executable in the <code>build/tests/</code> directory.</p>
 <h2><a class="anchor" id="run-the-tests"></a>
 Run the tests</h2>
-<div class="fragment"><div class="line">cd build</div>
-<div class="line">./tests/run # -ts=&lt;test-suite-name&gt;</div>
-</div><!-- fragment --><blockquote class="doxtable">
-<p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
-<p>Test suites in the project have the same names as the files they're in except for the <code>test_extarnal_libs_config.cpp</code> file which defines the <code>test_doctest_config</code> test suite. </p>
-</blockquote>
-<p><br  />
+<p>You can run tests from each test file separately with:</p>
+<div class="fragment"><div class="line">./build/tests/&lt;test-name&gt;</div>
+</div><!-- fragment --><p>To execute all tests at once run:</p>
+<div class="fragment"><div class="line">ctest --test-dir build/tests/ # -V (to capture output from each test executable)</div>
+</div><!-- fragment --><p><br  />
  <br  />
 </p>
 <h1><a class="anchor" id="formatting"></a>
@@ -144,8 +141,7 @@ Documentation</h1>
 <p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
 <p>You can view the online documentation for the latest version <a href="https://spectral519.github.io/cpp-ap/latest/">here</a>.</p>
 <p>To view the documentation for the previous versions use the following URL pattern: </p><div class="fragment"><div class="line">https://spectral519.github.io/cpp-ap/&lt;version&gt;</div>
-</div><!-- fragment --><p> Please keep in mind that the online documentation is available only for versions <code>&gt;= 2.2.5</code> - for older versions the documentation has to be built locally. </p>
-</blockquote>
+</div><!-- fragment --> </blockquote>
 <p>The documentation for this project can be generated using Doxygen, styled with a custom <a href="https://github.com/SpectraL519/doxygen-awesome-css/tree/theme-alignment">fork</a> of the <a href="https://github.com/jothepro/doxygen-awesome-css">doxygen-awesome-css</a> theme.</p>
 <h2><a class="anchor" id="prerequisites"></a>
 Prerequisites</h2>
@@ -170,7 +166,7 @@ Generating the Documentation</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Aug 8 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Mon Aug 11 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

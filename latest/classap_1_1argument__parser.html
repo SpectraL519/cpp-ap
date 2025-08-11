@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.4.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -190,9 +190,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5a51e8b54c96d6bddbeabd9bc4ff7cb7" id="r_a5a51e8b54c96d6bddbeabd9bc4ff7cb7"><td class="memTemplParams" colspan="2">template&lt;detail::c_argument_value_type T = std::string&gt; </td></tr>
 <tr class="memitem:a5a51e8b54c96d6bddbeabd9bc4ff7cb7"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a> (std::string_view arg_name) const</td></tr>
 <tr class="separator:a5a51e8b54c96d6bddbeabd9bc4ff7cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2da93974b1e272fb54aa8fb6cc93e21" id="r_ad2da93974b1e272fb54aa8fb6cc93e21"><td class="memTemplParams" colspan="2">template&lt;detail::c_argument_value_type T = std::string, std::convertible_to&lt; T &gt; U&gt; </td></tr>
-<tr class="memitem:ad2da93974b1e272fb54aa8fb6cc93e21"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1argument__parser.html#ad2da93974b1e272fb54aa8fb6cc93e21">value_or</a> (std::string_view arg_name, U &amp;&amp;default_value) const</td></tr>
-<tr class="separator:ad2da93974b1e272fb54aa8fb6cc93e21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b47a2a3db577ef0ea8c00264de480a9" id="r_a6b47a2a3db577ef0ea8c00264de480a9"><td class="memTemplParams" colspan="2">template&lt;detail::c_argument_value_type T = std::string, std::convertible_to&lt; T &gt; U&gt; </td></tr>
+<tr class="memitem:a6b47a2a3db577ef0ea8c00264de480a9"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1argument__parser.html#a6b47a2a3db577ef0ea8c00264de480a9">value_or</a> (std::string_view arg_name, U &amp;&amp;fallback_value) const</td></tr>
+<tr class="separator:a6b47a2a3db577ef0ea8c00264de480a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80270803f7f3c59c3aeac9f6d33205ce" id="r_a80270803f7f3c59c3aeac9f6d33205ce"><td class="memTemplParams" colspan="2">template&lt;detail::c_argument_value_type T = std::string&gt; </td></tr>
 <tr class="memitem:a80270803f7f3c59c3aeac9f6d33205ce"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce">values</a> (std::string_view arg_name) const</td></tr>
 <tr class="separator:a80270803f7f3c59c3aeac9f6d33205ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -209,7 +209,7 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main argument parser class. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00046">46</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00044">44</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa340ed78fcdb698b73e105b04a4a5c14" name="aa340ed78fcdb698b73e105b04a4a5c14"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa340ed78fcdb698b73e105b04a4a5c14">&#9670;&#160;</a></span>add_flag() <span class="overload">[1/2]</span></h2>
@@ -252,7 +252,7 @@ template&lt;bool StoreImplicitly = true&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the added boolean flag argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00236">236</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00234">234</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -308,7 +308,7 @@ template&lt;bool StoreImplicitly = true&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the added boolean flag argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00251">251</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00249">249</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -360,7 +360,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Check forbidden characters (after adding the assignment character). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00193">193</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00191">191</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -423,7 +423,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Check forbidden characters (after adding the assignment character). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00215">215</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00213">213</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -475,7 +475,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Check forbidden characters (after adding the assignment character). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00147">147</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00145">145</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -538,7 +538,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Check forbidden characters (after adding the assignment character). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00169">169</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00167">167</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -573,7 +573,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of times the argument has been used. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00348">348</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00346">346</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -618,7 +618,7 @@ template&lt;detail::c_range_of&lt; <a class="el" href="default_8hpp.html#ae33beb
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the argument parser. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00120">120</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00118">118</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -655,7 +655,7 @@ template&lt;detail::c_range_of&lt; <a class="el" href="default_8hpp.html#ae33beb
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the argument parser. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00131">131</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00129">129</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -700,7 +700,7 @@ template&lt;detail::c_range_of&lt; <a class="el" href="default_8hpp.html#a286f72
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the argument parser. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00096">96</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00094">94</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -737,7 +737,7 @@ template&lt;detail::c_range_of&lt; <a class="el" href="default_8hpp.html#a286f72
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the argument parser. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00107">107</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00105">105</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -767,7 +767,7 @@ template&lt;detail::c_range_of&lt; <a class="el" href="default_8hpp.html#a286f72
 <p>Handles the <code>help</code> argument logic. </p>
 <p>Checks the value of the <code>help</code> boolean flag argument and if the value <code>is</code> true, prints the parser to <code>std::cout</code> anb exists with <code>EXIT_SUCCESS</code> status. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00326">326</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00324">324</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -802,7 +802,7 @@ template&lt;detail::c_range_of&lt; <a class="el" href="default_8hpp.html#a286f72
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the argument has a value, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00339">339</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00337">337</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -846,7 +846,7 @@ template&lt;detail::c_range_of&lt; std::string, <a class="el" href="concepts_8hp
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00276">276</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00274">274</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -894,7 +894,7 @@ template&lt;detail::c_range_of&lt; std::string, <a class="el" href="concepts_8hp
 </dl>
 <dl class="section note"><dt>Note</dt><dd>The first argument (the program name) is ignored. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00266">266</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00264">264</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -941,7 +941,7 @@ template&lt;detail::c_range_of&lt; std::string, <a class="el" href="concepts_8hp
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00440">440</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00438">438</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -978,7 +978,7 @@ template&lt;detail::c_range_of&lt; std::string, <a class="el" href="concepts_8hp
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the argument parser. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00073">73</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00071">71</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1015,7 +1015,7 @@ template&lt;detail::c_range_of&lt; std::string, <a class="el" href="concepts_8hp
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the argument parser. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00063">63</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00061">61</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1060,7 +1060,7 @@ template&lt;detail::c_range_of&lt; std::string, <a class="el" href="concepts_8hp
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00308">308</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00306">306</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1108,7 +1108,7 @@ template&lt;detail::c_range_of&lt; std::string, <a class="el" href="concepts_8hp
 </dl>
 <dl class="section note"><dt>Note</dt><dd>The first argument (the program name) is ignored. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00293">293</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00291">291</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1157,12 +1157,12 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00360">360</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00358">358</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
-<a id="ad2da93974b1e272fb54aa8fb6cc93e21" name="ad2da93974b1e272fb54aa8fb6cc93e21"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2da93974b1e272fb54aa8fb6cc93e21">&#9670;&#160;</a></span>value_or()</h2>
+<a id="a6b47a2a3db577ef0ea8c00264de480a9" name="a6b47a2a3db577ef0ea8c00264de480a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b47a2a3db577ef0ea8c00264de480a9">&#9670;&#160;</a></span>value_or()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1182,7 +1182,7 @@ template&lt;detail::c_argument_value_type T = std::string, std::convertible_to&l
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">U &amp;&amp;&#160;</td>
-          <td class="paramname"><em>default_value</em>&#160;</td>
+          <td class="paramname"><em>fallback_value</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1206,7 +1206,7 @@ template&lt;detail::c_argument_value_type T = std::string, std::convertible_to&l
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arg_name</td><td>The name of the argument. </td></tr>
-    <tr><td class="paramname">default_value</td><td>The default value. </td></tr>
+    <tr><td class="paramname">fallback_value</td><td>The fallback value. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1218,7 +1218,7 @@ template&lt;detail::c_argument_value_type T = std::string, std::convertible_to&l
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00383">383</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00381">381</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1267,7 +1267,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00409">409</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00407">407</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1305,7 +1305,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the argument parser. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00084">84</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00082">82</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1355,7 +1355,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The modified output stream. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00470">470</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00468">468</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>
@@ -1368,7 +1368,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><a class="el" href="classap_1_1argument__parser.html">argument_parser</a></li>
-    <li class="footer">Generated on Fri Aug 8 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Mon Aug 11 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

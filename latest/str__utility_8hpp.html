@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.4.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -101,6 +101,7 @@ $(document).ready(function(){initNavTree('str__utility_8hpp.html',''); initResiz
 <p>Provides common string utility functions.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>&quot;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
 <code>#include &lt;string_view&gt;</code><br />
 </div>
@@ -112,6 +113,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a97bdd2ff447fd9349bf9ca3f13b25d4b"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="str__utility_8hpp.html#a97bdd2ff447fd9349bf9ca3f13b25d4b">ap::detail::as_string</a> (const T &amp;value) noexcept</td></tr>
 <tr class="memdesc:a97bdd2ff447fd9349bf9ca3f13b25d4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a value to <code>std::string</code>.  <br /></td></tr>
 <tr class="separator:a97bdd2ff447fd9349bf9ca3f13b25d4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6749a728cc77fc609217b81f73f4d5f4" id="r_a6749a728cc77fc609217b81f73f4d5f4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str__utility_8hpp.html#a6749a728cc77fc609217b81f73f4d5f4">ap::detail::contains_whitespaces</a> (std::string_view str) noexcept</td></tr>
+<tr class="memdesc:a6749a728cc77fc609217b81f73f4d5f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether a string contains any whitespace characters.  <br /></td></tr>
+<tr class="separator:a6749a728cc77fc609217b81f73f4d5f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3d83d4a2aaa0fa383ae5cdad990fd9a" id="r_ac3d83d4a2aaa0fa383ae5cdad990fd9a"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range R&gt; <br />
 requires (c_writable&lt;std::ranges::range_value_t&lt;R&gt;&gt;)</td></tr>
 <tr class="memitem:ac3d83d4a2aaa0fa383ae5cdad990fd9a"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="str__utility_8hpp.html#ac3d83d4a2aaa0fa383ae5cdad990fd9a">ap::detail::join</a> (const R &amp;range, const std::string_view delimiter=&quot;, &quot;)</td></tr>
@@ -163,7 +167,37 @@ template&lt;c_writable T&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="str__utility_8hpp_source.html#l00025">25</a> of file <a class="el" href="str__utility_8hpp_source.html">str_utility.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="str__utility_8hpp_source.html#l00026">26</a> of file <a class="el" href="str__utility_8hpp_source.html">str_utility.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6749a728cc77fc609217b81f73f4d5f4" name="a6749a728cc77fc609217b81f73f4d5f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6749a728cc77fc609217b81f73f4d5f4">&#9670;&#160;</a></span>contains_whitespaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ap::detail::contains_whitespaces </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>str</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks whether a string contains any whitespace characters. </p>
+
+<p class="definition">Definition at line <a class="el" href="str__utility_8hpp_source.html#l00033">33</a> of file <a class="el" href="str__utility_8hpp_source.html">str_utility.hpp</a>.</p>
 
 </div>
 </div>
@@ -213,7 +247,7 @@ requires (c_writable&lt;std::ranges::range_value_t&lt;R&gt;&gt;)</div>
 <dl class="section return"><dt>Returns</dt><dd>A single string with all elements joined by the delimiter. </dd></dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd>Replace with std::views::join after transition to C++23. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="str__utility_8hpp_source.html#l00041">41</a> of file <a class="el" href="str__utility_8hpp_source.html">str_utility.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="str__utility_8hpp_source.html#l00047">47</a> of file <a class="el" href="str__utility_8hpp_source.html">str_utility.hpp</a>.</p>
 
 </div>
 </div>
@@ -223,7 +257,7 @@ requires (c_writable&lt;std::ranges::range_value_t&lt;R&gt;&gt;)</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="dir_ea43b21539db84da507fd938bfb6305e.html">detail</a></li><li class="navelem"><a class="el" href="str__utility_8hpp.html">str_utility.hpp</a></li>
-    <li class="footer">Generated on Fri Aug 8 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Mon Aug 11 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

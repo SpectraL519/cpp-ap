@@ -9,6 +9,7 @@ var concepts =
       ] ],
       [ "detail", null, [
         [ "c_readable", "conceptap_1_1detail_1_1c__readable.html", null ],
+        [ "c_trivially_readable", "conceptap_1_1detail_1_1c__trivially__readable.html", null ],
         [ "c_writable", "conceptap_1_1detail_1_1c__writable.html", null ],
         [ "c_arithmetic", "conceptap_1_1detail_1_1c__arithmetic.html", null ],
         [ "c_argument_value_type", "conceptap_1_1detail_1_1c__argument__value__type.html", null ],

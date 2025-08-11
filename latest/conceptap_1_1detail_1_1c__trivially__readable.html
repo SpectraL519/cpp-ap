@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CPP-AP: ap::detail::c_sized_range_of Concept Reference</title>
+<title>CPP-AP: ap::detail::c_trivially_readable Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,7 +66,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('conceptap_1_1detail_1_1c__sized__range__of.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('conceptap_1_1detail_1_1c__trivially__readable.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -92,39 +92,34 @@ $(document).ready(function(){initNavTree('conceptap_1_1detail_1_1c__sized__range
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">ap::detail::c_sized_range_of Concept Reference</div></div>
+  <div class="headertitle"><div class="title">ap::detail::c_trivially_readable Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Validates that R is a sized range of type T (ignoring the cvref attributes).  
-<a href="conceptap_1_1detail_1_1c__sized__range__of.html#details">More...</a></p>
+<p>The concept is satisfied when <code>T</code> can be constructed from <code>const std::string&amp;</code>.  
+<a href="conceptap_1_1detail_1_1c__trivially__readable.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
-<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> R, <span class="keyword">typename</span> V, type_val<span class="keywordtype">id</span>ator TV type_val<span class="keywordtype">id</span>ator::same&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptap_1_1detail_1_1c__sized__range__of.html">ap::detail::c_sized_range_of</a> = </div>
-<div class="line">    std::ranges::sized_range&lt;R&gt;</div>
-<div class="line">    and <a class="code hl_concept" href="conceptap_1_1detail_1_1c__valid__type.html">c_valid_type&lt;std::remove_cvref_t&lt;std::ranges::range_value_t&lt;R&gt;</a>&gt;, V, TV&gt;</div>
-<div class="ttc" id="aconceptap_1_1detail_1_1c__sized__range__of_html"><div class="ttname"><a href="conceptap_1_1detail_1_1c__sized__range__of.html">ap::detail::c_sized_range_of</a></div><div class="ttdoc">Validates that R is a sized range of type T (ignoring the cvref attributes).</div><div class="ttdef"><b>Definition</b> <a href="concepts_8hpp_source.html#l00125">concepts.hpp:125</a></div></div>
-<div class="ttc" id="aconceptap_1_1detail_1_1c__valid__type_html"><div class="ttname"><a href="conceptap_1_1detail_1_1c__valid__type.html">ap::detail::c_valid_type</a></div><div class="ttdoc">Concept that enforces is_valid_type_v.</div><div class="ttdef"><b>Definition</b> <a href="concepts_8hpp_source.html#l00105">concepts.hpp:105</a></div></div>
+<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptap_1_1detail_1_1c__trivially__readable.html">ap::detail::c_trivially_readable</a> =  std::constructible_from&lt;T, const std::string&amp;&gt;</div>
+<div class="ttc" id="aconceptap_1_1detail_1_1c__trivially__readable_html"><div class="ttname"><a href="conceptap_1_1detail_1_1c__trivially__readable.html">ap::detail::c_trivially_readable</a></div><div class="ttdoc">The concept is satisfied when T can be constructed from const std::string&amp;.</div><div class="ttdef"><b>Definition</b> <a href="concepts_8hpp_source.html#l00029">concepts.hpp:29</a></div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Validates that R is a sized range of type T (ignoring the cvref attributes). </p>
+<div class="textblock"><p>The concept is satisfied when <code>T</code> can be constructed from <code>const std::string&amp;</code>. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">R</td><td>The range type to check. </td></tr>
-    <tr><td class="paramname">V</td><td>The expected range value type. </td></tr>
-    <tr><td class="paramname">TV</td><td>The validation rule (<code>same</code> or <code>convertible</code>). </td></tr>
+    <tr><td class="paramname">T</td><td>Type to check. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="concepts_8hpp_source.html#l00125">125</a> of file <a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="concepts_8hpp_source.html#l00029">29</a> of file <a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>.</p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="conceptap_1_1detail_1_1c__sized__range__of.html">c_sized_range_of</a></li>
+    <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="conceptap_1_1detail_1_1c__trivially__readable.html">c_trivially_readable</a></li>
     <li class="footer">Generated on Mon Aug 11 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

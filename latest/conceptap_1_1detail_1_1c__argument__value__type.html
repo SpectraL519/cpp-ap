@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.3.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.4.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -102,9 +102,10 @@ $(document).ready(function(){initNavTree('conceptap_1_1detail_1_1c__argument__va
 <p><code>#include &lt;<a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
 <div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a> =  <a class="code hl_concept" href="conceptap_1_1detail_1_1c__readable.html">c_readable&lt;T&gt;</a> and std::semiregular&lt;T&gt;</div>
-<div class="ttc" id="aconceptap_1_1detail_1_1c__argument__value__type_html"><div class="ttname"><a href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a></div><div class="ttdoc">The concept is used to verify the validity of the arguments' value types.</div><div class="ttdef"><b>Definition</b> <a href="concepts_8hpp_source.html#l00043">concepts.hpp:43</a></div></div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a> =  std::semiregular&lt;T&gt; and (<a class="code hl_concept" href="conceptap_1_1detail_1_1c__trivially__readable.html">c_trivially_readable&lt;T&gt;</a> or <a class="code hl_concept" href="conceptap_1_1detail_1_1c__readable.html">c_readable&lt;T&gt;</a>)</div>
+<div class="ttc" id="aconceptap_1_1detail_1_1c__argument__value__type_html"><div class="ttname"><a href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a></div><div class="ttdoc">The concept is used to verify the validity of the arguments' value types.</div><div class="ttdef"><b>Definition</b> <a href="concepts_8hpp_source.html#l00050">concepts.hpp:50</a></div></div>
 <div class="ttc" id="aconceptap_1_1detail_1_1c__readable_html"><div class="ttname"><a href="conceptap_1_1detail_1_1c__readable.html">ap::detail::c_readable</a></div><div class="ttdoc">The concept is satisfied when T overloads the std::istream operator &gt;&gt;.</div><div class="ttdef"><b>Definition</b> <a href="concepts_8hpp_source.html#l00022">concepts.hpp:22</a></div></div>
+<div class="ttc" id="aconceptap_1_1detail_1_1c__trivially__readable_html"><div class="ttname"><a href="conceptap_1_1detail_1_1c__trivially__readable.html">ap::detail::c_trivially_readable</a></div><div class="ttdoc">The concept is satisfied when T can be constructed from const std::string&amp;.</div><div class="ttdef"><b>Definition</b> <a href="concepts_8hpp_source.html#l00029">concepts.hpp:29</a></div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The concept is used to verify the validity of the arguments' value types. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -114,14 +115,14 @@ $(document).ready(function(){initNavTree('conceptap_1_1detail_1_1c__argument__va
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="concepts_8hpp_source.html#l00043">43</a> of file <a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="concepts_8hpp_source.html#l00050">50</a> of file <a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>.</p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="conceptap_1_1detail_1_1c__argument__value__type.html">c_argument_value_type</a></li>
-    <li class="footer">Generated on Fri Aug 8 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Mon Aug 11 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
