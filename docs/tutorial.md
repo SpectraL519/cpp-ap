@@ -635,7 +635,30 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!WARNING]
 >
-> TODO: describe the default argument flag detection behaviour and the use of the `AP_UNKNOWN_FLAGS_AS_VALUES` macro
+> By default the `argument_parser` class treats all* command-line arguments beggining with a `--` or `-` prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered *unknown* and an exception will be thrown.
+>
+> This behaviour can be altered so that the unknown argument flags will be treated as values, not flags.
+>
+> Example:
+> ```cpp
+> parser.add_optional_argument("option", "o");
+> parser.try_parse_args(argc, argv);
+> std::cout << "option: " << parser.value("option");
+>
+> /*
+> ./program --option --unknown-flag
+> option: --unknown-flag
+> ```
+>
+> To do this add the following in you `CMakeLists.txt` file:
+> ```cmake
+> target_compile_definitions(cpp-ap-2 PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
+> ```
+> or simply add:
+> ```cpp
+> #define AP_UNKNOWN_FLAGS_AS_VALUES
+> ```
+> before the `#include <ap/argument_parser.hpp>` statement.
 
 > [!TIP]
 >
