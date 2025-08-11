@@ -106,16 +106,19 @@ or
 parser.add_<positional/optional>_argument<value_type>("argument", "a");
 ```
 
-> [!NOTE]
+> [!IMPORTANT]
 >
 > The library supports any argument value types which meet the following requirements:
 >
 > - The type is [constructible from](https://en.cppreference.com/w/cpp/concepts/constructible_from) `const std::string&` or the stream extraction operator - `std::istream& operator>>` is defined for the type.
+>
+>    **IMPORTANT:** The argument parser will always use direct initialization from `std::string` and will use the extraction operator only if an argument's value type cannot be initialized from `std::string`.
+>
 > - The type satisfies the [`std::semiregular`](https://en.cppreference.com/w/cpp/concepts/semiregular.html) concept - is default initializable and copyable.
 
-> [!IMPORTANT]
+> [!NOTE]
 >
-> If the `value_type` is not provided, `std::string` will be used.
+> The default value type of any argument is `std::string`.
 
 You can also add boolean flags:
 
