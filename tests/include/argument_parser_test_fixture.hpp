@@ -1,7 +1,5 @@
 #pragma once
 
-#define AP_TESTING
-
 #include <ap/argument_parser.hpp>
 
 #include <cstring>
@@ -25,15 +23,15 @@ struct argument_parser_test_fixture {
 
     // test utility functions
     [[nodiscard]] std::string init_arg_flag_primary(std::size_t i) const {
-        return std::format("--test_arg_{}", i);
+        return std::format("--test-arg-{}", i);
     }
 
     [[nodiscard]] std::string init_arg_flag_secondary(std::size_t i) const {
-        return std::format("-ta_{}", i);
+        return std::format("-ta-{}", i);
     }
 
     [[nodiscard]] argument_value_type init_arg_value(std::size_t i) const {
-        return std::format("test_value_{}", i);
+        return std::format("test-value-{}", i);
     }
 
     [[nodiscard]] std::size_t get_args_length(
@@ -88,8 +86,12 @@ struct argument_parser_test_fixture {
         delete[] argv;
     }
 
-    [[nodiscard]] argument_name init_arg_name(std::size_t i) const {
-        return argument_name{std::format("test_arg_{}", i), std::format("ta_{}", i)};
+    [[nodiscard]] argument_name init_arg_name(
+        std::size_t i, std::optional<char> flag_char = std::nullopt
+    ) const {
+        return argument_name(
+            std::format("test-arg-{}", i), std::format("ta-{}", i), std::move(flag_char)
+        );
     }
 
     template <c_argument_value_type T = std::string>

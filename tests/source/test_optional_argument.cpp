@@ -1,5 +1,3 @@
-#define AP_TESTING
-
 #include "doctest.h"
 #include "optional_argument_test_fixture.hpp"
 
@@ -15,11 +13,12 @@ using ap::detail::parameter_descriptor;
 
 namespace {
 
+constexpr char flag_char = '-';
 constexpr std::string_view primary_name = "test";
 constexpr std::string_view secondary_name = "t";
 
-const argument_name arg_name(primary_name, secondary_name);
-const argument_name arg_name_primary(primary_name);
+const argument_name arg_name(primary_name, secondary_name, flag_char);
+const argument_name arg_name_primary(primary_name, std::nullopt, flag_char);
 
 constexpr std::string_view help_msg = "test help msg";
 
@@ -40,8 +39,6 @@ constexpr sut_value_type invalid_choice = 4;
 const range non_default_range = range{1ull, choices.size()};
 
 } // namespace
-
-TEST_SUITE_BEGIN("test_optional_argument");
 
 TEST_CASE_FIXTURE(
     optional_argument_test_fixture, "name() should return the proper argument_name instance"
@@ -89,14 +86,14 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
+    REQUIRE_EQ(desc.name, get_name(sut).str());
     CHECK_FALSE(desc.help);
     CHECK(desc.params.empty());
 
     // with a help msg
     sut.help(help_msg);
     desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
+    REQUIRE_EQ(desc.name, get_name(sut).str());
     CHECK(desc.help);
     CHECK_EQ(desc.help.value(), help_msg);
     CHECK(desc.params.empty());
@@ -111,7 +108,7 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name);
 
     auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str(flag_char));
+    REQUIRE_EQ(desc.name, get_name(sut).str());
     CHECK_FALSE(desc.help);
     CHECK(desc.params.empty());
 
@@ -577,5 +574,3 @@ TEST_CASE_FIXTURE(
     set_value_force(sut, invalid_choice);
     CHECK(std::is_gt(nvalues_ordering(sut)));
 }
-
-TEST_SUITE_END();

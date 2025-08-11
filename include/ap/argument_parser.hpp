@@ -31,8 +31,6 @@ struct argument_parser_test_fixture;
 
 namespace ap {
 
-// TODO: argument namespace alias
-
 class argument_parser;
 
 namespace detail {
@@ -147,7 +145,7 @@ public:
     argument::positional<T>& add_positional_argument(std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
-        const detail::argument_name arg_name = {primary_name};
+        const detail::argument_name arg_name(primary_name);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -172,7 +170,7 @@ public:
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
-        const detail::argument_name arg_name = {primary_name, secondary_name};
+        const detail::argument_name arg_name(primary_name, secondary_name);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -193,7 +191,7 @@ public:
     argument::optional<T>& add_optional_argument(std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
-        const detail::argument_name arg_name = {primary_name};
+        const detail::argument_name arg_name(primary_name, std::nullopt, this->_flag_prefix_char);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -218,7 +216,7 @@ public:
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
-        const detail::argument_name arg_name = {primary_name, secondary_name};
+        const detail::argument_name arg_name(primary_name, secondary_name, this->_flag_prefix_char);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -375,12 +373,12 @@ public:
      * @tparam T Type of the argument value.
      * @tparam U The default value type.
      * @param arg_name The name of the argument.
-     * @param default_value The default value.
+     * @param fallback_value The fallback value.
      * @return The value of the argument.
      * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
-    [[nodiscard]] T value_or(std::string_view arg_name, U&& default_value) const {
+    [[nodiscard]] T value_or(std::string_view arg_name, U&& fallback_value) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw lookup_failure::argument_not_found(arg_name);
@@ -392,7 +390,7 @@ public:
         catch (const std::logic_error&) {
             // positional: no value parsed
             // optional: no value parsed + no predefined value
-            return T{std::forward<U>(default_value)};
+            return T{std::forward<U>(fallback_value)};
         }
         catch (const std::bad_any_cast& err) {
             throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
@@ -497,6 +495,11 @@ private:
                 arg_name, "An argument name cannot be empty."
             );
 
+        if (detail::contains_whitespaces(arg_name))
+            throw invalid_configuration::invalid_argument_name(
+                arg_name, "An argument name cannot contain whitespaces."
+            );
+
         if (arg_name.front() == this->_flag_prefix_char)
             throw invalid_configuration::invalid_argument_name(
                 arg_name,
@@ -568,7 +571,7 @@ private:
      * 1. No required positional argument can be added after a non-required positional argument.
      */
     void _validate_argument_configuration() const {
-        // Step: 1
+        // step 1
         const_arg_opt_t non_required_arg = std::nullopt;
         for (const auto& arg : this->_positional_args) {
             if (not arg->is_required()) {
@@ -589,45 +592,75 @@ private:
      * @param arg_range The command-line argument value range.
      * @return A list of preprocessed command-line argument tokens.
      */
-    template <detail::c_sized_range_of<std::string, detail::type_validator::convertible> AR>
-    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const noexcept {
+    template <detail::c_sized_range_of<std::string_view, detail::type_validator::convertible> AR>
+    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const {
         const auto n_args = std::ranges::size(arg_range);
         if (n_args == 0ull)
             return arg_token_list_t{};
 
         arg_token_list_t toks;
         toks.reserve(n_args);
-
-        for (const auto& arg : arg_range) {
-            std::string value = static_cast<std::string>(arg);
-            if (this->_is_flag(value)) {
-                const auto flag_tok = this->_strip_flag_prefix(value);
-                toks.emplace_back(flag_tok, std::move(value));
-            }
-            else {
-                toks.emplace_back(detail::argument_token::t_value, std::move(value));
-            }
-        }
-
+        std::ranges::for_each(
+            arg_range, std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(toks))
+        );
         return toks;
     }
 
     /**
-     * @brief Check if an argument is a flag based on its value.
-     * @param arg The cmd argument's value.
-     * @return True if the argument is a flag, false otherwise.
+     * @brief Appends an argument token created from `arg_value` to the `toks` vector.
+     * @param toks The argument token list to which the processed token(s) will be appended.
+     * @param arg_value The command-line argument's value to be processed.
      */
-    [[nodiscard]] bool _is_flag(const std::string& arg) const noexcept {
-        if (arg.starts_with(this->_flag_prefix))
-            return this->_is_arg_name_used(
-                {arg.substr(this->_primary_flag_prefix_length)}, detail::argument_name::m_primary
-            );
+    void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) const {
+        auto tok = this->_build_token(arg_value);
+        if (tok.is_flag_token() and not this->_is_valid_flag(tok)) {
+#ifdef AP_UNKNOWN_FLAGS_AS_VALUES
+            toks.emplace_back(detail::argument_token::t_value, std::string(arg_value));
+            return;
+#else
+            throw parsing_failure::unknown_argument(arg_value);
+#endif
+        }
 
-        if (arg.starts_with(this->_flag_prefix_char))
-            return this->_is_arg_name_used(
-                {arg.substr(this->_secondary_flag_prefix_length)},
-                detail::argument_name::m_secondary
-            );
+        toks.emplace_back(std::move(tok));
+    }
+
+    /**
+     * @brief Builds an argument token from the given value.
+     * @param arg_value The command-line argument's value to be processed.
+     * @return An argument token with removed flag prefix (if present) and an adequate token type.
+     */
+    [[nodiscard]] detail::argument_token _build_token(const std::string_view arg_value
+    ) const noexcept {
+        if (detail::contains_whitespaces(arg_value))
+            return {.type = detail::argument_token::t_value, .value = std::string(arg_value)};
+
+        if (arg_value.starts_with(this->_flag_prefix))
+            return {
+                .type = detail::argument_token::t_flag_primary,
+                .value = std::string(arg_value.substr(this->_primary_flag_prefix_length))
+            };
+
+        if (arg_value.starts_with(this->_flag_prefix_char))
+            return {
+                .type = detail::argument_token::t_flag_secondary,
+                .value = std::string(arg_value.substr(this->_secondary_flag_prefix_length))
+            };
+
+        return {.type = detail::argument_token::t_value, .value = std::string(arg_value)};
+    }
+
+    /**
+     * @brief Check if a flag token is valid based on its value.
+     * @param tok The processed argument token.
+     * @return true if the token's value matches an argument name specified within the parser, false otherwise.
+     */
+    [[nodiscard]] bool _is_valid_flag(const detail::argument_token& tok) const noexcept {
+        if (tok.type == detail::argument_token::t_flag_primary)
+            return this->_is_arg_name_used({tok.value}, detail::argument_name::m_primary);
+
+        if (tok.type == detail::argument_token::t_flag_secondary)
+            return this->_is_arg_name_used({tok.value}, detail::argument_name::m_secondary);
 
         return false;
     }
@@ -657,22 +690,6 @@ private:
     }
 
     /**
-     * @brief Remove the flag prefix from the argument.
-     * @param arg_flag The argument flag to strip the prefix from.
-     * @return A flag argument token representing whether the prefix indicated a primary or a secondary flag.
-     */
-    detail::argument_token::token_type _strip_flag_prefix(std::string& arg_flag) const noexcept {
-        if (arg_flag.starts_with(this->_flag_prefix)) {
-            arg_flag.erase(0, this->_primary_flag_prefix_length);
-            return detail::argument_token::t_flag_primary;
-        }
-        else {
-            arg_flag.erase(0, this->_secondary_flag_prefix_length);
-            return detail::argument_token::t_flag_secondary;
-        }
-    }
-
-    /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
      * @throws ap::parsing_failure
@@ -683,11 +700,11 @@ private:
 
         this->_parse_positional_args(token_it, arg_tokens.end());
 
-        std::vector<std::string_view> dangling_values;
-        this->_parse_optional_args(token_it, arg_tokens.end(), dangling_values);
+        std::vector<std::string_view> unknown_args;
+        this->_parse_optional_args(token_it, arg_tokens.end(), unknown_args);
 
-        if (not dangling_values.empty())
-            throw parsing_failure::argument_deduction_failure(dangling_values);
+        if (not unknown_args.empty())
+            throw parsing_failure::argument_deduction_failure(unknown_args);
     }
 
     /**
@@ -714,14 +731,14 @@ private:
      * @brief Parse optional arguments based on command-line input.
      * @param token_it Iterator for iterating through command-line argument tokens.
      * @param tokens_end The token list end iterator.
-     * @param dangling_values Reference to the vector into which the dangling values shall be collected.
+     * @param unknown_args Reference to the vector into which the dangling values shall be collected.
      * @throws ap::parsing_failure
      * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
     void _parse_optional_args(
         arg_token_list_iterator_t& token_it,
         const arg_token_list_iterator_t& tokens_end,
-        std::vector<std::string_view>& dangling_values
+        std::vector<std::string_view>& unknown_args
     ) {
         std::optional<std::reference_wrapper<arg_ptr_t>> curr_opt_arg;
 
@@ -730,8 +747,9 @@ private:
             case detail::argument_token::t_flag_primary:
                 [[fallthrough]];
             case detail::argument_token::t_flag_secondary: {
-                if (not dangling_values.empty())
-                    throw parsing_failure::argument_deduction_failure(dangling_values);
+                // TODO: remove
+                if (not unknown_args.empty())
+                    throw parsing_failure::argument_deduction_failure(unknown_args);
 
                 const auto opt_arg_it = this->_find_opt_arg(*token_it);
                 if (opt_arg_it == this->_optional_args.end())
@@ -746,7 +764,7 @@ private:
             }
             case detail::argument_token::t_value: {
                 if (not curr_opt_arg) {
-                    dangling_values.emplace_back(token_it->value);
+                    unknown_args.emplace_back(token_it->value);
                     break;
                 }
 
@@ -859,15 +877,14 @@ private:
     void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
         if (verbose) {
             for (const auto& arg : args)
-                os << '\n'
-                   << arg->desc(verbose, this->_flag_prefix_char).get(this->_indent_width) << '\n';
+                os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
             descriptors.reserve(args.size());
 
             for (const auto& arg : args)
-                descriptors.emplace_back(arg->desc(verbose, this->_flag_prefix_char));
+                descriptors.emplace_back(arg->desc(verbose));
 
             std::size_t max_arg_name_length = 0ull;
             for (const auto& desc : descriptors)

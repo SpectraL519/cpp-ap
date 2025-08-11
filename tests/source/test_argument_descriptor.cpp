@@ -1,5 +1,3 @@
-#define AP_TESTING
-
 #include "doctest.h"
 
 #include <ap/detail/argument_descriptor.hpp>
@@ -17,8 +15,6 @@ constexpr uint8_t indent_width = 2;
 constexpr std::size_t align_to = 15ull;
 
 } // namespace
-
-TEST_SUITE_BEGIN("test_argument_descriptor");
 
 TEST_CASE("argument_descriptor should construct with name and optional help correctly") {
     sut_type no_help(arg_name, std::nullopt);
@@ -159,5 +155,3 @@ TEST_CASE("get should fall back to multiline output if string is too wide") {
 
     CHECK_EQ(sut.get(indent_width, max_line_width), expected.str());
 }
-
-TEST_SUITE_END(); // test_argument_descriptor

@@ -106,16 +106,19 @@ or
 parser.add_<positional/optional>_argument<value_type>("argument", "a");
 ```
 
-> [!NOTE]
+> [!IMPORTANT]
 >
 > The library supports any argument value types which meet the following requirements:
 >
-> - The `std::ostream& operator<<` is overloaded for the value type
-> - The value type has a copy constructor and an assignment operator
-
-> [!IMPORTANT]
+> - The type is [constructible from](https://en.cppreference.com/w/cpp/concepts/constructible_from) `const std::string&` or the stream extraction operator - `std::istream& operator>>` is defined for the type.
 >
-> If the `value_type` is not provided, `std::string` will be used.
+>    **IMPORTANT:** The argument parser will always use direct initialization from `std::string` and will use the extraction operator only if an argument's value type cannot be initialized from `std::string`.
+>
+> - The type satisfies the [`std::semiregular`](https://en.cppreference.com/w/cpp/concepts/semiregular.html) concept - is default initializable and copyable.
+
+> [!NOTE]
+>
+> The default value type of any argument is `std::string`.
 
 You can also add boolean flags:
 
@@ -633,6 +636,35 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 > parse_args(std::span(argv + 1, argc - 1));
 > ```
 
+> [!WARNING]
+>
+> By default the `argument_parser` class treats *all\** command-line arguments beggining with a `--` or `-` prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered *unknown* and an exception will be thrown.
+>
+> > [*all\**] If a command-line argument begins with a flag prefix, but contains whitespaces (e.g. `"--flag value"`), then it is treated as a value and not a flag.
+>
+> This behavior can be altered so that the unknown argument flags will be treated as values, not flags.
+>
+> Example:
+> ```cpp
+> parser.add_optional_argument("option", "o");
+> parser.try_parse_args(argc, argv);
+> std::cout << "option: " << parser.value("option");
+>
+> /*
+> ./program --option --unknown-flag
+> option: --unknown-flag
+> ```
+>
+> To do this add the following in you `CMakeLists.txt` file:
+> ```cmake
+> target_compile_definitions(cpp-ap-2 PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
+> ```
+> or simply add:
+> ```cpp
+> #define AP_UNKNOWN_FLAGS_AS_VALUES
+> ```
+> before the `#include <ap/argument_parser.hpp>` statement.
+
 > [!TIP]
 >
 > The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which automatically catch these exceptions, print the error message, and exit with a failure status.
@@ -766,7 +798,7 @@ int main(int argc, char* argv[]) {
 
 > [!IMPORTANT]
 >
-> The parser behaviour depends on the argument definitions. The argument parameters are described int the [Argument parameters](#argument-parameters) section.
+> The parser's behavior depends on the argument definitions - see [Argument Parameters](#argument-parameters) section.
 
 <br/>
 <br/>
@@ -778,14 +810,14 @@ You can retrieve the argument's value with:
 
 ```cpp
 (const) auto value = parser.value<value_type>("argument_name"); // (1)
-(const) auto value = parser.value_or<value_type>("argument_name", default_value); // (2)
+(const) auto value = parser.value_or<value_type>("argument_name", fallback_value); // (2)
 ```
 
 1. This will return the value parsed for the given argument.
 
     For optional arguments this will return the argument's predefined value if no value has been parsed. Additionaly, if more than one value has been parsed for an optional argument, this function will return the first parsed value.
 
-2. When a value has been parsed for the argument, the behaviour is the same as in case **(1)**. Otherwise, this will return `value_type{std::forward<U>(default_value)}` (where `U` is the deducted type of `default_value`), if:
+2. When a value has been parsed for the argument, the behavior is the same as in case **(1)**. Otherwise, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deducted type of `fallback_value`), if:
 
     - There is no value parsed for a positional argument
     - There is no parsed values and no predefined values for an optional arrument

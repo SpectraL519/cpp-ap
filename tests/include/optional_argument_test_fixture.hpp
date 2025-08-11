@@ -1,7 +1,5 @@
 #pragma once
 
-#define AP_TESTING
-
 #include <ap/argument/optional.hpp>
 #include <ap/detail/str_utility.hpp>
 
@@ -107,7 +105,7 @@ struct optional_argument_test_fixture {
 
     template <c_argument_value_type T>
     [[nodiscard]] argument_descriptor get_desc(const optional<T>& arg, const bool verbose) const {
-        return arg.desc(verbose, flag_char);
+        return arg.desc(verbose);
     }
 
     template <c_argument_value_type T>
@@ -119,8 +117,6 @@ struct optional_argument_test_fixture {
     [[nodiscard]] bool is_bypass_required_enabled(const optional<T>& arg) const {
         return arg.bypass_required_enabled();
     }
-
-    static constexpr char flag_char = '-';
 };
 
 } // namespace ap_testing

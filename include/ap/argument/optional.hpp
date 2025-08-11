@@ -207,12 +207,10 @@ private:
 
     /**
      * @param verbose The verbosity mode value.
-     * @param flag_char The character used for the argument flag prefix.
      * @return An argument descriptor object for the argument.
      */
-    [[nodiscard]] detail::argument_descriptor desc(const bool verbose, const char flag_char)
-        const noexcept override {
-        detail::argument_descriptor desc(this->_name.str(flag_char), this->_help_msg);
+    [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
+        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
 
         if (not verbose)
             return desc;
@@ -265,8 +263,13 @@ private:
             throw parsing_failure::invalid_nvalues(this->_name, std::weak_ordering::greater);
 
         value_type value;
-        if (not (std::istringstream(str_value) >> value))
-            throw parsing_failure::invalid_value(this->_name, str_value);
+        if constexpr (detail::c_trivially_readable<value_type>) {
+            value = value_type(str_value);
+        }
+        else {
+            if (not (std::istringstream(str_value) >> value))
+                throw parsing_failure::invalid_value(this->_name, str_value);
+        }
 
         if (not detail::is_valid_choice(value, this->_choices))
             throw parsing_failure::invalid_choice(this->_name, str_value);

@@ -1,5 +1,3 @@
-#define AP_TESTING
-
 #include "argument_parser_test_fixture.hpp"
 #include "doctest.h"
 #include "utility.hpp"
@@ -9,8 +7,6 @@ using namespace ap::argument;
 using namespace ap::nargs;
 using ap::invalid_configuration;
 using ap::parsing_failure;
-
-TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
 struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string_view test_program_name = "test program name";
@@ -28,6 +24,8 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string positional_secondary_name = "pa";
     const std::string optional_primary_name = "optional_arg";
     const std::string optional_secondary_name = "oa";
+
+    const char flag_char = '-';
 
     const std::string empty_str{};
 };
@@ -191,7 +189,7 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
-    const auto required_arg_name = init_arg_name(n_args_total);
+    const auto required_arg_name = init_arg_name(n_args_total, flag_char);
     sut.add_optional_argument(required_arg_name.primary, required_arg_name.secondary.value())
         .required();
 
@@ -216,13 +214,35 @@ TEST_CASE_FIXTURE(
     auto argc = get_argc(n_positional_args, n_optional_args);
     auto argv = init_argv(n_positional_args, n_optional_args);
 
-    const auto range_arg_name = init_arg_name(n_args_total);
+    const auto range_arg_name = init_arg_name(n_args_total, flag_char);
     sut.add_optional_argument(range_arg_name.primary, range_arg_name.secondary.value())
         .nargs(at_least(1ull));
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
         parsing_failure::invalid_nvalues(range_arg_name, std::weak_ordering::less).what(),
+        parsing_failure
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args, "parse_args should throw when an unknown argument flag is used"
+) {
+    add_arguments(no_args, no_args);
+
+    constexpr std::size_t n_opt_clargs = 1ull;
+    constexpr std::size_t opt_arg_idx = 0ull;
+
+    auto argc = get_argc(no_args, n_opt_clargs);
+    auto argv = init_argv(no_args, n_opt_clargs);
+
+    const auto unknown_arg_name = init_arg_flag_primary(opt_arg_idx);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::unknown_argument(unknown_arg_name).what(),
         parsing_failure
     );
 
@@ -820,5 +840,3 @@ TEST_CASE_FIXTURE(
 
     free_argv(argc, argv);
 }
-
-TEST_SUITE_END(); // test_argument_parser_parse_args

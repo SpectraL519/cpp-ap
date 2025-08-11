@@ -7,7 +7,7 @@ else()
 endif()
 
 project(cpp-ap
-    VERSION 2.3.1
+    VERSION 2.4.0
     DESCRIPTION "Command-line argument parser for C++20"
     HOMEPAGE_URL "https://github.com/SpectraL519/cpp-ap"
     LANGUAGES CXX

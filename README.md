@@ -12,6 +12,8 @@ Command-line argument parser for C++20
 [![format](https://github.com/SpectraL519/cpp-ap/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/format)
 [![demo](https://github.com/SpectraL519/cpp-ap/actions/workflows/demo.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/demo)
 [![documentation](https://github.com/SpectraL519/cpp-ap/actions/workflows/documentation.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/documentation)
+[![changelog](https://img.shields.io/badge/changelog-blue.svg?logo=github)](https://github.com/SpectraL519/cpp-ap/releases)
+
 
 <br />
 

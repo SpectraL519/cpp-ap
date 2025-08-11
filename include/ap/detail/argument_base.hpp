@@ -58,11 +58,9 @@ protected:
 
     /**
      * @param verbose The verbosity mode value.
-     * @param flag_char The character used for the argument flag prefix.
      * @return An argument descriptor object for the argument.
      */
-    virtual detail::argument_descriptor desc(const bool verbose, const char flag_char)
-        const noexcept = 0;
+    virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
 
     /**
      * @brief Mark the argument as used.

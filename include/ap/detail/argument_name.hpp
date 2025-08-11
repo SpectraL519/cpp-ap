@@ -33,18 +33,17 @@ struct argument_name {
     argument_name(argument_name&&) = default;
 
     /**
-     * @brief Primary name constructor.
-     * @param primary The primary name of the argument.
-     */
-    argument_name(std::string_view primary) : primary(primary) {}
-
-    /**
      * @brief Primary and secondary name constructor.
      * @param primary The primary name of the argument.
      * @param secondary The secondary (short) name of the argument.
+     * @param flag_char The flag character (used for optional argument names).
      */
-    argument_name(std::string_view primary, std::string_view secondary)
-    : primary(primary), secondary(secondary) {}
+    argument_name(
+        std::string_view primary,
+        std::optional<std::string_view> secondary = std::nullopt,
+        std::optional<char> flag_char = std::nullopt
+    )
+    : primary(primary), secondary(std::move(secondary)), flag_char(std::move(flag_char)) {}
 
     /// @brief Class destructor.
     ~argument_name() = default;
@@ -124,10 +123,9 @@ struct argument_name {
      * @brief Get a string representation of the argument_name.
      * @param flag_char The character used for the argument flag prefix.
      */
-    [[nodiscard]] std::string str(const std::optional<char> flag_char = std::nullopt)
-        const noexcept {
+    [[nodiscard]] std::string str() const noexcept {
         // if flag_char = nullopt, then the fallback character doesn't matter - the string will be empty
-        const std::string fc(flag_char.has_value(), flag_char.value_or(char()));
+        const std::string fc(this->flag_char.has_value(), this->flag_char.value_or(char()));
         return this->secondary
                  ? std::format("{}{}{}, {}{}", fc, fc, this->primary, fc, this->secondary.value())
                  : std::format("{}{}{}", fc, fc, this->primary);
@@ -146,6 +144,7 @@ struct argument_name {
 
     const std::string primary; ///< The primary name of the argument.
     const std::optional<std::string> secondary; ///< The optional (short) name of the argument.
+    const std::optional<char> flag_char; ///< The flag character (used for optional argument names).
 };
 
 } // namespace ap::detail

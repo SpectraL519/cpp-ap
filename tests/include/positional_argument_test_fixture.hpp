@@ -1,7 +1,5 @@
 #pragma once
 
-#define AP_TESTING
-
 #include <ap/argument/positional.hpp>
 
 using ap::argument::positional;
@@ -30,7 +28,7 @@ struct positional_argument_test_fixture {
 
     template <c_argument_value_type T>
     [[nodiscard]] argument_descriptor get_desc(const positional<T>& arg, const bool verbose) const {
-        return arg.desc(verbose, flag_char);
+        return arg.desc(verbose);
     }
 
     template <c_argument_value_type T>
@@ -102,8 +100,6 @@ struct positional_argument_test_fixture {
     const std::vector<std::any>& get_values(const positional<T>& arg) const {
         return arg.values();
     }
-
-    static constexpr char flag_char = '-';
 };
 
 } // namespace ap_testing

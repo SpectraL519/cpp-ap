@@ -1,5 +1,3 @@
-#define AP_TESTING
-
 #include "doctest.h"
 #include "positional_argument_test_fixture.hpp"
 
@@ -33,8 +31,6 @@ const std::vector<sut_value_type> choices{1, 2, 3};
 constexpr sut_value_type invalid_choice = 4;
 
 } // namespace
-
-TEST_SUITE_BEGIN("test_positional_argument");
 
 TEST_CASE_FIXTURE(
     positional_argument_test_fixture, "name() should return the proper argument_name instance"
@@ -484,5 +480,3 @@ TEST_CASE_FIXTURE(
 
     CHECK(std::is_eq(nvalues_ordering(sut)));
 }
-
-TEST_SUITE_END();

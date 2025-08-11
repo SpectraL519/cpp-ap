@@ -12,22 +12,24 @@
 
 ```shell
 cmake -B build -DBUILD_TESTS=ON
-cd build
-make # -j <n>
+cmake --build build/ # -j <njobs>
 ```
 
-This will build the test executable `run` in the `<project-root>/build/tests` directory.
+This will build each test file as a separate executable in the `build/tests/` directory.
 
 ### Run the tests
 
+You can run tests from each test file separately with:
+
 ```shell
-cd build
-./tests/run # -ts=<test-suite-name>
+./build/tests/<test-name>
 ```
 
-> [!NOTE]
->
-> Test suites in the project have the same names as the files they're in except for the `test_extarnal_libs_config.cpp` file which defines the `test_doctest_config` test suite.
+To execute all tests at once run:
+
+```shell
+ctest --test-dir build/tests/ # -V (to capture output from each test executable)
+```
 
 <br />
 <br />
@@ -69,7 +71,6 @@ python scripts/format.py --help
 > ```
 > https://spectral519.github.io/cpp-ap/<version>
 > ```
-> Please keep in mind that the online documentation is available only for versions `>= 2.2.5` - for older versions the documentation has to be built locally.
 
 The documentation for this project can be generated using Doxygen, styled with a custom [fork](https://github.com/SpectraL519/doxygen-awesome-css/tree/theme-alignment) of the [doxygen-awesome-css](https://github.com/jothepro/doxygen-awesome-css) theme.
 

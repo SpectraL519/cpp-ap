@@ -1,5 +1,3 @@
-#define AP_TESTING
-
 #include "argument_parser_test_fixture.hpp"
 #include "doctest.h"
 #include "optional_argument_test_fixture.hpp"
@@ -9,9 +7,9 @@ using namespace ap_testing;
 using namespace ap::argument;
 using ap::invalid_configuration;
 
-TEST_SUITE_BEGIN("test_argument_parser_add_argument");
-
 struct test_argument_parser_add_argument : public argument_parser_test_fixture {
+    const char flag_char = '-';
+
     const std::string_view primary_name_1 = "primary_name_1";
     const std::string_view secondary_name_1 = "s1";
 
@@ -19,6 +17,7 @@ struct test_argument_parser_add_argument : public argument_parser_test_fixture {
     const std::string_view secondary_name_2 = "s2";
 
     const std::string_view invalid_name_empty = "";
+    const std::string_view invalid_name_whitespace = "invalid name";
     const std::string_view invalid_name_flag_prefix = "-invalid";
     const std::string_view invalid_name_digit = "1invalid";
 };
@@ -33,6 +32,11 @@ TEST_CASE_FIXTURE(
     SUBCASE("The name is empty") {
         primary_name = invalid_name_empty;
         reason = "An argument name cannot be empty.";
+    }
+
+    SUBCASE("The name contains whitespace characters") {
+        primary_name = invalid_name_whitespace;
+        reason = "An argument name cannot contain whitespaces.";
     }
 
     SUBCASE("The name begins with the flag prefix character") {
@@ -73,6 +77,11 @@ TEST_CASE_FIXTURE(
         reason = "An argument name cannot be empty.";
     }
 
+    SUBCASE("The name contains whitespace characters") {
+        primary_name = invalid_name_whitespace;
+        reason = "An argument name cannot contain whitespaces.";
+    }
+
     SUBCASE("The name begins with the flag prefix character") {
         primary_name = invalid_name_flag_prefix;
         reason = "An argument name cannot begin with a flag prefix character (-).";
@@ -111,6 +120,11 @@ TEST_CASE_FIXTURE(
         reason = "An argument name cannot be empty.";
     }
 
+    SUBCASE("The name contains whitespace characters") {
+        secondary_name = invalid_name_whitespace;
+        reason = "An argument name cannot contain whitespaces.";
+    }
+
     SUBCASE("The name begins with the flag prefix character") {
         secondary_name = invalid_name_flag_prefix;
         reason = "An argument name cannot begin with a flag prefix character (-).";
@@ -139,8 +153,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "add_positional_argument should throw only when adding an"
-    "argument with a previously used name"
+    "add_positional_argument should throw when adding an argument with a previously used name"
 ) {
     sut.add_positional_argument(primary_name_1, secondary_name_1);
 
@@ -167,8 +180,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "add_optional_argument should throw only when adding an"
-    "argument with a previously used name"
+    "add_optional_argument should throw when adding an argument with a previously used name"
 ) {
     sut.add_optional_argument(primary_name_1, secondary_name_1);
 
@@ -179,7 +191,8 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used primary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_optional_argument(primary_name_1, secondary_name_2),
-            invalid_configuration::argument_name_used({primary_name_1, secondary_name_2}).what(),
+            invalid_configuration::argument_name_used({primary_name_1, secondary_name_2, flag_char})
+                .what(),
             invalid_configuration
         );
     }
@@ -187,7 +200,8 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used secondary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_optional_argument(primary_name_2, secondary_name_1),
-            invalid_configuration::argument_name_used({primary_name_2, secondary_name_1}).what(),
+            invalid_configuration::argument_name_used({primary_name_2, secondary_name_1, flag_char})
+                .what(),
             invalid_configuration
         );
     }
@@ -222,7 +236,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "add_flag should throw only when adding and argument with a previously used name"
+    "add_flag should throw when adding and argument with a previously used name"
 ) {
     sut.add_flag(primary_name_1, secondary_name_1);
 
@@ -233,7 +247,8 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used primary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_flag(primary_name_1, secondary_name_2),
-            invalid_configuration::argument_name_used({primary_name_1, secondary_name_2}).what(),
+            invalid_configuration::argument_name_used({primary_name_1, secondary_name_2, flag_char})
+                .what(),
             invalid_configuration
         );
     }
@@ -241,7 +256,8 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used secondary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_flag(primary_name_2, secondary_name_1),
-            invalid_configuration::argument_name_used({primary_name_2, secondary_name_1}).what(),
+            invalid_configuration::argument_name_used({primary_name_2, secondary_name_1, flag_char})
+                .what(),
             invalid_configuration
         );
     }
@@ -303,5 +319,3 @@ TEST_CASE_FIXTURE(
     REQUIRE(output_arg);
     CHECK(is_optional<std::string>(output_arg.value()));
 }
-
-TEST_SUITE_END();

@@ -2,8 +2,6 @@
 
 #include <stdexcept>
 
-TEST_SUITE_BEGIN("test_doctest_config");
-
 namespace {
 
 int add(int a, int b) {
@@ -39,5 +37,3 @@ TEST_CASE("division by zero") {
     int denominator = 0;
     CHECK_THROWS_AS(divide(numerator, denominator), std::logic_error);
 }
-
-TEST_SUITE_END(); // test_doctest_config
