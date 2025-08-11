@@ -497,7 +497,6 @@ private:
                 arg_name, "An argument name cannot be empty."
             );
 
-        // TODO: add tests
         if (detail::contains_whitespaces(arg_name))
             throw invalid_configuration::invalid_argument_name(
                 arg_name, "An argument name cannot contain whitespaces."

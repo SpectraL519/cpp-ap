@@ -29,7 +29,6 @@ template <c_writable T>
     return oss.str();
 }
 
-// TODO: add tests
 /// @brief Checks whether a string contains any whitespace characters.
 [[nodiscard]] inline bool contains_whitespaces(std::string_view str) noexcept {
     return std::ranges::any_of(str, [](unsigned char c) { return std::isspace(c); });

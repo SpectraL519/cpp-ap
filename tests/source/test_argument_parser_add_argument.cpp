@@ -21,6 +21,7 @@ struct test_argument_parser_add_argument : public argument_parser_test_fixture {
     const std::string_view secondary_name_2 = "s2";
 
     const std::string_view invalid_name_empty = "";
+    const std::string_view invalid_name_whitespace = "invalid name";
     const std::string_view invalid_name_flag_prefix = "-invalid";
     const std::string_view invalid_name_digit = "1invalid";
 };
@@ -35,6 +36,11 @@ TEST_CASE_FIXTURE(
     SUBCASE("The name is empty") {
         primary_name = invalid_name_empty;
         reason = "An argument name cannot be empty.";
+    }
+
+    SUBCASE("The name contains whitespace characters") {
+        primary_name = invalid_name_whitespace;
+        reason = "An argument name cannot contain whitespaces.";
     }
 
     SUBCASE("The name begins with the flag prefix character") {
@@ -75,6 +81,11 @@ TEST_CASE_FIXTURE(
         reason = "An argument name cannot be empty.";
     }
 
+    SUBCASE("The name contains whitespace characters") {
+        primary_name = invalid_name_whitespace;
+        reason = "An argument name cannot contain whitespaces.";
+    }
+
     SUBCASE("The name begins with the flag prefix character") {
         primary_name = invalid_name_flag_prefix;
         reason = "An argument name cannot begin with a flag prefix character (-).";
@@ -113,6 +124,11 @@ TEST_CASE_FIXTURE(
         reason = "An argument name cannot be empty.";
     }
 
+    SUBCASE("The name contains whitespace characters") {
+        secondary_name = invalid_name_whitespace;
+        reason = "An argument name cannot contain whitespaces.";
+    }
+
     SUBCASE("The name begins with the flag prefix character") {
         secondary_name = invalid_name_flag_prefix;
         reason = "An argument name cannot begin with a flag prefix character (-).";
@@ -141,8 +157,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "add_positional_argument should throw only when adding an"
-    "argument with a previously used name"
+    "add_positional_argument should throw when adding an argument with a previously used name"
 ) {
     sut.add_positional_argument(primary_name_1, secondary_name_1);
 
@@ -169,8 +184,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "add_optional_argument should throw only when adding an"
-    "argument with a previously used name"
+    "add_optional_argument should throw when adding an argument with a previously used name"
 ) {
     sut.add_optional_argument(primary_name_1, secondary_name_1);
 
@@ -226,7 +240,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "add_flag should throw only when adding and argument with a previously used name"
+    "add_flag should throw when adding and argument with a previously used name"
 ) {
     sut.add_flag(primary_name_1, secondary_name_1);
 
