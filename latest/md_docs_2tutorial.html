@@ -637,7 +637,9 @@ Parsing Arguments</h1>
 <blockquote class="doxtable">
 <p>&zwj;<span style="color: #fd7e14; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-triangle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Warning:</span></p>
 <p>By default the <code>argument_parser</code> class treats <em>all*</em> command-line arguments beggining with a <code>--</code> or <code>-</code> prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered <em>unknown</em> and an exception will be thrown.</p>
-<p>*** If a command-line argument begins with a flag prefix, but contains whitespaces (e.g. <code>"--flag value"</code>), then it is treated as a value and not a flag.</p>
+<blockquote class="doxtable">
+<p>&zwj;[<em>all*</em>] If a command-line argument begins with a flag prefix, but contains whitespaces (e.g. <code>"--flag value"</code>), then it is treated as a value and not a flag. </p>
+</blockquote>
 <p>This behavior can be altered so that the unknown argument flags will be treated as values, not flags.</p>
 <p>Example: </p><div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6">add_optional_argument</a>(<span class="stringliteral">&quot;option&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>);</div>
 <div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe">try_parse_args</a>(argc, argv);</div>
