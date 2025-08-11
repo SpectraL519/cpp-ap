@@ -638,9 +638,11 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!WARNING]
 >
-> By default the `argument_parser` class treats all* command-line arguments beggining with a `--` or `-` prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered *unknown* and an exception will be thrown.
+> By default the `argument_parser` class treats *all\** command-line arguments beggining with a `--` or `-` prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered *unknown* and an exception will be thrown.
 >
-> This behaviour can be altered so that the unknown argument flags will be treated as values, not flags.
+> *\** If a command-line argument begins with a flag prefix, but contains whitespaces (e.g. `"--flag value"`), then it is treated as a value and not a flag.
+>
+> This behavior can be altered so that the unknown argument flags will be treated as values, not flags.
 >
 > Example:
 > ```cpp
@@ -796,7 +798,7 @@ int main(int argc, char* argv[]) {
 
 > [!IMPORTANT]
 >
-> The parser behaviour depends on the argument definitions. The argument parameters are described int the [Argument parameters](#argument-parameters) section.
+> The parser's behavior depends on the argument definitions - see [Argument Parameters](#argument-parameters) section.
 
 <br/>
 <br/>
@@ -808,14 +810,14 @@ You can retrieve the argument's value with:
 
 ```cpp
 (const) auto value = parser.value<value_type>("argument_name"); // (1)
-(const) auto value = parser.value_or<value_type>("argument_name", default_value); // (2)
+(const) auto value = parser.value_or<value_type>("argument_name", fallback_value); // (2)
 ```
 
 1. This will return the value parsed for the given argument.
 
     For optional arguments this will return the argument's predefined value if no value has been parsed. Additionaly, if more than one value has been parsed for an optional argument, this function will return the first parsed value.
 
-2. When a value has been parsed for the argument, the behaviour is the same as in case **(1)**. Otherwise, this will return `value_type{std::forward<U>(default_value)}` (where `U` is the deducted type of `default_value`), if:
+2. When a value has been parsed for the argument, the behavior is the same as in case **(1)**. Otherwise, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deducted type of `fallback_value`), if:
 
     - There is no value parsed for a positional argument
     - There is no parsed values and no predefined values for an optional arrument

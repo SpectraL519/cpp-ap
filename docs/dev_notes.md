@@ -19,15 +19,13 @@ This will build each test file as a separate executable in the `build/tests/` di
 
 ### Run the tests
 
-You can run tests from each test file manually with:
+You can run tests from each test file separately with:
 
 ```shell
 ./build/tests/<test-name>
 ```
 
-where `<test-name>` is the name of the test file without the extension.
-
-To run all tests at once run:
+To execute all tests at once run:
 
 ```shell
 ctest --test-dir build/tests/ # -V (to capture output from each test executable)

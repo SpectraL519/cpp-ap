@@ -38,8 +38,8 @@ struct argument_token {
         return this->type == t_flag_primary or this->type == t_flag_secondary;
     }
 
-    token_type type;
-    std::string value;
+    token_type type; ///< The token's type discrimiator value.
+    std::string value; ///< The actual token's value.
 };
 
 } // namespace ap::detail

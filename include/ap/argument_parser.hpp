@@ -145,7 +145,7 @@ public:
     argument::positional<T>& add_positional_argument(std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
-        const detail::argument_name arg_name = {primary_name};
+        const detail::argument_name arg_name(primary_name);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -170,7 +170,7 @@ public:
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
-        const detail::argument_name arg_name = {primary_name, secondary_name};
+        const detail::argument_name arg_name(primary_name, secondary_name);
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -373,12 +373,12 @@ public:
      * @tparam T Type of the argument value.
      * @tparam U The default value type.
      * @param arg_name The name of the argument.
-     * @param default_value The default value.
+     * @param fallback_value The fallback value.
      * @return The value of the argument.
      * @throws ap::lookup_failure, ap::type_error
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
-    [[nodiscard]] T value_or(std::string_view arg_name, U&& default_value) const {
+    [[nodiscard]] T value_or(std::string_view arg_name, U&& fallback_value) const {
         const auto arg_opt = this->_get_argument(arg_name);
         if (not arg_opt)
             throw lookup_failure::argument_not_found(arg_name);
@@ -390,7 +390,7 @@ public:
         catch (const std::logic_error&) {
             // positional: no value parsed
             // optional: no value parsed + no predefined value
-            return T{std::forward<U>(default_value)};
+            return T{std::forward<U>(fallback_value)};
         }
         catch (const std::bad_any_cast& err) {
             throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
@@ -658,8 +658,11 @@ private:
     [[nodiscard]] bool _is_valid_flag(const detail::argument_token& tok) const noexcept {
         if (tok.type == detail::argument_token::t_flag_primary)
             return this->_is_arg_name_used({tok.value}, detail::argument_name::m_primary);
-        else
+
+        if (tok.type == detail::argument_token::t_flag_secondary)
             return this->_is_arg_name_used({tok.value}, detail::argument_name::m_secondary);
+
+        return false;
     }
 
     /**
