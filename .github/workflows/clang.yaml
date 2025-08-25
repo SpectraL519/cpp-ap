@@ -1,4 +1,4 @@
-name: clang++
+name: Clang
 on:
   push:
     branches:
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    name: Build and run tests (clang)
+    name: Build and run tests (Clang)
     runs-on: ubuntu-24.04
 
     steps:
