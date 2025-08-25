@@ -70,10 +70,7 @@ Command-line argument parser for C++20
 | :-: | :-: |
 | GNU G++ | 13 |
 | Clang | 17 |
-
-> [!NOTE]
->
-> Although currently the project has been properly verified using only the G++ and Clang compilers it should work fine with other compilers with C++20 support like MSVC.
+| MSVC | 19.44 (Visual Studio 2022) |
 
 <br />
 
