@@ -23,15 +23,15 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -B build_win -G "Visual Studio 17 2022" -A x64 -DBUILD_TESTS=ON
+          cmake -B build_msvc -G "Visual Studio 17 2022" -A x64 -DBUILD_TESTS=ON
         shell: powershell
 
       - name: Build tests
         run: |
-          cmake --build build_win --config Debug --parallel
+          cmake --build build_msvc --config Debug --parallel
         shell: powershell
 
       - name: Run tests
         run: |
-          ctest --test-dir build_win/tests -V -C Debug
+          ctest --test-dir build_msvc/tests -V -C Debug
         shell: powershell
