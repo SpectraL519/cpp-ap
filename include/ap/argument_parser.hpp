@@ -392,7 +392,7 @@ public:
             // optional: no value parsed + no predefined value
             return T{std::forward<U>(fallback_value)};
         }
-        catch (const std::bad_any_cast& err) {
+        catch (const std::bad_any_cast&) {
             throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
         }
     }
@@ -657,10 +657,14 @@ private:
      */
     [[nodiscard]] bool _is_valid_flag(const detail::argument_token& tok) const noexcept {
         if (tok.type == detail::argument_token::t_flag_primary)
-            return this->_is_arg_name_used({tok.value}, detail::argument_name::m_primary);
+            return this->_is_arg_name_used(
+                detail::argument_name{tok.value}, detail::argument_name::m_primary
+            );
 
         if (tok.type == detail::argument_token::t_flag_secondary)
-            return this->_is_arg_name_used({tok.value}, detail::argument_name::m_secondary);
+            return this->_is_arg_name_used(
+                detail::argument_name{tok.value}, detail::argument_name::m_secondary
+            );
 
         return false;
     }
@@ -907,7 +911,7 @@ private:
     static constexpr uint8_t _primary_flag_prefix_length = 2u;
     static constexpr uint8_t _secondary_flag_prefix_length = 1u;
     static constexpr char _flag_prefix_char = '-';
-    static constexpr std::string _flag_prefix = "--";
+    static constexpr std::string_view _flag_prefix = "--";
     static constexpr uint8_t _indent_width = 2;
 };
 

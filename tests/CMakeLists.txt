@@ -10,7 +10,16 @@ set(INCLUDE_DIRS "include" "external")
 set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Set compile options
-set(DEFAULT_CXX_FLAGS "-Werror -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O0")
+if (MSVC)
+    set(DEFAULT_CXX_FLAGS "/W4 /WX /Od /Z7")
+    # /W4 (warnings)
+    # /WX (warnings as errors)
+    # /Od (no optimizations)
+    # /Z7 (debug info)
+else()
+    set(DEFAULT_CXX_FLAGS "-Werror -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O0")
+endif()
+
 if (NOT CMAKE_CXX_FLAGS)
     set(CMAKE_CXX_FLAGS "${DEFAULT_CXX_FLAGS}" CACHE STRING "Default C++ compiler flags" FORCE)
 endif()
@@ -62,7 +71,6 @@ add_doctest("source/test_argument_parser_parse_args.cpp")
 add_doctest("source/test_argument_parser_parse_args_unknown_flags_as_values.cpp"
     COMPILE_DEFINITIONS "AP_UNKNOWN_FLAGS_AS_VALUES"
 )
-add_doctest("source/test_extarnal_libs_config.cpp")
 add_doctest("source/test_nargs_range.cpp")
 add_doctest("source/test_optional_argument.cpp")
 add_doctest("source/test_positional_argument.cpp")

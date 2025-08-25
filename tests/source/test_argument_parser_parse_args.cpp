@@ -311,11 +311,14 @@ TEST_CASE_FIXTURE(
     }
     SUBCASE("only the necessary arguments have values") {
         const auto n_optional_args_curr = 1ull;
-        argc = get_argc(n_positional_args, n_optional_args_curr);
-        argv = init_argv(n_positional_args, n_optional_args_curr);
 
-        std::strcpy(argv[argc - 2], init_arg_flag_primary(n_args_total).c_str());
-        std::strcpy(argv[argc - 1], init_arg_value(n_args_total).c_str());
+        argc = get_argc(n_positional_args, n_optional_args_curr);
+
+        auto argv_vec = init_argv_vec(n_positional_args, n_optional_args_curr);
+        argv_vec[static_cast<std::size_t>(argc - 2)] = init_arg_flag_primary(n_args_total).c_str();
+        argv_vec[static_cast<std::size_t>(argc - 1)] = init_arg_value(n_args_total).c_str();
+
+        argv = to_char_2d_array(argv_vec);
     }
 
     CAPTURE(argc);
