@@ -54,7 +54,7 @@ set_target_properties(my_project PROPERTIES
 )
 
 # Link against the cpp-ap (v2) library
-target_link_libraries(my_project PRIVATE cpp-ap-2)
+target_link_libraries(my_project PRIVATE cpp-ap)
 ```
 
 ### Downloading the Library
@@ -657,7 +657,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 >
 > To do this add the following in you `CMakeLists.txt` file:
 > ```cmake
-> target_compile_definitions(cpp-ap-2 PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
+> target_compile_definitions(cpp-ap PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
 > ```
 > or simply add:
 > ```cpp
