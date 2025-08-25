@@ -10,7 +10,16 @@ set(INCLUDE_DIRS "include" "external")
 set(EXECUTABLE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Set compile options
-set(DEFAULT_CXX_FLAGS "-Werror -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O0")
+if (MSVC)
+    set(DEFAULT_CXX_FLAGS "/W4 /WX /Od /Z7")
+    # /W4 (warnings)
+    # /WX (warnings as errors)
+    # /Od (no optimizations)
+    # /Z7 (debug info)
+else()
+    set(DEFAULT_CXX_FLAGS "-Werror -Wall -Wextra -Wcast-align -Wconversion -Wunreachable-code -Wuninitialized -pedantic -g -O0")
+endif()
+
 if (NOT CMAKE_CXX_FLAGS)
     set(CMAKE_CXX_FLAGS "${DEFAULT_CXX_FLAGS}" CACHE STRING "Default C++ compiler flags" FORCE)
 endif()
