@@ -33,5 +33,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ctest --test-dir build/tests --config Debug -V
+          ctest --test-dir build/tests -V -C Debug
         shell: powershell
