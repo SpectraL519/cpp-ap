@@ -315,8 +315,8 @@ TEST_CASE_FIXTURE(
         argc = get_argc(n_positional_args, n_optional_args_curr);
 
         auto argv_vec = init_argv_vec(n_positional_args, n_optional_args_curr);
-        argv_vec[argc - 2] = init_arg_flag_primary(n_args_total).c_str();
-        argv_vec[argc - 1] = init_arg_value(n_args_total).c_str();
+        argv_vec[static_cast<std::size_t>(argc - 2)] = init_arg_flag_primary(n_args_total).c_str();
+        argv_vec[static_cast<std::size_t>(argc - 1)] = init_arg_value(n_args_total).c_str();
 
         argv = to_char_2d_array(argv_vec);
     }
