@@ -20,8 +20,8 @@ const argument_name arg_name_primary(primary_name);
 using sut_value_type = int;
 using sut_type = positional<sut_value_type>;
 
-constexpr std::string empty_str = "";
-constexpr std::string invalid_value_str = "invalid value";
+const std::string empty_str = "";
+const std::string invalid_value_str = "invalid value";
 
 constexpr sut_value_type default_value = 0;
 constexpr sut_value_type value_1 = 1;

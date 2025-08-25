@@ -1,4 +1,4 @@
-name: gcc
+name: GCC
 on:
   push:
     branches:

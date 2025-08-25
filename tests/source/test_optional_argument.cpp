@@ -26,8 +26,8 @@ using sut_value_type = int;
 using invalid_value_type = double;
 using sut_type = optional<sut_value_type>;
 
-constexpr std::string empty_str = "";
-constexpr std::string invalid_value_str = "invalid_value";
+const std::string empty_str = "";
+const std::string invalid_value_str = "invalid_value";
 
 constexpr sut_value_type arbitrary_value = 1;
 constexpr sut_value_type default_value = 0;
