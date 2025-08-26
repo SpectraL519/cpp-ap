@@ -7,12 +7,6 @@
 
 Command-line argument parser for C++20
 
-TODO:
-- documentation workflow should verify the version in MODULE.bazel
-- add instructions for usiong cpp-ap with bazel
-- cpp-ap demo should use `master` as the default branch
-- update cpp-ap-demo readme
-
 <br />
 
 <div align="center">

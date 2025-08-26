@@ -2,6 +2,7 @@
 
 - [Setting Up CPP-AP](#setting-up-cpp-ap)
   - [CMake Integration](#cmake-integration)
+  - [Bazel Build System]()
   - [Downloading the Library](#downloading-the-library)
 - [The Parser Class](#the-parser-class)
 - [Adding Arguments](#adding-arguments)
@@ -40,7 +41,7 @@ include(FetchContent)
 FetchContent_Declare(
     cpp-ap
     GIT_REPOSITORY https://github.com/SpectraL519/cpp-ap.git
-    GIT_TAG master # here you can specify the desired tag or branch
+    GIT_TAG master # here you can specify the desired tag or branch name
 )
 
 FetchContent_MakeAvailable(cpp-ap)
@@ -55,6 +56,37 @@ set_target_properties(my_project PROPERTIES
 
 # Link against the cpp-ap (v2) library
 target_link_libraries(my_project PRIVATE cpp-ap)
+```
+
+### Bazel Build System
+
+To use the `CPP-AP` in a [Bazel](https://bazel.build/) project add the following in the `MODULE.bazel` (or `WORKSPACE.bazel`) file:
+
+```bazel
+git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
+git_repository(
+    name = "cpp_ap",
+    remote = "https://github.com/SpectraL519/cpp-ap.git",
+    branch = "master", # here you can specify the desired tag or branch name
+)
+```
+
+And then add the `"@cpp_ap//:cpp_ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
+
+```bazel
+# BUILD.bazel
+
+cc_binary(
+    name = "my_app",
+    srcs = [
+        "application.cpp",
+    ],
+    includes = ["include"],
+    deps = ["@cpp_ap//:cpp_ap"],
+    cxxopts = ["-std=c++20"],
+    visibility = ["//visibility:public"],
+)
 ```
 
 ### Downloading the Library
