@@ -95,7 +95,7 @@ jobs:
         run: |
           cd cpp-ap-demo
           cmake -B build_cmake -DAP_TAG=${{ steps.branch-name.outputs.branch }}
-          cmake --build build_cmake/ --config Release
+          cmake --build build_cmake/ --config Release -j 4
 
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.15.0
