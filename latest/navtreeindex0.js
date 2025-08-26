@@ -177,10 +177,11 @@ var NAVTREEINDEX0 =
 "md_docs_2tutorial.html#autotoc_md4-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag":[2,3,1,2],
 "md_docs_2tutorial.html#autotoc_md5-choices---a-list-of-valid-argument-values":[2,3,0,4],
 "md_docs_2tutorial.html#autotoc_md6-value-actions---function-performed-after-parsing-an-arguments-value":[2,3,0,5],
+"md_docs_2tutorial.html#bazel-build-system":[2,0,1],
 "md_docs_2tutorial.html#cmake-integration":[2,0,0],
 "md_docs_2tutorial.html#common-parameters":[2,3,0],
 "md_docs_2tutorial.html#default-arguments":[2,5],
-"md_docs_2tutorial.html#downloading-the-library":[2,0,1],
+"md_docs_2tutorial.html#downloading-the-library":[2,0,2],
 "md_docs_2tutorial.html#examples":[2,8],
 "md_docs_2tutorial.html#parameters-specific-for-optional-arguments":[2,3,1],
 "md_docs_2tutorial.html#parsing-arguments":[2,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "structap_1_1detail_1_1argument__token.html":[5,0,0,3,3],
 "structap_1_1detail_1_1argument__token.html#a7034f0e9b84285970e1ec9050cc5f154":[5,0,0,3,3,3],
 "structap_1_1detail_1_1argument__token.html#a7be25792a0b86571b7d021b856e6251f":[5,0,0,3,3,1],
-"structap_1_1detail_1_1argument__token.html#a93bb5224c1238c99ee0d758b2599961d":[5,0,0,3,3,2],
-"structap_1_1detail_1_1argument__token.html#aa18491904fe3487a1c9bdd548cb7f7aa":[5,0,0,3,3,4]
+"structap_1_1detail_1_1argument__token.html#a93bb5224c1238c99ee0d758b2599961d":[5,0,0,3,3,2]
 };

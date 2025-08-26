@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.4.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -366,7 +366,7 @@ $(document).ready(function(){initNavTree('argument__parser_8hpp_source.html','')
 <div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>        <span class="keywordflow">try</span> {</div>
 <div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>            <span class="keywordflow">return</span> std::any_cast&lt;T&gt;(arg_value);</div>
 <div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>        }</div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>        <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::bad_any_cast&amp; err) {</div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>        <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::bad_any_cast&amp;) {</div>
 <div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>            <span class="keywordflow">throw</span> type_error::invalid_value_type(arg_opt-&gt;get().name(), <span class="keyword">typeid</span>(T));</div>
 <div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>        }</div>
 <div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>    }</div>
@@ -417,7 +417,7 @@ $(document).ready(function(){initNavTree('argument__parser_8hpp_source.html','')
 <div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>            );</div>
 <div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>            <span class="keywordflow">return</span> <a class="code hl_function" href="classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce">values</a>;</div>
 <div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>        }</div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>        <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::bad_any_cast&amp; err) {</div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>        <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::bad_any_cast&amp;) {</div>
 <div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>            <span class="keywordflow">throw</span> type_error::invalid_value_type(arg.name(), <span class="keyword">typeid</span>(T));</div>
 <div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>        }</div>
 <div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>    }</div>
@@ -906,7 +906,7 @@ $(document).ready(function(){initNavTree('argument__parser_8hpp_source.html','')
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="argument__parser_8hpp.html">argument_parser.hpp</a></li>
-    <li class="footer">Generated on Mon Aug 25 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Tue Aug 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

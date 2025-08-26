@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.4.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -98,6 +98,7 @@ $(document).ready(function(){initNavTree('md_docs_2tutorial.html',''); initResiz
 <div class="textblock"><p><a class="anchor" id="tutorial"></a></p><ul>
 <li><a class="el" href="md_docs_2tutorial.html#setting-up-cpp-ap">Setting Up CPP-AP</a><ul>
 <li><a class="el" href="md_docs_2tutorial.html#cmake-integration">CMake Integration</a></li>
+<li><a class="el" href="md_docs_2tutorial.html#bazel-build-system">Bazel Build System</a></li>
 <li><a class="el" href="md_docs_2tutorial.html#downloading-the-library">Downloading the Library</a></li>
 </ul>
 </li>
@@ -134,7 +135,7 @@ CMake Integration</h2>
 <div class="line">FetchContent_Declare(</div>
 <div class="line">    cpp-ap</div>
 <div class="line">    GIT_REPOSITORY https://github.com/SpectraL519/cpp-ap.git</div>
-<div class="line">    GIT_TAG master # here you can specify the desired tag or branch</div>
+<div class="line">    GIT_TAG master # here you can specify the desired tag or branch name</div>
 <div class="line">)</div>
 <div class="line"> </div>
 <div class="line">FetchContent_MakeAvailable(cpp-ap)</div>
@@ -148,7 +149,27 @@ CMake Integration</h2>
 <div class="line">)</div>
 <div class="line"> </div>
 <div class="line"># Link against the cpp-ap (v2) library</div>
-<div class="line">target_link_libraries(my_project PRIVATE cpp-ap-2)</div>
+<div class="line">target_link_libraries(my_project PRIVATE cpp-ap)</div>
+</div><!-- fragment --><h2><a class="anchor" id="bazel-build-system"></a>
+Bazel Build System</h2>
+<p>To use the <code>CPP-AP</code> in a <a href="https://bazel.build/">Bazel</a> project add the following in the <code>MODULE.bazel</code> (or <code>WORKSPACE.bazel</code>) file:</p>
+<div class="fragment"><div class="line">git_repository = use_repo_rule(&quot;@bazel_tools//tools/build_defs/repo:git.bzl&quot;, &quot;git_repository&quot;)</div>
+<div class="line"> </div>
+<div class="line">git_repository(</div>
+<div class="line">    name = &quot;cpp-ap&quot;,</div>
+<div class="line">    remote = &quot;https://github.com/SpectraL519/cpp-ap.git&quot;,</div>
+<div class="line">    branch = &quot;master&quot;, # here you can specify the desired tag or branch name</div>
+<div class="line">)</div>
+</div><!-- fragment --><p>And then add the <code>"@cpp-ap//:cpp-ap"</code> dependency for the target you want to use <code>CPP-AP</code> for by adding it to the <code>deps</code> list. For instance:</p>
+<div class="fragment"><div class="line"># BUILD.bazel</div>
+<div class="line">cc_binary(</div>
+<div class="line">    name = &quot;my_app&quot;,</div>
+<div class="line">    srcs = [&quot;application.cpp&quot;],</div>
+<div class="line">    includes = [&quot;include&quot;],</div>
+<div class="line">    deps = [&quot;@cpp-ap//:cpp-ap&quot;],</div>
+<div class="line">    cxxopts = [&quot;-std=c++20&quot;],</div>
+<div class="line">    visibility = [&quot;//visibility:public&quot;],</div>
+<div class="line">)</div>
 </div><!-- fragment --><h2><a class="anchor" id="downloading-the-library"></a>
 Downloading the Library</h2>
 <p>If you do not use CMake you can dowload the desired <a href="https://github.com/SpectraL519/cpp-ap/releases">library release</a>, extract it in a desired directory and simply add <code>&lt;cpp-ap-dir&gt;/include</code> to the include directories of your project.</p>
@@ -649,7 +670,7 @@ Parsing Arguments</h1>
 <div class="line"><span class="comment">./program --option --unknown-flag</span></div>
 <div class="line"><span class="comment">option: --unknown-flag</span></div>
 <div class="ttc" id="aclassap_1_1argument__parser_html_aabce061e6d7294e4b5b71c6e885fdabe"><div class="ttname"><a href="classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe">ap::argument_parser::try_parse_args</a></div><div class="ttdeci">void try_parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments and exits on error.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00291">argument_parser.hpp:291</a></div></div>
-</div><!-- fragment --><p>To do this add the following in you <code>CMakeLists.txt</code> file: </p><div class="fragment"><div class="line">target_compile_definitions(cpp-ap-2 PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)</div>
+</div><!-- fragment --><p>To do this add the following in you <code>CMakeLists.txt</code> file: </p><div class="fragment"><div class="line">target_compile_definitions(cpp-ap PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)</div>
 </div><!-- fragment --><p> or simply add: </p><div class="fragment"><div class="line"><span class="preprocessor">#define AP_UNKNOWN_FLAGS_AS_VALUES</span></div>
 </div><!-- fragment --><p> before the <code>#include &lt;<a class="el" href="argument__parser_8hpp.html" title="Main library header file. Defines the argument_parser class.">ap/argument_parser.hpp</a>&gt;</code> statement. </p>
 </blockquote>
@@ -809,7 +830,7 @@ Examples</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Aug 25 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Tue Aug 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

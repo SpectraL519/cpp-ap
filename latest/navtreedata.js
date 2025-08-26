@@ -44,6 +44,7 @@ var NAVTREE =
     [ "Tutorial", "md_docs_2tutorial.html", [
       [ "Setting Up CPP-AP", "md_docs_2tutorial.html#setting-up-cpp-ap", [
         [ "CMake Integration", "md_docs_2tutorial.html#cmake-integration", null ],
+        [ "Bazel Build System", "md_docs_2tutorial.html#bazel-build-system", null ],
         [ "Downloading the Library", "md_docs_2tutorial.html#downloading-the-library", null ]
       ] ],
       [ "The Parser Class", "md_docs_2tutorial.html#the-parser-class", null ],
@@ -97,7 +98,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"structap_1_1detail_1_1argument__token.html#ad236b3be16e4f60e5bf756bb6fb96696"
+"structap_1_1detail_1_1argument__token.html#aa18491904fe3487a1c9bdd548cb7f7aa"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
