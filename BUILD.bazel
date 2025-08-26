@@ -1,0 +1,7 @@
+cc_library(
+    name = "cpp-ap",
+    hdrs = glob(["include/**/*.hpp"]),
+    includes = ["include"],
+    cxxopts = ["-std=c++20"],
+    visibility = ["//visibility:public"],
+)

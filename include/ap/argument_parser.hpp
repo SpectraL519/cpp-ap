@@ -364,7 +364,7 @@ public:
         try {
             return std::any_cast<T>(arg_value);
         }
-        catch (const std::bad_any_cast& err) {
+        catch (const std::bad_any_cast&) {
             throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
         }
     }
@@ -425,7 +425,7 @@ public:
             );
             return values;
         }
-        catch (const std::bad_any_cast& err) {
+        catch (const std::bad_any_cast&) {
             throw type_error::invalid_value_type(arg.name(), typeid(T));
         }
     }

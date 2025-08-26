@@ -2,37 +2,55 @@ import argparse
 import re
 import sys
 from pathlib import Path
+from collections.abc import Iterable
 
 
-def get_cmake_version(cmake_path: Path):
+def get_cmake_version(cmake_path: Path) -> str:
     text = cmake_path.read_text()
     match = re.search(r'project\s*\([^\)]*VERSION\s+(\d+\.\d+\.\d+)', text, re.IGNORECASE)
     if match:
         return match.group(1)
-    raise ValueError(f"Could not find project version in {cmake_path}")
+    raise ValueError(f"[CMake] Could not find project version in {cmake_path}")
 
 
-def get_doxy_version(doxyfile_path: Path):
+def get_doxy_version(doxyfile_path: Path) -> str:
     text = doxyfile_path.read_text()
     match = re.search(r'^\s*PROJECT_NUMBER\s*=\s*("?)([\d\.]+)\1', text, re.MULTILINE)
     if match:
         return match.group(2)
-    raise ValueError(f"Could not find PROJECT_NUMBER in {doxyfile_path}")
+    raise ValueError(f"[Doxygen] Could not find PROJECT_NUMBER in {doxyfile_path}")
 
 
-def main(cmake: Path, doxygen: Path):
+def get_bazel_version(bazel_module_file_path: Path) -> str:
+    text = bazel_module_file_path.read_text()
+    match = re.search(r'\bversion\s*=\s*"(\d+\.\d+\.\d+)"', text)
+    if match:
+        return match.group(1)
+    raise ValueError(f"[Bazel] Could not find module version in {bazel_module_file_path}")
+
+
+def all_equal(items: Iterable) -> bool:
+    return len(set(items)) == 1
+
+
+def main(cmake: Path, doxygen: Path, bazel: Path):
     try:
-        cmake_version = get_cmake_version(cmake)
-        doxy_version = get_doxy_version(doxygen)
+        project_versions = {
+            "CMake": get_cmake_version(cmake),
+            "Doxygen": get_doxy_version(doxygen),
+            "Bazel": get_bazel_version(bazel)
+        }
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    if cmake_version != doxy_version:
-        print(f"Error: Version mismatch: CMakeLists.txt = {cmake_version}, Doxyfile = {doxy_version}", file=sys.stderr)
+
+    if not all_equal(project_versions.values()):
+        version_msg_entries = [f"{source}: {version}" for source, version in project_versions.items()]
+        print(f"Error: Project version mismatch:\n  {'\n  '.join(version_msg_entries)}", file=sys.stderr)
         sys.exit(1)
 
-    print(cmake_version) # print the version to stdout for shell capture
+    print(project_versions['CMake']) # print the version to stdout for shell capture
 
 
 if __name__ == "__main__":
@@ -49,7 +67,14 @@ if __name__ == "__main__":
         type=Path,
         default="Doxyfile",
         nargs=1,
-        help="Path to the doxygen config file"
+        help="Path to the Doxygen config file"
+    )
+    parser.add_argument(
+        "-b", "--bazel",
+        type=Path,
+        default="MODULE.bazel",
+        nargs=1,
+        help="Path to the Bazel module/workspace file"
     )
 
     main(**vars(parser.parse_args()))
