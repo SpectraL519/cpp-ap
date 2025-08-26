@@ -9,13 +9,15 @@ on:
       - cpp-ap-demo
       - include/**
       - CMakeLists.txt
+      - MODULE.bazel
+      - BUILD.bazel
   pull_request:
     branches:
       - master
 
 jobs:
-  build-demo:
-    name: Build cpp-ap-demo
+  build-demo-linux:
+    name: Build cpp-ap-demo (Linux)
     runs-on: ubuntu-24.04
 
     steps:
@@ -25,7 +27,7 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Sync submodules to HTTPS
+      - name: Sync submodules
         run: git submodule sync --recursive
 
       - name: Update submodules
@@ -40,9 +42,71 @@ jobs:
             echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build cpp-ap-demo
+      - name: Build cpp-ap-demo (CMake)
         run: |
           cd cpp-ap-demo
-          cmake -B build -DAP_TAG=${{ steps.branch-name.outputs.branch }}
-          cd build
-          make -j 4
+          cmake -B build_cmake -DAP_TAG=${{ steps.branch-name.outputs.branch }}
+          cmake --build build_cmake/ -j 4
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.15.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+
+      - name: Build cpp-ap-demo (Bazel)
+        run: |
+          cd cpp-ap-demo
+          BRANCH="${{ steps.branch-name.outputs.branch }}"
+          sed -i "s/branch = \".*\"/branch = \"$BRANCH\"/" MODULE.bazel
+          bazel build //:all_demos
+
+  build-demo-windows:
+    name: Build cpp-ap-demo (Windows)
+    runs-on: windows-2022
+
+    steps:
+      - name: Check out current branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Sync submodules
+        run: git submodule sync --recursive
+        shell: bash
+
+      - name: Update submodules
+        run: git submodule update --init --recursive
+        shell: bash
+
+      - name: Determine Current Branch
+        id: branch-name
+        run: |
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            "branch=${{ github.event.pull_request.head.ref }}" >> $env:GITHUB_OUTPUT
+          } else {
+            $branch = "${env:GITHUB_REF}".Replace("refs/heads/", "")
+            "branch=$branch" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Build cpp-ap-demo (CMake)
+        run: |
+          cd cpp-ap-demo
+          cmake -B build_cmake -DAP_TAG=${{ steps.branch-name.outputs.branch }}
+          cmake --build build_cmake/ --config Release -j 4
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.15.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+
+      - name: Build cpp-ap-demo (Bazel)
+        run: |
+          cd cpp-ap-demo
+          $BRANCH="${{ steps.branch-name.outputs.branch }}"
+          (Get-Content MODULE.bazel) -replace 'branch = ".*"', "branch = `"$BRANCH`"" | Set-Content MODULE.bazel
+          bazel build //:all_demos

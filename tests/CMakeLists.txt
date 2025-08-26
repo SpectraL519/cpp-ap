@@ -57,7 +57,7 @@ macro(add_doctest SOURCE_FILE)
     if(ARGS_COMPILE_DEFINITIONS)
         target_compile_definitions(${TEST_NAME} PRIVATE ${ARGS_COMPILE_DEFINITIONS})
     endif()
-    target_link_libraries(${TEST_NAME} PRIVATE doctest_main cpp-ap-2)
+    target_link_libraries(${TEST_NAME} PRIVATE doctest_main cpp-ap)
 
     # Register with CTest
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})

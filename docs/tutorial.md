@@ -2,6 +2,7 @@
 
 - [Setting Up CPP-AP](#setting-up-cpp-ap)
   - [CMake Integration](#cmake-integration)
+  - [Bazel Build System](#bazel-build-system)
   - [Downloading the Library](#downloading-the-library)
 - [The Parser Class](#the-parser-class)
 - [Adding Arguments](#adding-arguments)
@@ -40,7 +41,7 @@ include(FetchContent)
 FetchContent_Declare(
     cpp-ap
     GIT_REPOSITORY https://github.com/SpectraL519/cpp-ap.git
-    GIT_TAG master # here you can specify the desired tag or branch
+    GIT_TAG master # here you can specify the desired tag or branch name
 )
 
 FetchContent_MakeAvailable(cpp-ap)
@@ -54,7 +55,38 @@ set_target_properties(my_project PROPERTIES
 )
 
 # Link against the cpp-ap (v2) library
-target_link_libraries(my_project PRIVATE cpp-ap-2)
+target_link_libraries(my_project PRIVATE cpp-ap)
+```
+
+### Bazel Build System
+
+To use the `CPP-AP` in a [Bazel](https://bazel.build/) project add the following in the `MODULE.bazel` (or `WORKSPACE.bazel`) file:
+
+```bazel
+git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
+git_repository(
+    name = "cpp-ap",
+    remote = "https://github.com/SpectraL519/cpp-ap.git",
+    tag = "<version-name>" # here you can declare the desired CPP-AP version
+)
+```
+
+> [!IMPORTANT]
+> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) DO NOT support building with Bazel.
+
+And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
+
+```bazel
+# BUILD.bazel
+cc_binary(
+    name = "my_app",
+    srcs = ["application.cpp"],
+    includes = ["include"],
+    deps = ["@cpp-ap//:cpp-ap"],
+    cxxopts = ["-std=c++20"],
+    visibility = ["//visibility:public"],
+)
 ```
 
 ### Downloading the Library
@@ -657,7 +689,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 >
 > To do this add the following in you `CMakeLists.txt` file:
 > ```cmake
-> target_compile_definitions(cpp-ap-2 PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
+> target_compile_definitions(cpp-ap PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
 > ```
 > or simply add:
 > ```cpp

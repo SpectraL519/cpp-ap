@@ -1,5 +1,5 @@
 <h1>
-  CPP-AP-2
+  CPP-AP
   <a href="https://github.com/SpectraL519/cpp-ap" target="_blank">
     <i class="fa fa-github" style="font-size: 1.3em; margin-left: 6px; position: relative; top: -0.08em;"></i>
   </a>
@@ -49,6 +49,7 @@ Command-line argument parser for C++20
 - [Tutorial](/docs/tutorial.md#tutorial)
   - [Setting Up CPP-AP](/docs/tutorial.md#setting-up-cpp-ap)
     - [CMake Integration](/docs/tutorial.md#cmake-integration)
+    - [Bazel Build System](/docs/tutorial.md#bazel-build-system)
     - [Downloading the Library](/docs/tutorial.md#downloading-the-library)
   - [The Parser Class](/docs/tutorial.md#the-parser-class)
   - [Adding Arguments](/docs/tutorial.md#adding-arguments)
