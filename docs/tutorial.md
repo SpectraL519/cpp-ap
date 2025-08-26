@@ -2,7 +2,7 @@
 
 - [Setting Up CPP-AP](#setting-up-cpp-ap)
   - [CMake Integration](#cmake-integration)
-  - [Bazel Build System]()
+  - [Bazel Build System](#bazel-build-system)
   - [Downloading the Library](#downloading-the-library)
 - [The Parser Class](#the-parser-class)
 - [Adding Arguments](#adding-arguments)
@@ -76,12 +76,9 @@ And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use 
 
 ```bazel
 # BUILD.bazel
-
 cc_binary(
     name = "my_app",
-    srcs = [
-        "application.cpp",
-    ],
+    srcs = ["application.cpp"],
     includes = ["include"],
     deps = ["@cpp-ap//:cpp-ap"],
     cxxopts = ["-std=c++20"],
