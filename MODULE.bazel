@@ -1,4 +1,4 @@
 module(
-    name = "cpp_ap",
+    name = "cpp-ap",
     version = "2.5.0",
 )

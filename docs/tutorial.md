@@ -66,13 +66,13 @@ To use the `CPP-AP` in a [Bazel](https://bazel.build/) project add the following
 git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
-    name = "cpp_ap",
+    name = "cpp-ap",
     remote = "https://github.com/SpectraL519/cpp-ap.git",
     branch = "master", # here you can specify the desired tag or branch name
 )
 ```
 
-And then add the `"@cpp_ap//:cpp_ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
+And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
 
 ```bazel
 # BUILD.bazel
@@ -83,7 +83,7 @@ cc_binary(
         "application.cpp",
     ],
     includes = ["include"],
-    deps = ["@cpp_ap//:cpp_ap"],
+    deps = ["@cpp-ap//:cpp-ap"],
     cxxopts = ["-std=c++20"],
     visibility = ["//visibility:public"],
 )
