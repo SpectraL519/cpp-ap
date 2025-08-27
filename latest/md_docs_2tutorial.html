@@ -158,9 +158,12 @@ Bazel Build System</h2>
 <div class="line">git_repository(</div>
 <div class="line">    name = &quot;cpp-ap&quot;,</div>
 <div class="line">    remote = &quot;https://github.com/SpectraL519/cpp-ap.git&quot;,</div>
-<div class="line">    branch = &quot;master&quot;, # here you can specify the desired tag or branch name</div>
+<div class="line">    tag = &quot;&lt;version-name&gt;&quot; # here you can declare the desired CPP-AP version</div>
 <div class="line">)</div>
-</div><!-- fragment --><p>And then add the <code>"@cpp-ap//:cpp-ap"</code> dependency for the target you want to use <code>CPP-AP</code> for by adding it to the <code>deps</code> list. For instance:</p>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span> CPP-AP versions older than <a href="https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0">2.5.0</a> DO NOT support building with Bazel. </p>
+</blockquote>
+<p>And then add the <code>"@cpp-ap//:cpp-ap"</code> dependency for the target you want to use <code>CPP-AP</code> for by adding it to the <code>deps</code> list. For instance:</p>
 <div class="fragment"><div class="line"># BUILD.bazel</div>
 <div class="line">cc_binary(</div>
 <div class="line">    name = &quot;my_app&quot;,</div>
@@ -830,7 +833,7 @@ Examples</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Aug 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Wed Aug 27 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
