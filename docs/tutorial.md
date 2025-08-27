@@ -68,9 +68,12 @@ git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "g
 git_repository(
     name = "cpp-ap",
     remote = "https://github.com/SpectraL519/cpp-ap.git",
-    branch = "master", # here you can specify the desired tag or branch name
+    tag = "<version-name>" # here you can declare the desired CPP-AP version
 )
 ```
+
+> [!IMPORTANT]
+> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) DO NOT support building with Bazel.
 
 And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
 
