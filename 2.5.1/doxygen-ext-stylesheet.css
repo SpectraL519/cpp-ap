@@ -1,0 +1,9 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+.fa {
+  vertical-align: middle;
+  transition: transform 0.2s;
+}
+.fa:hover {
+  transform: scale(1.2);
+}

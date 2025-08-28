@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['callable_5ftype_0',['callable_type',['../utility_8hpp.html#a1cd5aefc2b22fb2e191c8fe57dc38288',1,'ap::action::detail']]],
+  ['can_20be_20set_20as_20a_3a_1',['1. &lt;tt&gt;nargs&lt;/tt&gt; - Sets the allowed number of values to be parsed for an argument. This can be set as a:',['../md_docs_2tutorial.html#autotoc_md1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a',1,'']]],
+  ['can_20specify_20on_20flag_20actions_20which_20are_20executed_20immediately_20after_20parsing_20an_20argument_20s_20flag_2',['4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument&apos;s flag.',['../md_docs_2tutorial.html#autotoc_md4-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag',1,'']]],
+  ['check_5ffile_5fexists_3',['check_file_exists',['../predefined__actions_8hpp.html#aefb32a2fcf13898aaf9f9beaa1ef304e',1,'ap::action']]],
+  ['choices_4',['choices',['../classap_1_1argument_1_1optional.html#ab897ebddd5a2186fae87418077b443cd',1,'ap::argument::optional::choices()'],['../classap_1_1argument_1_1positional.html#a946613fecd20431b6f4e14781bf264ee',1,'ap::argument::positional::choices(std::initializer_list&lt; value_type &gt; choices) noexcept'],['../classap_1_1argument_1_1positional.html#a3dc79550ed1414e0819765e810cdf012',1,'ap::argument::positional::choices(const CR &amp;choices) noexcept'],['../classap_1_1argument_1_1optional.html#a51527d92c82419aa49d9c2211a0284ea',1,'ap::argument::optional::choices()']]],
+  ['choices_20tt_20a_20list_20of_20valid_20argument_20values_5',['5. &lt;tt&gt;choices&lt;/tt&gt; - A list of valid argument values.',['../md_docs_2tutorial.html#autotoc_md5-choices---a-list-of-valid-argument-values',1,'']]],
+  ['class_6',['The Parser Class',['../md_docs_2tutorial.html#the-parser-class',1,'']]],
+  ['class_20instance_7',['1. &lt;tt&gt;help&lt;/tt&gt; - The argument&apos;s description which will be printed when printing the parser class instance.',['../md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance',1,'']]],
+  ['cmake_20integration_8',['CMake Integration',['../md_docs_2tutorial.html#cmake-integration',1,'']]],
+  ['command_20line_9',['3. &lt;tt&gt;bypass_required&lt;/tt&gt; - If this option is set for an argument, the &lt;tt&gt;required&lt;/tt&gt; option for other arguments will be discarded if the bypassing argument is used in the command-line.',['../md_docs_2tutorial.html#autotoc_md3-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line',1,'']]],
+  ['command_20line_20an_20exception_20will_20be_20thrown_10',['2. &lt;tt&gt;required&lt;/tt&gt; - If this option is set for an argument and it&apos;s value is not passed in the command-line, an exception will be thrown.',['../md_docs_2tutorial.html#autotoc_md2-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown',1,'']]],
+  ['command_20line_20but_20no_20values_20follow_11',['2. &lt;tt&gt;implicit_value&lt;/tt&gt; - A value which will be set for an argument if only it&apos;s flag is parsed from the command-line but no values follow.',['../md_docs_2tutorial.html#autotoc_md2-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow',1,'']]],
+  ['common_20parameters_12',['Common Parameters',['../md_docs_2tutorial.html#common-parameters',1,'']]],
+  ['compatibilty_13',['Compiler Compatibilty',['../index.html#compiler-compatibilty',1,'']]],
+  ['compiler_20compatibilty_14',['Compiler Compatibilty',['../index.html#compiler-compatibilty',1,'']]],
+  ['concepts_2ehpp_15',['concepts.hpp',['../concepts_8hpp.html',1,'']]],
+  ['contains_5fwhitespaces_16',['contains_whitespaces',['../str__utility_8hpp.html#a6749a728cc77fc609217b81f73f4d5f4',1,'ap::detail']]],
+  ['convertible_17',['convertible',['../concepts_8hpp.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3',1,'ap::detail']]],
+  ['count_18',['count',['../classap_1_1detail_1_1argument__base.html#a43fff665c9ed0098adf83cb6b3074b75',1,'ap::detail::argument_base::count()'],['../classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325',1,'ap::argument_parser::count()']]],
+  ['count_5ftype_19',['count_type',['../classap_1_1argument_1_1optional.html#acec142f46ef9d5af8d20ed1de560e6da',1,'ap::argument::optional']]],
+  ['cpp_20ap_20',['cpp ap',['../index.html',1,'CPP-AP'],['../md_docs_2tutorial.html#setting-up-cpp-ap',1,'Setting Up CPP-AP']]]
+];
