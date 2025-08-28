@@ -54,7 +54,7 @@ set_target_properties(my_project PROPERTIES
     CXX_STANDARD_REQUIRED YES
 )
 
-# Link against the cpp-ap (v2) library
+# Link against the cpp-ap library
 target_link_libraries(my_project PRIVATE cpp-ap)
 ```
 
