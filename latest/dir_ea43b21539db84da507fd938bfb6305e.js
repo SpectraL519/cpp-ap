@@ -5,5 +5,6 @@ var dir_ea43b21539db84da507fd938bfb6305e =
     [ "argument_name.hpp", "argument__name_8hpp.html", "argument__name_8hpp" ],
     [ "argument_token.hpp", "argument__token_8hpp.html", "argument__token_8hpp" ],
     [ "concepts.hpp", "concepts_8hpp.html", "concepts_8hpp" ],
-    [ "str_utility.hpp", "str__utility_8hpp.html", "str__utility_8hpp" ]
+    [ "str_utility.hpp", "str__utility_8hpp.html", "str__utility_8hpp" ],
+    [ "typing_utility.hpp", "typing__utility_8hpp_source.html", null ]
 ];
