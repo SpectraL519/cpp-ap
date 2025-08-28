@@ -8,6 +8,7 @@
 
 #include "ap/detail/argument_name.hpp"
 #include "ap/detail/str_utility.hpp"
+#include "ap/detail/typing_utility.hpp"
 
 #include <format>
 
@@ -127,6 +128,15 @@ struct type_error : public argument_parser_exception {
             "Invalid value type specified for argument [{}] = {}.",
             arg_name.str(),
             value_type.name()
+        ));
+    }
+
+    template <typename T>
+    static type_error invalid_value_type(const detail::argument_name& arg_name) noexcept {
+        return type_error(std::format(
+            "Invalid value type specified for argument [{}] = {}.",
+            arg_name.str(),
+            detail::get_demangled_type_name<T>()
         ));
     }
 };

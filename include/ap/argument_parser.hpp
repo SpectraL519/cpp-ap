@@ -365,7 +365,7 @@ public:
             return std::any_cast<T>(arg_value);
         }
         catch (const std::bad_any_cast&) {
-            throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
+            throw type_error::invalid_value_type<T>(arg_opt->get().name());
         }
     }
 
@@ -393,7 +393,7 @@ public:
             return T{std::forward<U>(fallback_value)};
         }
         catch (const std::bad_any_cast&) {
-            throw type_error::invalid_value_type(arg_opt->get().name(), typeid(T));
+            throw type_error::invalid_value_type<T>(arg_opt->get().name());
         }
     }
 
@@ -426,7 +426,7 @@ public:
             return values;
         }
         catch (const std::bad_any_cast&) {
-            throw type_error::invalid_value_type(arg.name(), typeid(T));
+            throw type_error::invalid_value_type<T>(arg.name());
         }
     }
 

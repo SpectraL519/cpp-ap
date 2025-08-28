@@ -6,6 +6,10 @@
 *.exe
 Testing/
 
+# bazel files
+bazel-*
+*.bazel.lock
+
 # documentation files
 /documentation
 
