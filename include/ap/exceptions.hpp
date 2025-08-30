@@ -131,12 +131,12 @@ struct type_error : public argument_parser_exception {
         ));
     }
 
-    template <typename T>
+    template <typename InvalidType>
     static type_error invalid_value_type(const detail::argument_name& arg_name) noexcept {
         return type_error(std::format(
             "Invalid value type specified for argument [{}] = {}.",
             arg_name.str(),
-            detail::get_demangled_type_name<T>()
+            detail::get_demangled_type_name<InvalidType>()
         ));
     }
 };
