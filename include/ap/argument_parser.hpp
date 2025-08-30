@@ -879,15 +879,18 @@ private:
      * @param args The argument list to print.
      */
     void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
+        auto visible_args =
+            std::views::filter(args, [](const auto& arg) { return not arg->is_hidden(); });
+
         if (verbose) {
-            for (const auto& arg : args)
+            for (const auto& arg : visible_args)
                 os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
             descriptors.reserve(args.size());
 
-            for (const auto& arg : args)
+            for (const auto& arg : visible_args)
                 descriptors.emplace_back(arg->desc(verbose));
 
             std::size_t max_arg_name_length = 0ull;

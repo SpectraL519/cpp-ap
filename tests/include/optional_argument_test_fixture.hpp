@@ -109,6 +109,11 @@ struct optional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
+    [[nodiscard]] bool is_hidden(const optional<T>& arg) const {
+        return arg.is_hidden();
+    }
+
+    template <c_argument_value_type T>
     [[nodiscard]] bool is_required(const optional<T>& arg) const {
         return arg.is_required();
     }

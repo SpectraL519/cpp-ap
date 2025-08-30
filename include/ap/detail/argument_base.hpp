@@ -43,6 +43,11 @@ protected:
         return this->_help_msg;
     }
 
+    /// @return `true` if the argument is hidden, `false` otherwise
+    [[nodiscard]] bool is_hidden() const noexcept {
+        return this->_hidden;
+    }
+
     /// @return `true` if the argument is required, `false` otherwise
     [[nodiscard]] bool is_required() const noexcept {
         return this->_required;
@@ -101,6 +106,7 @@ protected:
 
     bool _required : 1;
     bool _bypass_required : 1 = false;
+    bool _hidden : 1 = false;
 };
 
 /**

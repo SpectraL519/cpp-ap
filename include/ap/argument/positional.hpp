@@ -60,10 +60,20 @@ public:
     }
 
     /**
-     * @brief Set the `required` flag of the positional argument
-     * @param r The parameter value.
+     * @brief Set the `hidden` attribute for the positional argument.
+     * @param h The attribute value.
      * @return Reference to the positional argument.
-     * @attention Setting the `required` parameter to true disables the `bypass_required` flag.
+     */
+    positional& hidden(const bool h = true) noexcept {
+        this->_hidden = h;
+        return *this;
+    }
+
+    /**
+     * @brief Set the `required` attribute of the positional argument
+     * @param r The attribute value.
+     * @return Reference to the positional argument.
+     * @attention Setting the `required` attribute to true disables the `bypass_required` attribute.
      */
     positional& required(const bool r = true) noexcept {
         this->_required = r;
@@ -73,10 +83,10 @@ public:
     }
 
     /**
-     * @brief Enable/disable bypassing the `required` flag for the positional argument.
-     * @param br The parameter value.
+     * @brief Enable/disable bypassing the `required` attributeattribute for the positional argument.
+     * @param br The attribute value.
      * @return Reference to the positional argument.
-     * @attention Setting the `bypass_required` parameter to true disables the `required` flag.
+     * @attention Setting the `bypass_required` attribute to true disables the `required` attribute.
      */
     positional& bypass_required(const bool br = true) noexcept {
         this->_bypass_required = br;
@@ -118,7 +128,7 @@ public:
      * @brief Set the default value for the positional argument.
      * @param default_value The default value to set.
      * @return Reference to the positional argument.
-     * @attention Setting the default value disables the `required` flag.
+     * @attention Setting the default value disables the `required` attribute.
      */
     positional& default_value(const std::convertible_to<value_type> auto& default_value) noexcept {
         this->_default_value = std::make_any<value_type>(default_value);
