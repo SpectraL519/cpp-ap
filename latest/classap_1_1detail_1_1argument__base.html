@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.2</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -124,6 +124,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a76bcb06030370fc7aa4098785cd4074f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1524b68c9cf9a7cd22400d7013b4ec9" id="r_ac1524b68c9cf9a7cd22400d7013b4ec9"><td class="memItemLeft" align="right" valign="top">const std::optional&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ac1524b68c9cf9a7cd22400d7013b4ec9">help</a> () const noexcept</td></tr>
 <tr class="separator:ac1524b68c9cf9a7cd22400d7013b4ec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a545d421800cbae2968be28befe895e41" id="r_a545d421800cbae2968be28befe895e41"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a545d421800cbae2968be28befe895e41">is_hidden</a> () const noexcept</td></tr>
+<tr class="separator:a545d421800cbae2968be28befe895e41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad463f1cc48791cfcc50374433d11a6" id="r_a3ad463f1cc48791cfcc50374433d11a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a3ad463f1cc48791cfcc50374433d11a6">is_required</a> () const noexcept</td></tr>
 <tr class="separator:a3ad463f1cc48791cfcc50374433d11a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95de6f34fbad86c4eff854b243764141" id="r_a95de6f34fbad86c4eff854b243764141"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a95de6f34fbad86c4eff854b243764141">bypass_required_enabled</a> () const noexcept</td></tr>
@@ -161,6 +163,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a731038fe58bf6fd6054d01b63e2973bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5adf5895f5fcbfb44c3b7a7237301c04" id="r_a5adf5895f5fcbfb44c3b7a7237301c04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a5adf5895f5fcbfb44c3b7a7237301c04">_bypass_required</a>: 1 = false</td></tr>
 <tr class="separator:a5adf5895f5fcbfb44c3b7a7237301c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39bb3a51d7623b04aaed278b625e9d64" id="r_a39bb3a51d7623b04aaed278b625e9d64"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a39bb3a51d7623b04aaed278b625e9d64">_hidden</a>: 1 = false</td></tr>
+<tr class="separator:a39bb3a51d7623b04aaed278b625e9d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -236,7 +240,7 @@ Friends</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if required argument bypassing is enabled for the argument, <code>false</code> otherwise. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Required argument bypassing is enabled only when both <code>required</code> and <code>bypass_required</code> flags are set to <code>true</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00055">55</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00060">60</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -379,6 +383,34 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="a545d421800cbae2968be28befe895e41" name="a545d421800cbae2968be28befe895e41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a545d421800cbae2968be28befe895e41">&#9670;&#160;</a></span>is_hidden()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ap::detail::argument_base::is_hidden </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is hidden, <code>false</code> otherwise </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00047">47</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a3ad463f1cc48791cfcc50374433d11a6" name="a3ad463f1cc48791cfcc50374433d11a6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3ad463f1cc48791cfcc50374433d11a6">&#9670;&#160;</a></span>is_required()</h2>
 
@@ -403,7 +435,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is required, <code>false</code> otherwise </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00047">47</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00052">52</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -648,7 +680,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00103">103</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00108">108</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -672,7 +704,31 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00100">100</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00105">105</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a39bb3a51d7623b04aaed278b625e9d64" name="a39bb3a51d7623b04aaed278b625e9d64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39bb3a51d7623b04aaed278b625e9d64">&#9670;&#160;</a></span>_hidden</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ap::detail::argument_base::_hidden</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00109">109</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -696,7 +752,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00099">99</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00104">104</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -720,7 +776,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00102">102</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00107">107</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -733,7 +789,7 @@ Friends</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="classap_1_1detail_1_1argument__base.html">argument_base</a></li>
-    <li class="footer">Generated on Thu Aug 28 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Sat Aug 30 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

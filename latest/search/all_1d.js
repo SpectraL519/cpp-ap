@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7eargument_5fname_0',['~argument_name',['../structap_1_1detail_1_1argument__name.html#a8c1f07ee2487e0d4da11bf3b5da8d217',1,'ap::detail::argument_name']]]
+  ['you_20can_20specify_20on_20flag_20actions_20which_20are_20executed_20immediately_20after_20parsing_20an_20argument_20s_20flag_0',['4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument&apos;s flag.',['../md_docs_2tutorial.html#autotoc_md4-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag',1,'']]]
 ];

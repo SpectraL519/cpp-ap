@@ -6,6 +6,7 @@ var classap_1_1detail_1_1argument__base =
     [ "has_parsed_values", "classap_1_1detail_1_1argument__base.html#ae84bd6fb3e9606ff913edd0fddf7fba5", null ],
     [ "has_value", "classap_1_1detail_1_1argument__base.html#a10825056535c3408a912c009c91c86d5", null ],
     [ "help", "classap_1_1detail_1_1argument__base.html#ac1524b68c9cf9a7cd22400d7013b4ec9", null ],
+    [ "is_hidden", "classap_1_1detail_1_1argument__base.html#a545d421800cbae2968be28befe895e41", null ],
     [ "is_required", "classap_1_1detail_1_1argument__base.html#a3ad463f1cc48791cfcc50374433d11a6", null ],
     [ "is_used", "classap_1_1detail_1_1argument__base.html#a48f96cf9e7d27a402facd21e244e7996", null ],
     [ "mark_used", "classap_1_1detail_1_1argument__base.html#aebb8ac9d4a60fe042daa8b54b4f6de28", null ],

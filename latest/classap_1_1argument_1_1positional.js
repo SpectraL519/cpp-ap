@@ -8,6 +8,7 @@ var classap_1_1argument_1_1positional =
     [ "choices", "classap_1_1argument_1_1positional.html#a946613fecd20431b6f4e14781bf264ee", null ],
     [ "default_value", "classap_1_1argument_1_1positional.html#a3690c688737b29c6a682a8655ca03fd5", null ],
     [ "help", "classap_1_1argument_1_1positional.html#a7ff81e429badff84c4e39fe9ca323918", null ],
+    [ "hidden", "classap_1_1argument_1_1positional.html#a86500dfec5e90d6ac183a950e02133ed", null ],
     [ "operator==", "classap_1_1argument_1_1positional.html#a2dd36fe1f755c75e2671f69793afa15e", null ],
     [ "required", "classap_1_1argument_1_1positional.html#a18c89cdab6834e5689e256d05e0a2dbc", null ],
     [ "::ap::argument_parser", "classap_1_1argument_1_1positional.html#a0b52bbe6b10568d9ee2e916c4b4c351e", null ]

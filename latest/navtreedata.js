@@ -52,11 +52,12 @@ var NAVTREE =
       [ "Argument Parameters", "md_docs_2tutorial.html#argument-parameters", [
         [ "Common Parameters", "md_docs_2tutorial.html#common-parameters", [
           [ "1. <tt>help</tt> - The argument's description which will be printed when printing the parser class instance.", "md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance", null ],
-          [ "2. <tt>required</tt> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.", "md_docs_2tutorial.html#autotoc_md2-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown", null ],
-          [ "3. <tt>bypass_required</tt> - If this option is set for an argument, the <tt>required</tt> option for other arguments will be discarded if the bypassing argument is used in the command-line.", "md_docs_2tutorial.html#autotoc_md3-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line", null ],
-          [ "4. <tt>default_value</tt> - The default value for an argument which will be used if no values for this argument are parsed", "md_docs_2tutorial.html#autotoc_md4-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed", null ],
-          [ "5. <tt>choices</tt> - A list of valid argument values.", "md_docs_2tutorial.html#autotoc_md5-choices---a-list-of-valid-argument-values", null ],
-          [ "6. Value actions - Function performed after parsing an argument's value.", "md_docs_2tutorial.html#autotoc_md6-value-actions---function-performed-after-parsing-an-arguments-value", null ]
+          [ "2. <tt>hidden</tt> - If this option is set for an argument, then it will not be included in the program description.", "md_docs_2tutorial.html#autotoc_md2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description", null ],
+          [ "3. <tt>required</tt> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.", "md_docs_2tutorial.html#autotoc_md3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown", null ],
+          [ "4. <tt>bypass_required</tt> - If this option is set for an argument, the <tt>required</tt> option for other arguments will be discarded if the bypassing argument is used in the command-line.", "md_docs_2tutorial.html#autotoc_md4-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line", null ],
+          [ "5. <tt>default_value</tt> - The default value for an argument which will be used if no values for this argument are parsed", "md_docs_2tutorial.html#autotoc_md5-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed", null ],
+          [ "6. <tt>choices</tt> - A list of valid argument values.", "md_docs_2tutorial.html#autotoc_md6-choices---a-list-of-valid-argument-values", null ],
+          [ "7. Value actions - Function performed after parsing an argument's value.", "md_docs_2tutorial.html#autotoc_md7-value-actions---function-performed-after-parsing-an-arguments-value", null ]
         ] ],
         [ "Parameters Specific for Optional Arguments", "md_docs_2tutorial.html#parameters-specific-for-optional-arguments", [
           [ "1. <tt>nargs</tt> - Sets the allowed number of values to be parsed for an argument. This can be set as a:", "md_docs_2tutorial.html#autotoc_md1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a", null ],
@@ -98,7 +99,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"structap_1_1detail_1_1argument__token.html#aa18491904fe3487a1c9bdd548cb7f7aa"
+"structap_1_1detail_1_1argument__token.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

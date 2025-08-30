@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['m_5fany_0',['m_any',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43',1,'ap::detail::argument_name']]],
-  ['m_5fprimary_1',['m_primary',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea1259d2e32ec8785dba837d4009bbab15',1,'ap::detail::argument_name']]],
-  ['m_5fsecondary_2',['m_secondary',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea897ae212b5ff9c86b311d0b062310e1c',1,'ap::detail::argument_name']]],
-  ['mark_5fused_3',['mark_used',['../classap_1_1detail_1_1argument__base.html#aebb8ac9d4a60fe042daa8b54b4f6de28',1,'ap::detail::argument_base']]],
-  ['match_4',['match',['../structap_1_1detail_1_1argument__name.html#addd769d97a515df50970c6afd0797e98',1,'ap::detail::argument_name::match(std::string_view arg_name, const match_type m_type=m_any) const noexcept'],['../structap_1_1detail_1_1argument__name.html#a191cdc047ad5b5c6da5e0c47c1b35913',1,'ap::detail::argument_name::match(const argument_name &amp;arg_name, const match_type m_type=m_any) const noexcept']]],
-  ['match_5fprimary_5',['match_primary',['../structap_1_1detail_1_1argument__name.html#ad71e815a3804f738827a49f18dd9832e',1,'ap::detail::argument_name']]],
-  ['match_5fsecondary_6',['match_secondary',['../structap_1_1detail_1_1argument__name.html#a60c9827389b08281c61a743a52688764',1,'ap::detail::argument_name']]],
-  ['match_5ftype_7',['match_type',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce',1,'ap::detail::argument_name']]],
-  ['mit_20license_8',['MIT License',['../md_LICENSE.html',1,'']]],
-  ['modify_9',['modify',['../structap_1_1action__type_1_1modify.html',1,'ap::action_type']]],
-  ['more_5fthan_10',['more_than',['../classap_1_1nargs_1_1range.html#ab078ae071e8704220544d6e4c9f7bec1',1,'ap::nargs::range::more_than'],['../range_8hpp.html#a65d4d5df036937ee7c8b144088aefc19',1,'ap::nargs::more_than()']]]
+  ['leq_0',['leq',['../predefined__actions_8hpp.html#a07713e4234743c060de4a55740ee7227',1,'ap::action']]],
+  ['less_5fthan_1',['less_than',['../classap_1_1nargs_1_1range.html#aa0c7787307b5b4bc46b6136a69b95d4c',1,'ap::nargs::range::less_than'],['../range_8hpp.html#a85fd0002d7e46fe37637e9811caa2f42',1,'ap::nargs::less_than()']]],
+  ['library_2',['Downloading the Library',['../md_docs_2tutorial.html#downloading-the-library',1,'']]],
+  ['license_3',['license',['../index.html#license',1,'License'],['../md_LICENSE.html',1,'MIT License']]],
+  ['line_4',['4. &lt;tt&gt;bypass_required&lt;/tt&gt; - If this option is set for an argument, the &lt;tt&gt;required&lt;/tt&gt; option for other arguments will be discarded if the bypassing argument is used in the command-line.',['../md_docs_2tutorial.html#autotoc_md4-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line',1,'']]],
+  ['line_20an_20exception_20will_20be_20thrown_5',['3. &lt;tt&gt;required&lt;/tt&gt; - If this option is set for an argument and it&apos;s value is not passed in the command-line, an exception will be thrown.',['../md_docs_2tutorial.html#autotoc_md3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown',1,'']]],
+  ['line_20but_20no_20values_20follow_6',['2. &lt;tt&gt;implicit_value&lt;/tt&gt; - A value which will be set for an argument if only it&apos;s flag is parsed from the command-line but no values follow.',['../md_docs_2tutorial.html#autotoc_md2-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow',1,'']]],
+  ['list_7',['Todo List',['../todo.html',1,'']]],
+  ['list_20of_20valid_20argument_20values_8',['6. &lt;tt&gt;choices&lt;/tt&gt; - A list of valid argument values.',['../md_docs_2tutorial.html#autotoc_md6-choices---a-list-of-valid-argument-values',1,'']]],
+  ['lookup_5ffailure_9',['lookup_failure',['../structap_1_1lookup__failure.html',1,'ap']]],
+  ['lt_10',['lt',['../predefined__actions_8hpp.html#ab516a7a6f3372fd13a05fe9f450533ab',1,'ap::action']]]
 ];

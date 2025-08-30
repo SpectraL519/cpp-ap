@@ -1,12 +1,14 @@
 var searchData=
 [
-  ['name_0',['name',['../classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f',1,'ap::detail::argument_base']]],
-  ['nargs_1',['nargs',['../classap_1_1argument_1_1optional.html#a9afbe48044e689c917740b9175c43c9c',1,'ap::argument::optional::nargs(const nargs::range &amp;range) noexcept'],['../classap_1_1argument_1_1optional.html#ae82d427083ea3f75ea1520a53139c27d',1,'ap::argument::optional::nargs(const count_type n) noexcept'],['../classap_1_1argument_1_1optional.html#aa9ec0a4a6e9da14fc9a7726e3bb19046',1,'ap::argument::optional::nargs(const count_type lower_bound, const count_type upper_bound) noexcept']]],
-  ['nargs_20tt_20sets_20the_20allowed_20number_20of_20values_20to_20be_20parsed_20for_20an_20argument_20this_20can_20be_20set_20as_20a_3a_2',['1. &lt;tt&gt;nargs&lt;/tt&gt; - Sets the allowed number of values to be parsed for an argument. This can be set as a:',['../md_docs_2tutorial.html#autotoc_md1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a',1,'']]],
-  ['no_20values_20follow_3',['2. &lt;tt&gt;implicit_value&lt;/tt&gt; - A value which will be set for an argument if only it&apos;s flag is parsed from the command-line but no values follow.',['../md_docs_2tutorial.html#autotoc_md2-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow',1,'']]],
-  ['no_20values_20for_20this_20argument_20are_20parsed_4',['4. &lt;tt&gt;default_value&lt;/tt&gt; - The default value for an argument which will be used if no values for this argument are parsed',['../md_docs_2tutorial.html#autotoc_md4-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed',1,'']]],
-  ['not_20passed_20in_20the_20command_20line_20an_20exception_20will_20be_20thrown_5',['2. &lt;tt&gt;required&lt;/tt&gt; - If this option is set for an argument and it&apos;s value is not passed in the command-line, an exception will be thrown.',['../md_docs_2tutorial.html#autotoc_md2-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown',1,'']]],
-  ['notes_6',['Dev Notes',['../md_docs_2dev__notes.html',1,'']]],
-  ['number_20of_20values_20to_20be_20parsed_20for_20an_20argument_20this_20can_20be_20set_20as_20a_3a_7',['1. &lt;tt&gt;nargs&lt;/tt&gt; - Sets the allowed number of values to be parsed for an argument. This can be set as a:',['../md_docs_2tutorial.html#autotoc_md1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a',1,'']]],
-  ['nvalues_5fordering_8',['nvalues_ordering',['../classap_1_1detail_1_1argument__base.html#a20479ca0a1a18ca3c1fc6ee54ce8352e',1,'ap::detail::argument_base']]]
+  ['m_5fany_0',['m_any',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea073c73b802ccd3492bdc5f26beff9a43',1,'ap::detail::argument_name']]],
+  ['m_5fprimary_1',['m_primary',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea1259d2e32ec8785dba837d4009bbab15',1,'ap::detail::argument_name']]],
+  ['m_5fsecondary_2',['m_secondary',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909cea897ae212b5ff9c86b311d0b062310e1c',1,'ap::detail::argument_name']]],
+  ['mark_5fused_3',['mark_used',['../classap_1_1detail_1_1argument__base.html#aebb8ac9d4a60fe042daa8b54b4f6de28',1,'ap::detail::argument_base']]],
+  ['match_4',['match',['../structap_1_1detail_1_1argument__name.html#addd769d97a515df50970c6afd0797e98',1,'ap::detail::argument_name::match(std::string_view arg_name, const match_type m_type=m_any) const noexcept'],['../structap_1_1detail_1_1argument__name.html#a191cdc047ad5b5c6da5e0c47c1b35913',1,'ap::detail::argument_name::match(const argument_name &amp;arg_name, const match_type m_type=m_any) const noexcept']]],
+  ['match_5fprimary_5',['match_primary',['../structap_1_1detail_1_1argument__name.html#ad71e815a3804f738827a49f18dd9832e',1,'ap::detail::argument_name']]],
+  ['match_5fsecondary_6',['match_secondary',['../structap_1_1detail_1_1argument__name.html#a60c9827389b08281c61a743a52688764',1,'ap::detail::argument_name']]],
+  ['match_5ftype_7',['match_type',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce',1,'ap::detail::argument_name']]],
+  ['mit_20license_8',['MIT License',['../md_LICENSE.html',1,'']]],
+  ['modify_9',['modify',['../structap_1_1action__type_1_1modify.html',1,'ap::action_type']]],
+  ['more_5fthan_10',['more_than',['../classap_1_1nargs_1_1range.html#ab078ae071e8704220544d6e4c9f7bec1',1,'ap::nargs::range::more_than'],['../range_8hpp.html#a65d4d5df036937ee7c8b144088aefc19',1,'ap::nargs::more_than()']]]
 ];

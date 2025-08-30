@@ -9,6 +9,7 @@ var classap_1_1argument_1_1optional =
     [ "choices", "classap_1_1argument_1_1optional.html#a51527d92c82419aa49d9c2211a0284ea", null ],
     [ "default_value", "classap_1_1argument_1_1optional.html#a6eec61d414aec03832ae16888bb87189", null ],
     [ "help", "classap_1_1argument_1_1optional.html#a13e689c1e84e0ae9461de8695e8d6787", null ],
+    [ "hidden", "classap_1_1argument_1_1optional.html#ae1809e76090679ea989e6de35b89a0af", null ],
     [ "implicit_value", "classap_1_1argument_1_1optional.html#a6f41957293846d9b47ea50b96520d50d", null ],
     [ "nargs", "classap_1_1argument_1_1optional.html#aa9ec0a4a6e9da14fc9a7726e3bb19046", null ],
     [ "nargs", "classap_1_1argument_1_1optional.html#ae82d427083ea3f75ea1520a53139c27d", null ],

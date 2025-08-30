@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['6_20value_20actions_20function_20performed_20after_20parsing_20an_20argument_20s_20value_0',['6. Value actions - Function performed after parsing an argument&apos;s value.',['../md_docs_2tutorial.html#autotoc_md6-value-actions---function-performed-after-parsing-an-arguments-value',1,'']]]
+  ['6_20tt_20choices_20tt_20a_20list_20of_20valid_20argument_20values_0',['6. &lt;tt&gt;choices&lt;/tt&gt; - A list of valid argument values.',['../md_docs_2tutorial.html#autotoc_md6-choices---a-list-of-valid-argument-values',1,'']]]
 ];

@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.2</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -132,11 +132,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ff81e429badff84c4e39fe9ca323918" id="r_a7ff81e429badff84c4e39fe9ca323918"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#a7ff81e429badff84c4e39fe9ca323918">help</a> (std::string_view help_msg) noexcept</td></tr>
 <tr class="memdesc:a7ff81e429badff84c4e39fe9ca323918"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the help message for the positional argument.  <br /></td></tr>
 <tr class="separator:a7ff81e429badff84c4e39fe9ca323918"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86500dfec5e90d6ac183a950e02133ed" id="r_a86500dfec5e90d6ac183a950e02133ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#a86500dfec5e90d6ac183a950e02133ed">hidden</a> (const bool h=true) noexcept</td></tr>
+<tr class="memdesc:a86500dfec5e90d6ac183a950e02133ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <code>hidden</code> attribute for the positional argument.  <br /></td></tr>
+<tr class="separator:a86500dfec5e90d6ac183a950e02133ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18c89cdab6834e5689e256d05e0a2dbc" id="r_a18c89cdab6834e5689e256d05e0a2dbc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#a18c89cdab6834e5689e256d05e0a2dbc">required</a> (const bool r=true) noexcept</td></tr>
-<tr class="memdesc:a18c89cdab6834e5689e256d05e0a2dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <code>required</code> flag of the positional argument.  <br /></td></tr>
+<tr class="memdesc:a18c89cdab6834e5689e256d05e0a2dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <code>required</code> attribute of the positional argument.  <br /></td></tr>
 <tr class="separator:a18c89cdab6834e5689e256d05e0a2dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09abf2025ef4a03265669428dcb82acb" id="r_a09abf2025ef4a03265669428dcb82acb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1positional.html#a09abf2025ef4a03265669428dcb82acb">bypass_required</a> (const bool br=true) noexcept</td></tr>
-<tr class="memdesc:a09abf2025ef4a03265669428dcb82acb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/disable bypassing the <code>required</code> flag for the positional argument.  <br /></td></tr>
+<tr class="memdesc:a09abf2025ef4a03265669428dcb82acb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/disable bypassing the <code>required</code> attributeattribute for the positional argument.  <br /></td></tr>
 <tr class="separator:a09abf2025ef4a03265669428dcb82acb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dc79550ed1414e0819765e810cdf012" id="r_a3dc79550ed1414e0819765e810cdf012"><td class="memTemplParams" colspan="2">template&lt;detail::c_range_of&lt; <a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a>, <a class="el" href="concepts_8hpp.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3">detail::type_validator::convertible</a> &gt; CR&gt; <br />
 requires (std::equality_comparable&lt;<a class="el" href="classap_1_1argument_1_1positional.html#a8d79c650f1a11157b93b2ee5b25257de">value_type</a>&gt;)</td></tr>
@@ -169,6 +172,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a76bcb06030370fc7aa4098785cd4074f inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1524b68c9cf9a7cd22400d7013b4ec9 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_ac1524b68c9cf9a7cd22400d7013b4ec9"><td class="memItemLeft" align="right" valign="top">const std::optional&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ac1524b68c9cf9a7cd22400d7013b4ec9">help</a> () const noexcept</td></tr>
 <tr class="separator:ac1524b68c9cf9a7cd22400d7013b4ec9 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a545d421800cbae2968be28befe895e41 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_a545d421800cbae2968be28befe895e41"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a545d421800cbae2968be28befe895e41">is_hidden</a> () const noexcept</td></tr>
+<tr class="separator:a545d421800cbae2968be28befe895e41 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad463f1cc48791cfcc50374433d11a6 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_a3ad463f1cc48791cfcc50374433d11a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a3ad463f1cc48791cfcc50374433d11a6">is_required</a> () const noexcept</td></tr>
 <tr class="separator:a3ad463f1cc48791cfcc50374433d11a6 inherit pro_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95de6f34fbad86c4eff854b243764141 inherit pro_methods_classap_1_1detail_1_1argument__base" id="r_a95de6f34fbad86c4eff854b243764141"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a95de6f34fbad86c4eff854b243764141">bypass_required_enabled</a> () const noexcept</td></tr>
@@ -182,6 +187,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a731038fe58bf6fd6054d01b63e2973bf inherit pro_attribs_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5adf5895f5fcbfb44c3b7a7237301c04 inherit pro_attribs_classap_1_1detail_1_1argument__base" id="r_a5adf5895f5fcbfb44c3b7a7237301c04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a5adf5895f5fcbfb44c3b7a7237301c04">_bypass_required</a>: 1 = false</td></tr>
 <tr class="separator:a5adf5895f5fcbfb44c3b7a7237301c04 inherit pro_attribs_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39bb3a51d7623b04aaed278b625e9d64 inherit pro_attribs_classap_1_1detail_1_1argument__base" id="r_a39bb3a51d7623b04aaed278b625e9d64"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a39bb3a51d7623b04aaed278b625e9d64">_hidden</a>: 1 = false</td></tr>
+<tr class="separator:a39bb3a51d7623b04aaed278b625e9d64 inherit pro_attribs_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;detail::c_argument_value_type T = std::string&gt;<br />
@@ -299,7 +306,7 @@ template&lt;action::detail::c_value_action_specifier AS, std::invocable&lt; <a c
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the positional argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00137">137</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00147">147</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -329,17 +336,17 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Enable/disable bypassing the <code>required</code> flag for the positional argument. </p>
+<p>Enable/disable bypassing the <code>required</code> attributeattribute for the positional argument. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">br</td><td>The parameter value. </td></tr>
+    <tr><td class="paramname">br</td><td>The attribute value. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the positional argument. </dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>Setting the <code>bypass_required</code> parameter to true disables the <code>required</code> flag. </dd></dl>
+<dl class="section attention"><dt>Attention</dt><dd>Setting the <code>bypass_required</code> attribute to true disables the <code>required</code> attribute. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00081">81</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00091">91</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -390,7 +397,7 @@ requires (std::equality_comparable&lt;<a class="el" href="classap_1_1argument_1_
 <dd>
 <code>CR</code> must be a range such that its value type is convertible to <code>value_type</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00097">97</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00107">107</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -430,7 +437,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the positional argument. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd><code>value_type</code> must be equality comparable. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00111">111</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00121">121</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -468,9 +475,9 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the positional argument. </dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>Setting the default value disables the <code>required</code> flag. </dd></dl>
+<dl class="section attention"><dt>Attention</dt><dd>Setting the default value disables the <code>required</code> attribute. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00123">123</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00133">133</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -510,6 +517,45 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the positional argument. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00057">57</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a86500dfec5e90d6ac183a950e02133ed" name="a86500dfec5e90d6ac183a950e02133ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86500dfec5e90d6ac183a950e02133ed">&#9670;&#160;</a></span>hidden()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a> &amp; <a class="el" href="classap_1_1argument_1_1positional.html">ap::argument::positional</a>&lt; T &gt;::hidden </td>
+          <td>(</td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>h</em> = <code>true</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the <code>hidden</code> attribute for the positional argument. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">h</td><td>The attribute value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to the positional argument. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00067">67</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -578,17 +624,17 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Set the <code>required</code> flag of the positional argument. </p>
+<p>Set the <code>required</code> attribute of the positional argument. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">r</td><td>The parameter value. </td></tr>
+    <tr><td class="paramname">r</td><td>The attribute value. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the positional argument. </dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>Setting the <code>required</code> parameter to true disables the <code>bypass_required</code> flag. </dd></dl>
+<dl class="section attention"><dt>Attention</dt><dd>Setting the <code>required</code> attribute to true disables the <code>bypass_required</code> attribute. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00068">68</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00078">78</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -617,7 +663,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 <p>Friend class declaration for access by <a class="el" href="classap_1_1argument__parser.html" title="Main argument parser class.">argument_parser</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00144">144</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional_8hpp_source.html#l00154">154</a> of file <a class="el" href="positional_8hpp_source.html">positional.hpp</a>.</p>
 
 </div>
 </div>
@@ -630,7 +676,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><b>argument</b></li><li class="navelem"><a class="el" href="classap_1_1argument_1_1positional.html">positional</a></li>
-    <li class="footer">Generated on Thu Aug 28 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Sat Aug 30 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
