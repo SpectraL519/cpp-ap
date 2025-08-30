@@ -163,6 +163,17 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(implicit_value_it->value, std::to_string(implicit_value));
 }
 
+TEST_CASE_FIXTURE(
+    optional_argument_test_fixture,
+    "is_hidden() should return false by default or the value passed in the attribute setter"
+) {
+    auto sut = sut_type(arg_name_primary);
+    REQUIRE_FALSE(is_hidden(sut));
+
+    sut.hidden();
+    CHECK(is_hidden(sut));
+}
+
 TEST_CASE_FIXTURE(optional_argument_test_fixture, "is_required() should return false by default") {
     auto sut = sut_type(arg_name_primary);
     CHECK_FALSE(is_required(sut));

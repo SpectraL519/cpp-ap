@@ -32,6 +32,11 @@ struct positional_argument_test_fixture {
     }
 
     template <c_argument_value_type T>
+    [[nodiscard]] bool is_hidden(const positional<T>& arg) const {
+        return arg.is_hidden();
+    }
+
+    template <c_argument_value_type T>
     [[nodiscard]] bool is_required(const positional<T>& arg) const {
         return arg.is_required();
     }

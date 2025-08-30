@@ -63,10 +63,20 @@ public:
     }
 
     /**
-     * @brief Set the `required` parameter of the optional argument
-     * @param r The parameter value.
+     * @brief Set the `hidden` attribute for the positional argument.
+     * @param h The attribute value.
+     * @return Reference to the positional argument.
+     */
+    optional& hidden(const bool h = true) noexcept {
+        this->_hidden = h;
+        return *this;
+    }
+
+    /**
+     * @brief Set the `required` attribute of the optional argument
+     * @param r The attribute value.
      * @return Reference to the optional argument.
-     * @attention Setting the `required` parameter to true disables the `bypass_required` flag.
+     * @attention Setting the `required` attribute to true disables the `bypass_required` attribute.
      */
     optional& required(const bool r = true) noexcept {
         this->_required = r;
@@ -76,10 +86,10 @@ public:
     }
 
     /**
-     * @brief Enable/disable bypassing the `required` flag for the optional argument.
-     * @param br The parameter value.
+     * @brief Enable/disable bypassing the `required` attribute for the optional argument.
+     * @param br The attribute value.
      * @return Reference to the optional argument.
-     * @attention Setting the `bypass_required` option to true disables the `required` flag.
+     * @attention Setting the `bypass_required` option to true disables the `required` attribute.
      */
     optional& bypass_required(const bool br = true) noexcept {
         this->_bypass_required = br;
@@ -172,7 +182,7 @@ public:
      * @brief Set the default value for the optional argument.
      * @param default_value The default value to set.
      * @return Reference to the optional argument.
-     * @attention Setting the default value disables the `required` flag.
+     * @attention Setting the default value disables the `required` attribute.
      */
     optional& default_value(const std::convertible_to<value_type> auto& default_value) noexcept {
         this->_default_value = std::make_any<value_type>(default_value);
@@ -247,7 +257,7 @@ private:
         return this->_count > 0;
     }
 
-    /// @return The number of times the optional argument flag has been used.
+    /// @return The number of times the optional argument attribute has been used.
     [[nodiscard]] std::size_t count() const noexcept override {
         return this->_count;
     }

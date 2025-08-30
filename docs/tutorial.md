@@ -195,7 +195,36 @@ parser.add_positional_argument<std::size_t>("number", "n")
       .help("a positive integer value");
 ```
 
-#### 2. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
+#### 2. `hidden` - If this option is set for an argument, then it will not be included in the program description.
+
+By default all arguments are visible, but this can be modified using the `hidden(bool)` setter as follows:
+
+```cpp
+parser.program_name("hidden-test")
+      .program_description("A simple program")
+      .default_optional_arguments({ap::argument::default_optional::help});
+
+parser.add_optional_argument("hidden")
+      .hidden()
+      .help("A simple hidden argument");
+parser.add_optional_argument("visible")
+      .help("A simple visible argument");
+
+parser.try_parse_args(argc, argv);
+
+/*
+> ./hidden-test --help
+Program: hidden-test
+
+  A simple program
+
+Optional arguments:
+
+  --help, -h : Display the help message
+  --visible  : A simple visible argument
+```
+
+#### 3. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
 > [!NOTE]
 >
@@ -262,7 +291,7 @@ Command                                 Result
 */
 ```
 
-#### 3. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
+#### 4. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
 
 > [!NOTE]
 >
@@ -298,7 +327,7 @@ std::ofstream os(parser.value("output"));
 os << data << std::endl;
 ```
 
-#### 4. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
+#### 5. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
 
 > [!WARNING]
 >
@@ -352,7 +381,7 @@ Command                                 Result
 >
 > The setter of the `default_value` parameter accepts any type that is convertible to the argument's value type.
 
-#### 5. `choices` - A list of valid argument values.
+#### 6. `choices` - A list of valid argument values.
 
 The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
 
@@ -365,7 +394,7 @@ parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
 >
 > The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
 
-#### 6. Value actions - Function performed after parsing an argument's value.
+#### 7. Value actions - Function performed after parsing an argument's value.
 Actions are represented as functions, which take the argument's value as an argument. The available action types are:
 
 - `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
