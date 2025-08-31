@@ -136,7 +136,11 @@ struct argument_name {
     const std::optional<char> flag_char; ///< The flag character (used for optional argument names).
 };
 
-/// @brief Discriminator for the role of an argument name.
+/**
+ * @brief Argument name member discriminator.
+ *
+ * This discriminator type is used in the argument initializing methods of the `argument_parser` class.
+ */
 enum class argument_name_discriminator : bool {
     n_primary, ///< Represents the primary name (used with a long flag prefix --).
     n_secondary ///< Represents the secondary name (used with a short flag prefix --).
