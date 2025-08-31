@@ -170,7 +170,10 @@ public:
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
-        const detail::argument_name arg_name(primary_name, secondary_name);
+        const detail::argument_name arg_name{
+            std::make_optional<std::string>(primary_name),
+            std::make_optional<std::string>(secondary_name)
+        };
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 

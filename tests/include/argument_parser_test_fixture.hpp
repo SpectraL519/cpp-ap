@@ -98,13 +98,13 @@ struct argument_parser_test_fixture {
     void add_arguments(std::size_t n_positional_args, std::size_t n_optional_args) {
         for (std::size_t i = 0ull; i < n_positional_args; ++i) {
             const auto arg_name = init_arg_name(i);
-            sut.add_positional_argument<T>(arg_name.primary, arg_name.secondary.value());
+            sut.add_positional_argument<T>(arg_name.primary.value(), arg_name.secondary.value());
         }
 
         for (std::size_t i = 0ull; i < n_optional_args; ++i) {
             const auto arg_idx = n_positional_args + i;
             const auto arg_name = init_arg_name(arg_idx);
-            sut.add_optional_argument<T>(arg_name.primary, arg_name.secondary.value());
+            sut.add_optional_argument<T>(arg_name.primary.value(), arg_name.secondary.value());
         }
     }
 
@@ -119,9 +119,9 @@ struct argument_parser_test_fixture {
 
         for (std::size_t i = 0ull; i < n_optional_args; ++i) {
             const auto arg_idx = n_positional_args + i;
-            arg_tokens.push_back(
-                argument_token{argument_token::t_flag_primary, init_arg_name(arg_idx).primary}
-            );
+            arg_tokens.push_back(argument_token{
+                argument_token::t_flag_primary, init_arg_name(arg_idx).primary.value()
+            });
             arg_tokens.push_back(argument_token{argument_token::t_value, init_arg_value(arg_idx)});
         }
 
