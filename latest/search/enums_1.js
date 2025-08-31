@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['match_5ftype_0',['match_type',['../structap_1_1detail_1_1argument__name.html#a6b265e8fa84ef4aa4f69309c39b909ce',1,'ap::detail::argument_name']]]
+  ['default_5foptional_0',['default_optional',['../default_8hpp.html#ae33bebaf42333b6e30800f977e22ad41',1,'ap::argument']]],
+  ['default_5fpositional_1',['default_positional',['../default_8hpp.html#a286f72b3fda327176045593cc03035f3',1,'ap::argument']]]
 ];

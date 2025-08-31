@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"structap_1_1detail_1_1argument__name.html#af67eccd32b26b5db123ce8e90602ef83":[5,0,0,3,2,7],
 "structap_1_1detail_1_1argument__token.html":[5,0,0,3,3],
 "structap_1_1detail_1_1argument__token.html#a7034f0e9b84285970e1ec9050cc5f154":[5,0,0,3,3,3],
 "structap_1_1detail_1_1argument__token.html#a7be25792a0b86571b7d021b856e6251f":[5,0,0,3,3,1],

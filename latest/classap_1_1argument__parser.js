@@ -1,11 +1,11 @@
 var classap_1_1argument__parser =
 [
-    [ "add_flag", "classap_1_1argument__parser.html#aa340ed78fcdb698b73e105b04a4a5c14", null ],
-    [ "add_flag", "classap_1_1argument__parser.html#ae5ffb8279e9b00bb7883f500dcfa748e", null ],
-    [ "add_optional_argument", "classap_1_1argument__parser.html#a3841ee5aafb1bef6434fd790f6fa96d6", null ],
-    [ "add_optional_argument", "classap_1_1argument__parser.html#af5a4aef9eb8466121877f94a6ad5757f", null ],
-    [ "add_positional_argument", "classap_1_1argument__parser.html#a95afc3f8d90d0f18e10a3d328d2e888d", null ],
-    [ "add_positional_argument", "classap_1_1argument__parser.html#a851283e1abc75c74d10f4624c5539916", null ],
+    [ "add_flag", "classap_1_1argument__parser.html#a12e254d8a9ebf60f26b5e67230edcc9e", null ],
+    [ "add_flag", "classap_1_1argument__parser.html#a972e52d70d5eaa7f6a1774a07b8b05d2", null ],
+    [ "add_optional_argument", "classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea", null ],
+    [ "add_optional_argument", "classap_1_1argument__parser.html#af3fab0504d38f692b218e4affb4803b7", null ],
+    [ "add_positional_argument", "classap_1_1argument__parser.html#ab91f6e1e72affd1f0bc11f084b4dda4d", null ],
+    [ "add_positional_argument", "classap_1_1argument__parser.html#a5d54e4c921bbf71e9b58b9ae59cd1137", null ],
     [ "count", "classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325", null ],
     [ "default_optional_arguments", "classap_1_1argument__parser.html#aa17bf6579d8343e8e593e43f105f64fc", null ],
     [ "default_optional_arguments", "classap_1_1argument__parser.html#ad5304cde541d136e189f15a2c8f9e2c4", null ],
