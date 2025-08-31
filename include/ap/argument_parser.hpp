@@ -142,10 +142,10 @@ public:
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument::positional<T>& add_positional_argument(std::string_view primary_name) {
+    argument::positional<T>& add_positional_argument(const std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
-        const detail::argument_name arg_name(primary_name);
+        const detail::argument_name arg_name(std::make_optional<std::string>(primary_name));
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -165,7 +165,7 @@ public:
      */
     template <detail::c_argument_value_type T = std::string>
     argument::positional<T>& add_positional_argument(
-        std::string_view primary_name, std::string_view secondary_name
+        const std::string_view primary_name, const std::string_view secondary_name
     ) {
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
@@ -181,17 +181,27 @@ public:
     /**
      * @brief Adds a positional argument to the parser's configuration.
      * @tparam T Type of the argument value.
-     * @param primary_name The primary name of the argument.
+     * @param name The name of the argument.
+     * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added optional argument.
      * @throws ap::invalid_configuration
      *
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument::optional<T>& add_optional_argument(std::string_view primary_name) {
-        this->_verify_arg_name_pattern(primary_name);
+    argument::optional<T>& add_optional_argument(
+        const std::string_view name,
+        const detail::argument_name_discriminator name_discr = n_primary
+    ) {
+        this->_verify_arg_name_pattern(name);
 
-        const detail::argument_name arg_name(primary_name, std::nullopt, this->_flag_prefix_char);
+        const auto arg_name =
+            name_discr == n_primary
+                ? detail::
+                      argument_name{std::make_optional<std::string>(name), std::nullopt, this->_flag_prefix_char}
+                : detail::argument_name{
+                      std::nullopt, std::make_optional<std::string>(name), this->_flag_prefix_char
+                  };
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -211,12 +221,16 @@ public:
      */
     template <detail::c_argument_value_type T = std::string>
     argument::optional<T>& add_optional_argument(
-        std::string_view primary_name, std::string_view secondary_name
+        const std::string_view primary_name, const std::string_view secondary_name
     ) {
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
-        const detail::argument_name arg_name(primary_name, secondary_name, this->_flag_prefix_char);
+        const detail::argument_name arg_name(
+            std::make_optional<std::string>(primary_name),
+            std::make_optional<std::string>(secondary_name),
+            this->_flag_prefix_char
+        );
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -227,12 +241,16 @@ public:
     /**
      * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
      * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
-     * @param primary_name The primary name of the flag.
+     * @param name The primary name of the flag.
+     * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument::optional<bool>& add_flag(std::string_view primary_name) {
-        return this->add_optional_argument<bool>(primary_name)
+    argument::optional<bool>& add_flag(
+        const std::string_view name,
+        const detail::argument_name_discriminator name_discr = n_primary
+    ) {
+        return this->add_optional_argument<bool>(name, name_discr)
             .default_value(not StoreImplicitly)
             .implicit_value(StoreImplicitly)
             .nargs(0ull);
@@ -247,7 +265,7 @@ public:
      */
     template <bool StoreImplicitly = true>
     argument::optional<bool>& add_flag(
-        std::string_view primary_name, std::string_view secondary_name
+        const std::string_view primary_name, const std::string_view secondary_name
     ) {
         return this->add_optional_argument<bool>(primary_name, secondary_name)
             .default_value(not StoreImplicitly)

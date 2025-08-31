@@ -276,7 +276,7 @@ private:
      */
     [[nodiscard]] const std::vector<std::any>& values() const override {
         throw std::logic_error(
-            std::format("Positional argument `{}` has only 1 value.", this->_name.primary)
+            std::format("Positional argument `{}` has only 1 value.", this->_name.str())
         );
     }
 

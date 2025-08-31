@@ -12,7 +12,9 @@
 #include <string>
 #include <string_view>
 
-namespace ap::detail {
+namespace ap {
+
+namespace detail {
 
 /// @brief Structure holding the argument's name.
 struct argument_name {
@@ -39,11 +41,17 @@ struct argument_name {
      * @param flag_char The flag character (used for optional argument names).
      */
     argument_name(
-        std::string_view primary,
-        std::optional<std::string_view> secondary = std::nullopt,
+        std::optional<std::string> primary,
+        std::optional<std::string> secondary = std::nullopt,
         std::optional<char> flag_char = std::nullopt
     )
-    : primary(primary), secondary(std::move(secondary)), flag_char(std::move(flag_char)) {}
+    : primary(std::move(primary)),
+      secondary(std::move(secondary)),
+      flag_char(std::move(flag_char)) {
+        if (not (this->primary or this->secondary))
+            throw std::logic_error("An argument name cannot be empty! At least one of "
+                                   "primary/secondary must be specified");
+    }
 
     /// @brief Class destructor.
     ~argument_name() = default;
@@ -54,13 +62,7 @@ struct argument_name {
      * @return Equality of argument names.
      */
     bool operator==(const argument_name& other) const noexcept {
-        if (not (this->secondary and other.secondary) and (this->secondary or other.secondary))
-            return false; // only one of the compared argument names has a secondary name
-
-        if (this->primary != other.primary)
-            return false;
-
-        return this->secondary ? this->secondary.value() == other.secondary.value() : true;
+        return this->primary == other.primary and this->secondary == other.secondary;
     }
 
     /**
@@ -73,11 +75,11 @@ struct argument_name {
         const noexcept {
         switch (m_type) {
         case m_any:
-            return this->match_primary(arg_name) or this->match_secondary(arg_name);
+            return this->primary == arg_name or this->secondary == arg_name;
         case m_primary:
-            return this->match_primary(arg_name);
+            return this->primary == arg_name;
         case m_secondary:
-            return this->match_secondary(arg_name);
+            return this->secondary == arg_name;
         }
 
         return false;
@@ -92,7 +94,7 @@ struct argument_name {
     [[nodiscard]] bool match(
         const argument_name& arg_name, [[maybe_unused]] const match_type m_type = m_any
     ) const noexcept {
-        if (this->match(arg_name.primary))
+        if (arg_name.primary and this->match(arg_name.primary.value()))
             return true;
 
         if (arg_name.secondary)
@@ -102,33 +104,20 @@ struct argument_name {
     }
 
     /**
-     * @brief Matches the given string to the primary name of an argument_name instance.
-     * @param arg_name The name string to match.
-     * @return True if name is equal to either the primary name of the argument_name instance.
-     */
-    [[nodiscard]] bool match_primary(std::string_view arg_name) const noexcept {
-        return arg_name == this->primary;
-    }
-
-    /**
-     * @brief Matches the given string to the secondary name of an argument_name instance.
-     * @param arg_name The name string to match.
-     * @return True if name is equal to either the secondary name of the argument_name instance.
-     */
-    [[nodiscard]] bool match_secondary(std::string_view arg_name) const noexcept {
-        return this->secondary and arg_name == this->secondary.value();
-    }
-
-    /**
      * @brief Get a string representation of the argument_name.
      * @param flag_char The character used for the argument flag prefix.
      */
     [[nodiscard]] std::string str() const noexcept {
         // if flag_char = nullopt, then the fallback character doesn't matter - the string will be empty
         const std::string fc(this->flag_char.has_value(), this->flag_char.value_or(char()));
-        return this->secondary
-                 ? std::format("{}{}{}, {}{}", fc, fc, this->primary, fc, this->secondary.value())
-                 : std::format("{}{}{}", fc, fc, this->primary);
+
+        std::string primary_str =
+            this->primary ? std::format("{}{}{}", fc, fc, this->primary.value()) : "";
+        std::string separator = this->primary and this->secondary ? ", " : "";
+        std::string secondary_str =
+            this->secondary ? std::format("{}{}", fc, this->secondary.value()) : "";
+
+        return std::format("{}{}{}", primary_str, separator, secondary_str);
     }
 
     /**
@@ -142,9 +131,19 @@ struct argument_name {
         return os;
     }
 
-    const std::string primary; ///< The primary name of the argument.
+    const std::optional<std::string> primary; ///< The primary name of the argument.
     const std::optional<std::string> secondary; ///< The optional (short) name of the argument.
     const std::optional<char> flag_char; ///< The flag character (used for optional argument names).
 };
 
-} // namespace ap::detail
+/// @brief Discriminator for the role of an argument name.
+enum class argument_name_discriminator : bool {
+    n_primary, ///< Represents the primary name (used with a long flag prefix --).
+    n_secondary ///< Represents the secondary name (used with a short flag prefix --).
+};
+
+} // namespace detail
+
+using enum detail::argument_name_discriminator;
+
+} // namespace ap
