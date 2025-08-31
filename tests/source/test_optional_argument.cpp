@@ -14,11 +14,15 @@ using ap::detail::parameter_descriptor;
 namespace {
 
 constexpr char flag_char = '-';
-constexpr std::string_view primary_name = "test";
-constexpr std::string_view secondary_name = "t";
 
-const argument_name arg_name(primary_name, secondary_name, flag_char);
-const argument_name arg_name_primary(primary_name, std::nullopt, flag_char);
+constexpr std::string_view primary_name = "test";
+const auto primary_name_opt = std::make_optional<std::string>(primary_name);
+
+constexpr std::string_view secondary_name = "t";
+const auto secondary_name_opt = std::make_optional<std::string>(secondary_name);
+
+const argument_name arg_name(primary_name_opt, secondary_name_opt, flag_char);
+const argument_name arg_name_primary(primary_name_opt, std::nullopt, flag_char);
 
 constexpr std::string_view help_msg = "test help msg";
 

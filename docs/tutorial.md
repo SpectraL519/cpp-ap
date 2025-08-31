@@ -178,6 +178,15 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
 */
 ```
 
+> [!NOTE]
+>
+> While passing a primary name is required for creating positional arguments, optional arguments (and flags) can be initialized using only a secondary name as follows:
+>
+> ```cpp
+> parser.add_optional_argument("a", ap::n_secondary);
+> parser.add_flag("f", ap::n_secondary);
+> ```
+
 <br/>
 <br/>
 <br/>

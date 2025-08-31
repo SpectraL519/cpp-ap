@@ -13,8 +13,18 @@ struct test_argument_parser_add_argument : public argument_parser_test_fixture {
     const std::string_view primary_name_1 = "primary_name_1";
     const std::string_view secondary_name_1 = "s1";
 
+    const std::optional<std::string> primary_name_1_opt =
+        std::make_optional<std::string>(primary_name_1);
+    const std::optional<std::string> secondary_name_1_opt =
+        std::make_optional<std::string>(secondary_name_1);
+
     const std::string_view primary_name_2 = "primary_name_2";
     const std::string_view secondary_name_2 = "s2";
+
+    const std::optional<std::string> primary_name_2_opt =
+        std::make_optional<std::string>(primary_name_2);
+    const std::optional<std::string> secondary_name_2_opt =
+        std::make_optional<std::string>(secondary_name_2);
 
     const std::string_view invalid_name_empty = "";
     const std::string_view invalid_name_whitespace = "invalid name";
@@ -164,7 +174,8 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used primary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_positional_argument(primary_name_1, secondary_name_2),
-            invalid_configuration::argument_name_used({primary_name_1, secondary_name_2}).what(),
+            invalid_configuration::argument_name_used({primary_name_1_opt, secondary_name_2_opt})
+                .what(),
             invalid_configuration
         );
     }
@@ -172,7 +183,8 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used secondary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_positional_argument(primary_name_2, secondary_name_1),
-            invalid_configuration::argument_name_used({primary_name_2, secondary_name_1}).what(),
+            invalid_configuration::argument_name_used({primary_name_2_opt, secondary_name_1_opt})
+                .what(),
             invalid_configuration
         );
     }
@@ -191,7 +203,9 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used primary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_optional_argument(primary_name_1, secondary_name_2),
-            invalid_configuration::argument_name_used({primary_name_1, secondary_name_2, flag_char})
+            invalid_configuration::argument_name_used(
+                {primary_name_1_opt, secondary_name_2_opt, flag_char}
+            )
                 .what(),
             invalid_configuration
         );
@@ -200,7 +214,9 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used secondary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_optional_argument(primary_name_2, secondary_name_1),
-            invalid_configuration::argument_name_used({primary_name_2, secondary_name_1, flag_char})
+            invalid_configuration::argument_name_used(
+                {primary_name_2_opt, secondary_name_1_opt, flag_char}
+            )
                 .what(),
             invalid_configuration
         );
@@ -247,7 +263,9 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used primary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_flag(primary_name_1, secondary_name_2),
-            invalid_configuration::argument_name_used({primary_name_1, secondary_name_2, flag_char})
+            invalid_configuration::argument_name_used(
+                {primary_name_1_opt, secondary_name_2_opt, flag_char}
+            )
                 .what(),
             invalid_configuration
         );
@@ -256,7 +274,9 @@ TEST_CASE_FIXTURE(
     SUBCASE("adding argument with a previously used secondary name") {
         CHECK_THROWS_WITH_AS(
             sut.add_flag(primary_name_2, secondary_name_1),
-            invalid_configuration::argument_name_used({primary_name_2, secondary_name_1, flag_char})
+            invalid_configuration::argument_name_used(
+                {primary_name_2_opt, secondary_name_1_opt, flag_char}
+            )
                 .what(),
             invalid_configuration
         );
