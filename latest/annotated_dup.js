@@ -31,6 +31,7 @@ var annotated_dup =
       [ "invalid_configuration", "structap_1_1invalid__configuration.html", "structap_1_1invalid__configuration" ],
       [ "lookup_failure", "structap_1_1lookup__failure.html", null ],
       [ "parsing_failure", "structap_1_1parsing__failure.html", null ],
-      [ "type_error", "structap_1_1type__error.html", null ]
+      [ "type_error", "structap_1_1type__error.html", null ],
+      [ "version", "structap_1_1version.html", "structap_1_1version" ]
     ] ]
 ];

@@ -18,6 +18,8 @@ var classap_1_1argument__parser =
     [ "print_config", "classap_1_1argument__parser.html#a44165290f112dcca9430bf40ef6b1f97", null ],
     [ "program_description", "classap_1_1argument__parser.html#a5935ee955cca241d6d4450326f9a92be", null ],
     [ "program_name", "classap_1_1argument__parser.html#a61647eb07a661640d94d416dff69a9fe", null ],
+    [ "program_version", "classap_1_1argument__parser.html#a015a7f73f193c7e3242434130017e99b", null ],
+    [ "program_version", "classap_1_1argument__parser.html#a3e741037cc8457025e43eca51cf434b6", null ],
     [ "try_parse_args", "classap_1_1argument__parser.html#ac0fa4e12145301b0dd932a7b8e2469ad", null ],
     [ "try_parse_args", "classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe", null ],
     [ "value", "classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7", null ],

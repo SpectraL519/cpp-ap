@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['primary_0',['primary',['../structap_1_1detail_1_1argument__name.html#ab359de24adc3ca558b21d760ccd6c7cc',1,'ap::detail::argument_name']]]
+  ['is_5fvalid_5ftype_5fv_0',['is_valid_type_v',['../concepts_8hpp.html#a23471005529c4a883f28305469923874',1,'ap::detail']]]
 ];

@@ -70,7 +70,8 @@ var NAVTREE =
       ] ],
       [ "Default Arguments", "md_docs_2tutorial.html#default-arguments", null ],
       [ "Parsing Arguments", "md_docs_2tutorial.html#parsing-arguments", [
-        [ "Argument Parsing Rules:", "md_docs_2tutorial.html#argument-parsing-rules", null ]
+        [ "Argument Parsing Rules:", "md_docs_2tutorial.html#argument-parsing-rules", null ],
+        [ "Compound Arguments:", "md_docs_2tutorial.html#compound-arguments", null ]
       ] ],
       [ "Retrieving Argument Values", "md_docs_2tutorial.html#retrieving-argument-values", null ],
       [ "Examples", "md_docs_2tutorial.html#examples", null ]
@@ -99,7 +100,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"structap_1_1detail_1_1argument__name.html#af67eccd32b26b5db123ce8e90602ef83"
+"structap_1_1detail_1_1argument__name.html#a8c1f07ee2487e0d4da11bf3b5da8d217"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

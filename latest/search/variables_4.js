@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['type_0',['type',['../structap_1_1detail_1_1argument__token.html#a7034f0e9b84285970e1ec9050cc5f154',1,'ap::detail::argument_token']]]
+  ['patch_0',['patch',['../structap_1_1version.html#add9bd39441e2ba8597d2cb96edc9ef53',1,'ap::version']]],
+  ['primary_1',['primary',['../structap_1_1detail_1_1argument__name.html#ab359de24adc3ca558b21d760ccd6c7cc',1,'ap::detail::argument_name']]]
 ];

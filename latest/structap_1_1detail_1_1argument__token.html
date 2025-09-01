@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.3</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -114,6 +114,8 @@ Public Types</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ad236b3be16e4f60e5bf756bb6fb96696"><td class="mdescLeft">&#160;</td><td class="mdescRight">The token type discriminator.  <a href="structap_1_1detail_1_1argument__token.html#ad236b3be16e4f60e5bf756bb6fb96696">More...</a><br /></td></tr>
 <tr class="separator:ad236b3be16e4f60e5bf756bb6fb96696"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebebeb04a155b9f93d742e195f0fcb0d" id="r_aebebeb04a155b9f93d742e195f0fcb0d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structap_1_1detail_1_1argument__token.html#a7034f0e9b84285970e1ec9050cc5f154">using</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__token.html#aebebeb04a155b9f93d742e195f0fcb0d">arg_ptr_opt_t</a> = uptr_opt_t&lt; <a class="el" href="classap_1_1detail_1_1argument__base.html">detail::argument_base</a> &gt;</td></tr>
+<tr class="separator:aebebeb04a155b9f93d742e195f0fcb0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -132,12 +134,32 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aa18491904fe3487a1c9bdd548cb7f7aa" id="r_aa18491904fe3487a1c9bdd548cb7f7aa"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__token.html#aa18491904fe3487a1c9bdd548cb7f7aa">value</a></td></tr>
 <tr class="memdesc:aa18491904fe3487a1c9bdd548cb7f7aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">The actual token's value.  <br /></td></tr>
 <tr class="separator:aa18491904fe3487a1c9bdd548cb7f7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a897be82010d80e45767ae72c017adace" id="r_a897be82010d80e45767ae72c017adace"><td class="memItemLeft" align="right" valign="top">arg_ptr_opt_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1detail_1_1argument__token.html#a897be82010d80e45767ae72c017adace">arg</a> = std::nullopt</td></tr>
+<tr class="memdesc:a897be82010d80e45767ae72c017adace"><td class="mdescLeft">&#160;</td><td class="mdescRight">The corresponding argument.  <br /></td></tr>
+<tr class="separator:a897be82010d80e45767ae72c017adace"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Structure representing a single command-line argument token. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00015">15</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
-</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00020">20</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="aebebeb04a155b9f93d742e195f0fcb0d" name="aebebeb04a155b9f93d742e195f0fcb0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebebeb04a155b9f93d742e195f0fcb0d">&#9670;&#160;</a></span>arg_ptr_opt_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structap_1_1detail_1_1argument__token.html#a7034f0e9b84285970e1ec9050cc5f154">using</a> ap::detail::argument_token::arg_ptr_opt_t =  uptr_opt_t&lt;<a class="el" href="classap_1_1detail_1_1argument__base.html">detail::argument_base</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00021">21</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ad236b3be16e4f60e5bf756bb6fb96696" name="ad236b3be16e4f60e5bf756bb6fb96696"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad236b3be16e4f60e5bf756bb6fb96696">&#9670;&#160;</a></span>token_type</h2>
 
@@ -168,7 +190,7 @@ Public Attributes</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00017">17</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00024">24</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
 
 </div>
 </div>
@@ -199,7 +221,7 @@ Public Attributes</h2></td></tr>
 <p>Checks whether the <code>type</code> member is a flag token type. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if <code>type</code> is either <code>t_flag_primary</code> or <code>t_flag_secondary</code>, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00037">37</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00044">44</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
 
 </div>
 </div>
@@ -236,11 +258,29 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean statement of equality comparison. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00029">29</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00036">36</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a897be82010d80e45767ae72c017adace" name="a897be82010d80e45767ae72c017adace"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a897be82010d80e45767ae72c017adace">&#9670;&#160;</a></span>arg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">arg_ptr_opt_t ap::detail::argument_token::arg = std::nullopt</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The corresponding argument. </p>
+
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00050">50</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a7034f0e9b84285970e1ec9050cc5f154" name="a7034f0e9b84285970e1ec9050cc5f154"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7034f0e9b84285970e1ec9050cc5f154">&#9670;&#160;</a></span>type</h2>
 
@@ -255,7 +295,7 @@ Public Attributes</h2></td></tr>
 
 <p>The token's type discrimiator value. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00041">41</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00048">48</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
 
 </div>
 </div>
@@ -273,7 +313,7 @@ Public Attributes</h2></td></tr>
 
 <p>The actual token's value. </p>
 
-<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00042">42</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__token_8hpp_source.html#l00049">49</a> of file <a class="el" href="argument__token_8hpp_source.html">argument_token.hpp</a>.</p>
 
 </div>
 </div>
@@ -286,7 +326,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="structap_1_1detail_1_1argument__token.html">argument_token</a></li>
-    <li class="footer">Generated on Sun Aug 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

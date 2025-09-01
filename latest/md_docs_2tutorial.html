@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.5.3</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -107,7 +107,11 @@ $(document).ready(function(){initNavTree('md_docs_2tutorial.html',''); initResiz
 <li><a class="el" href="md_docs_2tutorial.html#argument-parameters">Argument Parameters</a></li>
 <li><a class="el" href="md_docs_2tutorial.html#predefined-parameter-values">Predefined Parameter Values</a></li>
 <li><a class="el" href="md_docs_2tutorial.html#default-arguments">Default Arguments</a></li>
-<li><a class="el" href="md_docs_2tutorial.html#parsing-arguments">Parsing Arguments</a></li>
+<li><a class="el" href="md_docs_2tutorial.html#parsing-arguments">Parsing Arguments</a><ul>
+<li><a class="el" href="md_docs_2tutorial.html#argument-parsing-rules">Argument Parsing Rules</a></li>
+<li><a class="el" href="md_docs_2tutorial.html#compound-arguments">Compound Arguments</a></li>
+</ul>
+</li>
 <li><a class="el" href="md_docs_2tutorial.html#retrieving-argument-values">Retrieving Argument Values</a></li>
 <li><a class="el" href="md_docs_2tutorial.html#examples">Examples</a></li>
 </ul>
@@ -185,19 +189,35 @@ The Parser Class</h1>
 <p>To use the argument parser in your code you need to use the <code><a class="el" href="classap_1_1argument__parser.html" title="Main argument parser class.">ap::argument_parser</a></code> class.</p>
 <p>The parameters you can specify for a parser's instance are:</p>
 <ul>
-<li>Program name and description - used in the parser's configuration output (<code>std::cout &lt;&lt; parser</code>).</li>
+<li>The program's name, version and description - used in the parser's configuration output (<code>std::cout &lt;&lt; parser</code>).</li>
 <li>Verbosity mode - <code>false</code> by default; if set to <code>true</code> the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.</li>
 <li><a class="el" href="md_docs_2tutorial.html#adding-arguments">Arguments</a> - specify the values/options accepted by the program.</li>
 </ul>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classap_1_1argument__parser.html">ap::argument_parser</a> parser;</div>
 <div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a61647eb07a661640d94d416dff69a9fe">program_name</a>(<span class="stringliteral">&quot;Name of the program&quot;</span>)</div>
+<div class="line">      .<a class="code hl_function" href="classap_1_1argument__parser.html#a015a7f73f193c7e3242434130017e99b">program_version</a>(<span class="stringliteral">&quot;alhpa&quot;</span>)</div>
 <div class="line">      .<a class="code hl_function" href="classap_1_1argument__parser.html#a5935ee955cca241d6d4450326f9a92be">program_description</a>(<span class="stringliteral">&quot;Description of the program&quot;</span>)</div>
 <div class="line">      .<a class="code hl_function" href="classap_1_1argument__parser.html#aa0e0f6e7fff9878c25f8453eab99bd5a">verbose</a>();</div>
-<div class="ttc" id="aclassap_1_1argument__parser_html"><div class="ttname"><a href="classap_1_1argument__parser.html">ap::argument_parser</a></div><div class="ttdoc">Main argument parser class.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00044">argument_parser.hpp:44</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a5935ee955cca241d6d4450326f9a92be"><div class="ttname"><a href="classap_1_1argument__parser.html#a5935ee955cca241d6d4450326f9a92be">ap::argument_parser::program_description</a></div><div class="ttdeci">argument_parser &amp; program_description(std::string_view description) noexcept</div><div class="ttdoc">Set the program description.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00071">argument_parser.hpp:71</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a61647eb07a661640d94d416dff69a9fe"><div class="ttname"><a href="classap_1_1argument__parser.html#a61647eb07a661640d94d416dff69a9fe">ap::argument_parser::program_name</a></div><div class="ttdeci">argument_parser &amp; program_name(std::string_view name) noexcept</div><div class="ttdoc">Set the program name.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00061">argument_parser.hpp:61</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_aa0e0f6e7fff9878c25f8453eab99bd5a"><div class="ttname"><a href="classap_1_1argument__parser.html#aa0e0f6e7fff9878c25f8453eab99bd5a">ap::argument_parser::verbose</a></div><div class="ttdeci">argument_parser &amp; verbose(const bool v=true) noexcept</div><div class="ttdoc">Set the verbosity mode.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00082">argument_parser.hpp:82</a></div></div>
-</div><!-- fragment --><p><br  />
+<div class="ttc" id="aclassap_1_1argument__parser_html"><div class="ttname"><a href="classap_1_1argument__parser.html">ap::argument_parser</a></div><div class="ttdoc">Main argument parser class.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00045">argument_parser.hpp:45</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a015a7f73f193c7e3242434130017e99b"><div class="ttname"><a href="classap_1_1argument__parser.html#a015a7f73f193c7e3242434130017e99b">ap::argument_parser::program_version</a></div><div class="ttdeci">argument_parser &amp; program_version(const version &amp;version) noexcept</div><div class="ttdoc">Set the program version.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00072">argument_parser.hpp:72</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a5935ee955cca241d6d4450326f9a92be"><div class="ttname"><a href="classap_1_1argument__parser.html#a5935ee955cca241d6d4450326f9a92be">ap::argument_parser::program_description</a></div><div class="ttdeci">argument_parser &amp; program_description(std::string_view description) noexcept</div><div class="ttdoc">Set the program description.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00092">argument_parser.hpp:92</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a61647eb07a661640d94d416dff69a9fe"><div class="ttname"><a href="classap_1_1argument__parser.html#a61647eb07a661640d94d416dff69a9fe">ap::argument_parser::program_name</a></div><div class="ttdeci">argument_parser &amp; program_name(std::string_view name) noexcept</div><div class="ttdoc">Set the program name.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00062">argument_parser.hpp:62</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_aa0e0f6e7fff9878c25f8453eab99bd5a"><div class="ttname"><a href="classap_1_1argument__parser.html#aa0e0f6e7fff9878c25f8453eab99bd5a">ap::argument_parser::verbose</a></div><div class="ttdeci">argument_parser &amp; verbose(const bool v=true) noexcept</div><div class="ttdoc">Set the verbosity mode.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00103">argument_parser.hpp:103</a></div></div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
+<p>You can specify the program version using a string (like in the example above) or using the <code><a class="el" href="structap_1_1version.html" title="A helper structure used to represent a program&#39;s version.">ap::version</a></code> structure:</p>
+<div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a015a7f73f193c7e3242434130017e99b">program_version</a>({0u, 0u, 0u})</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a015a7f73f193c7e3242434130017e99b">program_version</a>({ .major = 1u, .minor = 1u, .patch = 1u });</div>
+<div class="line"><a class="code hl_struct" href="structap_1_1version.html">ap::version</a> ver{2u, 2u, 2u};</div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a015a7f73f193c7e3242434130017e99b">program_version</a>(ver);</div>
+<div class="ttc" id="astructap_1_1version_html"><div class="ttname"><a href="structap_1_1version.html">ap::version</a></div><div class="ttdoc">A helper structure used to represent a program's version.</div><div class="ttdef"><b>Definition</b> <a href="version_8hpp_source.html#l00013">version.hpp:13</a></div></div>
+</div><!-- fragment --><p><b>NOTE:</b> The <code><a class="el" href="structap_1_1version.html" title="A helper structure used to represent a program&#39;s version.">ap::version</a></code> struct</p><ul>
+<li>contains the three members - <code>major</code>, <code>minor</code>, <code>patch</code> - all of which are of type <code>std::uint32_t</code>,</li>
+<li>defines a <code>std::string str() const</code> method which returns a <code>v{major}.{minor}.{path}</code> version string,</li>
+<li>defines the <code>std::ostream&amp; operator&lt;&lt;</code> for stream insertion. </li>
+</ul>
+</blockquote>
+<p><br  />
  <br  />
  <br  />
 </p>
@@ -235,7 +255,7 @@ Adding Arguments</h1>
 <div class="line"><span class="comment">      .nargs(0)</span></div>
 <div class="line"><span class="comment">      .help(&quot;enables option: some option&quot;);</span></div>
 <div class="line"><span class="comment">*/</span></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a12e254d8a9ebf60f26b5e67230edcc9e"><div class="ttname"><a href="classap_1_1argument__parser.html#a12e254d8a9ebf60f26b5e67230edcc9e">ap::argument_parser::add_flag</a></div><div class="ttdeci">argument::optional&lt; bool &gt; &amp; add_flag(const std::string_view name, const detail::argument_name_discriminator name_discr=n_primary)</div><div class="ttdoc">Adds a boolean flag argument (an optional argument with value_type = bool) to the parser's configurat...</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00252">argument_parser.hpp:252</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a12e254d8a9ebf60f26b5e67230edcc9e"><div class="ttname"><a href="classap_1_1argument__parser.html#a12e254d8a9ebf60f26b5e67230edcc9e">ap::argument_parser::add_flag</a></div><div class="ttdeci">argument::optional&lt; bool &gt; &amp; add_flag(const std::string_view name, const detail::argument_name_discriminator name_discr=n_primary)</div><div class="ttdoc">Adds a boolean flag argument (an optional argument with value_type = bool) to the parser's configurat...</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00274">argument_parser.hpp:274</a></div></div>
 </div><!-- fragment --><p>Boolean flags store <code>true</code> by default but you can specify whether the flag should store <code>true</code> or <code>false</code> when used:</p>
 <div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a12e254d8a9ebf60f26b5e67230edcc9e">add_flag</a>&lt;<span class="keyword">false</span>&gt;(<span class="stringliteral">&quot;disable_another_option&quot;</span>, <span class="stringliteral">&quot;dao&quot;</span>).help(<span class="stringliteral">&quot;disables option: another option&quot;</span>);</div>
 <div class="line"><span class="comment">/* equivalent to:</span></div>
@@ -250,7 +270,7 @@ Adding Arguments</h1>
 <p>While passing a primary name is required for creating positional arguments, optional arguments (and flags) can be initialized using only a secondary name as follows:</p>
 <div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">add_optional_argument</a>(<span class="stringliteral">&quot;a&quot;</span>, ap::n_secondary);</div>
 <div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a12e254d8a9ebf60f26b5e67230edcc9e">add_flag</a>(<span class="stringliteral">&quot;f&quot;</span>, ap::n_secondary);</div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a1b4001bc6133381dd633a80e308e7aea"><div class="ttname"><a href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">ap::argument_parser::add_optional_argument</a></div><div class="ttdeci">argument::optional&lt; T &gt; &amp; add_optional_argument(const std::string_view name, const detail::argument_name_discriminator name_discr=n_primary)</div><div class="ttdoc">Adds a positional argument to the parser's configuration.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00195">argument_parser.hpp:195</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a1b4001bc6133381dd633a80e308e7aea"><div class="ttname"><a href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">ap::argument_parser::add_optional_argument</a></div><div class="ttdeci">argument::optional&lt; T &gt; &amp; add_optional_argument(const std::string_view name, const detail::argument_name_discriminator name_discr=n_primary)</div><div class="ttdoc">Adds a positional argument to the parser's configuration.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00216">argument_parser.hpp:216</a></div></div>
 </div><!-- fragment --> </blockquote>
 <p><br  />
  <br  />
@@ -265,7 +285,7 @@ Common Parameters</h2>
 1. <code>help</code> - The argument's description which will be printed when printing the parser class instance.</h3>
 <div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#ab91f6e1e72affd1f0bc11f084b4dda4d">add_positional_argument</a>&lt;std::size_t&gt;(<span class="stringliteral">&quot;number&quot;</span>, <span class="stringliteral">&quot;n&quot;</span>)</div>
 <div class="line">      .help(<span class="stringliteral">&quot;a positive integer value&quot;</span>);</div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_ab91f6e1e72affd1f0bc11f084b4dda4d"><div class="ttname"><a href="classap_1_1argument__parser.html#ab91f6e1e72affd1f0bc11f084b4dda4d">ap::argument_parser::add_positional_argument</a></div><div class="ttdeci">argument::positional&lt; T &gt; &amp; add_positional_argument(const std::string_view primary_name)</div><div class="ttdoc">Adds a positional argument to the parser's configuration.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00145">argument_parser.hpp:145</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_ab91f6e1e72affd1f0bc11f084b4dda4d"><div class="ttname"><a href="classap_1_1argument__parser.html#ab91f6e1e72affd1f0bc11f084b4dda4d">ap::argument_parser::add_positional_argument</a></div><div class="ttdeci">argument::positional&lt; T &gt; &amp; add_positional_argument(const std::string_view primary_name)</div><div class="ttdoc">Adds a positional argument to the parser's configuration.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00166">argument_parser.hpp:166</a></div></div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description"></a>
 2. <code>hidden</code> - If this option is set for an argument, then it will not be included in the program description.</h3>
 <p>By default all arguments are visible, but this can be modified using the <code>hidden(bool)</code> setter as follows:</p>
@@ -291,8 +311,8 @@ Common Parameters</h2>
 <div class="line"><span class="comment"></span> </div>
 <div class="line"><span class="comment">  --help, -h : Display the help message</span></div>
 <div class="line"><span class="comment">  --visible  : A simple visible argument</span></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_aa17bf6579d8343e8e593e43f105f64fc"><div class="ttname"><a href="classap_1_1argument__parser.html#aa17bf6579d8343e8e593e43f105f64fc">ap::argument_parser::default_optional_arguments</a></div><div class="ttdeci">argument_parser &amp; default_optional_arguments(const AR &amp;arg_discriminator_range) noexcept</div><div class="ttdoc">Set default optional arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00118">argument_parser.hpp:118</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_aabce061e6d7294e4b5b71c6e885fdabe"><div class="ttname"><a href="classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe">ap::argument_parser::try_parse_args</a></div><div class="ttdeci">void try_parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments and exits on error.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00312">argument_parser.hpp:312</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_aa17bf6579d8343e8e593e43f105f64fc"><div class="ttname"><a href="classap_1_1argument__parser.html#aa17bf6579d8343e8e593e43f105f64fc">ap::argument_parser::default_optional_arguments</a></div><div class="ttdeci">argument_parser &amp; default_optional_arguments(const AR &amp;arg_discriminator_range) noexcept</div><div class="ttdoc">Set default optional arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00139">argument_parser.hpp:139</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_aabce061e6d7294e4b5b71c6e885fdabe"><div class="ttname"><a href="classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe">ap::argument_parser::try_parse_args</a></div><div class="ttdeci">void try_parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments and exits on error.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00334">argument_parser.hpp:334</a></div></div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown"></a>
 3. <code>required</code> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.</h3>
 <blockquote class="doxtable">
@@ -336,9 +356,9 @@ Common Parameters</h2>
 <div class="line"><span class="comment">./program                         Parsing error (no value for the input argument)</span></div>
 <div class="line"><span class="comment">./program input.txt               Parsing success; Printing data to stdout</span></div>
 <div class="line"><span class="comment">./program input.txt output.txt    Parsing success; Printing data to the `output.txt` file</span></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a5a51e8b54c96d6bddbeabd9bc4ff7cb7"><div class="ttname"><a href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">ap::argument_parser::value</a></div><div class="ttdeci">T value(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00379">argument_parser.hpp:379</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a6c2a8328773c498294fafd746ce4a364"><div class="ttname"><a href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">ap::argument_parser::has_value</a></div><div class="ttdeci">bool has_value(std::string_view arg_name) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00358">argument_parser.hpp:358</a></div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_af1ba2d20583be8bfa9cfb61eac4b602a"><div class="ttname"><a href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">ap::argument_parser::parse_args</a></div><div class="ttdeci">void parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00285">argument_parser.hpp:285</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a5a51e8b54c96d6bddbeabd9bc4ff7cb7"><div class="ttname"><a href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">ap::argument_parser::value</a></div><div class="ttdeci">T value(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00401">argument_parser.hpp:401</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a6c2a8328773c498294fafd746ce4a364"><div class="ttname"><a href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">ap::argument_parser::has_value</a></div><div class="ttdeci">bool has_value(std::string_view arg_name) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00380">argument_parser.hpp:380</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_af1ba2d20583be8bfa9cfb61eac4b602a"><div class="ttname"><a href="classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a">ap::argument_parser::parse_args</a></div><div class="ttdeci">void parse_args(int argc, char *argv[])</div><div class="ttdoc">Parses the command-line arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00307">argument_parser.hpp:307</a></div></div>
 </div><!-- fragment --><div class="fragment"><div class="line"><span class="comment">// example: optional arguments</span></div>
 <div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">add_optional_argument</a>(<span class="stringliteral">&quot;input&quot;</span>, <span class="stringliteral">&quot;i&quot;</span>).required();</div>
 <div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">add_optional_argument</a>(<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>);</div>
@@ -399,7 +419,7 @@ Common Parameters</h2>
 <div class="line"><span class="comment">// `output` is not guaranteed to have a value at this point</span></div>
 <div class="line">std::ofstream os(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>(<span class="stringliteral">&quot;output&quot;</span>));</div>
 <div class="line">os &lt;&lt; data &lt;&lt; std::endl;</div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_ae42161f9323643d6b6e63d361f974325"><div class="ttname"><a href="classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325">ap::argument_parser::count</a></div><div class="ttdeci">std::size_t count(std::string_view arg_name) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00367">argument_parser.hpp:367</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_ae42161f9323643d6b6e63d361f974325"><div class="ttname"><a href="classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325">ap::argument_parser::count</a></div><div class="ttdeci">std::size_t count(std::string_view arg_name) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00389">argument_parser.hpp:389</a></div></div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md5-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed"></a>
 5. <code>default_value</code> - The default value for an argument which will be used if no values for this argument are parsed</h3>
 <blockquote class="doxtable">
@@ -625,7 +645,7 @@ Default Arguments</h1>
 <div class="line"> </div>
 <div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a0236f5dc871f7794a91d38e65210993f">default_positional_arguments</a>({...});</div>
 <div class="line"><span class="comment">// here `...` represents a collection of ap::argument::default_optional values</span></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a0236f5dc871f7794a91d38e65210993f"><div class="ttname"><a href="classap_1_1argument__parser.html#a0236f5dc871f7794a91d38e65210993f">ap::argument_parser::default_positional_arguments</a></div><div class="ttdeci">argument_parser &amp; default_positional_arguments(const AR &amp;arg_discriminator_range) noexcept</div><div class="ttdoc">Set default positional arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00094">argument_parser.hpp:94</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a0236f5dc871f7794a91d38e65210993f"><div class="ttname"><a href="classap_1_1argument__parser.html#a0236f5dc871f7794a91d38e65210993f">ap::argument_parser::default_positional_arguments</a></div><div class="ttdeci">argument_parser &amp; default_positional_arguments(const AR &amp;arg_discriminator_range) noexcept</div><div class="ttdoc">Set default positional arguments.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00115">argument_parser.hpp:115</a></div></div>
 </div><!-- fragment --><blockquote class="doxtable">
 <p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
 <p>These functions work with <code>std::initializer_list</code> and all other <code>std::ranges::range</code> types with the correct value type - <code>ap::argument::default_{positional/optional}</code> </p>
@@ -764,30 +784,28 @@ Parsing Arguments</h1>
 <div class="line"><span class="comment">// compiled with:</span></div>
 <div class="line"><span class="comment">// g++ -o power power.cpp -I &lt;cpp-ap-include-dir&gt; -std=c++20</span></div>
 <div class="ttc" id="aargument__parser_8hpp_html"><div class="ttname"><a href="argument__parser_8hpp.html">argument_parser.hpp</a></div><div class="ttdoc">Main library header file. Defines the argument_parser class.</div></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a80270803f7f3c59c3aeac9f6d33205ce"><div class="ttname"><a href="classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce">ap::argument_parser::values</a></div><div class="ttdeci">std::vector&lt; T &gt; values(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00428">argument_parser.hpp:428</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a80270803f7f3c59c3aeac9f6d33205ce"><div class="ttname"><a href="classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce">ap::argument_parser::values</a></div><div class="ttdeci">std::vector&lt; T &gt; values(std::string_view arg_name) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00450">argument_parser.hpp:450</a></div></div>
 </div><!-- fragment --><h2><a class="anchor" id="argument-parsing-rules"></a>
 Argument Parsing Rules:</h2>
 <ul>
 <li><p class="startli">Positional arguments are parsed first, in the order they were defined in and without a flag.</p>
 <p class="startli">In the example above the first command-line argument must be the value for the <code>positional</code> argument:</p>
 <div class="fragment"><div class="line">./power 2</div>
-<div class="line"># out:</div>
-<div class="line"># no exponent values given</div>
+<div class="line">no exponent values given</div>
 </div><!-- fragment --><div class="fragment"><div class="line">./power</div>
-<div class="line"># out:</div>
-<div class="line"># [ERROR] : No values parsed for a required argument [base]</div>
-<div class="line"># Program: power calculator</div>
-<div class="line">#</div>
-<div class="line">#   Calculates the value of an expression: base ^ exponent</div>
-<div class="line">#</div>
-<div class="line"># Positional arguments:</div>
-<div class="line">#</div>
-<div class="line">#   base : the exponentation base value</div>
-<div class="line">#</div>
-<div class="line"># Optional arguments:</div>
-<div class="line">#</div>
-<div class="line">#   --exponent, -e : the exponent value</div>
-<div class="line">#   --help, -h     : Display the help message</div>
+<div class="line">[ERROR] : No values parsed for a required argument [base]</div>
+<div class="line">Program: power calculator</div>
+<div class="line"> </div>
+<div class="line">  Calculates the value of an expression: base ^ exponent</div>
+<div class="line"> </div>
+<div class="line">Positional arguments:</div>
+<div class="line"> </div>
+<div class="line">  base : the exponentation base value</div>
+<div class="line"> </div>
+<div class="line">Optional arguments:</div>
+<div class="line"> </div>
+<div class="line">  --exponent, -e : the exponent value</div>
+<div class="line">  --help, -h     : Display the help message</div>
 </div><!-- fragment --></li>
 </ul>
 <blockquote class="doxtable">
@@ -795,36 +813,84 @@ Argument Parsing Rules:</h2>
 <p>For each positional argument there must be <b>exactly one value</b>. </p>
 </blockquote>
 <ul>
-<li><p class="startli">Optional arguments are parsed only with a flag:</p>
-<div class="fragment"><div class="line">./power 2 --exponent 1 2 3</div>
-<div class="line"># equivalent to: ./power 2 -e 1 2 3</div>
-<div class="line"># out:</div>
-<div class="line"># 2 ^ 1 = 2</div>
-<div class="line"># 2 ^ 2 = 4</div>
-<div class="line"># 2 ^ 3 = 8</div>
+<li><p class="startli">Optional arguments are parsed only with a flag. The values passed after an argument flag will be treated as the values of the last optional argument that preceeds them. If no argument flag preceeds a value argument, then it will be treated as an <b>unknown</b> value.</p>
+<div class="fragment"><div class="line">./power 2 --exponent 1 2 3 # equivalent to: ./power 2 -e 1 2 3</div>
+<div class="line">2 ^ 1 = 2</div>
+<div class="line">2 ^ 2 = 4</div>
+<div class="line">2 ^ 3 = 8</div>
 </div><!-- fragment --><p class="startli">You can use the flag for each command-line value:</p>
 <div class="fragment"><div class="line">./power 2 -e 1 -e 2 -e 3</div>
 </div><!-- fragment --><p class="startli">Not using a flag will result in an error:</p>
 <div class="fragment"><div class="line">./power 2 1 2 3</div>
-<div class="line"># out:</div>
-<div class="line"># [ERROR] : Failed to deduce the argument for values [1, 2, 3]</div>
-<div class="line"># Program: power calculator</div>
-<div class="line">#</div>
-<div class="line">#   Calculates the value of an expression: base ^ exponent</div>
-<div class="line">#</div>
-<div class="line"># Positional arguments:</div>
-<div class="line">#</div>
-<div class="line">#   base : the exponentation base value</div>
-<div class="line">#</div>
-<div class="line"># Optional arguments:</div>
-<div class="line">#</div>
-<div class="line">#   --exponent, -e : the exponent value</div>
-<div class="line">#   --help, -h     : Display the help message</div>
+<div class="line">[ERROR] : Failed to deduce the argument for values [1, 2, 3]</div>
+<div class="line">Program: power calculator</div>
+<div class="line"> </div>
+<div class="line">  Calculates the value of an expression: base ^ exponent</div>
+<div class="line"> </div>
+<div class="line">Positional arguments:</div>
+<div class="line"> </div>
+<div class="line">  base : the exponentation base value</div>
+<div class="line"> </div>
+<div class="line">Optional arguments:</div>
+<div class="line"> </div>
+<div class="line">  --exponent, -e : the exponent value</div>
+<div class="line">  --help, -h     : Display the help message</div>
 </div><!-- fragment --></li>
 </ul>
 <blockquote class="doxtable">
+<p>&zwj;<span style="color: #fd7e14; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-triangle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Warning:</span></p>
+<p>If an optional argument has the <code>nargs</code> parameter set with an upper bound, then the values that succeed this argument's flag will be assigned to this argument only until the specified upper bound is reached. Further values will be treated as <b>unknown</b> values.</p>
+<p><b>Example:</b></p>
+<div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">add_optional_argument</a>&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;exponent&quot;</span>, <span class="stringliteral">&quot;e&quot;</span>).nargs(ap::nargs::up_to(3))</div>
+</div><!-- fragment --> <div class="fragment"><div class="line">./power 2 -e 1 2 3 4 5</div>
+<div class="line">[ERROR] : Failed to deduce the argument for values [4, 5]</div>
+<div class="line">Program: power calculator</div>
+<div class="line"> </div>
+<div class="line">  Calculates the value of an expression: base ^ exponent</div>
+<div class="line"> </div>
+<div class="line">Positional arguments:</div>
+<div class="line"> </div>
+<div class="line">  base : the exponentation base value</div>
+<div class="line"> </div>
+<div class="line">Optional arguments:</div>
+<div class="line"> </div>
+<div class="line">  --exponent, -e : the exponent value</div>
+<div class="line">  --help, -h     : Display the help message</div>
+</div><!-- fragment --> </blockquote>
+<p><br  />
+</p>
+<h2><a class="anchor" id="compound-arguments"></a>
+Compound Arguments:</h2>
+<p>Compound argument flags are <b>secondary</b> argument flags of which <b>every</b> character matches the secondary name of an optional argument.</p>
+<p>Example:</p>
+<div class="fragment"><div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">add_optional_argument</a>(<span class="stringliteral">&quot;verbose&quot;</span>, <span class="stringliteral">&quot;v&quot;</span>)</div>
+<div class="line">      .nargs(0)</div>
+<div class="line">      .help(<span class="stringliteral">&quot;Increase verbosity level&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a12e254d8a9ebf60f26b5e67230edcc9e">add_flag</a>(<span class="stringliteral">&quot;option&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>)</div>
+<div class="line">      .help(<span class="stringliteral">&quot;Enable an option flag&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">add_optional_argument</a>&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;numbers&quot;</span>, <span class="stringliteral">&quot;n&quot;</span>)</div>
+<div class="line">      .help(<span class="stringliteral">&quot;Provide integer values&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">parser.<a class="code hl_function" href="classap_1_1argument__parser.html#aabce061e6d7294e4b5b71c6e885fdabe">try_parse_args</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;Verbosity level: &quot;</span> &lt;&lt; parser.<a class="code hl_function" href="classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325">count</a>(<span class="stringliteral">&quot;verbose&quot;</span>)</div>
+<div class="line">          &lt;&lt; <span class="stringliteral">&quot;\nOption used: &quot;</span> &lt;&lt; std::boolalpha &lt;&lt; parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>&lt;<span class="keywordtype">bool</span>&gt;(<span class="stringliteral">&quot;use-option&quot;</span>)</div>
+<div class="line">          &lt;&lt; <span class="stringliteral">&quot;\nNumbers: &quot;</span> &lt;&lt; join(parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a80270803f7f3c59c3aeac9f6d33205ce">values</a>&lt;<span class="keywordtype">int</span>&gt;(<span class="stringliteral">&quot;numbers&quot;</span>), <span class="stringliteral">&quot;, &quot;</span>) <span class="comment">// join is an imaginary function :)</span></div>
+<div class="line">          &lt;&lt; std::endl;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment">&gt; ./program -vvon 1 2 3</span></div>
+<div class="line"><span class="comment">Verbosity level: 2</span></div>
+<div class="line"><span class="comment">Option used: true</span></div>
+<div class="line"><span class="comment">Numbers: 1, 2, 3</span></div>
+</div><!-- fragment --><blockquote class="doxtable">
 <p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span></p>
-<p>The parser's behavior depends on the argument definitions - see <a class="el" href="md_docs_2tutorial.html#argument-parameters">Argument Parameters</a> section. </p>
+<ul>
+<li>If there exists an argument whose secondary name matches a possible compound of other arguments, the parser will still treat the flag as a flag of the <b>single matching argument</b>, not as multiple flags.</li>
+<li>The argument parser will try to assign the values following a compound argument flag to the argument represented by the <b>last character</b> of the compound flag. </li>
+</ul>
 </blockquote>
 <p><br  />
  <br  />
@@ -835,7 +901,7 @@ Retrieving Argument Values</h1>
 <p>You can retrieve the argument's value with:</p>
 <div class="fragment"><div class="line">(<span class="keyword">const</span>) <span class="keyword">auto</span> value = parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a5a51e8b54c96d6bddbeabd9bc4ff7cb7">value</a>&lt;value_type&gt;(<span class="stringliteral">&quot;argument_name&quot;</span>); <span class="comment">// (1)</span></div>
 <div class="line">(<span class="keyword">const</span>) <span class="keyword">auto</span> value = parser.<a class="code hl_function" href="classap_1_1argument__parser.html#a6b47a2a3db577ef0ea8c00264de480a9">value_or</a>&lt;value_type&gt;(<span class="stringliteral">&quot;argument_name&quot;</span>, fallback_value); <span class="comment">// (2)</span></div>
-<div class="ttc" id="aclassap_1_1argument__parser_html_a6b47a2a3db577ef0ea8c00264de480a9"><div class="ttname"><a href="classap_1_1argument__parser.html#a6b47a2a3db577ef0ea8c00264de480a9">ap::argument_parser::value_or</a></div><div class="ttdeci">T value_or(std::string_view arg_name, U &amp;&amp;fallback_value) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00402">argument_parser.hpp:402</a></div></div>
+<div class="ttc" id="aclassap_1_1argument__parser_html_a6b47a2a3db577ef0ea8c00264de480a9"><div class="ttname"><a href="classap_1_1argument__parser.html#a6b47a2a3db577ef0ea8c00264de480a9">ap::argument_parser::value_or</a></div><div class="ttdeci">T value_or(std::string_view arg_name, U &amp;&amp;fallback_value) const</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00424">argument_parser.hpp:424</a></div></div>
 </div><!-- fragment --><ol type="1">
 <li><p class="startli">This will return the value parsed for the given argument.</p>
 <p class="startli">For optional arguments this will return the argument's predefined value if no value has been parsed. Additionaly, if more than one value has been parsed for an optional argument, this function will return the first parsed value.</p>
@@ -864,7 +930,7 @@ Examples</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Aug 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

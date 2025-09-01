@@ -15,10 +15,11 @@ var searchData=
   ['common_20parameters_12',['Common Parameters',['../md_docs_2tutorial.html#common-parameters',1,'']]],
   ['compatibilty_13',['Compiler Compatibilty',['../index.html#compiler-compatibilty',1,'']]],
   ['compiler_20compatibilty_14',['Compiler Compatibilty',['../index.html#compiler-compatibilty',1,'']]],
-  ['concepts_2ehpp_15',['concepts.hpp',['../concepts_8hpp.html',1,'']]],
-  ['contains_5fwhitespaces_16',['contains_whitespaces',['../str__utility_8hpp.html#a6749a728cc77fc609217b81f73f4d5f4',1,'ap::detail']]],
-  ['convertible_17',['convertible',['../concepts_8hpp.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3',1,'ap::detail']]],
-  ['count_18',['count',['../classap_1_1detail_1_1argument__base.html#a43fff665c9ed0098adf83cb6b3074b75',1,'ap::detail::argument_base::count()'],['../classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325',1,'ap::argument_parser::count()']]],
-  ['count_5ftype_19',['count_type',['../classap_1_1argument_1_1optional.html#acec142f46ef9d5af8d20ed1de560e6da',1,'ap::argument::optional']]],
-  ['cpp_20ap_20',['cpp ap',['../index.html',1,'CPP-AP'],['../md_docs_2tutorial.html#setting-up-cpp-ap',1,'Setting Up CPP-AP']]]
+  ['compound_20arguments_3a_15',['Compound Arguments:',['../md_docs_2tutorial.html#compound-arguments',1,'']]],
+  ['concepts_2ehpp_16',['concepts.hpp',['../concepts_8hpp.html',1,'']]],
+  ['contains_5fwhitespaces_17',['contains_whitespaces',['../str__utility_8hpp.html#a6749a728cc77fc609217b81f73f4d5f4',1,'ap::detail']]],
+  ['convertible_18',['convertible',['../concepts_8hpp.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3',1,'ap::detail']]],
+  ['count_19',['count',['../classap_1_1detail_1_1argument__base.html#a43fff665c9ed0098adf83cb6b3074b75',1,'ap::detail::argument_base::count()'],['../classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325',1,'ap::argument_parser::count()']]],
+  ['count_5ftype_20',['count_type',['../classap_1_1argument_1_1optional.html#acec142f46ef9d5af8d20ed1de560e6da',1,'ap::argument::optional']]],
+  ['cpp_20ap_21',['cpp ap',['../index.html',1,'CPP-AP'],['../md_docs_2tutorial.html#setting-up-cpp-ap',1,'Setting Up CPP-AP']]]
 ];
