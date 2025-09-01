@@ -822,41 +822,37 @@ int main(int argc, char* argv[]) {
 
   ```shell
   ./power 2
-  # out:
-  # no exponent values given
+  no exponent values given
   ```
 
   ```shell
   ./power
-  # out:
-  # [ERROR] : No values parsed for a required argument [base]
-  # Program: power calculator
-  #
-  #   Calculates the value of an expression: base ^ exponent
-  #
-  # Positional arguments:
-  #
-  #   base : the exponentation base value
-  #
-  # Optional arguments:
-  #
-  #   --exponent, -e : the exponent value
-  #   --help, -h     : Display the help message
+  [ERROR] : No values parsed for a required argument [base]
+  Program: power calculator
+
+    Calculates the value of an expression: base ^ exponent
+
+  Positional arguments:
+
+    base : the exponentation base value
+
+  Optional arguments:
+
+    --exponent, -e : the exponent value
+    --help, -h     : Display the help message
   ```
 
 > [!IMPORTANT]
 >
 > For each positional argument there must be **exactly one value**.
 
-- Optional arguments are parsed only with a flag:
+- Optional arguments are parsed only with a flag. The values passed after an argument flag will be treated as the values of the last optional argument that preceeds them. If no argument flag preceeds a value argument, then it will be treated as an **unknown** value.
 
   ```shell
-  ./power 2 --exponent 1 2 3
-  # equivalent to: ./power 2 -e 1 2 3
-  # out:
-  # 2 ^ 1 = 2
-  # 2 ^ 2 = 4
-  # 2 ^ 3 = 8
+  ./power 2 --exponent 1 2 3 # equivalent to: ./power 2 -e 1 2 3
+  2 ^ 1 = 2
+  2 ^ 2 = 4
+  2 ^ 3 = 8
   ```
 
   You can use the flag for each command-line value:
@@ -869,31 +865,83 @@ int main(int argc, char* argv[]) {
 
   ```shell
   ./power 2 1 2 3
-  # out:
-  # [ERROR] : Failed to deduce the argument for values [1, 2, 3]
-  # Program: power calculator
-  #
-  #   Calculates the value of an expression: base ^ exponent
-  #
-  # Positional arguments:
-  #
-  #   base : the exponentation base value
-  #
-  # Optional arguments:
-  #
-  #   --exponent, -e : the exponent value
-  #   --help, -h     : Display the help message
+  [ERROR] : Failed to deduce the argument for values [1, 2, 3]
+  Program: power calculator
+
+    Calculates the value of an expression: base ^ exponent
+
+  Positional arguments:
+
+    base : the exponentation base value
+
+  Optional arguments:
+
+    --exponent, -e : the exponent value
+    --help, -h     : Display the help message
   ```
 
-> [!IMPORTANT]
+> [!WARNING]
 >
-> The parser's behavior depends on the argument definitions - see [Argument Parameters](#argument-parameters) section.
+> If an optional argument has the `nargs` parameter set with an upper bound, then the values that succeed this argument's flag will be assigned to this argument only until the specified upper bound is reached. Further values will be treated as **unknown** values.
+>
+> **Example:**
+>
+> ```cpp
+> parser.add_optional_argument<int>("exponent", "e").nargs(ap::nargs::up_to(3))
+> ```
+> ```shell
+> ./power 2 -e 1 2 3 4 5
+> [ERROR] : Failed to deduce the argument for values [4, 5]
+> Program: power calculator
+>
+>   Calculates the value of an expression: base ^ exponent
+>
+> Positional arguments:
+>
+>   base : the exponentation base value
+>
+> Optional arguments:
+>
+>   --exponent, -e : the exponent value
+>   --help, -h     : Display the help message
+> ```
 
 <br />
 
 ### Compound Arguments:
 
-TODO
+Compound argument flags are **secondary** argument flags of which **every** character matches the secondary name of an optional argument.
+
+Example:
+
+```cpp
+parser.add_optional_argument("verbose", "v")
+      .nargs(0)
+      .help("Increase verbosity level");
+
+parser.add_flag("option", "o")
+      .help("Enable an option flag");
+
+parser.add_optional_argument<int>("numbers", "n")
+      .help("Provide integer values");
+
+parser.try_parse_args(argc, argv);
+
+std::cout << "Verbosity level: " << parser.count("verbose")
+          << "\nOption used: " << std::boolalpha << parser.value<bool>("use-option")
+          << "\nNumbers: " << join(parser.values<int>("numbers"), ", ") // join is an imaginary function :)
+          << std::endl;
+
+/*
+> ./program -vvon 1 2 3
+Verbosity level: 2
+Option used: true
+Numbers: 1, 2, 3
+```
+
+> [!IMPORTANT]
+>
+> The argument parser will try to assign the values following a compound argument flag to the argument represented by the last character of the compound flag.
 
 <br/>
 <br/>
