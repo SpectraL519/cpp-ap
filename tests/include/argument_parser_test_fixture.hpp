@@ -128,7 +128,7 @@ struct argument_parser_test_fixture {
         return arg_tokens;
     }
 
-    // argument_parser private function accessors
+    // argument_parser private member accessors
     [[nodiscard]] const std::optional<std::string>& get_program_name() const {
         return sut._program_name;
     }
@@ -137,6 +137,11 @@ struct argument_parser_test_fixture {
         return sut._program_description;
     }
 
+    [[nodiscard]] const std::optional<std::string>& get_program_version() const {
+        return sut._program_version;
+    }
+
+    // private function callers
     [[nodiscard]] arg_token_list_t tokenize(int argc, char* argv[]) const {
         return sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
     }

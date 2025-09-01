@@ -14,6 +14,7 @@
 #include "argument/positional.hpp"
 #include "detail/argument_token.hpp"
 #include "detail/concepts.hpp"
+#include "version.hpp"
 
 #include <algorithm>
 #include <format>
@@ -59,7 +60,27 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_name(std::string_view name) noexcept {
-        this->_program_name = name;
+        this->_program_name.emplace(name);
+        return *this;
+    }
+
+    /**
+     * @brief Set the program version.
+     * @param version The version of the program.
+     * @return Reference to the argument parser.
+     */
+    argument_parser& program_version(const version& version) noexcept {
+        this->_program_version.emplace(version.str());
+        return *this;
+    }
+
+    /**
+     * @brief Set the program version.
+     * @param version The version of the program.
+     * @return Reference to the argument parser.
+     */
+    argument_parser& program_version(std::string_view version) noexcept {
+        this->_program_version.emplace(version);
         return *this;
     }
 
@@ -69,7 +90,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_description(std::string_view description) noexcept {
-        this->_program_description = description;
+        this->_program_description.emplace(description);
         return *this;
     }
 
@@ -457,13 +478,17 @@ public:
      * @param os Output stream.
      */
     void print_config(const bool verbose, std::ostream& os = std::cout) const noexcept {
-        if (this->_program_name)
-            os << "Program: " << this->_program_name.value() << std::endl;
+        if (this->_program_name) {
+            os << "Program: " << this->_program_name.value();
+            if (this->_program_version)
+                os << " (" << this->_program_version.value() << ')';
+            os << '\n';
+        }
 
         if (this->_program_description)
-            os << "\n"
+            os << '\n'
                << std::string(this->_indent_width, ' ') << this->_program_description.value()
-               << std::endl;
+               << '\n';
 
         if (not this->_positional_args.empty()) {
             os << "\nPositional arguments:\n";
@@ -926,6 +951,7 @@ private:
     }
 
     std::optional<std::string> _program_name;
+    std::optional<std::string> _program_version;
     std::optional<std::string> _program_description;
     bool _verbose = false;
 

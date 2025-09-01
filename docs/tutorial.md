@@ -103,16 +103,30 @@ To use the argument parser in your code you need to use the `ap::argument_parser
 
 The parameters you can specify for a parser's instance are:
 
-- Program name and description - used in the parser's configuration output (`std::cout << parser`).
+- The program's name, version and description - used in the parser's configuration output (`std::cout << parser`).
 - Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
 - [Arguments](#adding-arguments) - specify the values/options accepted by the program.
 
 ```cpp
 ap::argument_parser parser;
 parser.program_name("Name of the program")
+      .program_version("alhpa")
       .program_description("Description of the program")
       .verbose();
 ```
+
+> [!TIP]
+>
+> You can specify the program version using a string (like in the example above) or using the `ap::version` structure:
+>
+> ```cpp
+> parser.program_version({ .major = 0u, .minor = 0u, .patch = 0u })
+> ```
+>
+> **NOTE:** The `ap::version` struct
+> - contains the three members - `major`, `minor`, `patch` - all of which are of type `std::uint32_t`,
+> - defines a `std::string str() const` method which returns a `v{major}.{minor}.{path}` version string,
+> - defines the `std::ostream& operator<<` for stream insertion.
 
 <br/>
 <br/>
