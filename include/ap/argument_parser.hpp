@@ -659,7 +659,15 @@ private:
      */
     void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) const {
         auto tok = this->_build_token(arg_value);
-        if (tok.is_flag_token() and not this->_is_valid_flag(tok)) {
+
+        if (not tok.is_flag_token() or this->_is_valid_flag(tok)) {
+            toks.emplace_back(std::move(tok));
+            return;
+        }
+
+        // invalid flag - check for compound secondary flag
+        const auto compound_toks = this->_try_split_compound_flag(tok);
+        if (compound_toks.empty()) { // not a valid compound flag
 #ifdef AP_UNKNOWN_FLAGS_AS_VALUES
             toks.emplace_back(detail::argument_token::t_value, std::string(arg_value));
             return;
@@ -668,7 +676,7 @@ private:
 #endif
         }
 
-        toks.emplace_back(std::move(tok));
+        toks.insert(toks.end(), compound_toks.begin(), compound_toks.end());
     }
 
     /**
@@ -713,6 +721,35 @@ private:
             );
 
         return false;
+    }
+
+    /**
+     * @brief ...
+     * @param
+     * @param
+     * @return
+     */
+    [[nodiscard]] std::vector<detail::argument_token> _try_split_compound_flag(
+        const detail::argument_token& tok
+    ) const noexcept {
+        std::vector<detail::argument_token> compound_toks;
+        compound_toks.reserve(tok.value.size());
+
+        if (tok.type != detail::argument_token::t_flag_secondary)
+            return compound_toks;
+
+        for (const char c : tok.value) {
+            const detail::argument_token ctok{
+                detail::argument_token::t_flag_secondary, std::string(1ull, c)
+            };
+            if (not this->_is_valid_flag(ctok)) {
+                compound_toks.clear();
+                return compound_toks;
+            }
+            compound_toks.emplace_back(std::move(ctok));
+        }
+
+        return compound_toks;
     }
 
     /**
@@ -797,14 +834,11 @@ private:
             case detail::argument_token::t_flag_primary:
                 [[fallthrough]];
             case detail::argument_token::t_flag_secondary: {
-                // TODO: remove
-                if (not unknown_args.empty())
-                    throw parsing_failure::argument_deduction_failure(unknown_args);
-
                 const auto opt_arg_it = this->_find_opt_arg(*token_it);
-                if (opt_arg_it == this->_optional_args.end())
+                if (opt_arg_it == this->_optional_args.end()) {
                     throw parsing_failure::unknown_argument(this->_unstripped_token_value(*token_it)
                     );
+                }
 
                 curr_opt_arg = std::ref(*opt_arg_it);
                 if (not curr_opt_arg->get()->mark_used())
@@ -1000,13 +1034,14 @@ inline void add_default_argument(
     case argument::default_optional::help:
         arg_parser.add_flag("help", "h")
             .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
+            .nargs(0ull)
             .help("Display the help message");
         break;
 
     case argument::default_optional::input:
         arg_parser.add_optional_argument("input", "i")
             .required()
-            .nargs(1)
+            .nargs(1ull)
             .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
@@ -1018,7 +1053,7 @@ inline void add_default_argument(
     case argument::default_optional::multi_input:
         arg_parser.add_optional_argument("input", "i")
             .required()
-            .nargs(ap::nargs::at_least(1))
+            .nargs(ap::nargs::at_least(1ull))
             .action<action_type::observe>(action::check_file_exists())
             .help("Input files paths");
         break;
@@ -1026,7 +1061,7 @@ inline void add_default_argument(
     case argument::default_optional::multi_output:
         arg_parser.add_optional_argument("output", "o")
             .required()
-            .nargs(ap::nargs::at_least(1))
+            .nargs(ap::nargs::at_least(1ull))
             .help("Output files paths");
         break;
     }

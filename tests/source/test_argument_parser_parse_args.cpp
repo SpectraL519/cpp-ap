@@ -857,3 +857,80 @@ TEST_CASE_FIXTURE(
 
     free_argv(argc, argv);
 }
+
+// compound flags
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "argument_parser should throw if an invalid compound flag is used"
+) {
+    // add arguments
+    sut.add_optional_argument("first-arg", "f");
+    sut.add_optional_argument("second-arg", "s");
+    sut.add_optional_argument("third-arg", "t");
+
+    const std::string invalid_flag = "-abc";
+    std::vector<std::string> argv_vec{"program", invalid_flag};
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // parse args
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::unknown_argument(invalid_flag).what(),
+        parsing_failure
+    );
+
+    // validate argument usage counts
+    CHECK_EQ(sut.count("first-arg"), 0ull);
+    CHECK_EQ(sut.count("second-arg"), 0ull);
+    CHECK_EQ(sut.count("third-arg"), 0ull);
+
+    // cleanup
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args, "argument_parser should properly handle valid compound flags"
+) {
+    // add arguments
+    sut.add_optional_argument("first-arg", "f");
+    sut.add_optional_argument("second-arg", "s");
+    sut.add_optional_argument("third-arg", "t");
+
+    std::size_t first_arg_count, second_arg_count, third_arg_count;
+    std::string compound_flag;
+
+    // prepare argc & argv
+    SUBCASE("one usage of each argument") {
+        compound_flag = "-fst";
+        first_arg_count = second_arg_count = third_arg_count = 1ull;
+    }
+    SUBCASE("complex usage") {
+        compound_flag = "-ffstfst";
+        first_arg_count = 3ull;
+        second_arg_count = third_arg_count = 2ull;
+    }
+
+    CAPTURE(first_arg_count);
+    CAPTURE(second_arg_count);
+    CAPTURE(third_arg_count);
+    CAPTURE(compound_flag);
+
+    std::vector<std::string> argv_vec{"program", compound_flag};
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    // validate argument usage counts
+    CHECK_EQ(sut.count("first-arg"), first_arg_count);
+    CHECK_EQ(sut.count("second-arg"), second_arg_count);
+    CHECK_EQ(sut.count("third-arg"), third_arg_count);
+
+    // cleanup
+    free_argv(argc, argv);
+}
