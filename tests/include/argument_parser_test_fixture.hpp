@@ -110,7 +110,7 @@ struct argument_parser_test_fixture {
 
     [[nodiscard]] arg_token_list_t init_arg_tokens(
         std::size_t n_positional_args, std::size_t n_optional_args
-    ) const {
+    ) {
         arg_token_list_t arg_tokens;
         arg_tokens.reserve(get_args_length(n_positional_args, n_optional_args));
 
@@ -119,16 +119,21 @@ struct argument_parser_test_fixture {
 
         for (std::size_t i = 0ull; i < n_optional_args; ++i) {
             const auto arg_idx = n_positional_args + i;
-            arg_tokens.push_back(argument_token{
-                argument_token::t_flag_primary, init_arg_name(arg_idx).primary.value()
-            });
+            const auto arg_name = init_arg_name(arg_idx).primary.value();
+
+            argument_token flag_tok{argument_token::t_flag_primary, arg_name};
+            const auto opt_arg_it = sut._find_opt_arg(flag_tok);
+            if (opt_arg_it != sut._optional_args.end())
+                flag_tok.arg.emplace(*opt_arg_it);
+
+            arg_tokens.push_back(std::move(flag_tok));
             arg_tokens.push_back(argument_token{argument_token::t_value, init_arg_value(arg_idx)});
         }
 
         return arg_tokens;
     }
 
-    // argument_parser private function accessors
+    // argument_parser private member accessors
     [[nodiscard]] const std::optional<std::string>& get_program_name() const {
         return sut._program_name;
     }
@@ -137,7 +142,12 @@ struct argument_parser_test_fixture {
         return sut._program_description;
     }
 
-    [[nodiscard]] arg_token_list_t tokenize(int argc, char* argv[]) const {
+    [[nodiscard]] const std::optional<std::string>& get_program_version() const {
+        return sut._program_version;
+    }
+
+    // private function callers
+    [[nodiscard]] arg_token_list_t tokenize(int argc, char* argv[]) {
         return sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
     }
 

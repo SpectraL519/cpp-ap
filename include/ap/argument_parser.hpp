@@ -14,6 +14,7 @@
 #include "argument/positional.hpp"
 #include "detail/argument_token.hpp"
 #include "detail/concepts.hpp"
+#include "version.hpp"
 
 #include <algorithm>
 #include <format>
@@ -59,7 +60,27 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_name(std::string_view name) noexcept {
-        this->_program_name = name;
+        this->_program_name.emplace(name);
+        return *this;
+    }
+
+    /**
+     * @brief Set the program version.
+     * @param version The version of the program.
+     * @return Reference to the argument parser.
+     */
+    argument_parser& program_version(const version& version) noexcept {
+        this->_program_version.emplace(version.str());
+        return *this;
+    }
+
+    /**
+     * @brief Set the program version.
+     * @param version The version of the program.
+     * @return Reference to the argument parser.
+     */
+    argument_parser& program_version(std::string_view version) noexcept {
+        this->_program_version.emplace(version);
         return *this;
     }
 
@@ -69,7 +90,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_description(std::string_view description) noexcept {
-        this->_program_description = description;
+        this->_program_description.emplace(description);
         return *this;
     }
 
@@ -205,6 +226,7 @@ public:
                 : detail::argument_name{
                       std::nullopt, std::make_optional<std::string>(name), this->_flag_prefix_char
                   };
+
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
@@ -457,13 +479,17 @@ public:
      * @param os Output stream.
      */
     void print_config(const bool verbose, std::ostream& os = std::cout) const noexcept {
-        if (this->_program_name)
-            os << "Program: " << this->_program_name.value() << std::endl;
+        if (this->_program_name) {
+            os << "Program: " << this->_program_name.value();
+            if (this->_program_version)
+                os << " (" << this->_program_version.value() << ')';
+            os << '\n';
+        }
 
         if (this->_program_description)
-            os << "\n"
+            os << '\n'
                << std::string(this->_indent_width, ' ') << this->_program_description.value()
-               << std::endl;
+               << '\n';
 
         if (not this->_positional_args.empty()) {
             os << "\nPositional arguments:\n";
@@ -500,6 +526,7 @@ private:
     using arg_ptr_t = std::unique_ptr<detail::argument_base>;
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
     using arg_ptr_list_iter_t = typename arg_ptr_list_t::iterator;
+    using arg_ptr_opt_t = detail::uptr_opt_t<detail::argument_base>;
     using arg_opt_t = std::optional<std::reference_wrapper<detail::argument_base>>;
     using const_arg_opt_t = std::optional<std::reference_wrapper<const detail::argument_base>>;
 
@@ -614,7 +641,7 @@ private:
      * @return A list of preprocessed command-line argument tokens.
      */
     template <detail::c_sized_range_of<std::string_view, detail::type_validator::convertible> AR>
-    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) const {
+    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) {
         const auto n_args = std::ranges::size(arg_range);
         if (n_args == 0ull)
             return arg_token_list_t{};
@@ -632,9 +659,17 @@ private:
      * @param toks The argument token list to which the processed token(s) will be appended.
      * @param arg_value The command-line argument's value to be processed.
      */
-    void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) const {
+    void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) {
         auto tok = this->_build_token(arg_value);
-        if (tok.is_flag_token() and not this->_is_valid_flag(tok)) {
+
+        if (not tok.is_flag_token() or this->_validate_flag_token(tok)) {
+            toks.emplace_back(std::move(tok));
+            return;
+        }
+
+        // invalid flag - check for compound secondary flag
+        const auto compound_toks = this->_try_split_compound_flag(tok);
+        if (compound_toks.empty()) { // not a valid compound flag
 #ifdef AP_UNKNOWN_FLAGS_AS_VALUES
             toks.emplace_back(detail::argument_token::t_value, std::string(arg_value));
             return;
@@ -643,7 +678,7 @@ private:
 #endif
         }
 
-        toks.emplace_back(std::move(tok));
+        toks.insert(toks.end(), compound_toks.begin(), compound_toks.end());
     }
 
     /**
@@ -673,21 +708,46 @@ private:
 
     /**
      * @brief Check if a flag token is valid based on its value.
-     * @param tok The processed argument token.
-     * @return true if the token's value matches an argument name specified within the parser, false otherwise.
+     * @attention Sets the `arg` member of the token if an argument with the given name (token's value) is present.
+     * @param tok The argument token to validate.
+     * @return true if the given token represents a valid argument flag.
      */
-    [[nodiscard]] bool _is_valid_flag(const detail::argument_token& tok) const noexcept {
-        if (tok.type == detail::argument_token::t_flag_primary)
-            return this->_is_arg_name_used(
-                detail::argument_name{tok.value}, detail::argument_name::m_primary
-            );
+    [[nodiscard]] bool _validate_flag_token(detail::argument_token& tok) noexcept {
+        const auto opt_arg_it = this->_find_opt_arg(tok);
+        if (opt_arg_it == this->_optional_args.end())
+            return false;
 
-        if (tok.type == detail::argument_token::t_flag_secondary)
-            return this->_is_arg_name_used(
-                detail::argument_name{tok.value}, detail::argument_name::m_secondary
-            );
+        tok.arg.emplace(*opt_arg_it);
+        return true;
+    }
 
-        return false;
+    /**
+     * @brief Tries to split a secondary flag token into separate flag token (one for each character of the token's value).
+     * @param tok The token to be processed.
+     * @return A vector of new argument tokens.
+     * @note If ANY of the characters in the token's value does not match an argument, an empty vector will be returned.
+     */
+    [[nodiscard]] std::vector<detail::argument_token> _try_split_compound_flag(
+        const detail::argument_token& tok
+    ) noexcept {
+        std::vector<detail::argument_token> compound_toks;
+        compound_toks.reserve(tok.value.size());
+
+        if (tok.type != detail::argument_token::t_flag_secondary)
+            return compound_toks;
+
+        for (const char c : tok.value) {
+            detail::argument_token ctok{
+                detail::argument_token::t_flag_secondary, std::string(1ull, c)
+            };
+            if (not this->_validate_flag_token(ctok)) {
+                compound_toks.clear();
+                return compound_toks;
+            }
+            compound_toks.emplace_back(std::move(ctok));
+        }
+
+        return compound_toks;
     }
 
     /**
@@ -765,23 +825,14 @@ private:
         const arg_token_list_iterator_t& tokens_end,
         std::vector<std::string_view>& unknown_args
     ) {
-        std::optional<std::reference_wrapper<arg_ptr_t>> curr_opt_arg;
+        arg_ptr_opt_t curr_opt_arg;
 
         while (token_it != tokens_end) {
             switch (token_it->type) {
             case detail::argument_token::t_flag_primary:
                 [[fallthrough]];
             case detail::argument_token::t_flag_secondary: {
-                // TODO: remove
-                if (not unknown_args.empty())
-                    throw parsing_failure::argument_deduction_failure(unknown_args);
-
-                const auto opt_arg_it = this->_find_opt_arg(*token_it);
-                if (opt_arg_it == this->_optional_args.end())
-                    throw parsing_failure::unknown_argument(this->_unstripped_token_value(*token_it)
-                    );
-
-                curr_opt_arg = std::ref(*opt_arg_it);
+                curr_opt_arg = token_it->arg;
                 if (not curr_opt_arg->get()->mark_used())
                     curr_opt_arg.reset();
 
@@ -926,6 +977,7 @@ private:
     }
 
     std::optional<std::string> _program_name;
+    std::optional<std::string> _program_version;
     std::optional<std::string> _program_description;
     bool _verbose = false;
 
@@ -974,13 +1026,14 @@ inline void add_default_argument(
     case argument::default_optional::help:
         arg_parser.add_flag("help", "h")
             .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
+            .nargs(0ull)
             .help("Display the help message");
         break;
 
     case argument::default_optional::input:
         arg_parser.add_optional_argument("input", "i")
             .required()
-            .nargs(1)
+            .nargs(1ull)
             .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
@@ -992,7 +1045,7 @@ inline void add_default_argument(
     case argument::default_optional::multi_input:
         arg_parser.add_optional_argument("input", "i")
             .required()
-            .nargs(ap::nargs::at_least(1))
+            .nargs(ap::nargs::at_least(1ull))
             .action<action_type::observe>(action::check_file_exists())
             .help("Input files paths");
         break;
@@ -1000,7 +1053,7 @@ inline void add_default_argument(
     case argument::default_optional::multi_output:
         arg_parser.add_optional_argument("output", "o")
             .required()
-            .nargs(ap::nargs::at_least(1))
+            .nargs(ap::nargs::at_least(1ull))
             .help("Output files paths");
         break;
     }

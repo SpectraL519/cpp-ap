@@ -450,6 +450,63 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
+// count
+
+TEST_CASE_FIXTURE(test_argument_parser_parse_args, "count should return 0 by default") {
+    add_arguments(n_positional_args, n_optional_args);
+
+    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+        const auto arg_name = init_arg_name(i);
+        CHECK_EQ(sut.count(arg_name.primary.value()), 0ull);
+        CHECK_EQ(sut.count(arg_name.secondary.value()), 0ull);
+    }
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "count should return 0 if there is no argument with given name present"
+) {
+    add_arguments(n_positional_args, n_optional_args);
+    CHECK_EQ(sut.count(invalid_arg_name), 0ull);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args, "count should return the number of argument's flag usage"
+) {
+    // prepare sut
+    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
+    sut.add_optional_argument(optional_primary_name, optional_secondary_name)
+        .nargs(ap::nargs::any());
+
+    // expected values
+    const std::size_t positional_count = 1ull;
+    const std::size_t optional_count = 4ull;
+
+    // prepare argc and argv
+    std::vector<std::string> argv_vec{"program", "positional_arg_value"};
+
+    const std::string optional_arg_flag = "--" + optional_primary_name;
+    const std::string optional_arg_value = optional_primary_name + "_value";
+    for (std::size_t i = 0ull; i < optional_count; ++i) {
+        argv_vec.push_back(optional_arg_flag);
+        if (i % 2ull == 0)
+            argv_vec.push_back(optional_arg_value);
+    }
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    // test count
+    CHECK_EQ(sut.count(positional_primary_name), positional_count);
+    CHECK_EQ(sut.count(optional_primary_name), optional_count);
+
+    // free argv
+    free_argv(argc, argv);
+}
+
 // value
 
 TEST_CASE_FIXTURE(
@@ -664,63 +721,6 @@ TEST_CASE_FIXTURE(
     }
 }
 
-// count
-
-TEST_CASE_FIXTURE(test_argument_parser_parse_args, "count should return 0 by default") {
-    add_arguments(n_positional_args, n_optional_args);
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK_EQ(sut.count(arg_name.primary.value()), 0ull);
-        CHECK_EQ(sut.count(arg_name.secondary.value()), 0ull);
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "count should return 0 if there is no argument with given name present"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-    CHECK_EQ(sut.count(invalid_arg_name), 0ull);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "count should return the number of argument's flag usage"
-) {
-    // prepare sut
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
-    sut.add_optional_argument(optional_primary_name, optional_secondary_name)
-        .nargs(ap::nargs::any());
-
-    // expected values
-    const std::size_t positional_count = 1ull;
-    const std::size_t optional_count = 4ull;
-
-    // prepare argc and argv
-    std::vector<std::string> argv_vec{"program", "positional_arg_value"};
-
-    const std::string optional_arg_flag = "--" + optional_primary_name;
-    const std::string optional_arg_value = optional_primary_name + "_value";
-    for (std::size_t i = 0ull; i < optional_count; ++i) {
-        argv_vec.push_back(optional_arg_flag);
-        if (i % 2ull == 0)
-            argv_vec.push_back(optional_arg_value);
-    }
-
-    const int argc = static_cast<int>(argv_vec.size());
-    auto argv = to_char_2d_array(argv_vec);
-
-    // parse args
-    sut.parse_args(argc, argv);
-
-    // test count
-    CHECK_EQ(sut.count(positional_primary_name), positional_count);
-    CHECK_EQ(sut.count(optional_primary_name), optional_count);
-
-    // free argv
-    free_argv(argc, argv);
-}
-
 // values
 
 TEST_CASE_FIXTURE(
@@ -855,5 +855,82 @@ TEST_CASE_FIXTURE(
     for (std::size_t i = 0ull; i < stored_values.size(); ++i)
         CHECK_EQ(stored_values[i], optional_arg_values[i]);
 
+    free_argv(argc, argv);
+}
+
+// compound flags
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "argument_parser should throw if an invalid compound flag is used"
+) {
+    // add arguments
+    sut.add_optional_argument("first-arg", "f");
+    sut.add_optional_argument("second-arg", "s");
+    sut.add_optional_argument("third-arg", "t");
+
+    const std::string invalid_flag = "-abc";
+    std::vector<std::string> argv_vec{"program", invalid_flag};
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // parse args
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::unknown_argument(invalid_flag).what(),
+        parsing_failure
+    );
+
+    // validate argument usage counts
+    CHECK_EQ(sut.count("first-arg"), 0ull);
+    CHECK_EQ(sut.count("second-arg"), 0ull);
+    CHECK_EQ(sut.count("third-arg"), 0ull);
+
+    // cleanup
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args, "argument_parser should properly handle valid compound flags"
+) {
+    // add arguments
+    sut.add_optional_argument("first-arg", "f");
+    sut.add_optional_argument("second-arg", "s");
+    sut.add_optional_argument("third-arg", "t");
+
+    std::size_t first_arg_count, second_arg_count, third_arg_count;
+    std::string compound_flag;
+
+    // prepare argc & argv
+    SUBCASE("one usage of each argument") {
+        compound_flag = "-fst";
+        first_arg_count = second_arg_count = third_arg_count = 1ull;
+    }
+    SUBCASE("complex usage") {
+        compound_flag = "-ffstfst";
+        first_arg_count = 3ull;
+        second_arg_count = third_arg_count = 2ull;
+    }
+
+    CAPTURE(first_arg_count);
+    CAPTURE(second_arg_count);
+    CAPTURE(third_arg_count);
+    CAPTURE(compound_flag);
+
+    std::vector<std::string> argv_vec{"program", compound_flag};
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    // validate argument usage counts
+    CHECK_EQ(sut.count("first-arg"), first_arg_count);
+    CHECK_EQ(sut.count("second-arg"), second_arg_count);
+    CHECK_EQ(sut.count("third-arg"), third_arg_count);
+
+    // cleanup
     free_argv(argc, argv);
 }

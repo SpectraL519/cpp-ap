@@ -177,7 +177,7 @@ private:
             max_param_name_len = std::max(max_param_name_len, param.name.size());
 
         for (const auto& param : this->params) {
-            oss << "\n"
+            oss << '\n'
                 << std::string(indent_width * 2, ' ') << "- "
                 << std::setw(static_cast<int>(max_param_name_len)) << std::left << param.name
                 << " = " << param.value;

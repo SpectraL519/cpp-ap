@@ -4,10 +4,16 @@
 
 #pragma once
 
+#include <functional>
+#include <memory>
+#include <optional>
 #include <source_location>
 #include <string_view>
 
 namespace ap::detail {
+
+template <typename T>
+using uptr_opt_t = std::optional<std::reference_wrapper<std::unique_ptr<T>>>;
 
 template <typename T>
 constexpr std::string_view get_demangled_type_name() {

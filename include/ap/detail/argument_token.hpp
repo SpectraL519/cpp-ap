@@ -6,13 +6,20 @@
 
 #pragma once
 
+#include "argument_base.hpp"
+#include "typing_utility.hpp"
+
 #include <cstdint>
+#include <functional>
+#include <optional>
 #include <string>
 
 namespace ap::detail {
 
 /// @brief Structure representing a single command-line argument token.
 struct argument_token {
+    using arg_ptr_opt_t = uptr_opt_t<detail::argument_base>;
+
     /// @brief The token type discriminator.
     enum class token_type : std::uint8_t {
         t_flag_primary, ///< Represents the primary (--) flag argument.
@@ -40,6 +47,7 @@ struct argument_token {
 
     token_type type; ///< The token's type discrimiator value.
     std::string value; ///< The actual token's value.
+    arg_ptr_opt_t arg = std::nullopt; ///< The corresponding argument.
 };
 
 } // namespace ap::detail
