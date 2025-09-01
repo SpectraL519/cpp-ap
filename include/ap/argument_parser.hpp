@@ -662,7 +662,7 @@ private:
     void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) {
         auto tok = this->_build_token(arg_value);
 
-        if (not tok.is_flag_token() or this->_is_valid_flag(tok)) {
+        if (not tok.is_flag_token() or this->_validate_flag_token(tok)) {
             toks.emplace_back(std::move(tok));
             return;
         }
@@ -709,10 +709,11 @@ private:
     /**
      * !!! UPDATE
      * @brief Check if a flag token is valid based on its value.
-     * @param tok The processed argument token.
-     * @return true if the token's value matches an argument name specified within the parser, false otherwise.
+     * @attention Sets the `arg` member of the token if an argument with the given name (token's value) is present.
+     * @param tok The argument token to validate.
+     * @return true if the given token represents a valid argument flag.
      */
-    [[nodiscard]] bool _is_valid_flag(detail::argument_token& tok) noexcept {
+    [[nodiscard]] bool _validate_flag_token(detail::argument_token& tok) noexcept {
         const auto opt_arg_it = this->_find_opt_arg(tok);
         if (opt_arg_it == this->_optional_args.end())
             return false;
@@ -722,10 +723,10 @@ private:
     }
 
     /**
-     * @brief ...
-     * @param
-     * @param
-     * @return
+     * @brief Tries to split a secondary flag token into separate flag token (one for each character of the token's value).
+     * @param tok The token to be processed.
+     * @return A vector of new argument tokens.
+     * @note If ANY of the characters in the token's value does not match an argument, an empty vector will be returned.
      */
     [[nodiscard]] std::vector<detail::argument_token> _try_split_compound_flag(
         const detail::argument_token& tok
@@ -740,7 +741,7 @@ private:
             detail::argument_token ctok{
                 detail::argument_token::t_flag_secondary, std::string(1ull, c)
             };
-            if (not this->_is_valid_flag(ctok)) {
+            if (not this->_validate_flag_token(ctok)) {
                 compound_toks.clear();
                 return compound_toks;
             }

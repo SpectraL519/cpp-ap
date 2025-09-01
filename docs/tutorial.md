@@ -10,6 +10,8 @@
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Parsing Arguments](#parsing-arguments)
+  - [Argument Parsing Rules](#argument-parsing-rules)
+  - [Compound Arguments](#compound-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
 - [Examples](#examples)
 
@@ -120,7 +122,10 @@ parser.program_name("Name of the program")
 > You can specify the program version using a string (like in the example above) or using the `ap::version` structure:
 >
 > ```cpp
-> parser.program_version({ .major = 0u, .minor = 0u, .patch = 0u })
+> parser.program_version({0u, 0u, 0u})
+> parser.program_version({ .major = 1u, .minor = 1u, .patch = 1u });
+> ap::version ver{2u, 2u, 2u};
+> parser.program_version(ver);
 > ```
 >
 > **NOTE:** The `ap::version` struct
@@ -883,6 +888,12 @@ int main(int argc, char* argv[]) {
 > [!IMPORTANT]
 >
 > The parser's behavior depends on the argument definitions - see [Argument Parameters](#argument-parameters) section.
+
+<br />
+
+### Compound Arguments:
+
+TODO
 
 <br/>
 <br/>
