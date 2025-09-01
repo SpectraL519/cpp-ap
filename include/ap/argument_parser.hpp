@@ -707,7 +707,6 @@ private:
     }
 
     /**
-     * !!! UPDATE
      * @brief Check if a flag token is valid based on its value.
      * @attention Sets the `arg` member of the token if an argument with the given name (token's value) is present.
      * @param tok The argument token to validate.

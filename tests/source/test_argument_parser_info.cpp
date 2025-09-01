@@ -6,7 +6,7 @@ using namespace ap_testing;
 struct test_argument_parser_info : public argument_parser_test_fixture {
     const std::string test_name = "test program name";
     const std::string test_description = "test program description";
-    const ap::version test_version = {1u, 2u, 3u};
+    const ap::version test_version{1u, 2u, 3u};
     const std::string test_str_version = "alpha";
 };
 

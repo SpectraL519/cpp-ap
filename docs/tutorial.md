@@ -941,7 +941,9 @@ Numbers: 1, 2, 3
 
 > [!IMPORTANT]
 >
-> The argument parser will try to assign the values following a compound argument flag to the argument represented by the last character of the compound flag.
+> - If there exists an argument whose secondary name matches a possible compound of other arguments, the parser will still treat the flag as a flag of the **single matching argument**, not as multiple flags.
+> - The argument parser will try to assign the values following a compound argument flag to the argument represented by the **last character** of the compound flag.
+
 
 <br/>
 <br/>
