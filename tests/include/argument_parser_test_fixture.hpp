@@ -88,34 +88,38 @@ struct argument_parser_test_fixture {
         delete[] argv;
     }
 
+    [[nodiscard]] std::string init_arg_name_primary(const std::size_t i) const {
+        return std::format("test-arg-{}", i);
+    }
+
+    [[nodiscard]] std::string init_arg_name_secondary(const std::size_t i) const {
+        return std::format("ta-{}", i);
+    }
+
     [[nodiscard]] argument_name init_arg_name(
-        std::size_t i, std::optional<char> flag_char = std::nullopt
+        const std::size_t i, std::optional<char> flag_char = std::nullopt
     ) const {
         return argument_name(
-            std::format("test-arg-{}", i), std::format("ta-{}", i), std::move(flag_char)
+            init_arg_name_primary(i), init_arg_name_secondary(i), std::move(flag_char)
         );
     }
 
     template <c_argument_value_type T = std::string, typename F = std::function<void(positional<T>&)>>
     void add_positional_args(const std::size_t n, F&& setup_arg = [](positional<T>&) {}) {
-        for (std::size_t i = 0ull; i < n; ++i) {
-            const auto arg_name = init_arg_name(i);
+        for (std::size_t i = 0ull; i < n; ++i)
             setup_arg(
-                sut.add_positional_argument<T>(arg_name.primary.value(), arg_name.secondary.value())
+                sut.add_positional_argument<T>(init_arg_name_primary(i), init_arg_name_secondary(i))
             );
-        }
     }
 
     template <c_argument_value_type T = std::string, typename F = std::function<void(optional<T>&)>>
     void add_optional_args(
         const std::size_t n, const std::size_t begin_idx, F&& setup_arg = [](optional<T>&) {}
     ) {
-        for (std::size_t i = 0ull; i < n; ++i) {
-            const auto arg_name = init_arg_name(begin_idx + i);
-            setup_arg(
-                sut.add_optional_argument<T>(arg_name.primary.value(), arg_name.secondary.value())
-            );
-        }
+        for (std::size_t i = 0ull; i < n; ++i)
+            setup_arg(sut.add_optional_argument<T>(
+                init_arg_name_primary(begin_idx + i), init_arg_name_secondary(begin_idx + i)
+            ));
     }
 
     template <c_argument_value_type T = std::string>
@@ -135,7 +139,7 @@ struct argument_parser_test_fixture {
 
         for (std::size_t i = 0ull; i < n_optional_args; ++i) {
             const auto arg_idx = n_positional_args + i;
-            const auto arg_name = init_arg_name(arg_idx).primary.value();
+            const auto arg_name = init_arg_name_primary(arg_idx);
 
             argument_token flag_tok{argument_token::t_flag_primary, arg_name};
             const auto opt_arg_it = sut._find_opt_arg(flag_tok);
