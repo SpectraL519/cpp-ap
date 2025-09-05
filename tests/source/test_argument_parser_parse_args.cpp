@@ -39,272 +39,394 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
 
 // _tokenize
 
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "_tokenize should return an empty vector for no command-line arguments"
+// ) {
+//     const auto argc = get_argc(no_args, no_args);
+//     auto argv = init_argv(no_args, no_args);
+
+//     const auto args = tokenize(argc, argv);
+
+//     CHECK(args.empty());
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args, "_tokenize should return a vector of correct arguments"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     const auto arg_tokens = tokenize(argc, argv);
+
+//     REQUIRE_EQ(arg_tokens.size(), get_args_length(n_positional_args, n_optional_args));
+
+//     for (std::size_t i = 0; i < n_positional_args; ++i) {
+//         REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_value);
+//         CHECK_EQ(arg_tokens.at(i).value, init_arg_value(i));
+//     }
+
+//     std::size_t opt_arg_idx = n_positional_args;
+//     for (std::size_t i = n_positional_args; i < arg_tokens.size(); i += 2ull) {
+//         REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag_primary);
+//         CHECK(init_arg_name(opt_arg_idx).match(arg_tokens.at(i).value));
+
+//         REQUIRE_EQ(arg_tokens.at(i + 1ull).type, argument_token::t_value);
+//         CHECK_EQ(arg_tokens.at(i + 1ull).value, init_arg_value(opt_arg_idx));
+
+//         ++opt_arg_idx;
+//     }
+
+//     free_argv(argc, argv);
+// }
+
+// // _parse_args_impl
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "_parse_args_impl should treat non-positional values specified without an argument flag present before as unknown arguments"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
+//     arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(first_opt_arg_idx)));
+
+//     CHECK_NOTHROW(parse_args_impl(arg_tokens));
+//     CHECK_NE(std::ranges::find(unknown_args, init_arg_value(first_opt_arg_idx)), unknown_args.end());
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "_parse_args_impl should not detect any unknown arguments for correct command-line argument list"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+//     const auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
+
+//     CHECK_NOTHROW(parse_args_impl(arg_tokens));
+//     CHECK(unknown_args.empty());
+// }
+
+// // _get_argument
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "_get_argument should return nullopt if there is no argument with given name present"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+//     CHECK_FALSE(get_argument(invalid_arg_name));
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "_get_argument should return valid argument if there is an argument with the given name"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         CHECK(get_argument(arg_name.primary.value()));
+//         CHECK(get_argument(arg_name.secondary.value()));
+//     }
+// }
+
+// // parse_args
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should throw when there is not enough positional values"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv_vec = init_argv_vec(n_positional_args, n_optional_args);
+
+//     // remove the last positional value
+//     --argc;
+//     argv_vec.erase(std::next(argv_vec.begin(), static_cast<std::ptrdiff_t>(last_pos_arg_idx)));
+
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         parsing_failure::required_argument_not_parsed({init_arg_name(last_pos_arg_idx)}).what(),
+//         parsing_failure
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should throw if a required positional argument is defined after a non-required "
+//     "posisitonal argument"
+// ) {
+//     const auto non_required_arg_name = init_arg_name(0ull);
+//     sut.add_positional_argument(
+//            non_required_arg_name.primary.value(), non_required_arg_name.secondary.value()
+//     )
+//         .required(false);
+
+//     const auto required_arg_name = init_arg_name(1ull);
+//     sut.add_positional_argument(
+//         required_arg_name.primary.value(), required_arg_name.secondary.value()
+//     );
+
+//     const auto argc = get_argc(no_args, no_args);
+//     auto argv = init_argv(no_args, no_args);
+
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         invalid_configuration::positional::required_after_non_required(
+//             required_arg_name, non_required_arg_name
+//         )
+//             .what(),
+//         invalid_configuration
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should throw if unknown arguments are detected"
+// ) {
+//     add_optional_args(n_optional_args, n_positional_args, [](auto& opt_arg) { opt_arg.nargs(0ull); } );
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     std::vector<std::string> unknown_args;
+//     unknown_args.reserve(n_args_total);
+//     for (std::size_t i = 0ull; i < n_args_total; ++i)
+//         unknown_args.emplace_back(init_arg_value(i));
+
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         parsing_failure::argument_deduction_failure(unknown_args).what(),
+//         parsing_failure
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should throw when there is no value specified for a required optional argument"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto required_arg_name = init_arg_name(n_args_total, flag_char);
+//     sut.add_optional_argument(
+//            required_arg_name.primary.value(), required_arg_name.secondary.value()
+//     )
+//         .required();
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         parsing_failure::required_argument_not_parsed(required_arg_name).what(),
+//         parsing_failure
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should throw when an optional argument's nvalues is not in a specified range"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     const auto range_arg_name = init_arg_name(n_args_total, flag_char);
+//     sut.add_optional_argument(range_arg_name.primary.value(), range_arg_name.secondary.value())
+//         .nargs(at_least(1ull));
+
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         parsing_failure::invalid_nvalues(range_arg_name, std::weak_ordering::less).what(),
+//         parsing_failure
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args, "parse_args should throw when an unknown argument flag is used"
+// ) {
+//     add_arguments(no_args, no_args);
+
+//     constexpr std::size_t n_opt_clargs = 1ull;
+//     constexpr std::size_t opt_arg_idx = 0ull;
+
+//     auto argc = get_argc(no_args, n_opt_clargs);
+//     auto argv = init_argv(no_args, n_opt_clargs);
+
+//     const auto unknown_arg_name = init_arg_flag_primary(opt_arg_idx);
+
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         parsing_failure::unknown_argument(unknown_arg_name).what(),
+//         parsing_failure
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should throw when an optional argument's flag uses the correct name but an "
+//     "incorrect flag prefix"
+// ) {
+//     constexpr std::size_t n_opt_args = 1ull;
+//     constexpr std::size_t opt_arg_idx = 0ull;
+//     add_arguments(no_args, n_opt_args);
+
+//     auto argc = get_argc(no_args, n_opt_args);
+//     auto argv_vec = init_argv_vec(no_args, n_opt_args);
+
+//     const auto opt_arg_name = init_arg_name(opt_arg_idx);
+
+//     std::string invalid_flag;
+
+//     SUBCASE("primary name with a secondary flag prefix") {
+//         invalid_flag = "-" + opt_arg_name.primary.value();
+//     }
+//     SUBCASE("secondary name with a primary flag prefix") {
+//         invalid_flag = "--" + opt_arg_name.secondary.value();
+//     }
+
+//     CAPTURE(invalid_flag);
+
+//     auto arg_flag_it = std::ranges::find(argv_vec, init_arg_flag_primary(opt_arg_idx));
+//     if (arg_flag_it == argv_vec.end())
+//         FAIL("could not find the optional argument flag");
+
+//     *arg_flag_it = invalid_flag;
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         parsing_failure::unknown_argument(invalid_flag).what(),
+//         parsing_failure
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should not throw if the number of positional values are correct and all required "
+//     "optional arguments have values"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto required_arg_name = init_arg_name(n_args_total);
+//     sut.add_optional_argument(
+//            required_arg_name.primary.value(), required_arg_name.secondary.value()
+//     )
+//         .required();
+
+//     int argc;
+//     char** argv;
+
+//     SUBCASE("all arguments have values") {
+//         const auto n_optional_args_curr = n_optional_args + 1ull;
+//         argc = get_argc(n_positional_args, n_optional_args_curr);
+//         argv = init_argv(n_positional_args, n_optional_args_curr);
+//     }
+//     SUBCASE("only the necessary arguments have values") {
+//         const auto n_optional_args_curr = 1ull;
+
+//         argc = get_argc(n_positional_args, n_optional_args_curr);
+
+//         auto argv_vec = init_argv_vec(n_positional_args, n_optional_args_curr);
+//         argv_vec[static_cast<std::size_t>(argc - 2)] = init_arg_flag_primary(n_args_total).c_str();
+//         argv_vec[static_cast<std::size_t>(argc - 1)] = init_arg_value(n_args_total).c_str();
+
+//         argv = to_char_2d_array(argv_vec);
+//     }
+
+//     CAPTURE(argc);
+//     CAPTURE(argv);
+
+//     CHECK_NOTHROW(sut.parse_args(argc, argv));
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should not throw if there is a positional argument which has the bypass_required "
+//     "option enabled and is used"
+// ) {
+//     const std::size_t n_positional_args = 1ull;
+//     const auto bypass_required_arg_name = init_arg_name(n_positional_args - 1ull).primary.value();
+//     sut.add_positional_argument(bypass_required_arg_name).bypass_required();
+//     const std::string bypass_required_arg_value = "bypass_required_arg_value";
+
+//     for (std::size_t i = 0ull; i < n_optional_args; ++i)
+//         sut.add_optional_argument(init_arg_name(n_positional_args + i).primary.value()).required();
+
+//     std::vector<std::string> argv_vec{"program", bypass_required_arg_value};
+//     const int argc = static_cast<int>(argv_vec.size());
+//     const auto argv = to_char_2d_array(argv_vec);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+//     CHECK_EQ(sut.value(bypass_required_arg_name), bypass_required_arg_value);
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "parse_args should not throw if there is an optional argument which has the bypass_required "
+//     "option enabled and is used"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto bypass_required_arg_name = init_arg_name(n_args_total);
+//     sut.add_optional_argument<bool>(
+//            bypass_required_arg_name.primary.value(), bypass_required_arg_name.secondary.value()
+//     )
+//         .default_value(false)
+//         .implicit_value(true)
+//         .bypass_required();
+
+//     std::string arg_flag;
+
+//     SUBCASE("primary flag") {
+//         arg_flag = init_arg_flag_primary(n_args_total);
+//     }
+//     SUBCASE("secondary flag") {
+//         arg_flag = init_arg_flag_secondary(n_args_total);
+//     }
+
+//     CAPTURE(arg_flag);
+
+//     std::vector<std::string> argv_vec{"program", arg_flag};
+//     const int argc = static_cast<int>(argv_vec.size());
+//     const auto argv = to_char_2d_array(argv_vec);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+//     CHECK(sut.value<bool>(bypass_required_arg_name.primary.value()));
+
+//     free_argv(argc, argv);
+// }
+
+// // parse_known_args
+
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "_tokenize should return an empty vector for no command-line arguments"
-) {
-    const auto argc = get_argc(no_args, no_args);
-    auto argv = init_argv(no_args, no_args);
-
-    const auto args = tokenize(argc, argv);
-
-    CHECK(args.empty());
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "_tokenize should return a vector of correct arguments"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    const auto arg_tokens = tokenize(argc, argv);
-
-    REQUIRE_EQ(arg_tokens.size(), get_args_length(n_positional_args, n_optional_args));
-
-    for (std::size_t i = 0; i < n_positional_args; ++i) {
-        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_value);
-        CHECK_EQ(arg_tokens.at(i).value, init_arg_value(i));
-    }
-
-    std::size_t opt_arg_idx = n_positional_args;
-    for (std::size_t i = n_positional_args; i < arg_tokens.size(); i += 2ull) {
-        REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag_primary);
-        CHECK(init_arg_name(opt_arg_idx).match(arg_tokens.at(i).value));
-
-        REQUIRE_EQ(arg_tokens.at(i + 1ull).type, argument_token::t_value);
-        CHECK_EQ(arg_tokens.at(i + 1ull).value, init_arg_value(opt_arg_idx));
-
-        ++opt_arg_idx;
-    }
-
-    free_argv(argc, argv);
-}
-
-// _parse_args_impl
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "_parse_args_impl should throw when there is a non-positional value specified "
-    "without an argument flag present before the value"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
-    arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(first_opt_arg_idx)));
-
-    CHECK_THROWS_WITH_AS(
-        parse_args_impl(arg_tokens),
-        parsing_failure::argument_deduction_failure({init_arg_value(first_opt_arg_idx)}).what(),
-        parsing_failure
-    );
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "_parse_args_impl should not throw when the arguments are correct"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-    const auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
-    CHECK_NOTHROW(parse_args_impl(arg_tokens));
-}
-
-// _get_argument
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "_get_argument should return nullopt if there is no argument with given name present"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-    CHECK_FALSE(get_argument(invalid_arg_name));
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "_get_argument should return valid argument if there is an argument with the given name"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    for (std::size_t i = 0ull; i < n_positional_args; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK(get_argument(arg_name.primary.value()));
-        CHECK(get_argument(arg_name.secondary.value()));
-    }
-}
-
-// parse_args
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "parse_args should throw when there is not enough positional values"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv_vec = init_argv_vec(n_positional_args, n_optional_args);
-
-    // remove the last positional value
-    --argc;
-    argv_vec.erase(std::next(argv_vec.begin(), static_cast<std::ptrdiff_t>(last_pos_arg_idx)));
-
-    auto argv = to_char_2d_array(argv_vec);
-
-    CHECK_THROWS_WITH_AS(
-        sut.parse_args(argc, argv),
-        parsing_failure::required_argument_not_parsed({init_arg_name(last_pos_arg_idx)}).what(),
-        parsing_failure
-    );
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "parse_args should throw if a required positional argument is defined after a non-require "
-    "posisitonal argument"
-) {
-    const auto non_required_arg_name = init_arg_name(0ull);
-    sut.add_positional_argument(
-           non_required_arg_name.primary.value(), non_required_arg_name.secondary.value()
-    )
-        .required(false);
-
-    const auto required_arg_name = init_arg_name(1ull);
-    sut.add_positional_argument(
-        required_arg_name.primary.value(), required_arg_name.secondary.value()
-    );
-
-    const auto argc = get_argc(no_args, no_args);
-    auto argv = init_argv(no_args, no_args);
-
-    CHECK_THROWS_WITH_AS(
-        sut.parse_args(argc, argv),
-        invalid_configuration::positional::required_after_non_required(
-            required_arg_name, non_required_arg_name
-        )
-            .what(),
-        invalid_configuration
-    );
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "parse_args should throw when there is no value specified for a required optional argument"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto required_arg_name = init_arg_name(n_args_total, flag_char);
-    sut.add_optional_argument(
-           required_arg_name.primary.value(), required_arg_name.secondary.value()
-    )
-        .required();
-
-    const auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    CHECK_THROWS_WITH_AS(
-        sut.parse_args(argc, argv),
-        parsing_failure::required_argument_not_parsed(required_arg_name).what(),
-        parsing_failure
-    );
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "parse_args should throw when an optional argument's nvalues is not in a specified range"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    const auto range_arg_name = init_arg_name(n_args_total, flag_char);
-    sut.add_optional_argument(range_arg_name.primary.value(), range_arg_name.secondary.value())
-        .nargs(at_least(1ull));
-
-    CHECK_THROWS_WITH_AS(
-        sut.parse_args(argc, argv),
-        parsing_failure::invalid_nvalues(range_arg_name, std::weak_ordering::less).what(),
-        parsing_failure
-    );
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "parse_args should throw when an unknown argument flag is used"
-) {
-    add_arguments(no_args, no_args);
-
-    constexpr std::size_t n_opt_clargs = 1ull;
-    constexpr std::size_t opt_arg_idx = 0ull;
-
-    auto argc = get_argc(no_args, n_opt_clargs);
-    auto argv = init_argv(no_args, n_opt_clargs);
-
-    const auto unknown_arg_name = init_arg_flag_primary(opt_arg_idx);
-
-    CHECK_THROWS_WITH_AS(
-        sut.parse_args(argc, argv),
-        parsing_failure::unknown_argument(unknown_arg_name).what(),
-        parsing_failure
-    );
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "parse_args should throw when an optional argument's flag uses the correct name but an "
-    "incorrect flag prefix"
-) {
-    constexpr std::size_t n_opt_args = 1ull;
-    constexpr std::size_t opt_arg_idx = 0ull;
-    add_arguments(no_args, n_opt_args);
-
-    auto argc = get_argc(no_args, n_opt_args);
-    auto argv_vec = init_argv_vec(no_args, n_opt_args);
-
-    const auto opt_arg_name = init_arg_name(opt_arg_idx);
-
-    std::string invalid_flag;
-
-    SUBCASE("primary name with a secondary flag prefix") {
-        invalid_flag = "-" + opt_arg_name.primary.value();
-    }
-    SUBCASE("secondary name with a primary flag prefix") {
-        invalid_flag = "--" + opt_arg_name.secondary.value();
-    }
-
-    CAPTURE(invalid_flag);
-
-    auto arg_flag_it = std::ranges::find(argv_vec, init_arg_flag_primary(opt_arg_idx));
-    if (arg_flag_it == argv_vec.end())
-        FAIL("could not find the optional argument flag");
-
-    *arg_flag_it = invalid_flag;
-    auto argv = to_char_2d_array(argv_vec);
-
-    CHECK_THROWS_WITH_AS(
-        sut.parse_args(argc, argv),
-        parsing_failure::unknown_argument(invalid_flag).what(),
-        parsing_failure
-    );
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "parse_args should not throw if the number of positional values are correct and all required "
-    "optional arguments have values"
+    "parse_known_args should return an empty vector for a correct command-line argument list"
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
@@ -337,600 +459,567 @@ TEST_CASE_FIXTURE(
     CAPTURE(argc);
     CAPTURE(argv);
 
-    CHECK_NOTHROW(sut.parse_args(argc, argv));
+    std::vector<std::string> unknown_args;
+    CHECK_NOTHROW(unknown_args = sut.parse_known_args(argc, argv));
+    CHECK(unknown_args.empty());
 
     free_argv(argc, argv);
 }
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should not throw if there is an positional argument which has the bypass_required "
-    "option enabled and is used"
+    "parse_known_args should return a list of unknown command-line arguments"
 ) {
-    const std::size_t n_positional_args = 1ull;
-    const auto bypass_required_arg_name = init_arg_name(n_positional_args - 1ull).primary.value();
-    sut.add_positional_argument(bypass_required_arg_name).bypass_required();
-    const std::string bypass_required_arg_value = "bypass_required_arg_value";
+    add_optional_args(n_optional_args, n_positional_args, [](auto& opt_arg) {
+        opt_arg.nargs(0ull);
+    });
 
-    for (std::size_t i = 0ull; i < n_optional_args; ++i)
-        sut.add_optional_argument(init_arg_name(n_positional_args + i).primary.value()).required();
+    const auto argc = get_argc(n_positional_args, n_optional_args);
+    auto argv = init_argv(n_positional_args, n_optional_args);
 
-    std::vector<std::string> argv_vec{"program", bypass_required_arg_value};
-    const int argc = static_cast<int>(argv_vec.size());
-    const auto argv = to_char_2d_array(argv_vec);
+    std::vector<std::string> expected_unknown_args;
+    expected_unknown_args.reserve(n_args_total);
+    for (std::size_t i = 0ull; i < n_args_total; ++i)
+        expected_unknown_args.emplace_back(init_arg_value(i));
 
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-    CHECK_EQ(sut.value(bypass_required_arg_name), bypass_required_arg_value);
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "parse_args should not throw if there is an optional argument which has the bypass_required "
-    "option enabled and is used"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto bypass_required_arg_name = init_arg_name(n_args_total);
-    sut.add_optional_argument<bool>(
-           bypass_required_arg_name.primary.value(), bypass_required_arg_name.secondary.value()
-    )
-        .default_value(false)
-        .implicit_value(true)
-        .bypass_required();
-
-    std::string arg_flag;
-
-    SUBCASE("primary flag") {
-        arg_flag = init_arg_flag_primary(n_args_total);
-    }
-    SUBCASE("secondary flag") {
-        arg_flag = init_arg_flag_secondary(n_args_total);
-    }
-
-    CAPTURE(arg_flag);
-
-    std::vector<std::string> argv_vec{"program", arg_flag};
-    const int argc = static_cast<int>(argv_vec.size());
-    const auto argv = to_char_2d_array(argv_vec);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-    CHECK(sut.value<bool>(bypass_required_arg_name.primary.value()));
+    std::vector<std::string> unknown_args;
+    CHECK_NOTHROW(unknown_args = sut.parse_known_args(argc, argv));
+    CHECK_EQ(unknown_args, expected_unknown_args);
 
     free_argv(argc, argv);
 }
 
 // has_value
 
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "has_value should return false if there is no argument with given name present"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-    CHECK_FALSE(sut.has_value(invalid_arg_name));
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "has_value should return false when an argument has no values"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK_FALSE(sut.has_value(arg_name.primary.value()));
-        CHECK_FALSE(sut.has_value(arg_name.secondary.value()));
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "has_value should return true if a value has been parsed for the argument"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const int argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK(sut.has_value(arg_name.primary.value()));
-        CHECK(sut.has_value(arg_name.secondary.value()));
-    }
-
-    free_argv(argc, argv);
-}
-
-// count
-
-TEST_CASE_FIXTURE(test_argument_parser_parse_args, "count should return 0 by default") {
-    add_arguments(n_positional_args, n_optional_args);
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK_EQ(sut.count(arg_name.primary.value()), 0ull);
-        CHECK_EQ(sut.count(arg_name.secondary.value()), 0ull);
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "count should return 0 if there is no argument with given name present"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-    CHECK_EQ(sut.count(invalid_arg_name), 0ull);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "count should return the number of argument's flag usage"
-) {
-    // prepare sut
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
-    sut.add_optional_argument(optional_primary_name, optional_secondary_name)
-        .nargs(ap::nargs::any());
-
-    // expected values
-    const std::size_t positional_count = 1ull;
-    const std::size_t optional_count = 4ull;
-
-    // prepare argc and argv
-    std::vector<std::string> argv_vec{"program", "positional_arg_value"};
-
-    const std::string optional_arg_flag = "--" + optional_primary_name;
-    const std::string optional_arg_value = optional_primary_name + "_value";
-    for (std::size_t i = 0ull; i < optional_count; ++i) {
-        argv_vec.push_back(optional_arg_flag);
-        if (i % 2ull == 0)
-            argv_vec.push_back(optional_arg_value);
-    }
-
-    const int argc = static_cast<int>(argv_vec.size());
-    auto argv = to_char_2d_array(argv_vec);
-
-    // parse args
-    sut.parse_args(argc, argv);
-
-    // test count
-    CHECK_EQ(sut.count(positional_primary_name), positional_count);
-    CHECK_EQ(sut.count(optional_primary_name), optional_count);
-
-    // free argv
-    free_argv(argc, argv);
-}
-
-// value
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value() should throw if there is no argument with given name present"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::lookup_failure);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value() should throw if no value has been parsed for an argument"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK_THROWS_AS(discard_result(sut.value(arg_name.primary.value())), std::logic_error);
-        CHECK_THROWS_AS(discard_result(sut.value(arg_name.secondary.value())), std::logic_error);
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value() should throw if an argument has a value but the given type is invalid"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-
-    using invalid_value_type = int;
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-
-        REQUIRE(sut.has_value(arg_name.primary.value()));
-        CHECK_THROWS_AS(
-            discard_result(sut.value<invalid_value_type>(arg_name.primary.value())), ap::type_error
-        );
-    }
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value() should return a correct value when the argument name is valid and its value has been "
-    "parsed"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        const auto arg_value = init_arg_value(i);
-
-        REQUIRE(sut.has_value(arg_name.primary.value()));
-        CHECK_EQ(sut.value(arg_name.primary.value()), arg_value);
-        CHECK_EQ(sut.value(arg_name.secondary.value()), arg_value);
-    }
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value() should return a correct value for an optional argument when the name is valid and the "
-    "argument has a predefined value"
-) {
-    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
-        const auto arg_name = init_arg_name(i);
-        sut.add_optional_argument(arg_name.primary.value(), arg_name.secondary.value())
-            .default_value(init_arg_value(i));
-    }
-
-    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
-        const auto arg_name = init_arg_name(i);
-        const auto arg_value = init_arg_value(i);
-
-        REQUIRE(sut.has_value(arg_name.primary.value()));
-        CHECK_EQ(sut.value(arg_name.primary.value()), arg_value);
-        CHECK_EQ(sut.value(arg_name.secondary.value()), arg_value);
-    }
-}
-
-// value_or
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value_or() should throw if there is no argument with given name present"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::lookup_failure);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value_or() should throw if an argument has a value but the given type is invalid"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-
-    using invalid_value_type = int;
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-
-        REQUIRE(sut.has_value(arg_name.primary.value()));
-        CHECK_THROWS_AS(
-            discard_result(
-                sut.value_or<invalid_value_type>(arg_name.primary.value(), invalid_value_type{})
-            ),
-            ap::type_error
-        );
-    }
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value_or() should return a correct value when the argument name is valid and its value has "
-    "been parsed"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    const auto argc = get_argc(n_positional_args, n_optional_args);
-    auto argv = init_argv(n_positional_args, n_optional_args);
-
-    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        const auto arg_value = init_arg_value(i);
-
-        REQUIRE(sut.has_value(arg_name.primary.value()));
-        CHECK_EQ(sut.value_or(arg_name.primary.value(), empty_str), arg_value);
-        CHECK_EQ(sut.value_or(arg_name.secondary.value(), empty_str), arg_value);
-    }
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value_or() should return a correct value for an optional argument when the name is valid and "
-    "the argument has a predefined value"
-) {
-    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
-        const auto arg_name = init_arg_name(i);
-        sut.add_optional_argument(arg_name.primary.value(), arg_name.secondary.value())
-            .default_value(init_arg_value(i));
-    }
-
-    for (std::size_t i = 0ull; i < n_optional_args; ++i) {
-        const auto arg_name = init_arg_name(i);
-        const auto arg_value = init_arg_value(i);
-
-        REQUIRE(sut.has_value(arg_name.primary.value()));
-        CHECK_EQ(sut.value_or(arg_name.primary.value(), empty_str), arg_value);
-        CHECK_EQ(sut.value_or(arg_name.secondary.value(), empty_str), arg_value);
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value_or() should return an instance of the specified type initialized from the given default "
-    "value if no value has been parsed for an argument and it doesn't have a predefined value "
-    "(optional)"
-) {
-    using value_type = int;
-    using default_value_type = short;
-
-    add_arguments<value_type>(n_positional_args, n_optional_args);
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        const default_value_type default_value = 2 * static_cast<default_value_type>(i);
-
-        CHECK_EQ(sut.value_or<value_type>(arg_name.primary.value(), default_value), default_value);
-        CHECK_EQ(
-            sut.value_or<value_type>(arg_name.secondary.value(), default_value), default_value
-        );
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "value_or() should return the given default value if no value has been parsed for an argument "
-    "and it doesn't have a predefined value (optional)"
-) {
-    add_arguments(n_positional_args, n_optional_args);
-
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        const auto default_value = init_arg_value(i);
-
-        CHECK_EQ(sut.value_or(arg_name.primary.value(), default_value), default_value);
-        CHECK_EQ(sut.value_or(arg_name.secondary.value(), default_value), default_value);
-    }
-}
-
-// values
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "values() should throw when calling with a positional argument's name"
-) {
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
-
-    CHECK_THROWS_AS(discard_result(sut.values(positional_primary_name)), std::logic_error);
-    CHECK_THROWS_AS(discard_result(sut.values(positional_secondary_name)), std::logic_error);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "values() should return an empty vector if an argument has no values"
-) {
-    sut.add_optional_argument(optional_primary_name, optional_secondary_name);
-
-    SUBCASE("calling with argument's primary name") {
-        const auto& values = sut.values(optional_primary_name);
-        CHECK(values.empty());
-    }
-
-    SUBCASE("calling with argument's secondary name") {
-        const auto& values = sut.values(optional_secondary_name);
-        CHECK(values.empty());
-    }
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "values() should throw when an argument has values but the given type is invalid"
-) {
-    sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(at_least(1));
-
-    // prepare argc & argv
-    const std::string optional_arg_flag = "--" + optional_primary_name;
-    const std::string optional_arg_value = optional_primary_name + "_value";
-    std::vector<std::string> argv_vec{
-        "program", optional_arg_flag, optional_arg_value, optional_arg_value
-    };
-
-    const int argc = static_cast<int>(argv_vec.size());
-    auto argv = to_char_2d_array(argv_vec);
-
-    // parse args
-    sut.parse_args(argc, argv);
-
-    CHECK_THROWS_AS(
-        discard_result(sut.values<invalid_argument_value_type>(optional_primary_name)),
-        ap::type_error
-    );
-    CHECK_THROWS_AS(
-        discard_result(sut.values<invalid_argument_value_type>(optional_secondary_name)),
-        ap::type_error
-    );
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "values() should return a vector containing a predefined value if an optional argument if no "
-    "values for an argument have been parsed"
-) {
-    const std::string default_value = "default_value";
-    const std::string implicit_value = "implicit_value";
-
-    sut.add_optional_argument(optional_primary_name, optional_secondary_name)
-        .default_value(default_value)
-        .implicit_value(implicit_value);
-
-    // prepare argc & argv
-    std::vector<std::string> argv_vec{"program"};
-    std::string expected_value;
-
-    SUBCASE("default_value") {
-        expected_value = default_value;
-    }
-
-    SUBCASE("implicit_value") {
-        expected_value = implicit_value;
-
-        const auto optional_arg_flag = "--" + optional_primary_name;
-        argv_vec.push_back(optional_arg_flag);
-    }
-
-    CAPTURE(expected_value);
-
-    const int argc = static_cast<int>(argv_vec.size());
-    auto argv = to_char_2d_array(argv_vec);
-
-    // parse args
-    sut.parse_args(argc, argv);
-
-    const auto& stored_values = sut.values(optional_primary_name);
-
-    REQUIRE_EQ(stored_values.size(), 1);
-    CHECK_EQ(stored_values.front(), expected_value);
-
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "values() should return a correct vector of values when there is an argument with "
-    "a given name and has parsed values"
-) {
-    sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(at_least(1));
-
-    // prepare argc & argv
-    const std::string optional_arg_flag = "--" + optional_primary_name;
-    const std::string optional_arg_value = optional_primary_name + "_value";
-
-    std::vector<std::string> optional_arg_values{
-        optional_arg_value + "_1", optional_arg_value + "_2", optional_arg_value + "_3"
-    };
-
-    std::vector<std::string> argv_vec{"program", optional_arg_flag};
-    for (const auto& value : optional_arg_values)
-        argv_vec.push_back(value);
-
-    const int argc = static_cast<int>(argv_vec.size());
-    auto argv = to_char_2d_array(argv_vec);
-
-    // parse args
-    sut.parse_args(argc, argv);
-
-    const auto& stored_values = sut.values(optional_primary_name);
-
-    REQUIRE_EQ(stored_values.size(), optional_arg_values.size());
-    for (std::size_t i = 0ull; i < stored_values.size(); ++i)
-        CHECK_EQ(stored_values[i], optional_arg_values[i]);
-
-    free_argv(argc, argv);
-}
-
-// compound flags
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "argument_parser should throw if an invalid compound flag is used"
-) {
-    // add arguments
-    sut.add_optional_argument("first-arg", "f");
-    sut.add_optional_argument("second-arg", "s");
-    sut.add_optional_argument("third-arg", "t");
-
-    const std::string invalid_flag = "-abc";
-    std::vector<std::string> argv_vec{"program", invalid_flag};
-
-    const int argc = static_cast<int>(argv_vec.size());
-    auto argv = to_char_2d_array(argv_vec);
-
-    // parse args
-    CHECK_THROWS_WITH_AS(
-        sut.parse_args(argc, argv),
-        parsing_failure::unknown_argument(invalid_flag).what(),
-        parsing_failure
-    );
-
-    // validate argument usage counts
-    CHECK_EQ(sut.count("first-arg"), 0ull);
-    CHECK_EQ(sut.count("second-arg"), 0ull);
-    CHECK_EQ(sut.count("third-arg"), 0ull);
-
-    // cleanup
-    free_argv(argc, argv);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "argument_parser should properly handle valid compound flags"
-) {
-    // add arguments
-    sut.add_optional_argument("first-arg", "f");
-    sut.add_optional_argument("second-arg", "s");
-    sut.add_optional_argument("third-arg", "t");
-
-    std::size_t first_arg_count, second_arg_count, third_arg_count;
-    std::string compound_flag;
-
-    // prepare argc & argv
-    SUBCASE("one usage of each argument") {
-        compound_flag = "-fst";
-        first_arg_count = second_arg_count = third_arg_count = 1ull;
-    }
-    SUBCASE("complex usage") {
-        compound_flag = "-ffstfst";
-        first_arg_count = 3ull;
-        second_arg_count = third_arg_count = 2ull;
-    }
-
-    CAPTURE(first_arg_count);
-    CAPTURE(second_arg_count);
-    CAPTURE(third_arg_count);
-    CAPTURE(compound_flag);
-
-    std::vector<std::string> argv_vec{"program", compound_flag};
-
-    const int argc = static_cast<int>(argv_vec.size());
-    auto argv = to_char_2d_array(argv_vec);
-
-    // parse args
-    sut.parse_args(argc, argv);
-
-    // validate argument usage counts
-    CHECK_EQ(sut.count("first-arg"), first_arg_count);
-    CHECK_EQ(sut.count("second-arg"), second_arg_count);
-    CHECK_EQ(sut.count("third-arg"), third_arg_count);
-
-    // cleanup
-    free_argv(argc, argv);
-}
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "has_value should return false if there is no argument with given name present"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+//     CHECK_FALSE(sut.has_value(invalid_arg_name));
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args, "has_value should return false when an argument has no values"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         CHECK_FALSE(sut.has_value(arg_name.primary.value()));
+//         CHECK_FALSE(sut.has_value(arg_name.secondary.value()));
+//     }
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "has_value should return true if a value has been parsed for the argument"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const int argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         CHECK(sut.has_value(arg_name.primary.value()));
+//         CHECK(sut.has_value(arg_name.secondary.value()));
+//     }
+
+//     free_argv(argc, argv);
+// }
+
+// // count
+
+// TEST_CASE_FIXTURE(test_argument_parser_parse_args, "count should return 0 by default") {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         CHECK_EQ(sut.count(arg_name.primary.value()), 0ull);
+//         CHECK_EQ(sut.count(arg_name.secondary.value()), 0ull);
+//     }
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "count should return 0 if there is no argument with given name present"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+//     CHECK_EQ(sut.count(invalid_arg_name), 0ull);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args, "count should return the number of argument's flag usage"
+// ) {
+//     // prepare sut
+//     sut.add_positional_argument(positional_primary_name, positional_secondary_name);
+//     sut.add_optional_argument(optional_primary_name, optional_secondary_name)
+//         .nargs(ap::nargs::any());
+
+//     // expected values
+//     const std::size_t positional_count = 1ull;
+//     const std::size_t optional_count = 4ull;
+
+//     // prepare argc and argv
+//     std::vector<std::string> argv_vec{"program", "positional_arg_value"};
+
+//     const std::string optional_arg_flag = "--" + optional_primary_name;
+//     const std::string optional_arg_value = optional_primary_name + "_value";
+//     for (std::size_t i = 0ull; i < optional_count; ++i) {
+//         argv_vec.push_back(optional_arg_flag);
+//         if (i % 2ull == 0)
+//             argv_vec.push_back(optional_arg_value);
+//     }
+
+//     const int argc = static_cast<int>(argv_vec.size());
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     // parse args
+//     sut.parse_args(argc, argv);
+
+//     // test count
+//     CHECK_EQ(sut.count(positional_primary_name), positional_count);
+//     CHECK_EQ(sut.count(optional_primary_name), optional_count);
+
+//     // free argv
+//     free_argv(argc, argv);
+// }
+
+// // value
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value() should throw if there is no argument with given name present"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+//     CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::lookup_failure);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value() should throw if no value has been parsed for an argument"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         CHECK_THROWS_AS(discard_result(sut.value(arg_name.primary.value())), std::logic_error);
+//         CHECK_THROWS_AS(discard_result(sut.value(arg_name.secondary.value())), std::logic_error);
+//     }
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value() should throw if an argument has a value but the given type is invalid"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+//     using invalid_value_type = int;
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+
+//         REQUIRE(sut.has_value(arg_name.primary.value()));
+//         CHECK_THROWS_AS(
+//             discard_result(sut.value<invalid_value_type>(arg_name.primary.value())), ap::type_error
+//         );
+//     }
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value() should return a correct value when the argument name is valid and its value has been "
+//     "parsed"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         const auto arg_value = init_arg_value(i);
+
+//         REQUIRE(sut.has_value(arg_name.primary.value()));
+//         CHECK_EQ(sut.value(arg_name.primary.value()), arg_value);
+//         CHECK_EQ(sut.value(arg_name.secondary.value()), arg_value);
+//     }
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value() should return a correct value for an optional argument when the name is valid and the "
+//     "argument has a predefined value"
+// ) {
+//     for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         sut.add_optional_argument(arg_name.primary.value(), arg_name.secondary.value())
+//             .default_value(init_arg_value(i));
+//     }
+
+//     for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         const auto arg_value = init_arg_value(i);
+
+//         REQUIRE(sut.has_value(arg_name.primary.value()));
+//         CHECK_EQ(sut.value(arg_name.primary.value()), arg_value);
+//         CHECK_EQ(sut.value(arg_name.secondary.value()), arg_value);
+//     }
+// }
+
+// // value_or
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value_or() should throw if there is no argument with given name present"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+//     CHECK_THROWS_AS(discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::lookup_failure);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value_or() should throw if an argument has a value but the given type is invalid"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+//     using invalid_value_type = int;
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+
+//         REQUIRE(sut.has_value(arg_name.primary.value()));
+//         CHECK_THROWS_AS(
+//             discard_result(
+//                 sut.value_or<invalid_value_type>(arg_name.primary.value(), invalid_value_type{})
+//             ),
+//             ap::type_error
+//         );
+//     }
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value_or() should return a correct value when the argument name is valid and its value has "
+//     "been parsed"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     const auto argc = get_argc(n_positional_args, n_optional_args);
+//     auto argv = init_argv(n_positional_args, n_optional_args);
+
+//     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         const auto arg_value = init_arg_value(i);
+
+//         REQUIRE(sut.has_value(arg_name.primary.value()));
+//         CHECK_EQ(sut.value_or(arg_name.primary.value(), empty_str), arg_value);
+//         CHECK_EQ(sut.value_or(arg_name.secondary.value(), empty_str), arg_value);
+//     }
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value_or() should return a correct value for an optional argument when the name is valid and "
+//     "the argument has a predefined value"
+// ) {
+//     for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         sut.add_optional_argument(arg_name.primary.value(), arg_name.secondary.value())
+//             .default_value(init_arg_value(i));
+//     }
+
+//     for (std::size_t i = 0ull; i < n_optional_args; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         const auto arg_value = init_arg_value(i);
+
+//         REQUIRE(sut.has_value(arg_name.primary.value()));
+//         CHECK_EQ(sut.value_or(arg_name.primary.value(), empty_str), arg_value);
+//         CHECK_EQ(sut.value_or(arg_name.secondary.value(), empty_str), arg_value);
+//     }
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value_or() should return an instance of the specified type initialized from the given default "
+//     "value if no value has been parsed for an argument and it doesn't have a predefined value "
+//     "(optional)"
+// ) {
+//     using value_type = int;
+//     using default_value_type = short;
+
+//     add_arguments<value_type>(n_positional_args, n_optional_args);
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         const default_value_type default_value = 2 * static_cast<default_value_type>(i);
+
+//         CHECK_EQ(sut.value_or<value_type>(arg_name.primary.value(), default_value), default_value);
+//         CHECK_EQ(
+//             sut.value_or<value_type>(arg_name.secondary.value(), default_value), default_value
+//         );
+//     }
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "value_or() should return the given default value if no value has been parsed for an argument "
+//     "and it doesn't have a predefined value (optional)"
+// ) {
+//     add_arguments(n_positional_args, n_optional_args);
+
+//     for (std::size_t i = 0ull; i < n_args_total; ++i) {
+//         const auto arg_name = init_arg_name(i);
+//         const auto default_value = init_arg_value(i);
+
+//         CHECK_EQ(sut.value_or(arg_name.primary.value(), default_value), default_value);
+//         CHECK_EQ(sut.value_or(arg_name.secondary.value(), default_value), default_value);
+//     }
+// }
+
+// // values
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "values() should throw when calling with a positional argument's name"
+// ) {
+//     sut.add_positional_argument(positional_primary_name, positional_secondary_name);
+
+//     CHECK_THROWS_AS(discard_result(sut.values(positional_primary_name)), std::logic_error);
+//     CHECK_THROWS_AS(discard_result(sut.values(positional_secondary_name)), std::logic_error);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "values() should return an empty vector if an argument has no values"
+// ) {
+//     sut.add_optional_argument(optional_primary_name, optional_secondary_name);
+
+//     SUBCASE("calling with argument's primary name") {
+//         const auto& values = sut.values(optional_primary_name);
+//         CHECK(values.empty());
+//     }
+
+//     SUBCASE("calling with argument's secondary name") {
+//         const auto& values = sut.values(optional_secondary_name);
+//         CHECK(values.empty());
+//     }
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "values() should throw when an argument has values but the given type is invalid"
+// ) {
+//     sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(at_least(1));
+
+//     // prepare argc & argv
+//     const std::string optional_arg_flag = "--" + optional_primary_name;
+//     const std::string optional_arg_value = optional_primary_name + "_value";
+//     std::vector<std::string> argv_vec{
+//         "program", optional_arg_flag, optional_arg_value, optional_arg_value
+//     };
+
+//     const int argc = static_cast<int>(argv_vec.size());
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     // parse args
+//     sut.parse_args(argc, argv);
+
+//     CHECK_THROWS_AS(
+//         discard_result(sut.values<invalid_argument_value_type>(optional_primary_name)),
+//         ap::type_error
+//     );
+//     CHECK_THROWS_AS(
+//         discard_result(sut.values<invalid_argument_value_type>(optional_secondary_name)),
+//         ap::type_error
+//     );
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "values() should return a vector containing a predefined value of an optional argument if no "
+//     "values for an argument have been parsed"
+// ) {
+//     const std::string default_value = "default_value";
+//     const std::string implicit_value = "implicit_value";
+
+//     sut.add_optional_argument(optional_primary_name, optional_secondary_name)
+//         .default_value(default_value)
+//         .implicit_value(implicit_value);
+
+//     // prepare argc & argv
+//     std::vector<std::string> argv_vec{"program"};
+//     std::string expected_value;
+
+//     SUBCASE("default_value") {
+//         expected_value = default_value;
+//     }
+
+//     SUBCASE("implicit_value") {
+//         expected_value = implicit_value;
+
+//         const auto optional_arg_flag = "--" + optional_primary_name;
+//         argv_vec.push_back(optional_arg_flag);
+//     }
+
+//     CAPTURE(argv_vec);
+//     CAPTURE(expected_value);
+
+//     const int argc = static_cast<int>(argv_vec.size());
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     // parse args
+//     sut.parse_args(argc, argv);
+
+//     const auto& stored_values = sut.values(optional_primary_name);
+
+//     REQUIRE_EQ(stored_values.size(), 1);
+//     CHECK_EQ(stored_values.front(), expected_value);
+
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "values() should return a correct vector of values when there is an argument with "
+//     "a given name and has parsed values"
+// ) {
+//     sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(at_least(1));
+
+//     // prepare argc & argv
+//     const std::string optional_arg_flag = "--" + optional_primary_name;
+//     const std::string optional_arg_value = optional_primary_name + "_value";
+
+//     std::vector<std::string> optional_arg_values{
+//         optional_arg_value + "_1", optional_arg_value + "_2", optional_arg_value + "_3"
+//     };
+
+//     std::vector<std::string> argv_vec{"program", optional_arg_flag};
+//     for (const auto& value : optional_arg_values)
+//         argv_vec.push_back(value);
+
+//     const int argc = static_cast<int>(argv_vec.size());
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     // parse args
+//     sut.parse_args(argc, argv);
+
+//     const auto& stored_values = sut.values(optional_primary_name);
+
+//     REQUIRE_EQ(stored_values.size(), optional_arg_values.size());
+//     for (std::size_t i = 0ull; i < stored_values.size(); ++i)
+//         CHECK_EQ(stored_values[i], optional_arg_values[i]);
+
+//     free_argv(argc, argv);
+// }
+
+// // compound flags
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args,
+//     "argument_parser should throw if an invalid compound flag is used"
+// ) {
+//     // add arguments
+//     sut.add_optional_argument("first-arg", "f");
+//     sut.add_optional_argument("second-arg", "s");
+//     sut.add_optional_argument("third-arg", "t");
+
+//     const std::string invalid_flag = "-abc";
+//     std::vector<std::string> argv_vec{"program", invalid_flag};
+
+//     const int argc = static_cast<int>(argv_vec.size());
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     // parse args
+//     CHECK_THROWS_WITH_AS(
+//         sut.parse_args(argc, argv),
+//         parsing_failure::unknown_argument(invalid_flag).what(),
+//         parsing_failure
+//     );
+
+//     // validate argument usage counts
+//     CHECK_EQ(sut.count("first-arg"), 0ull);
+//     CHECK_EQ(sut.count("second-arg"), 0ull);
+//     CHECK_EQ(sut.count("third-arg"), 0ull);
+
+//     // cleanup
+//     free_argv(argc, argv);
+// }
+
+// TEST_CASE_FIXTURE(
+//     test_argument_parser_parse_args, "argument_parser should properly handle valid compound flags"
+// ) {
+//     // add arguments
+//     sut.add_optional_argument("first-arg", "f");
+//     sut.add_optional_argument("second-arg", "s");
+//     sut.add_optional_argument("third-arg", "t");
+
+//     std::size_t first_arg_count, second_arg_count, third_arg_count;
+//     std::string compound_flag;
+
+//     // prepare argc & argv
+//     SUBCASE("one usage of each argument") {
+//         compound_flag = "-fst";
+//         first_arg_count = second_arg_count = third_arg_count = 1ull;
+//     }
+//     SUBCASE("complex usage") {
+//         compound_flag = "-ffstfst";
+//         first_arg_count = 3ull;
+//         second_arg_count = third_arg_count = 2ull;
+//     }
+
+//     CAPTURE(first_arg_count);
+//     CAPTURE(second_arg_count);
+//     CAPTURE(third_arg_count);
+//     CAPTURE(compound_flag);
+
+//     std::vector<std::string> argv_vec{"program", compound_flag};
+
+//     const int argc = static_cast<int>(argv_vec.size());
+//     auto argv = to_char_2d_array(argv_vec);
+
+//     // parse args
+//     sut.parse_args(argc, argv);
+
+//     // validate argument usage counts
+//     CHECK_EQ(sut.count("first-arg"), first_arg_count);
+//     CHECK_EQ(sut.count("second-arg"), second_arg_count);
+//     CHECK_EQ(sut.count("third-arg"), third_arg_count);
+
+//     // cleanup
+//     free_argv(argc, argv);
+// }

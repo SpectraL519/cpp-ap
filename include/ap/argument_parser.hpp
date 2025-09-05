@@ -302,6 +302,7 @@ public:
      * @brief Parses the command-line arguments.
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument values.
+     * @throws ap::invalid_configuration, ap::parsing_failure
      * @note The first argument (the program name) is ignored.
      */
     void parse_args(int argc, char* argv[]) {
@@ -312,21 +313,32 @@ public:
      * @brief Parses the command-line arguments.
      * @tparam AR The argument range type.
      * @param argv A range of command-line argument values.
+     * @throws ap::invalid_configuration, ap::parsing_failure
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
-    void parse_args(const AR& argv) {
+    void parse_args(const AR& argv_rng) {
         this->_validate_argument_configuration();
-        this->_parse_args_impl(this->_tokenize(argv));
 
-        if (this->_are_required_args_bypassed())
-            return;
+        std::vector<std::string> unknown_args;
+        this->_parse_args_impl(this->_tokenize(argv_rng), unknown_args);
 
-        this->_verify_required_args();
-        this->_verify_nvalues();
+        if (not unknown_args.empty())
+            throw parsing_failure::argument_deduction_failure(unknown_args);
+
+        if (not this->_are_required_args_bypassed()) {
+            this->_verify_required_args();
+            this->_verify_nvalues();
+        }
     }
 
     /**
      * @brief Parses the command-line arguments and exits on error.
+     *
+     * Equivalent to:
+     * ```cpp
+     * try_parse_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)))
+     * ```
+     *
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument values.
      * @note The first argument (the program name) is ignored.
@@ -338,17 +350,73 @@ public:
     /**
      * @brief Parses the command-line arguments and exits on error.
      *
-     * Calls `parse_args(argv)` in a try-catch block. If an error is thrown, then its
+     * Calls `parse_args(argv_rng)` in a try-catch block. If an error is thrown, then its
      * message and the parser are printed to `std::cerr` and the function exists with
      * `EXIT_FAILURE` status.
      *
      * @tparam AR The argument range type.
-     * @param argv A range of command-line argument values.
+     * @param argv_rng A range of command-line argument values.
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
-    void try_parse_args(const AR& argv) {
+    void try_parse_args(const AR& argv_rng) {
         try {
-            this->parse_args(argv);
+            this->parse_args(argv_rng);
+        }
+        catch (const ap::argument_parser_exception& err) {
+            std::cerr << "[ERROR] : " << err.what() << std::endl << *this << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+
+    std::vector<std::string> parse_known_args(int argc, char* argv[]) {
+        return this->parse_known_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
+    }
+
+    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    std::vector<std::string> parse_known_args(const AR& argv_rng) {
+        this->_validate_argument_configuration();
+
+        std::vector<std::string> unknown_args;
+        this->_parse_args_impl(this->_tokenize(argv_rng), unknown_args);
+
+        if (not this->_are_required_args_bypassed()) {
+            this->_verify_required_args();
+            this->_verify_nvalues();
+        }
+
+        return unknown_args;
+    }
+
+    /**
+     * @brief Parses the command-line arguments and exits on error.
+     *
+     * Equivalent to:
+     * ```cpp
+     * try_parse_known_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)))
+     * ```
+     *
+     * @param argc Number of command-line arguments.
+     * @param argv Array of command-line argument values.
+     * @note The first argument (the program name) is ignored.
+     */
+    std::vector<std::string> try_parse_known_args(int argc, char* argv[]) {
+        return this->try_parse_known_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
+    }
+
+    /**
+     * @brief Parses the command-line arguments and exits on error.
+     *
+     * Calls `parse_args(argv_rng)` in a try-catch block. If an error is thrown, then its
+     * message and the parser are printed to `std::cerr` and the function exists with
+     * `EXIT_FAILURE` status.
+     *
+     * @tparam AR The argument range type.
+     * @param argv_rng A range of command-line argument values.
+     */
+    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    std::vector<std::string> try_parse_known_args(const AR& argv_rng) {
+        try {
+            return this->parse_known_args(argv_rng);
         }
         catch (const ap::argument_parser_exception& err) {
             std::cerr << "[ERROR] : " << err.what() << std::endl << *this << std::endl;
@@ -669,16 +737,16 @@ private:
 
         // invalid flag - check for compound secondary flag
         const auto compound_toks = this->_try_split_compound_flag(tok);
-        if (compound_toks.empty()) { // not a valid compound flag
-#ifdef AP_UNKNOWN_FLAGS_AS_VALUES
-            toks.emplace_back(detail::argument_token::t_value, std::string(arg_value));
+        if (not compound_toks.empty()) { // not a valid compound flag
+            toks.insert(toks.end(), compound_toks.begin(), compound_toks.end());
             return;
-#else
-            throw parsing_failure::unknown_argument(arg_value);
-#endif
         }
 
-        toks.insert(toks.end(), compound_toks.begin(), compound_toks.end());
+#ifdef AP_UNKNOWN_FLAGS_AS_VALUES
+        toks.emplace_back(detail::argument_token::t_value, std::string(arg_value));
+#else
+        toks.emplace_back(std::move(tok));
+#endif
     }
 
     /**
@@ -780,16 +848,12 @@ private:
      * @throws ap::parsing_failure
      * \todo Use `c_range_of<argument_token>` instead of `arg_token_list_t` directly.
      */
-    void _parse_args_impl(const arg_token_list_t& arg_tokens) {
+    void _parse_args_impl(
+        const arg_token_list_t& arg_tokens, std::vector<std::string>& unknown_args
+    ) {
         arg_token_list_iterator_t token_it = arg_tokens.begin();
-
         this->_parse_positional_args(token_it, arg_tokens.end());
-
-        std::vector<std::string_view> unknown_args;
         this->_parse_optional_args(token_it, arg_tokens.end(), unknown_args);
-
-        if (not unknown_args.empty())
-            throw parsing_failure::argument_deduction_failure(unknown_args);
     }
 
     /**
@@ -818,12 +882,11 @@ private:
      * @param tokens_end The token list end iterator.
      * @param unknown_args Reference to the vector into which the dangling values shall be collected.
      * @throws ap::parsing_failure
-     * \todo Enable/disable argument_deduction_failure for the purpose of `parse_known_args` functionality
      */
     void _parse_optional_args(
         arg_token_list_iterator_t& token_it,
         const arg_token_list_iterator_t& tokens_end,
-        std::vector<std::string_view>& unknown_args
+        std::vector<std::string>& unknown_args
     ) {
         arg_ptr_opt_t curr_opt_arg;
 
@@ -832,8 +895,13 @@ private:
             case detail::argument_token::t_flag_primary:
                 [[fallthrough]];
             case detail::argument_token::t_flag_secondary: {
-                curr_opt_arg = token_it->arg;
-                if (not curr_opt_arg->get()->mark_used())
+                if (not token_it->is_valid_flag_token())
+                    throw parsing_failure::unknown_argument(this->_unstripped_token_value(*token_it)
+                    );
+
+                if (token_it->arg->get()->mark_used())
+                    curr_opt_arg = token_it->arg;
+                else
                     curr_opt_arg.reset();
 
                 break;

@@ -45,6 +45,13 @@ struct argument_token {
         return this->type == t_flag_primary or this->type == t_flag_secondary;
     }
 
+    /**
+     * todo
+     */
+    [[nodiscard]] bool is_valid_flag_token() const noexcept {
+        return this->is_flag_token() and this->arg.has_value();
+    }
+
     token_type type; ///< The token's type discrimiator value.
     std::string value; ///< The actual token's value.
     arg_ptr_opt_t arg = std::nullopt; ///< The corresponding argument.
