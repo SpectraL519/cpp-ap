@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -95,6 +95,8 @@ $(document).ready(function(){initNavTree('classap_1_1detail_1_1argument__descrip
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classap_1_1detail_1_1argument__descriptor-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ap::detail::argument_descriptor Class Reference</div></div>
 </div><!--header-->
@@ -107,7 +109,7 @@ $(document).ready(function(){initNavTree('classap_1_1detail_1_1argument__descrip
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4629539528259afdedf1a5000dc5458a" id="r_a4629539528259afdedf1a5000dc5458a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a4629539528259afdedf1a5000dc5458a">argument_descriptor</a> (const std::string &amp;name, const std::optional&lt; std::string &gt; &amp;help)</td></tr>
+<tr class="memitem:a4629539528259afdedf1a5000dc5458a" id="r_a4629539528259afdedf1a5000dc5458a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a4629539528259afdedf1a5000dc5458a">argument_descriptor</a> (const std::string &amp;<a class="el" href="classap_1_1detail_1_1argument__descriptor.html#abd511416c81d261a7946afde6731d04e">name</a>, const std::optional&lt; std::string &gt; &amp;<a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a4e44e831487baed6afd868ba0bb312ae">help</a>)</td></tr>
 <tr class="separator:a4629539528259afdedf1a5000dc5458a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3da4b78b14fa6fa48b64147ee80c6267" id="r_a3da4b78b14fa6fa48b64147ee80c6267"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a3da4b78b14fa6fa48b64147ee80c6267">add_param</a> (const std::string &amp;param_name, const std::string &amp;value)</td></tr>
 <tr class="memdesc:a3da4b78b14fa6fa48b64147ee80c6267"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a parameter descriptor with the given string value.  <br /></td></tr>
@@ -118,7 +120,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6750c2d0aef080537bc0755fcd0648ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dcadc3ea42c60ba4e62e1af32fdaa66" id="r_a9dcadc3ea42c60ba4e62e1af32fdaa66"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range R&gt; <br />
 requires (c_writable&lt;std::ranges::range_value_t&lt;R&gt;&gt;)</td></tr>
-<tr class="memitem:a9dcadc3ea42c60ba4e62e1af32fdaa66"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a9dcadc3ea42c60ba4e62e1af32fdaa66">add_range_param</a> (const std::string &amp;param_name, const R &amp;range, const std::string_view delimiter=default_delimiter)</td></tr>
+<tr class="memitem:a9dcadc3ea42c60ba4e62e1af32fdaa66"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a9dcadc3ea42c60ba4e62e1af32fdaa66">add_range_param</a> (const std::string &amp;param_name, const R &amp;range, const std::string_view delimiter=<a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a07d4b54c9bf23b665fbe95ed94d16491">default_delimiter</a>)</td></tr>
 <tr class="memdesc:a9dcadc3ea42c60ba4e62e1af32fdaa66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a range parameter descriptor with the given value.  <br /></td></tr>
 <tr class="separator:a9dcadc3ea42c60ba4e62e1af32fdaa66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b755907ce5e5858504a42d46edc4a52" id="r_a2b755907ce5e5858504a42d46edc4a52"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a2b755907ce5e5858504a42d46edc4a52">get_basic</a> (const uint8_t indent_width, const std::optional&lt; std::size_t &gt; align_to=std::nullopt) const</td></tr>
@@ -134,6 +136,20 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a4e44e831487baed6afd868ba0bb312ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa46f1077f5715356c27deacae2e61e8d" id="r_aa46f1077f5715356c27deacae2e61e8d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structap_1_1detail_1_1parameter__descriptor.html">parameter_descriptor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#aa46f1077f5715356c27deacae2e61e8d">params</a></td></tr>
 <tr class="separator:aa46f1077f5715356c27deacae2e61e8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aa92be769506871a62db24ba83b611b00" id="r_aa92be769506871a62db24ba83b611b00"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#aa92be769506871a62db24ba83b611b00">_get_single_line</a> (const uint8_t indent_width) const</td></tr>
+<tr class="memdesc:aa92be769506871a62db24ba83b611b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a single-line string representation of the argument and its parameters.  <br /></td></tr>
+<tr class="separator:aa92be769506871a62db24ba83b611b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43843d960fc7fa6ec6f059b104a6dc1e" id="r_a43843d960fc7fa6ec6f059b104a6dc1e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a43843d960fc7fa6ec6f059b104a6dc1e">_get_multi_line</a> (const uint8_t indent_width) const</td></tr>
+<tr class="memdesc:a43843d960fc7fa6ec6f059b104a6dc1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a multi-line string representation of the argument and its parameters, formatting each parameter on its own line with aligned names.  <br /></td></tr>
+<tr class="separator:a43843d960fc7fa6ec6f059b104a6dc1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a07d4b54c9bf23b665fbe95ed94d16491" id="r_a07d4b54c9bf23b665fbe95ed94d16491"><td class="memItemLeft" align="right" valign="top">static constexpr std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a07d4b54c9bf23b665fbe95ed94d16491">default_delimiter</a> = &quot;, &quot;</td></tr>
+<tr class="separator:a07d4b54c9bf23b665fbe95ed94d16491"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A structure used to represent an argument's description. </p>
@@ -186,6 +202,80 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a43843d960fc7fa6ec6f059b104a6dc1e" name="a43843d960fc7fa6ec6f059b104a6dc1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43843d960fc7fa6ec6f059b104a6dc1e">&#9670;&#160;</a></span>_get_multi_line()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ap::detail::argument_descriptor::_get_multi_line </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t&#160;</td>
+          <td class="paramname"><em>indent_width</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates a multi-line string representation of the argument and its parameters, formatting each parameter on its own line with aligned names. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">indent_width</td><td>Number of spaces before the argument name and additional indentation for parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A multi-line formatted description string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="argument__descriptor_8hpp_source.html#l00170">170</a> of file <a class="el" href="argument__descriptor_8hpp_source.html">argument_descriptor.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aa92be769506871a62db24ba83b611b00" name="aa92be769506871a62db24ba83b611b00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa92be769506871a62db24ba83b611b00">&#9670;&#160;</a></span>_get_single_line()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ap::detail::argument_descriptor::_get_single_line </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t&#160;</td>
+          <td class="paramname"><em>indent_width</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates a single-line string representation of the argument and its parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">indent_width</td><td>Number of spaces before the argument name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A single-line formatted description string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="argument__descriptor_8hpp_source.html#l00148">148</a> of file <a class="el" href="argument__descriptor_8hpp_source.html">argument_descriptor.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a3da4b78b14fa6fa48b64147ee80c6267" name="a3da4b78b14fa6fa48b64147ee80c6267"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3da4b78b14fa6fa48b64147ee80c6267">&#9670;&#160;</a></span>add_param() <span class="overload">[1/2]</span></h2>
 
@@ -316,7 +406,7 @@ requires (c_writable&lt;std::ranges::range_value_t&lt;R&gt;&gt;)</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string_view&#160;</td>
-          <td class="paramname"><em>delimiter</em> = <code>default_delimiter</code>&#160;</td>
+          <td class="paramname"><em>delimiter</em> = <code><a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a07d4b54c9bf23b665fbe95ed94d16491">default_delimiter</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -449,6 +539,30 @@ requires (c_writable&lt;std::ranges::range_value_t&lt;R&gt;&gt;)</div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a07d4b54c9bf23b665fbe95ed94d16491" name="a07d4b54c9bf23b665fbe95ed94d16491"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07d4b54c9bf23b665fbe95ed94d16491">&#9670;&#160;</a></span>default_delimiter</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::string_view ap::detail::argument_descriptor::default_delimiter = &quot;, &quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="argument__descriptor_8hpp_source.html#l00189">189</a> of file <a class="el" href="argument__descriptor_8hpp_source.html">argument_descriptor.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a4e44e831487baed6afd868ba0bb312ae" name="a4e44e831487baed6afd868ba0bb312ae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4e44e831487baed6afd868ba0bb312ae">&#9670;&#160;</a></span>help</h2>
 
@@ -505,8 +619,8 @@ requires (c_writable&lt;std::ranges::range_value_t&lt;R&gt;&gt;)</div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html">argument_descriptor</a></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="namespaceap_1_1detail.html">detail</a></li><li class="navelem"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html">argument_descriptor</a></li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

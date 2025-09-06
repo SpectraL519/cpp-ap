@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -95,6 +95,9 @@ $(document).ready(function(){initNavTree('classap_1_1nargs_1_1range.html',''); i
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classap_1_1nargs_1_1range-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ap::nargs::range Class Reference</div></div>
@@ -116,45 +119,61 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a287602e8031610a3cc05fe835726a30b" id="r_a287602e8031610a3cc05fe835726a30b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a287602e8031610a3cc05fe835726a30b">range</a> ()</td></tr>
 <tr class="memdesc:a287602e8031610a3cc05fe835726a30b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor: creates range [1, 1].  <br /></td></tr>
 <tr class="separator:a287602e8031610a3cc05fe835726a30b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a693e7b38be4275b13c0b7ff574df9e09" id="r_a693e7b38be4275b13c0b7ff574df9e09"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a693e7b38be4275b13c0b7ff574df9e09">range</a> (const count_type n)</td></tr>
+<tr class="memitem:a693e7b38be4275b13c0b7ff574df9e09" id="r_a693e7b38be4275b13c0b7ff574df9e09"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a693e7b38be4275b13c0b7ff574df9e09">range</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> n)</td></tr>
 <tr class="memdesc:a693e7b38be4275b13c0b7ff574df9e09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exact count constructor: creates range [n, n].  <br /></td></tr>
 <tr class="separator:a693e7b38be4275b13c0b7ff574df9e09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba13dab6d65f27e86f62666f80a64bd7" id="r_aba13dab6d65f27e86f62666f80a64bd7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#aba13dab6d65f27e86f62666f80a64bd7">range</a> (const count_type lower_bound, const count_type upper_bound)</td></tr>
+<tr class="memitem:aba13dab6d65f27e86f62666f80a64bd7" id="r_aba13dab6d65f27e86f62666f80a64bd7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#aba13dab6d65f27e86f62666f80a64bd7">range</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> lower_bound, const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> upper_bound)</td></tr>
 <tr class="memdesc:aba13dab6d65f27e86f62666f80a64bd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concrete range constructor: creates range [lower_bound, upper_bound].  <br /></td></tr>
 <tr class="separator:aba13dab6d65f27e86f62666f80a64bd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a401d1490514eba8798dcab96bf40ad4c" id="r_a401d1490514eba8798dcab96bf40ad4c"><td class="memItemLeft" align="right" valign="top"><a id="a401d1490514eba8798dcab96bf40ad4c" name="a401d1490514eba8798dcab96bf40ad4c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>range</b> (const <a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;)=default</td></tr>
+<tr class="memitem:a401d1490514eba8798dcab96bf40ad4c" id="r_a401d1490514eba8798dcab96bf40ad4c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a401d1490514eba8798dcab96bf40ad4c">range</a> (const <a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;)=default</td></tr>
 <tr class="separator:a401d1490514eba8798dcab96bf40ad4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f08532c0dc0fed6930ef5352075c6ef" id="r_a2f08532c0dc0fed6930ef5352075c6ef"><td class="memItemLeft" align="right" valign="top"><a id="a2f08532c0dc0fed6930ef5352075c6ef" name="a2f08532c0dc0fed6930ef5352075c6ef"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>range</b> (<a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:a2f08532c0dc0fed6930ef5352075c6ef" id="r_a2f08532c0dc0fed6930ef5352075c6ef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a2f08532c0dc0fed6930ef5352075c6ef">range</a> (<a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&amp;)=default</td></tr>
 <tr class="separator:a2f08532c0dc0fed6930ef5352075c6ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59c5cd7861b29cea935d1eda3d662556" id="r_a59c5cd7861b29cea935d1eda3d662556"><td class="memItemLeft" align="right" valign="top"><a id="a59c5cd7861b29cea935d1eda3d662556" name="a59c5cd7861b29cea935d1eda3d662556"></a>
-<a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;)=default</td></tr>
+<tr class="memitem:a59c5cd7861b29cea935d1eda3d662556" id="r_a59c5cd7861b29cea935d1eda3d662556"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a59c5cd7861b29cea935d1eda3d662556">operator=</a> (const <a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;)=default</td></tr>
 <tr class="separator:a59c5cd7861b29cea935d1eda3d662556"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c8de6437d3b980692a636bb75871a5e" id="r_a2c8de6437d3b980692a636bb75871a5e"><td class="memItemLeft" align="right" valign="top"><a id="a2c8de6437d3b980692a636bb75871a5e" name="a2c8de6437d3b980692a636bb75871a5e"></a>
-<a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:a2c8de6437d3b980692a636bb75871a5e" id="r_a2c8de6437d3b980692a636bb75871a5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a2c8de6437d3b980692a636bb75871a5e">operator=</a> (<a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&amp;)=default</td></tr>
 <tr class="separator:a2c8de6437d3b980692a636bb75871a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac44b44702da23ddcd16b0782c19b68e" id="r_aac44b44702da23ddcd16b0782c19b68e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#aac44b44702da23ddcd16b0782c19b68e">~range</a> ()=default</td></tr>
+<tr class="separator:aac44b44702da23ddcd16b0782c19b68e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea3e617a6c325827843d4d943edd6488" id="r_aea3e617a6c325827843d4d943edd6488"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#aea3e617a6c325827843d4d943edd6488">is_bound</a> () const noexcept</td></tr>
 <tr class="memdesc:aea3e617a6c325827843d4d943edd6488"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if at least one bound (lower, upper) is set. Otherwise returns <code>false</code>  <br /></td></tr>
 <tr class="separator:aea3e617a6c325827843d4d943edd6488"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a995cfe8b423e49a6618976404716337d" id="r_a995cfe8b423e49a6618976404716337d"><td class="memItemLeft" align="right" valign="top">std::weak_ordering&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a995cfe8b423e49a6618976404716337d">ordering</a> (const range::count_type n) const noexcept</td></tr>
+<tr class="memitem:a995cfe8b423e49a6618976404716337d" id="r_a995cfe8b423e49a6618976404716337d"><td class="memItemLeft" align="right" valign="top">std::weak_ordering&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a995cfe8b423e49a6618976404716337d">ordering</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a> n) const noexcept</td></tr>
 <tr class="memdesc:a995cfe8b423e49a6618976404716337d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines the ordering of the count against a range instance.  <br /></td></tr>
 <tr class="separator:a995cfe8b423e49a6618976404716337d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a21be75a379951d340de76d8f0ce4019a" id="r_a21be75a379951d340de76d8f0ce4019a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a21be75a379951d340de76d8f0ce4019a">range</a> (const std::optional&lt; <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> &gt; lower_bound, const std::optional&lt; <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> &gt; upper_bound)</td></tr>
+<tr class="memdesc:a21be75a379951d340de76d8f0ce4019a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private constructor: creates a possibly unbound range.  <br /></td></tr>
+<tr class="separator:a21be75a379951d340de76d8f0ce4019a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a09f45e42fbf3217a281e5b7de61a38b6" id="r_a09f45e42fbf3217a281e5b7de61a38b6"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a09f45e42fbf3217a281e5b7de61a38b6">_lower_bound</a></td></tr>
+<tr class="separator:a09f45e42fbf3217a281e5b7de61a38b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6acfdb6e93a7ae9759ae3ed6b8a9d366" id="r_a6acfdb6e93a7ae9759ae3ed6b8a9d366"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a6acfdb6e93a7ae9759ae3ed6b8a9d366">_upper_bound</a></td></tr>
+<tr class="separator:a6acfdb6e93a7ae9759ae3ed6b8a9d366"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:ac1ef9be716d005e7ddc9369b9e495d8a" id="r_ac1ef9be716d005e7ddc9369b9e495d8a"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#ac1ef9be716d005e7ddc9369b9e495d8a">_default_bound</a> = 1ull</td></tr>
+<tr class="separator:ac1ef9be716d005e7ddc9369b9e495d8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:ab94c0c76ca0213b5aeb8ce77e451d92f" id="r_ab94c0c76ca0213b5aeb8ce77e451d92f"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#ab94c0c76ca0213b5aeb8ce77e451d92f">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;r) noexcept</td></tr>
 <tr class="separator:ab94c0c76ca0213b5aeb8ce77e451d92f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78971b72950ff99f23bf5915d1e30956" id="r_a78971b72950ff99f23bf5915d1e30956"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a78971b72950ff99f23bf5915d1e30956">at_least</a> (const count_type) noexcept</td></tr>
+<tr class="memitem:a78971b72950ff99f23bf5915d1e30956" id="r_a78971b72950ff99f23bf5915d1e30956"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a78971b72950ff99f23bf5915d1e30956">at_least</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>) noexcept</td></tr>
 <tr class="memdesc:a78971b72950ff99f23bf5915d1e30956"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [n, inf].  <br /></td></tr>
 <tr class="separator:a78971b72950ff99f23bf5915d1e30956"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab078ae071e8704220544d6e4c9f7bec1" id="r_ab078ae071e8704220544d6e4c9f7bec1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#ab078ae071e8704220544d6e4c9f7bec1">more_than</a> (const count_type) noexcept</td></tr>
+<tr class="memitem:ab078ae071e8704220544d6e4c9f7bec1" id="r_ab078ae071e8704220544d6e4c9f7bec1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#ab078ae071e8704220544d6e4c9f7bec1">more_than</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>) noexcept</td></tr>
 <tr class="memdesc:ab078ae071e8704220544d6e4c9f7bec1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [n + 1, inf].  <br /></td></tr>
 <tr class="separator:ab078ae071e8704220544d6e4c9f7bec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0c7787307b5b4bc46b6136a69b95d4c" id="r_aa0c7787307b5b4bc46b6136a69b95d4c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#aa0c7787307b5b4bc46b6136a69b95d4c">less_than</a> (const count_type) noexcept</td></tr>
+<tr class="memitem:aa0c7787307b5b4bc46b6136a69b95d4c" id="r_aa0c7787307b5b4bc46b6136a69b95d4c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#aa0c7787307b5b4bc46b6136a69b95d4c">less_than</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>) noexcept</td></tr>
 <tr class="memdesc:aa0c7787307b5b4bc46b6136a69b95d4c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, n - 1].  <br /></td></tr>
 <tr class="separator:aa0c7787307b5b4bc46b6136a69b95d4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad52d8af7c25e789d0aae6b5a293bb919" id="r_ad52d8af7c25e789d0aae6b5a293bb919"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#ad52d8af7c25e789d0aae6b5a293bb919">up_to</a> (const count_type) noexcept</td></tr>
+<tr class="memitem:ad52d8af7c25e789d0aae6b5a293bb919" id="r_ad52d8af7c25e789d0aae6b5a293bb919"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#ad52d8af7c25e789d0aae6b5a293bb919">up_to</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>) noexcept</td></tr>
 <tr class="memdesc:ad52d8af7c25e789d0aae6b5a293bb919"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, n].  <br /></td></tr>
 <tr class="separator:ad52d8af7c25e789d0aae6b5a293bb919"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a916791938d65149337e6b0f58742d41a" id="r_a916791938d65149337e6b0f58742d41a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1nargs_1_1range.html#a916791938d65149337e6b0f58742d41a">any</a> () noexcept</td></tr>
@@ -173,7 +192,7 @@ Friends</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using ap::nargs::range::count_type =  std::size_t</td>
+          <td class="memname">using <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">ap::nargs::range::count_type</a> =  std::size_t</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -184,7 +203,7 @@ Friends</h2></td></tr>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a287602e8031610a3cc05fe835726a30b" name="a287602e8031610a3cc05fe835726a30b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a287602e8031610a3cc05fe835726a30b">&#9670;&#160;</a></span>range() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a287602e8031610a3cc05fe835726a30b">&#9670;&#160;</a></span>range() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -213,7 +232,7 @@ Friends</h2></td></tr>
 </div>
 </div>
 <a id="a693e7b38be4275b13c0b7ff574df9e09" name="a693e7b38be4275b13c0b7ff574df9e09"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a693e7b38be4275b13c0b7ff574df9e09">&#9670;&#160;</a></span>range() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a693e7b38be4275b13c0b7ff574df9e09">&#9670;&#160;</a></span>range() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -224,7 +243,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">ap::nargs::range::range </td>
           <td>(</td>
-          <td class="paramtype">const count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
@@ -249,7 +268,7 @@ Friends</h2></td></tr>
 </div>
 </div>
 <a id="aba13dab6d65f27e86f62666f80a64bd7" name="aba13dab6d65f27e86f62666f80a64bd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba13dab6d65f27e86f62666f80a64bd7">&#9670;&#160;</a></span>range() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aba13dab6d65f27e86f62666f80a64bd7">&#9670;&#160;</a></span>range() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,13 +279,13 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">ap::nargs::range::range </td>
           <td>(</td>
-          <td class="paramtype">const count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td>
           <td class="paramname"><em>lower_bound</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td>
           <td class="paramname"><em>upper_bound</em>&#160;</td>
         </tr>
         <tr>
@@ -292,6 +311,130 @@ Friends</h2></td></tr>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00036">36</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a401d1490514eba8798dcab96bf40ad4c" name="a401d1490514eba8798dcab96bf40ad4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a401d1490514eba8798dcab96bf40ad4c">&#9670;&#160;</a></span>range() <span class="overload">[4/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ap::nargs::range::range </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2f08532c0dc0fed6930ef5352075c6ef" name="a2f08532c0dc0fed6930ef5352075c6ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f08532c0dc0fed6930ef5352075c6ef">&#9670;&#160;</a></span>range() <span class="overload">[5/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ap::nargs::range::range </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aac44b44702da23ddcd16b0782c19b68e" name="aac44b44702da23ddcd16b0782c19b68e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac44b44702da23ddcd16b0782c19b68e">&#9670;&#160;</a></span>~range()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ap::nargs::range::~range </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a21be75a379951d340de76d8f0ce4019a" name="a21be75a379951d340de76d8f0ce4019a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21be75a379951d340de76d8f0ce4019a">&#9670;&#160;</a></span>range() <span class="overload">[6/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ap::nargs::range::range </td>
+          <td>(</td>
+          <td class="paramtype">const std::optional&lt; <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> &gt;&#160;</td>
+          <td class="paramname"><em>lower_bound</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::optional&lt; <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> &gt;&#160;</td>
+          <td class="paramname"><em>upper_bound</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Private constructor: creates a possibly unbound range. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lower_bound</td><td>The optional lower bound of the range. </td></tr>
+    <tr><td class="paramname">upper_bound</td><td>The optional upper bound of the range. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00121">121</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
 
 </div>
 </div>
@@ -325,6 +468,58 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="a59c5cd7861b29cea935d1eda3d662556" name="a59c5cd7861b29cea935d1eda3d662556"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59c5cd7861b29cea935d1eda3d662556">&#9670;&#160;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp; ap::nargs::range::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2c8de6437d3b980692a636bb75871a5e" name="a2c8de6437d3b980692a636bb75871a5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c8de6437d3b980692a636bb75871a5e">&#9670;&#160;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp; ap::nargs::range::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a995cfe8b423e49a6618976404716337d" name="a995cfe8b423e49a6618976404716337d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a995cfe8b423e49a6618976404716337d">&#9670;&#160;</a></span>ordering()</h2>
 
@@ -337,7 +532,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">std::weak_ordering ap::nargs::range::ordering </td>
           <td>(</td>
-          <td class="paramtype">const range::count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -410,7 +605,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> at_least </td>
           <td>(</td>
-          <td class="paramtype">const count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
@@ -447,7 +642,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> less_than </td>
           <td>(</td>
-          <td class="paramtype">const count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
@@ -484,7 +679,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> more_than </td>
           <td>(</td>
-          <td class="paramtype">const count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
@@ -559,7 +754,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> up_to </td>
           <td>(</td>
-          <td class="paramtype">const count_type&#160;</td>
+          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
@@ -584,6 +779,79 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac1ef9be716d005e7ddc9369b9e495d8a" name="ac1ef9be716d005e7ddc9369b9e495d8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1ef9be716d005e7ddc9369b9e495d8a">&#9670;&#160;</a></span>_default_bound</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a> ap::nargs::range::_default_bound = 1ull</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00127">127</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a09f45e42fbf3217a281e5b7de61a38b6" name="a09f45e42fbf3217a281e5b7de61a38b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09f45e42fbf3217a281e5b7de61a38b6">&#9670;&#160;</a></span>_lower_bound</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;<a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&gt; ap::nargs::range::_lower_bound</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00124">124</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6acfdb6e93a7ae9759ae3ed6b8a9d366" name="a6acfdb6e93a7ae9759ae3ed6b8a9d366"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6acfdb6e93a7ae9759ae3ed6b8a9d366">&#9670;&#160;</a></span>_upper_bound</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;<a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">count_type</a>&gt; ap::nargs::range::_upper_bound</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00125">125</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/ap/nargs/<a class="el" href="range_8hpp_source.html">range.hpp</a></li>
 </ul>
@@ -592,8 +860,8 @@ Friends</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>ap</b></li><li class="navelem"><b>nargs</b></li><li class="navelem"><a class="el" href="classap_1_1nargs_1_1range.html">range</a></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="namespaceap_1_1nargs.html">nargs</a></li><li class="navelem"><a class="el" href="classap_1_1nargs_1_1range.html">range</a></li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -100,7 +100,7 @@ $(document).ready(function(){initNavTree('typing__utility_8hpp_source.html','');
   <div class="headertitle"><div class="title">typing_utility.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Copyright (c) 2023-2025 Jakub Musiał</span></div>
+<a href="typing__utility_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Copyright (c) 2023-2025 Jakub Musiał</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Licensed under the MIT License. See the LICENSE file in the project root for full license information.</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
@@ -112,13 +112,14 @@ $(document).ready(function(){initNavTree('typing__utility_8hpp_source.html','');
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;source_location&gt;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;string_view&gt;</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">namespace </span>ap::detail {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceap_1_1detail.html">ap::detail</a> {</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">using </span>uptr_opt_t = std::optional&lt;std::reference_wrapper&lt;std::unique_ptr&lt;T&gt;&gt;&gt;;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespaceap_1_1detail.html#af017c8539902ea2ad8ab52b7f0c071ef">   16</a></span><span class="keyword">using </span><a class="code hl_typedef" href="namespaceap_1_1detail.html#af017c8539902ea2ad8ab52b7f0c071ef">uptr_opt_t</a> = std::optional&lt;std::reference_wrapper&lt;std::unique_ptr&lt;T&gt;&gt;&gt;;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">constexpr</span> std::string_view get_demangled_type_name() {</div>
+<div class="foldopen" id="foldopen00019" data-start="{" data-end="}">
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="namespaceap_1_1detail.html#af2086dbf755129c14648c022f82a5042">   19</a></span><span class="keyword">constexpr</span> std::string_view <a class="code hl_function" href="namespaceap_1_1detail.html#af2086dbf755129c14648c022f82a5042">get_demangled_type_name</a>() {</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#if defined(__clang__) || defined(__GNUC__)</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">constexpr</span> std::string_view func_name = __PRETTY_FUNCTION__;</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">constexpr</span> std::string_view begin_key = <span class="stringliteral">&quot;T = &quot;</span>;</div>
@@ -139,15 +140,19 @@ $(document).ready(function(){initNavTree('typing__utility_8hpp_source.html','');
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordflow">return</span> <span class="keyword">typeid</span>(T).name();</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>}</div>
+</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>} <span class="comment">// namespace ap::detail</span></div>
+<div class="ttc" id="anamespaceap_1_1detail_html"><div class="ttname"><a href="namespaceap_1_1detail.html">ap::detail</a></div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00037">argument_parser.hpp:37</a></div></div>
+<div class="ttc" id="anamespaceap_1_1detail_html_af017c8539902ea2ad8ab52b7f0c071ef"><div class="ttname"><a href="namespaceap_1_1detail.html#af017c8539902ea2ad8ab52b7f0c071ef">ap::detail::uptr_opt_t</a></div><div class="ttdeci">std::optional&lt; std::reference_wrapper&lt; std::unique_ptr&lt; T &gt; &gt; &gt; uptr_opt_t</div><div class="ttdef"><b>Definition</b> <a href="typing__utility_8hpp_source.html#l00016">typing_utility.hpp:16</a></div></div>
+<div class="ttc" id="anamespaceap_1_1detail_html_af2086dbf755129c14648c022f82a5042"><div class="ttname"><a href="namespaceap_1_1detail.html#af2086dbf755129c14648c022f82a5042">ap::detail::get_demangled_type_name</a></div><div class="ttdeci">constexpr std::string_view get_demangled_type_name()</div><div class="ttdef"><b>Definition</b> <a href="typing__utility_8hpp_source.html#l00019">typing_utility.hpp:19</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="dir_ea43b21539db84da507fd938bfb6305e.html">detail</a></li><li class="navelem"><b>typing_utility.hpp</b></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="dir_ea43b21539db84da507fd938bfb6305e.html">detail</a></li><li class="navelem"><a class="el" href="typing__utility_8hpp.html">typing_utility.hpp</a></li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

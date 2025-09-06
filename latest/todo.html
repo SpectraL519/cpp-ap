@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('todo.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
-<dt>Member <a class="el" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">ap::argument_parser::add_optional_argument</a>  (const std::string_view name, const <a class="el" href="argument__name_8hpp.html#aca3840ec8dde0f0e0dcf2dc4f42bf218" title="Argument name member discriminator.">detail::argument_name_discriminator</a> name_discr=n_primary)</dt>
+<dt>Member <a class="el" href="classap_1_1argument__parser.html#a7cbd4c2c0accb67acb9a8532030e13ce">ap::argument_parser::_parse_args_impl</a>  (const arg_token_list_t &amp;arg_tokens, std::vector&lt; std::string &gt; &amp;unknown_args, const bool handle_unknown=true)</dt>
+<dd><a class="anchor" id="_todo000005"></a>Use <code>c_range_of&lt;argument_token&gt;</code> instead of <code>arg_token_list_t</code> directly.  </dd>
+<dt>Member <a class="el" href="classap_1_1argument__parser.html#a1b4001bc6133381dd633a80e308e7aea">ap::argument_parser::add_optional_argument</a>  (const std::string_view name, const <a class="el" href="namespaceap_1_1detail.html#aca3840ec8dde0f0e0dcf2dc4f42bf218" title="Argument name member discriminator.">detail::argument_name_discriminator</a> name_discr=n_primary)</dt>
 <dd><a class="anchor" id="_todo000003"></a>Check forbidden characters (after adding the assignment character).  </dd>
 <dt>Member <a class="el" href="classap_1_1argument__parser.html#af3fab0504d38f692b218e4affb4803b7">ap::argument_parser::add_optional_argument</a>  (const std::string_view primary_name, const std::string_view secondary_name)</dt>
 <dd><a class="anchor" id="_todo000004"></a>Check forbidden characters (after adding the assignment character).  </dd>
@@ -104,12 +106,12 @@ $(document).ready(function(){initNavTree('todo.html',''); initResizable(); });
 <dd><a class="anchor" id="_todo000001"></a>Check forbidden characters (after adding the assignment character).  </dd>
 <dt>Member <a class="el" href="classap_1_1argument__parser.html#a5d54e4c921bbf71e9b58b9ae59cd1137">ap::argument_parser::add_positional_argument</a>  (const std::string_view primary_name, const std::string_view secondary_name)</dt>
 <dd><a class="anchor" id="_todo000002"></a>Check forbidden characters (after adding the assignment character).  </dd>
-<dt>Member <a class="el" href="argument__base_8hpp.html#af690429000ab1e12acb5e4f32f04274b">ap::detail::is_valid_choice</a>  (const T &amp;value, const std::vector&lt; T &gt; &amp;choices) noexcept</dt>
-<dd><a class="anchor" id="_todo000007"></a>replace with <code>std::ranges::contains</code> after transition to C++23  </dd>
-<dt>Member <a class="el" href="str__utility_8hpp.html#ac3d83d4a2aaa0fa383ae5cdad990fd9a">ap::detail::join</a>  (const R &amp;range, const std::string_view delimiter=", ")</dt>
-<dd><a class="anchor" id="_todo000008"></a>Replace with std::views::join after transition to C++23.  </dd>
+<dt>Member <a class="el" href="namespaceap_1_1detail.html#af690429000ab1e12acb5e4f32f04274b">ap::detail::is_valid_choice</a>  (const T &amp;value, const std::vector&lt; T &gt; &amp;choices) noexcept</dt>
+<dd><a class="anchor" id="_todo000006"></a>replace with <code>std::ranges::contains</code> after transition to C++23  </dd>
+<dt>Member <a class="el" href="namespaceap_1_1detail.html#ac3d83d4a2aaa0fa383ae5cdad990fd9a">ap::detail::join</a>  (const R &amp;range, const std::string_view delimiter=", ")</dt>
+<dd><a class="anchor" id="_todo000007"></a>Replace with std::views::join after transition to C++23.  </dd>
 <dt>Struct <a class="el" href="structap_1_1type__error.html">ap::type_error</a>  </dt>
-<dd><a class="anchor" id="_todo000009"></a>Use demangled type names </dd>
+<dd><a class="anchor" id="_todo000008"></a>Use demangled type names </dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
@@ -117,7 +119,7 @@ $(document).ready(function(){initNavTree('todo.html',''); initResizable(); });
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

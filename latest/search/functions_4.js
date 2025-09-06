@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['geq_0',['geq',['../predefined__actions_8hpp.html#aedabd0d1a767b66464480daf5a5df1ab',1,'ap::action']]],
-  ['get_1',['get',['../classap_1_1detail_1_1argument__descriptor.html#a24c4134f45d46b7f374bc80b5d0360bf',1,'ap::detail::argument_descriptor']]],
-  ['get_5fbasic_2',['get_basic',['../classap_1_1detail_1_1argument__descriptor.html#a2b755907ce5e5858504a42d46edc4a52',1,'ap::detail::argument_descriptor']]],
-  ['gt_3',['gt',['../predefined__actions_8hpp.html#ae38c40b4c15d907a6a64735a7f09214d',1,'ap::action']]]
+  ['default_5foptional_5farguments_0',['default_optional_arguments',['../classap_1_1argument__parser.html#aa17bf6579d8343e8e593e43f105f64fc',1,'ap::argument_parser::default_optional_arguments(const AR &amp;arg_discriminator_range) noexcept'],['../classap_1_1argument__parser.html#ad5304cde541d136e189f15a2c8f9e2c4',1,'ap::argument_parser::default_optional_arguments(const std::initializer_list&lt; argument::default_optional &gt; arg_discriminator_list) noexcept']]],
+  ['default_5fpositional_5farguments_1',['default_positional_arguments',['../classap_1_1argument__parser.html#a0236f5dc871f7794a91d38e65210993f',1,'ap::argument_parser::default_positional_arguments(const AR &amp;arg_discriminator_range) noexcept'],['../classap_1_1argument__parser.html#a19d4a21fa525598db40630c704c01640',1,'ap::argument_parser::default_positional_arguments(const std::initializer_list&lt; argument::default_positional &gt; arg_discriminator_list) noexcept']]],
+  ['default_5fvalue_2',['default_value',['../classap_1_1argument_1_1optional.html#a6eec61d414aec03832ae16888bb87189',1,'ap::argument::optional::default_value()'],['../classap_1_1argument_1_1positional.html#a3690c688737b29c6a682a8655ca03fd5',1,'ap::argument::positional::default_value()']]],
+  ['desc_3',['desc',['../classap_1_1argument_1_1optional.html#a2c9a62dfe1e18db9d558573bc88a6217',1,'ap::argument::optional::desc()'],['../classap_1_1argument_1_1positional.html#a72cb4de9238c1865b95c8c2c1b0cfd12',1,'ap::argument::positional::desc()'],['../classap_1_1detail_1_1argument__base.html#ae0571c2cc2c358b5d83408c15bc84cf9',1,'ap::detail::argument_base::desc()']]]
 ];

@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -93,6 +93,7 @@ $(document).ready(function(){initNavTree('classap_1_1detail_1_1argument__base.ht
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
@@ -116,6 +117,11 @@ Inheritance diagram for ap::detail::argument_base:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a957b1ad218bf86f20fa5308793401ddb" id="r_a957b1ad218bf86f20fa5308793401ddb"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a957b1ad218bf86f20fa5308793401ddb">~argument_base</a> ()=default</td></tr>
+<tr class="separator:a957b1ad218bf86f20fa5308793401ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:afc5a437d701d15ee0e838ac6085ab893" id="r_afc5a437d701d15ee0e838ac6085ab893"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#afc5a437d701d15ee0e838ac6085ab893">argument_base</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;<a class="el" href="classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f">name</a>, const bool required=false)</td></tr>
@@ -176,6 +182,31 @@ Friends</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00026">26</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a957b1ad218bf86f20fa5308793401ddb" name="a957b1ad218bf86f20fa5308793401ddb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a957b1ad218bf86f20fa5308793401ddb">&#9670;&#160;</a></span>~argument_base()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual ap::detail::argument_base::~argument_base </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afc5a437d701d15ee0e838ac6085ab893" name="afc5a437d701d15ee0e838ac6085ab893"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc5a437d701d15ee0e838ac6085ab893">&#9670;&#160;</a></span>argument_base()</h2>
 
@@ -268,6 +299,8 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The number of times an argument has been used. </dd></dl>
 
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#ab93b92d4e3edc1dbe0bb91d32078207c">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#ad84a7be5a54335bdaa21771a3198b837">ap::argument::positional&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a id="ae0571c2cc2c358b5d83408c15bc84cf9" name="ae0571c2cc2c358b5d83408c15bc84cf9"></a>
@@ -301,6 +334,8 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An argument descriptor object for the argument. </dd></dl>
 
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a2c9a62dfe1e18db9d558573bc88a6217">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a72cb4de9238c1865b95c8c2c1b0cfd12">ap::argument::positional&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a id="ae84bd6fb3e9606ff913edd0fddf7fba5" name="ae84bd6fb3e9606ff913edd0fddf7fba5"></a>
@@ -327,6 +362,8 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument has parsed values., <code>false</code> otherwise. </dd></dl>
 
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a8dd3f30d0d710e8f369dec0c7fe469e9">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#af0da1f0eb732d2d2319645add4caaf05">ap::argument::positional&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a id="a10825056535c3408a912c009c91c86d5" name="a10825056535c3408a912c009c91c86d5"></a>
@@ -352,6 +389,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument has a value, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a24d17bdd0197d40592e587db45f417b7">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#ade37218d52652aa0eff946338c31dab0">ap::argument::positional&lt; T &gt;</a>.</p>
 
 </div>
 </div>
@@ -463,6 +502,8 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument has been used, <code>false</code> otherwise. </dd></dl>
 
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a528cd0c64485513bcfc61086085da41c">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a5ad17ad09fb86821bc156b673fc2d92f">ap::argument::positional&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a id="aebb8ac9d4a60fe042daa8b54b4f6de28" name="aebb8ac9d4a60fe042daa8b54b4f6de28"></a>
@@ -490,6 +531,8 @@ Friends</h2></td></tr>
 
 <p>Mark the argument as used. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument accepts further values, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a72e665a7542b2b0fb38d08516676c7d8">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a60db6b82c45857d1a0a2eac2c0e8910a">ap::argument::positional&lt; T &gt;</a>.</p>
 
 </div>
 </div>
@@ -545,6 +588,8 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The ordering relationship of argument range. </dd></dl>
 
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a0ea435f121baf556031706aaf7e871fa">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a3190a24c0949742d64b2feb64de3dd4b">ap::argument::positional&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a id="a4ec0c0a188f869f8be1e04663dd42ede" name="a4ec0c0a188f869f8be1e04663dd42ede"></a>
@@ -580,6 +625,8 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument accepts further values, <code>false</code> otherwise. </dd></dl>
 
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a25ae85a7a210d441629cf41e92047ca1">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a0010f5d5dbc21db4685ee5334a588b60">ap::argument::positional&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a id="a66137a69a06d000e2b7a677a28f6b842" name="a66137a69a06d000e2b7a677a28f6b842"></a>
@@ -606,6 +653,8 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Reference to the stored value of the argument. </dd></dl>
 
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a74937820758f6fec317db3552d0af547">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#ab28bc3bc4950494b62208b79b232318b">ap::argument::positional&lt; T &gt;</a>.</p>
+
 </div>
 </div>
 <a id="abbcc2eaf1cfc00f1aaf62208d1a99d95" name="abbcc2eaf1cfc00f1aaf62208d1a99d95"></a>
@@ -631,6 +680,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Reference to the vector of parsed values of the argument. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a0691cc95c9d0ab9d3004b6f939bbc88b">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a7fed8df5b0a32f24420b998ffbc21a64">ap::argument::positional&lt; T &gt;</a>.</p>
 
 </div>
 </div>
@@ -788,8 +839,8 @@ Friends</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>ap</b></li><li class="navelem"><b>detail</b></li><li class="navelem"><a class="el" href="classap_1_1detail_1_1argument__base.html">argument_base</a></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="namespaceap_1_1detail.html">detail</a></li><li class="navelem"><a class="el" href="classap_1_1detail_1_1argument__base.html">argument_base</a></li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

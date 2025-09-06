@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['secondary_0',['secondary',['../structap_1_1detail_1_1argument__name.html#a5f48a3d6c61206fb5ad417ce221adfb0',1,'ap::detail::argument_name']]]
+  ['is_5fvalid_5ftype_5fv_0',['is_valid_type_v',['../namespaceap_1_1detail.html#a23471005529c4a883f28305469923874',1,'ap::detail']]]
 ];

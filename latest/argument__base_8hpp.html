@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('argument__base_8hpp.html',''); initRes
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">argument_base.hpp File Reference</div></div>
 </div><!--header-->
@@ -115,10 +116,17 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Argument class interface.  <a href="classap_1_1detail_1_1argument__base.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespaceap" id="r_namespaceap"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap.html">ap</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceap_1_1detail" id="r_namespaceap_1_1detail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1detail.html">ap::detail</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af690429000ab1e12acb5e4f32f04274b" id="r_af690429000ab1e12acb5e4f32f04274b"><td class="memTemplParams" colspan="2">template&lt;c_argument_value_type T&gt; </td></tr>
-<tr class="memitem:af690429000ab1e12acb5e4f32f04274b"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="argument__base_8hpp.html#af690429000ab1e12acb5e4f32f04274b">ap::detail::is_valid_choice</a> (const T &amp;value, const std::vector&lt; T &gt; &amp;choices) noexcept</td></tr>
+<tr class="memitem:af690429000ab1e12acb5e4f32f04274b"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceap_1_1detail.html#af690429000ab1e12acb5e4f32f04274b">ap::detail::is_valid_choice</a> (const T &amp;value, const std::vector&lt; T &gt; &amp;choices) noexcept</td></tr>
 <tr class="memdesc:af690429000ab1e12acb5e4f32f04274b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the provided choice is valid for the given set of choices.  <br /></td></tr>
 <tr class="separator:af690429000ab1e12acb5e4f32f04274b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -126,65 +134,13 @@ Functions</h2></td></tr>
 <div class="textblock"><p>Defines the base argument class and common utility. </p>
 
 <p class="definition">Definition in file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a id="af690429000ab1e12acb5e4f32f04274b" name="af690429000ab1e12acb5e4f32f04274b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af690429000ab1e12acb5e4f32f04274b">&#9670;&#160;</a></span>is_valid_choice()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;c_argument_value_type T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ap::detail::is_valid_choice </td>
-          <td>(</td>
-          <td class="paramtype">const T &amp;&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>choices</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Checks if the provided choice is valid for the given set of choices. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">value</td><td>A value, the validity of which is to be checked. </td></tr>
-    <tr><td class="paramname">choices</td><td>The set against which the choice validity will be checked. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the choice is valid, <code>false</code> otherwise. </dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>replace with <code>std::ranges::contains</code> after transition to C++23 </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00120">120</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="dir_ea43b21539db84da507fd938bfb6305e.html">detail</a></li><li class="navelem"><a class="el" href="argument__base_8hpp.html">argument_base.hpp</a></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

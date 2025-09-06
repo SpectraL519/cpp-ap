@@ -70,20 +70,31 @@ var NAVTREE =
       ] ],
       [ "Default Arguments", "md_docs_2tutorial.html#default-arguments", null ],
       [ "Parsing Arguments", "md_docs_2tutorial.html#parsing-arguments", [
-        [ "Argument Parsing Rules:", "md_docs_2tutorial.html#argument-parsing-rules", null ],
-        [ "Compound Arguments:", "md_docs_2tutorial.html#compound-arguments", null ]
+        [ "Argument Parsing Rules", "md_docs_2tutorial.html#argument-parsing-rules", null ],
+        [ "Compound Arguments", "md_docs_2tutorial.html#compound-arguments", null ],
+        [ "Parsing Known Arguments", "md_docs_2tutorial.html#parsing-known-arguments", null ]
       ] ],
       [ "Retrieving Argument Values", "md_docs_2tutorial.html#retrieving-argument-values", null ],
       [ "Examples", "md_docs_2tutorial.html#examples", null ]
     ] ],
     [ "Todo List", "todo.html", null ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ],
+        [ "Typedefs", "namespacemembers_type.html", null ],
+        [ "Enumerations", "namespacemembers_enum.html", null ]
+      ] ]
+    ] ],
     [ "Concepts", "concepts.html", "concepts" ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
@@ -100,7 +111,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"structap_1_1detail_1_1argument__name.html#a8c1f07ee2487e0d4da11bf3b5da8d217"
+"classap_1_1argument__parser.html#a872eb42963ca9920282b6ed38bb792b6",
+"functions_l.html",
+"structap_1_1invalid__configuration_1_1positional.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

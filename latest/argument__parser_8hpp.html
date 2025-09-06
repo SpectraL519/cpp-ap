@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('argument__parser_8hpp.html',''); initR
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">argument_parser.hpp File Reference</div></div>
 </div><!--header-->
@@ -106,7 +107,7 @@ $(document).ready(function(){initNavTree('argument__parser_8hpp.html',''); initR
 <code>#include &quot;<a class="el" href="positional_8hpp_source.html">argument/positional.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="argument__token_8hpp_source.html">detail/argument_token.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="concepts_8hpp_source.html">detail/concepts.hpp</a>&quot;</code><br />
-<code>#include &quot;version.hpp&quot;</code><br />
+<code>#include &quot;<a class="el" href="version_8hpp_source.html">version.hpp</a>&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;format&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -121,12 +122,19 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main argument parser class.  <a href="classap_1_1argument__parser.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespaceap" id="r_namespaceap"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap.html">ap</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceap_1_1detail" id="r_namespaceap_1_1detail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1detail.html">ap::detail</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a577fb3452f007b021f806bc9d55d18fa" id="r_a577fb3452f007b021f806bc9d55d18fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="argument__parser_8hpp.html#a577fb3452f007b021f806bc9d55d18fa">ap::detail::add_default_argument</a> (const <a class="el" href="default_8hpp.html#a286f72b3fda327176045593cc03035f3">argument::default_positional</a> arg_discriminator, <a class="el" href="classap_1_1argument__parser.html">argument_parser</a> &amp;arg_parser) noexcept</td></tr>
+<tr class="memitem:a577fb3452f007b021f806bc9d55d18fa" id="r_a577fb3452f007b021f806bc9d55d18fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1detail.html#a577fb3452f007b021f806bc9d55d18fa">ap::detail::add_default_argument</a> (const <a class="el" href="namespaceap_1_1argument.html#a286f72b3fda327176045593cc03035f3">argument::default_positional</a> arg_discriminator, <a class="el" href="classap_1_1argument__parser.html">argument_parser</a> &amp;arg_parser) noexcept</td></tr>
 <tr class="memdesc:a577fb3452f007b021f806bc9d55d18fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a predefined/default positional argument to the parser.  <br /></td></tr>
 <tr class="separator:a577fb3452f007b021f806bc9d55d18fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb34b1fa0a89174aaa4029cb82c9b1c5" id="r_afb34b1fa0a89174aaa4029cb82c9b1c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="argument__parser_8hpp.html#afb34b1fa0a89174aaa4029cb82c9b1c5">ap::detail::add_default_argument</a> (const <a class="el" href="default_8hpp.html#ae33bebaf42333b6e30800f977e22ad41">argument::default_optional</a> arg_discriminator, <a class="el" href="classap_1_1argument__parser.html">argument_parser</a> &amp;arg_parser) noexcept</td></tr>
+<tr class="memitem:afb34b1fa0a89174aaa4029cb82c9b1c5" id="r_afb34b1fa0a89174aaa4029cb82c9b1c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1detail.html#afb34b1fa0a89174aaa4029cb82c9b1c5">ap::detail::add_default_argument</a> (const <a class="el" href="namespaceap_1_1argument.html#ae33bebaf42333b6e30800f977e22ad41">argument::default_optional</a> arg_discriminator, <a class="el" href="classap_1_1argument__parser.html">argument_parser</a> &amp;arg_parser) noexcept</td></tr>
 <tr class="memdesc:afb34b1fa0a89174aaa4029cb82c9b1c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a predefined/default optional argument to the parser.  <br /></td></tr>
 <tr class="separator:afb34b1fa0a89174aaa4029cb82c9b1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -134,108 +142,13 @@ Functions</h2></td></tr>
 <div class="textblock"><p>Main library header file. Defines the <code>argument_parser</code> class. </p>
 
 <p class="definition">Definition in file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a id="afb34b1fa0a89174aaa4029cb82c9b1c5" name="afb34b1fa0a89174aaa4029cb82c9b1c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb34b1fa0a89174aaa4029cb82c9b1c5">&#9670;&#160;</a></span>add_default_argument() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ap::detail::add_default_argument </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="default_8hpp.html#ae33bebaf42333b6e30800f977e22ad41">argument::default_optional</a>&#160;</td>
-          <td class="paramname"><em>arg_discriminator</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classap_1_1argument__parser.html">argument_parser</a> &amp;&#160;</td>
-          <td class="paramname"><em>arg_parser</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Adds a predefined/default optional argument to the parser. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">arg_discriminator</td><td>The default argument discriminator. </td></tr>
-    <tr><td class="paramname">arg_parser</td><td>The argument parser to which the argument will be added. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l01022">1022</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a577fb3452f007b021f806bc9d55d18fa" name="a577fb3452f007b021f806bc9d55d18fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a577fb3452f007b021f806bc9d55d18fa">&#9670;&#160;</a></span>add_default_argument() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ap::detail::add_default_argument </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="default_8hpp.html#a286f72b3fda327176045593cc03035f3">argument::default_positional</a>&#160;</td>
-          <td class="paramname"><em>arg_discriminator</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classap_1_1argument__parser.html">argument_parser</a> &amp;&#160;</td>
-          <td class="paramname"><em>arg_parser</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Adds a predefined/default positional argument to the parser. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">arg_discriminator</td><td>The default argument discriminator. </td></tr>
-    <tr><td class="paramname">arg_parser</td><td>The argument parser to which the argument will be added. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l01001">1001</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="argument__parser_8hpp.html">argument_parser.hpp</a></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

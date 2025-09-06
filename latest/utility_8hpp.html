@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('utility_8hpp.html',''); initResizable(
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#concepts">Concepts</a> &#124;
 <a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle"><div class="title">utility.hpp File Reference</div></div>
@@ -114,6 +115,15 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A visitor structure used to apply <em>value</em> actions.  <a href="structap_1_1action_1_1detail_1_1apply__visitor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespaceap" id="r_namespaceap"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap.html">ap</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceap_1_1action" id="r_namespaceap_1_1action"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1action.html">ap::action</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceap_1_1action_1_1detail" id="r_namespaceap_1_1action_1_1detail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1action_1_1detail.html">ap::action::detail</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptap_1_1action_1_1detail_1_1c__value__action__specifier.html">ap::action::detail::c_value_action_specifier</a></td></tr>
@@ -126,11 +136,11 @@ Concepts</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a1cd5aefc2b22fb2e191c8fe57dc38288" id="r_a1cd5aefc2b22fb2e191c8fe57dc38288"><td class="memTemplParams" colspan="2">template&lt;c_value_action_specifier AS, <a class="el" href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a> T&gt; </td></tr>
-<tr class="memitem:a1cd5aefc2b22fb2e191c8fe57dc38288"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="utility_8hpp.html#a1cd5aefc2b22fb2e191c8fe57dc38288">ap::action::detail::callable_type</a> = typename AS::template type&lt; T &gt;</td></tr>
+<tr class="memitem:a1cd5aefc2b22fb2e191c8fe57dc38288"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceap_1_1action_1_1detail.html#a1cd5aefc2b22fb2e191c8fe57dc38288">ap::action::detail::callable_type</a> = typename AS::template type&lt; T &gt;</td></tr>
 <tr class="memdesc:a1cd5aefc2b22fb2e191c8fe57dc38288"><td class="mdescLeft">&#160;</td><td class="mdescRight">Template argument action callable type alias.  <br /></td></tr>
 <tr class="separator:a1cd5aefc2b22fb2e191c8fe57dc38288"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa90d2a5ef295ac93ed6d16026869b8bf" id="r_aa90d2a5ef295ac93ed6d16026869b8bf"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a> T&gt; </td></tr>
-<tr class="memitem:aa90d2a5ef295ac93ed6d16026869b8bf"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="utility_8hpp.html#aa90d2a5ef295ac93ed6d16026869b8bf">ap::action::detail::value_action_variant_type</a> = std::variant&lt; <a class="el" href="utility_8hpp.html#a1cd5aefc2b22fb2e191c8fe57dc38288">callable_type</a>&lt; <a class="el" href="structap_1_1action__type_1_1observe.html">action_type::observe</a>, T &gt;, <a class="el" href="utility_8hpp.html#a1cd5aefc2b22fb2e191c8fe57dc38288">callable_type</a>&lt; <a class="el" href="structap_1_1action__type_1_1transform.html">action_type::transform</a>, T &gt;, <a class="el" href="utility_8hpp.html#a1cd5aefc2b22fb2e191c8fe57dc38288">callable_type</a>&lt; <a class="el" href="structap_1_1action__type_1_1modify.html">action_type::modify</a>, T &gt; &gt;</td></tr>
+<tr class="memitem:aa90d2a5ef295ac93ed6d16026869b8bf"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceap_1_1action_1_1detail.html#aa90d2a5ef295ac93ed6d16026869b8bf">ap::action::detail::value_action_variant_type</a> = std::variant&lt; <a class="el" href="namespaceap_1_1action_1_1detail.html#a1cd5aefc2b22fb2e191c8fe57dc38288">callable_type</a>&lt; <a class="el" href="structap_1_1action__type_1_1observe.html">action_type::observe</a>, T &gt;, <a class="el" href="namespaceap_1_1action_1_1detail.html#a1cd5aefc2b22fb2e191c8fe57dc38288">callable_type</a>&lt; <a class="el" href="structap_1_1action__type_1_1transform.html">action_type::transform</a>, T &gt;, <a class="el" href="namespaceap_1_1action_1_1detail.html#a1cd5aefc2b22fb2e191c8fe57dc38288">callable_type</a>&lt; <a class="el" href="structap_1_1action__type_1_1modify.html">action_type::modify</a>, T &gt; &gt;</td></tr>
 <tr class="memdesc:aa90d2a5ef295ac93ed6d16026869b8bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Template argument action callabla variant type alias.  <br /></td></tr>
 <tr class="separator:aa90d2a5ef295ac93ed6d16026869b8bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -138,54 +148,13 @@ Typedefs</h2></td></tr>
 <div class="textblock"><p>Defines general action-related utility. </p>
 
 <p class="definition">Definition in file <a class="el" href="utility_8hpp_source.html">utility.hpp</a>.</p>
-</div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="a1cd5aefc2b22fb2e191c8fe57dc38288" name="a1cd5aefc2b22fb2e191c8fe57dc38288"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cd5aefc2b22fb2e191c8fe57dc38288">&#9670;&#160;</a></span>callable_type</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;c_value_action_specifier AS, <a class="el" href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a> T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="utility_8hpp.html#a1cd5aefc2b22fb2e191c8fe57dc38288">ap::action::detail::callable_type</a> = typedef typename AS::template type&lt;T&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Template argument action callable type alias. </p>
-
-<p class="definition">Definition at line <a class="el" href="utility_8hpp_source.html#l00036">36</a> of file <a class="el" href="utility_8hpp_source.html">utility.hpp</a>.</p>
-
-</div>
-</div>
-<a id="aa90d2a5ef295ac93ed6d16026869b8bf" name="aa90d2a5ef295ac93ed6d16026869b8bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa90d2a5ef295ac93ed6d16026869b8bf">&#9670;&#160;</a></span>value_action_variant_type</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;<a class="el" href="conceptap_1_1detail_1_1c__argument__value__type.html">ap::detail::c_argument_value_type</a> T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="utility_8hpp.html#aa90d2a5ef295ac93ed6d16026869b8bf">ap::action::detail::value_action_variant_type</a> = typedef std::variant&lt; callable_type&lt;action_type::observe, T&gt;, callable_type&lt;action_type::transform, T&gt;, callable_type&lt;action_type::modify, T&gt; &gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Template argument action callabla variant type alias. </p>
-
-<p class="definition">Definition at line <a class="el" href="utility_8hpp_source.html#l00040">40</a> of file <a class="el" href="utility_8hpp_source.html">utility.hpp</a>.</p>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="dir_c384567dcfc7d6f17bdacb552564b4b2.html">action</a></li><li class="navelem"><a class="el" href="dir_f7b61bead43a8f8ec1868533adc763cc.html">detail</a></li><li class="navelem"><a class="el" href="utility_8hpp.html">utility.hpp</a></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

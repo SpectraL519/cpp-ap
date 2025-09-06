@@ -1,13 +1,13 @@
 var concepts =
 [
-    [ "ap", null, [
-      [ "action", null, [
-        [ "detail", null, [
+    [ "ap", "namespaceap.html", [
+      [ "action", "namespaceap_1_1action.html", [
+        [ "detail", "namespaceap_1_1action_1_1detail.html", [
           [ "c_value_action_specifier", "conceptap_1_1action_1_1detail_1_1c__value__action__specifier.html", null ],
           [ "c_action_specifier", "conceptap_1_1action_1_1detail_1_1c__action__specifier.html", null ]
         ] ]
       ] ],
-      [ "detail", null, [
+      [ "detail", "namespaceap_1_1detail.html", [
         [ "c_readable", "conceptap_1_1detail_1_1c__readable.html", null ],
         [ "c_trivially_readable", "conceptap_1_1detail_1_1c__trivially__readable.html", null ],
         [ "c_writable", "conceptap_1_1detail_1_1c__writable.html", null ],

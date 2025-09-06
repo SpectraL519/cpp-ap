@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['implicit_5fvalue_0',['implicit_value',['../classap_1_1argument_1_1optional.html#a6f41957293846d9b47ea50b96520d50d',1,'ap::argument::optional']]],
-  ['is_5fbound_1',['is_bound',['../classap_1_1nargs_1_1range.html#aea3e617a6c325827843d4d943edd6488',1,'ap::nargs::range']]],
-  ['is_5fflag_5ftoken_2',['is_flag_token',['../structap_1_1detail_1_1argument__token.html#a7be25792a0b86571b7d021b856e6251f',1,'ap::detail::argument_token']]],
-  ['is_5fhidden_3',['is_hidden',['../classap_1_1detail_1_1argument__base.html#a545d421800cbae2968be28befe895e41',1,'ap::detail::argument_base']]],
-  ['is_5frequired_4',['is_required',['../classap_1_1detail_1_1argument__base.html#a3ad463f1cc48791cfcc50374433d11a6',1,'ap::detail::argument_base']]],
-  ['is_5fused_5',['is_used',['../classap_1_1detail_1_1argument__base.html#a48f96cf9e7d27a402facd21e244e7996',1,'ap::detail::argument_base']]],
-  ['is_5fvalid_5fchoice_6',['is_valid_choice',['../argument__base_8hpp.html#af690429000ab1e12acb5e4f32f04274b',1,'ap::detail']]]
+  ['handle_5fhelp_5faction_0',['handle_help_action',['../classap_1_1argument__parser.html#ab4ab3440a777fb52e4c123611024bc5b',1,'ap::argument_parser']]],
+  ['has_5fparsed_5fvalues_1',['has_parsed_values',['../classap_1_1argument_1_1optional.html#a8dd3f30d0d710e8f369dec0c7fe469e9',1,'ap::argument::optional::has_parsed_values()'],['../classap_1_1argument_1_1positional.html#af0da1f0eb732d2d2319645add4caaf05',1,'ap::argument::positional::has_parsed_values()'],['../classap_1_1detail_1_1argument__base.html#ae84bd6fb3e9606ff913edd0fddf7fba5',1,'ap::detail::argument_base::has_parsed_values()']]],
+  ['has_5fvalue_2',['has_value',['../classap_1_1argument_1_1optional.html#a24d17bdd0197d40592e587db45f417b7',1,'ap::argument::optional::has_value()'],['../classap_1_1argument_1_1positional.html#ade37218d52652aa0eff946338c31dab0',1,'ap::argument::positional::has_value()'],['../classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364',1,'ap::argument_parser::has_value()'],['../classap_1_1detail_1_1argument__base.html#a10825056535c3408a912c009c91c86d5',1,'ap::detail::argument_base::has_value()']]],
+  ['help_3',['help',['../classap_1_1argument_1_1optional.html#a13e689c1e84e0ae9461de8695e8d6787',1,'ap::argument::optional::help()'],['../classap_1_1argument_1_1positional.html#a7ff81e429badff84c4e39fe9ca323918',1,'ap::argument::positional::help()'],['../classap_1_1detail_1_1argument__base.html#ac1524b68c9cf9a7cd22400d7013b4ec9',1,'ap::detail::argument_base::help()']]],
+  ['hidden_4',['hidden',['../classap_1_1argument_1_1optional.html#ae1809e76090679ea989e6de35b89a0af',1,'ap::argument::optional::hidden()'],['../classap_1_1argument_1_1positional.html#a86500dfec5e90d6ac183a950e02133ed',1,'ap::argument::positional::hidden()']]]
 ];

@@ -6,5 +6,5 @@ var dir_883e42a949afd9b16c9901393356ea2e =
     [ "nargs", "dir_fa9c768901b98041386edcf86df8e3ef.html", "dir_fa9c768901b98041386edcf86df8e3ef" ],
     [ "argument_parser.hpp", "argument__parser_8hpp.html", "argument__parser_8hpp" ],
     [ "exceptions.hpp", "exceptions_8hpp.html", "exceptions_8hpp" ],
-    [ "version.hpp", "version_8hpp_source.html", null ]
+    [ "version.hpp", "version_8hpp.html", "version_8hpp" ]
 ];

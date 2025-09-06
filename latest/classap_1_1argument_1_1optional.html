@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.6.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -95,6 +95,9 @@ $(document).ready(function(){initNavTree('classap_1_1argument_1_1optional.html',
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classap_1_1argument_1_1optional-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ap::argument::optional&lt; T &gt; Class Template Reference</div></div>
@@ -120,15 +123,19 @@ Public Types</h2></td></tr>
 <tr class="memitem:a8c76a8de1c750908e54f1e49a1ab00c0" id="r_a8c76a8de1c750908e54f1e49a1ab00c0"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a> = T</td></tr>
 <tr class="memdesc:a8c76a8de1c750908e54f1e49a1ab00c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The argument's value type.  <br /></td></tr>
 <tr class="separator:a8c76a8de1c750908e54f1e49a1ab00c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acec142f46ef9d5af8d20ed1de560e6da" id="r_acec142f46ef9d5af8d20ed1de560e6da"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#acec142f46ef9d5af8d20ed1de560e6da">count_type</a> = nargs::range::count_type</td></tr>
+<tr class="memitem:acec142f46ef9d5af8d20ed1de560e6da" id="r_acec142f46ef9d5af8d20ed1de560e6da"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#acec142f46ef9d5af8d20ed1de560e6da">count_type</a> = <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">nargs::range::count_type</a></td></tr>
 <tr class="memdesc:acec142f46ef9d5af8d20ed1de560e6da"><td class="mdescLeft">&#160;</td><td class="mdescRight">The argument's value count type.  <br /></td></tr>
 <tr class="separator:acec142f46ef9d5af8d20ed1de560e6da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a7284dc2f9228bc4d71d2e8376de75d8b" id="r_a7284dc2f9228bc4d71d2e8376de75d8b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a7284dc2f9228bc4d71d2e8376de75d8b">optional</a> ()=delete</td></tr>
+<tr class="separator:a7284dc2f9228bc4d71d2e8376de75d8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2780f28dfc412c48e4e2162e732cf40f" id="r_a2780f28dfc412c48e4e2162e732cf40f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a2780f28dfc412c48e4e2162e732cf40f">optional</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;<a class="el" href="classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f">name</a>)</td></tr>
 <tr class="memdesc:a2780f28dfc412c48e4e2162e732cf40f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for optional argument with the <code>name</code> identifier.  <br /></td></tr>
 <tr class="separator:a2780f28dfc412c48e4e2162e732cf40f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdf7c489e5d4b977f071c4ad6c9ec90a" id="r_abdf7c489e5d4b977f071c4ad6c9ec90a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#abdf7c489e5d4b977f071c4ad6c9ec90a">~optional</a> ()=default</td></tr>
+<tr class="separator:abdf7c489e5d4b977f071c4ad6c9ec90a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad28df00f93976566fa35777df9f8d892" id="r_ad28df00f93976566fa35777df9f8d892"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#ad28df00f93976566fa35777df9f8d892">operator==</a> (const <a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;other) const noexcept</td></tr>
 <tr class="memdesc:ad28df00f93976566fa35777df9f8d892"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison operator for optional argument.  <br /></td></tr>
 <tr class="separator:ad28df00f93976566fa35777df9f8d892"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -157,7 +164,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a623b9ad42127832620d7299299539ff0"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a623b9ad42127832620d7299299539ff0">action</a> (F &amp;&amp;action) noexcept</td></tr>
 <tr class="memdesc:a623b9ad42127832620d7299299539ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the action for the optional argument.  <br /></td></tr>
 <tr class="separator:a623b9ad42127832620d7299299539ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab897ebddd5a2186fae87418077b443cd" id="r_ab897ebddd5a2186fae87418077b443cd"><td class="memTemplParams" colspan="2">template&lt;detail::c_range_of&lt; <a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a>, <a class="el" href="concepts_8hpp.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3">detail::type_validator::convertible</a> &gt; CR&gt; <br />
+<tr class="memitem:ab897ebddd5a2186fae87418077b443cd" id="r_ab897ebddd5a2186fae87418077b443cd"><td class="memTemplParams" colspan="2">template&lt;detail::c_range_of&lt; <a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a>, <a class="el" href="namespaceap_1_1detail.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3">detail::type_validator::convertible</a> &gt; CR&gt; <br />
 requires (std::equality_comparable&lt;<a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a>&gt;)</td></tr>
 <tr class="memitem:ab897ebddd5a2186fae87418077b443cd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#ab897ebddd5a2186fae87418077b443cd">choices</a> (const CR &amp;choices) noexcept</td></tr>
 <tr class="memdesc:ab897ebddd5a2186fae87418077b443cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the choices for the optional argument.  <br /></td></tr>
@@ -171,6 +178,67 @@ requires (std::equality_comparable&lt;<a class="el" href="classap_1_1argument_1_
 <tr class="memitem:a6f41957293846d9b47ea50b96520d50d" id="r_a6f41957293846d9b47ea50b96520d50d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a6f41957293846d9b47ea50b96520d50d">implicit_value</a> (const std::convertible_to&lt; <a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a> &gt; auto &amp;implicit_value) noexcept</td></tr>
 <tr class="memdesc:a6f41957293846d9b47ea50b96520d50d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the implicit value for the optional argument.  <br /></td></tr>
 <tr class="separator:a6f41957293846d9b47ea50b96520d50d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classap_1_1detail_1_1argument__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classap_1_1detail_1_1argument__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classap_1_1detail_1_1argument__base.html">ap::detail::argument_base</a></td></tr>
+<tr class="memitem:a957b1ad218bf86f20fa5308793401ddb inherit pub_methods_classap_1_1detail_1_1argument__base" id="r_a957b1ad218bf86f20fa5308793401ddb"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a957b1ad218bf86f20fa5308793401ddb">~argument_base</a> ()=default</td></tr>
+<tr class="separator:a957b1ad218bf86f20fa5308793401ddb inherit pub_methods_classap_1_1detail_1_1argument__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-types" name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:afba7293c32402c094fd129617f81b118" id="r_afba7293c32402c094fd129617f81b118"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#afba7293c32402c094fd129617f81b118">value_action_type</a> = <a class="el" href="namespaceap_1_1action_1_1detail.html#aa90d2a5ef295ac93ed6d16026869b8bf">action::detail::value_action_variant_type</a>&lt; T &gt;</td></tr>
+<tr class="memdesc:afba7293c32402c094fd129617f81b118"><td class="mdescLeft">&#160;</td><td class="mdescRight">The argument's value action type.  <br /></td></tr>
+<tr class="separator:afba7293c32402c094fd129617f81b118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9497dd70554d20339ecfb54f6897f6f" id="r_ac9497dd70554d20339ecfb54f6897f6f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#ac9497dd70554d20339ecfb54f6897f6f">flag_action_type</a> = typename <a class="el" href="structap_1_1action__type_1_1on__flag.html#a489cb8ca0945f8fa0cf7ad805fa0b93c">action_type::on_flag::type</a></td></tr>
+<tr class="separator:ac9497dd70554d20339ecfb54f6897f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a2c9a62dfe1e18db9d558573bc88a6217" id="r_a2c9a62dfe1e18db9d558573bc88a6217"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html">detail::argument_descriptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a2c9a62dfe1e18db9d558573bc88a6217">desc</a> (const bool verbose) const noexcept override</td></tr>
+<tr class="separator:a2c9a62dfe1e18db9d558573bc88a6217"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72e665a7542b2b0fb38d08516676c7d8" id="r_a72e665a7542b2b0fb38d08516676c7d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a72e665a7542b2b0fb38d08516676c7d8">mark_used</a> () override</td></tr>
+<tr class="memdesc:a72e665a7542b2b0fb38d08516676c7d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark the optional argument as used.  <br /></td></tr>
+<tr class="separator:a72e665a7542b2b0fb38d08516676c7d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a528cd0c64485513bcfc61086085da41c" id="r_a528cd0c64485513bcfc61086085da41c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a528cd0c64485513bcfc61086085da41c">is_used</a> () const noexcept override</td></tr>
+<tr class="separator:a528cd0c64485513bcfc61086085da41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab93b92d4e3edc1dbe0bb91d32078207c" id="r_ab93b92d4e3edc1dbe0bb91d32078207c"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#ab93b92d4e3edc1dbe0bb91d32078207c">count</a> () const noexcept override</td></tr>
+<tr class="separator:ab93b92d4e3edc1dbe0bb91d32078207c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25ae85a7a210d441629cf41e92047ca1" id="r_a25ae85a7a210d441629cf41e92047ca1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a25ae85a7a210d441629cf41e92047ca1">set_value</a> (const std::string &amp;str_value) override</td></tr>
+<tr class="memdesc:a25ae85a7a210d441629cf41e92047ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the value for the optional argument.  <br /></td></tr>
+<tr class="separator:a25ae85a7a210d441629cf41e92047ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24d17bdd0197d40592e587db45f417b7" id="r_a24d17bdd0197d40592e587db45f417b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a24d17bdd0197d40592e587db45f417b7">has_value</a> () const noexcept override</td></tr>
+<tr class="separator:a24d17bdd0197d40592e587db45f417b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dd3f30d0d710e8f369dec0c7fe469e9" id="r_a8dd3f30d0d710e8f369dec0c7fe469e9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a8dd3f30d0d710e8f369dec0c7fe469e9">has_parsed_values</a> () const noexcept override</td></tr>
+<tr class="separator:a8dd3f30d0d710e8f369dec0c7fe469e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ea435f121baf556031706aaf7e871fa" id="r_a0ea435f121baf556031706aaf7e871fa"><td class="memItemLeft" align="right" valign="top">std::weak_ordering&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a0ea435f121baf556031706aaf7e871fa">nvalues_ordering</a> () const noexcept override</td></tr>
+<tr class="separator:a0ea435f121baf556031706aaf7e871fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74937820758f6fec317db3552d0af547" id="r_a74937820758f6fec317db3552d0af547"><td class="memItemLeft" align="right" valign="top">const std::any &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a74937820758f6fec317db3552d0af547">value</a> () const override</td></tr>
+<tr class="separator:a74937820758f6fec317db3552d0af547"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0691cc95c9d0ab9d3004b6f939bbc88b" id="r_a0691cc95c9d0ab9d3004b6f939bbc88b"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::any &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a0691cc95c9d0ab9d3004b6f939bbc88b">values</a> () const override</td></tr>
+<tr class="separator:a0691cc95c9d0ab9d3004b6f939bbc88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8d9db25c6ddcd1652e054c8ee702c7d" id="r_ab8d9db25c6ddcd1652e054c8ee702c7d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#ab8d9db25c6ddcd1652e054c8ee702c7d">_has_predefined_value</a> () const noexcept</td></tr>
+<tr class="separator:ab8d9db25c6ddcd1652e054c8ee702c7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c7b1954dac92f11d519478c7abe88dd" id="r_a4c7b1954dac92f11d519478c7abe88dd"><td class="memItemLeft" align="right" valign="top">const std::any &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a4c7b1954dac92f11d519478c7abe88dd">_predefined_value</a> () const</td></tr>
+<tr class="separator:a4c7b1954dac92f11d519478c7abe88dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43b10a97908e067eab7034a771924939" id="r_a43b10a97908e067eab7034a771924939"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a43b10a97908e067eab7034a771924939">_accepts_further_values</a> () const noexcept</td></tr>
+<tr class="separator:a43b10a97908e067eab7034a771924939"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a71afa0936f8862af8108b730e53871b9" id="r_a71afa0936f8862af8108b730e53871b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">nargs::range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a71afa0936f8862af8108b730e53871b9">_nargs_range</a> = <a class="el" href="namespaceap_1_1nargs.html#a6809359a8f003c4d636330352e66be47">nargs::any</a>()</td></tr>
+<tr class="separator:a71afa0936f8862af8108b730e53871b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee58bc0f5640c4fb7c564465c13c00a6" id="r_aee58bc0f5640c4fb7c564465c13c00a6"><td class="memItemLeft" align="right" valign="top">std::any&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#aee58bc0f5640c4fb7c564465c13c00a6">_default_value</a></td></tr>
+<tr class="separator:aee58bc0f5640c4fb7c564465c13c00a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31fc7e25008ed33e99122db574e248b4" id="r_a31fc7e25008ed33e99122db574e248b4"><td class="memItemLeft" align="right" valign="top">std::any&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a31fc7e25008ed33e99122db574e248b4">_implicit_value</a></td></tr>
+<tr class="separator:a31fc7e25008ed33e99122db574e248b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb1ba74561b78240a211f5d3c61c21b3" id="r_afb1ba74561b78240a211f5d3c61c21b3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#afb1ba74561b78240a211f5d3c61c21b3">_choices</a></td></tr>
+<tr class="separator:afb1ba74561b78240a211f5d3c61c21b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae540d5beb7bf6e3d70fadfe6652b989a" id="r_ae540d5beb7bf6e3d70fadfe6652b989a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classap_1_1argument_1_1optional.html#ac9497dd70554d20339ecfb54f6897f6f">flag_action_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#ae540d5beb7bf6e3d70fadfe6652b989a">_flag_actions</a></td></tr>
+<tr class="separator:ae540d5beb7bf6e3d70fadfe6652b989a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b74d3dae7be4cd345538c0f95aa672f" id="r_a1b74d3dae7be4cd345538c0f95aa672f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classap_1_1argument_1_1optional.html#afba7293c32402c094fd129617f81b118">value_action_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a1b74d3dae7be4cd345538c0f95aa672f">_value_actions</a></td></tr>
+<tr class="separator:a1b74d3dae7be4cd345538c0f95aa672f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2db42a09c46bca75ae246e4df669eab1" id="r_a2db42a09c46bca75ae246e4df669eab1"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a2db42a09c46bca75ae246e4df669eab1">_count</a> = 0ull</td></tr>
+<tr class="separator:a2db42a09c46bca75ae246e4df669eab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a662814cc6ee38376f960a10c613e2a34" id="r_a662814cc6ee38376f960a10c613e2a34"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::any &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1argument_1_1optional.html#a662814cc6ee38376f960a10c613e2a34">_values</a></td></tr>
+<tr class="separator:a662814cc6ee38376f960a10c613e2a34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -226,7 +294,7 @@ class ap::argument::optional&lt; T &gt;</div><p>The optioanl argument class. </p
 template&lt;detail::c_argument_value_type T = std::string&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::count_type =  nargs::range::count_type</td>
+          <td class="memname">using <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::count_type =  <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">nargs::range::count_type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -234,6 +302,60 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <p>The argument's value count type. </p>
 
 <p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00034">34</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac9497dd70554d20339ecfb54f6897f6f" name="ac9497dd70554d20339ecfb54f6897f6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9497dd70554d20339ecfb54f6897f6f">&#9670;&#160;</a></span>flag_action_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::flag_action_type =  typename <a class="el" href="structap_1_1action__type_1_1on__flag.html#a489cb8ca0945f8fa0cf7ad805fa0b93c">action_type::on_flag::type</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00216">216</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="afba7293c32402c094fd129617f81b118" name="afba7293c32402c094fd129617f81b118"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afba7293c32402c094fd129617f81b118">&#9670;&#160;</a></span>value_action_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::value_action_type =  <a class="el" href="namespaceap_1_1action_1_1detail.html#aa90d2a5ef295ac93ed6d16026869b8bf">action::detail::value_action_variant_type</a>&lt;T&gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The argument's value action type. </p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00214">214</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -258,8 +380,35 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a7284dc2f9228bc4d71d2e8376de75d8b" name="a7284dc2f9228bc4d71d2e8376de75d8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7284dc2f9228bc4d71d2e8376de75d8b">&#9670;&#160;</a></span>optional() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::optional </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a2780f28dfc412c48e4e2162e732cf40f" name="a2780f28dfc412c48e4e2162e732cf40f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2780f28dfc412c48e4e2162e732cf40f">&#9670;&#160;</a></span>optional()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2780f28dfc412c48e4e2162e732cf40f">&#9670;&#160;</a></span>optional() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -296,7 +445,129 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 </div>
 </div>
+<a id="abdf7c489e5d4b977f071c4ad6c9ec90a" name="abdf7c489e5d4b977f071c4ad6c9ec90a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdf7c489e5d4b977f071c4ad6c9ec90a">&#9670;&#160;</a></span>~optional()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::~<a class="el" href="classap_1_1argument_1_1optional.html">optional</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a43b10a97908e067eab7034a771924939" name="a43b10a97908e067eab7034a771924939"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43b10a97908e067eab7034a771924939">&#9670;&#160;</a></span>_accepts_further_values()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_accepts_further_values </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00351">351</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab8d9db25c6ddcd1652e054c8ee702c7d" name="ab8d9db25c6ddcd1652e054c8ee702c7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8d9db25c6ddcd1652e054c8ee702c7d">&#9670;&#160;</a></span>_has_predefined_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_has_predefined_value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True if the optional argument has a predefined value, false otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00324">324</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4c7b1954dac92f11d519478c7abe88dd" name="a4c7b1954dac92f11d519478c7abe88dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c7b1954dac92f11d519478c7abe88dd">&#9670;&#160;</a></span>_predefined_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::any &amp; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_predefined_value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Reference to the predefined value of the optional argument. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::logic_error</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00333">333</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a623b9ad42127832620d7299299539ff0" name="a623b9ad42127832620d7299299539ff0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a623b9ad42127832620d7299299539ff0">&#9670;&#160;</a></span>action()</h2>
 
@@ -393,7 +664,7 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <div class="memtemplate">
 template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <div class="memtemplate">
-template&lt;detail::c_range_of&lt; <a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a>, <a class="el" href="concepts_8hpp.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3">detail::type_validator::convertible</a> &gt; CR&gt; <br />
+template&lt;detail::c_range_of&lt; <a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a>, <a class="el" href="namespaceap_1_1detail.html#a26fa93551a0b7be6a2435645a1ea4cafae0a23947029316880c29e8533d8662a3">detail::type_validator::convertible</a> &gt; CR&gt; <br />
 requires (std::equality_comparable&lt;<a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a>&gt;)</div>
 <table class="mlabels">
   <tr>
@@ -476,6 +747,38 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 </div>
 </div>
+<a id="ab93b92d4e3edc1dbe0bb91d32078207c" name="ab93b92d4e3edc1dbe0bb91d32078207c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab93b92d4e3edc1dbe0bb91d32078207c">&#9670;&#160;</a></span>count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::count </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The number of times the optional argument attribute has been used. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#a43fff665c9ed0098adf83cb6b3074b75">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00261">261</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a6eec61d414aec03832ae16888bb87189" name="a6eec61d414aec03832ae16888bb87189"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6eec61d414aec03832ae16888bb87189">&#9670;&#160;</a></span>default_value()</h2>
 
@@ -513,6 +816,109 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <dl class="section attention"><dt>Attention</dt><dd>Setting the default value disables the <code>required</code> attribute. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00187">187</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2c9a62dfe1e18db9d558573bc88a6217" name="a2c9a62dfe1e18db9d558573bc88a6217"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c9a62dfe1e18db9d558573bc88a6217">&#9670;&#160;</a></span>desc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classap_1_1detail_1_1argument__descriptor.html">detail::argument_descriptor</a> <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::desc </td>
+          <td>(</td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>verbose</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">verbose</td><td>The verbosity mode value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An argument descriptor object for the argument. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#ae0571c2cc2c358b5d83408c15bc84cf9">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00222">222</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8dd3f30d0d710e8f369dec0c7fe469e9" name="a8dd3f30d0d710e8f369dec0c7fe469e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dd3f30d0d710e8f369dec0c7fe469e9">&#9670;&#160;</a></span>has_parsed_values()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::has_parsed_values </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True if parsed values are available for the optional argument, false otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#ae84bd6fb3e9606ff913edd0fddf7fba5">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00301">301</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a24d17bdd0197d40592e587db45f417b7" name="a24d17bdd0197d40592e587db45f417b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24d17bdd0197d40592e587db45f417b7">&#9670;&#160;</a></span>has_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::has_value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True if the optional argument has a value, false otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#a10825056535c3408a912c009c91c86d5">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00296">296</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -630,6 +1036,71 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00198">198</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a528cd0c64485513bcfc61086085da41c" name="a528cd0c64485513bcfc61086085da41c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a528cd0c64485513bcfc61086085da41c">&#9670;&#160;</a></span>is_used()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::is_used </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True if the optional argument is used, false otherwise. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#a48f96cf9e7d27a402facd21e244e7996">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00256">256</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a72e665a7542b2b0fb38d08516676c7d8" name="a72e665a7542b2b0fb38d08516676c7d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72e665a7542b2b0fb38d08516676c7d8">&#9670;&#160;</a></span>mark_used()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::mark_used </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Mark the optional argument as used. </p>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#aebb8ac9d4a60fe042daa8b54b4f6de28">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00248">248</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
 
 </div>
 </div>
@@ -761,6 +1232,38 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 </div>
 </div>
+<a id="a0ea435f121baf556031706aaf7e871fa" name="a0ea435f121baf556031706aaf7e871fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ea435f121baf556031706aaf7e871fa">&#9670;&#160;</a></span>nvalues_ordering()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::weak_ordering <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::nvalues_ordering </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>ordering relationship of optional argument range. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#a20479ca0a1a18ca3c1fc6ee54ce8352e">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00306">306</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
 <a id="ad28df00f93976566fa35777df9f8d892" name="ad28df00f93976566fa35777df9f8d892"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad28df00f93976566fa35777df9f8d892">&#9670;&#160;</a></span>operator==()</h2>
 
@@ -840,6 +1343,117 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 </div>
 </div>
+<a id="a25ae85a7a210d441629cf41e92047ca1" name="a25ae85a7a210d441629cf41e92047ca1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25ae85a7a210d441629cf41e92047ca1">&#9670;&#160;</a></span>set_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::set_value </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>str_value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the value for the optional argument. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str_value</td><td>The string value to set. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to the optional argument. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structap_1_1parsing__failure.html" title="Exception type used for errors encountered during the argument parsing operation.">ap::parsing_failure</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#a4ec0c0a188f869f8be1e04663dd42ede">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00271">271</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a74937820758f6fec317db3552d0af547" name="a74937820758f6fec317db3552d0af547"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74937820758f6fec317db3552d0af547">&#9670;&#160;</a></span>value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::any &amp; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Reference to the stored value of the optional argument. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#a66137a69a06d000e2b7a677a28f6b842">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00314">314</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a0691cc95c9d0ab9d3004b6f939bbc88b" name="a0691cc95c9d0ab9d3004b6f939bbc88b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0691cc95c9d0ab9d3004b6f939bbc88b">&#9670;&#160;</a></span>values()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; std::any &gt; &amp; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::values </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Reference to the vector of parsed values for the optional argument. </dd></dl>
+
+<p>Implements <a class="el" href="classap_1_1detail_1_1argument__base.html#abbcc2eaf1cfc00f1aaf62208d1a99d95">ap::detail::argument_base</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00319">319</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Friends And Related Symbol Documentation</h2>
 <a id="a0b52bbe6b10568d9ee2e916c4b4c351e" name="a0b52bbe6b10568d9ee2e916c4b4c351e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0b52bbe6b10568d9ee2e916c4b4c351e">&#9670;&#160;</a></span>::ap::argument_parser</h2>
@@ -869,6 +1483,215 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="afb1ba74561b78240a211f5d3c61c21b3" name="afb1ba74561b78240a211f5d3c61c21b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb1ba74561b78240a211f5d3c61c21b3">&#9670;&#160;</a></span>_choices</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classap_1_1argument_1_1optional.html#a8c76a8de1c750908e54f1e49a1ab00c0">value_type</a>&gt; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_choices</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00358">358</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2db42a09c46bca75ae246e4df669eab1" name="a2db42a09c46bca75ae246e4df669eab1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2db42a09c46bca75ae246e4df669eab1">&#9670;&#160;</a></span>_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_count = 0ull</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00362">362</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aee58bc0f5640c4fb7c564465c13c00a6" name="aee58bc0f5640c4fb7c564465c13c00a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee58bc0f5640c4fb7c564465c13c00a6">&#9670;&#160;</a></span>_default_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::any <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_default_value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00356">356</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae540d5beb7bf6e3d70fadfe6652b989a" name="ae540d5beb7bf6e3d70fadfe6652b989a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae540d5beb7bf6e3d70fadfe6652b989a">&#9670;&#160;</a></span>_flag_actions</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classap_1_1argument_1_1optional.html#ac9497dd70554d20339ecfb54f6897f6f">flag_action_type</a>&gt; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_flag_actions</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00359">359</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a31fc7e25008ed33e99122db574e248b4" name="a31fc7e25008ed33e99122db574e248b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31fc7e25008ed33e99122db574e248b4">&#9670;&#160;</a></span>_implicit_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::any <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_implicit_value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00357">357</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a71afa0936f8862af8108b730e53871b9" name="a71afa0936f8862af8108b730e53871b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71afa0936f8862af8108b730e53871b9">&#9670;&#160;</a></span>_nargs_range</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">nargs::range</a> <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_nargs_range = <a class="el" href="namespaceap_1_1nargs.html#a6809359a8f003c4d636330352e66be47">nargs::any</a>()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00355">355</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a1b74d3dae7be4cd345538c0f95aa672f" name="a1b74d3dae7be4cd345538c0f95aa672f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b74d3dae7be4cd345538c0f95aa672f">&#9670;&#160;</a></span>_value_actions</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classap_1_1argument_1_1optional.html#afba7293c32402c094fd129617f81b118">value_action_type</a>&gt; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_value_actions</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00360">360</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a662814cc6ee38376f960a10c613e2a34" name="a662814cc6ee38376f960a10c613e2a34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a662814cc6ee38376f960a10c613e2a34">&#9670;&#160;</a></span>_values</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;detail::c_argument_value_type T = std::string&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::any&gt; <a class="el" href="classap_1_1argument_1_1optional.html">ap::argument::optional</a>&lt; T &gt;::_values</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8hpp_source.html#l00363">363</a> of file <a class="el" href="optional_8hpp_source.html">optional.hpp</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/ap/argument/<a class="el" href="optional_8hpp_source.html">optional.hpp</a></li>
 </ul>
@@ -877,8 +1700,8 @@ template&lt;detail::c_argument_value_type T = std::string&gt; </div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>ap</b></li><li class="navelem"><b>argument</b></li><li class="navelem"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a></li>
-    <li class="footer">Generated on Mon Sep 1 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="namespaceap_1_1argument.html">argument</a></li><li class="navelem"><a class="el" href="classap_1_1argument_1_1optional.html">optional</a></li>
+    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
