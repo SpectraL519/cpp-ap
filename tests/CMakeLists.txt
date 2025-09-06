@@ -65,6 +65,7 @@ endmacro()
 
 add_doctest("source/test_argument_descriptor.cpp")
 add_doctest("source/test_argument_name.cpp")
+add_doctest("source/test_argument_token.cpp")
 add_doctest("source/test_argument_parser_add_argument.cpp")
 add_doctest("source/test_argument_parser_info.cpp")
 add_doctest("source/test_argument_parser_parse_args.cpp")

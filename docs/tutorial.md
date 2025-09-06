@@ -12,7 +12,7 @@
 - [Parsing Arguments](#parsing-arguments)
   - [Argument Parsing Rules](#argument-parsing-rules)
   - [Compound Arguments](#compound-arguments)
-  - [Parsing Known Arguments]()
+  - [Parsing Known Arguments](#parsing-known-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
 - [Examples](#examples)
 
@@ -989,6 +989,7 @@ Here the parser throws exceptions for arguments it doesn't recognize. Now consid
 
 ```cpp
 parser.add_optional_argument("recognized", "r")
+      .nargs(ap::nargs::up_to(2))
       .help("A recognized optional argument");
 
 const auto unknown_args = parser.parse_known_args(argc, argv);
@@ -1002,8 +1003,33 @@ recognized = value1, value2
 unkown = value0, value3, --unrecognized, value
 ```
 
-> [!TIP]
-> Similarly to the `parse_args` method, `parse_known_args` has a `try` equivalent - `try_parse_known_args` - which will automatically catch these exceptions, print the error message, and exit with a failure status.
+Now all the values, that caused an exception for the `parse_args` example, are collected and returned as the result of argument parsing.
+
+> [!IMPORTANT]
+>
+> 1. If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument will be reset. That means that any value following an unrecognized flag will be treated as an unknown argument as well. Let's consider an example:
+>
+> ```cpp
+> parser.add_optional_argument("recognized", "r")
+>       .nargs(ap::nargs::any())
+>       .help("A recognized optional argument");
+>
+> const auto unknown_args = parser.parse_known_args(argc, argv);
+>
+> std::cout << "recognized = " << join(parser.values("recognized")) << std::endl
+>           << "unkown = " << join(unknown_args) << std::endl;
+>
+> /* Example execution:
+> ./program value0 --recognized value1 value2 value3 --unrecognized value --recognized value4
+> recognized = value1, value2, value3, value4
+> unkown = value0, --unrecognized, value
+> ```
+>
+> Here `value` is treated as an unknown argument even though the `recognized` optional argument still accepts values and only after a different flag is encountered the parser stops collecting the values to the unknown arguments list.
+>
+> 2. If the `AP_UNKNOWN_FLAGS_AS_VALUES` is set, the unrecognized argument flags will be treated as values during parsing and therefore they **may** not be collected as unknown arguments, depending on the argument's configuration and the command-line argument list.
+>
+> 3. Similarly to the `parse_args` method, `parse_known_args` has a `try` equivalent - `try_parse_known_args` - which will automatically catch these exceptions, print the error message, and exit with a failure status.
 
 <br/>
 <br/>

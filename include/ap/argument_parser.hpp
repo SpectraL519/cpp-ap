@@ -320,7 +320,7 @@ public:
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
      * @throws ap::invalid_configuration, ap::parsing_failure
-     * @attention This overload of the `parse_args` function assumes that the program name argument already been discarded.
+     * @attention This overload of the `parse_args` function assumes that the program name argument has already been discarded.
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
     void parse_args(const AR& argv_rng) {
@@ -363,6 +363,7 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
+     * @attention This overload of the `try_parse_args` function assumes that the program name argument has already been discarded.
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
     void try_parse_args(const AR& argv_rng) {
@@ -408,7 +409,7 @@ public:
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
      * @throws ap::invalid_configuration, ap::parsing_failure
-     * @attention This overload of the `parse_args` function assumes that the program name argument already been discarded.
+     * @attention This overload of the `parse_known_args` function assumes that the program name argument already been discarded.
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
     std::vector<std::string> parse_known_args(const AR& argv_rng) {
@@ -452,6 +453,7 @@ public:
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
      * @return A vector of unknown argument values.
+     * @attention This overload of the `try_parse_known_args` function assumes that the program name argument has already been discarded.
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
     std::vector<std::string> try_parse_known_args(const AR& argv_rng) {
