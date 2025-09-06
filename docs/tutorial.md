@@ -12,6 +12,7 @@
 - [Parsing Arguments](#parsing-arguments)
   - [Argument Parsing Rules](#argument-parsing-rules)
   - [Compound Arguments](#compound-arguments)
+  - [Parsing Known Arguments](#parsing-known-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
 - [Examples](#examples)
 
@@ -756,7 +757,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!TIP]
 >
-> The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which automatically catch these exceptions, print the error message, and exit with a failure status.
+> The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which will automatically catch these exceptions, print the error message, and exit with a failure status.
 >
 > Internally, This is equivalent to:
 >
@@ -814,7 +815,7 @@ int main(int argc, char* argv[]) {
 // g++ -o power power.cpp -I <cpp-ap-include-dir> -std=c++20
 ```
 
-### Argument Parsing Rules:
+### Argument Parsing Rules
 
 - Positional arguments are parsed first, in the order they were defined in and without a flag.
 
@@ -908,7 +909,7 @@ int main(int argc, char* argv[]) {
 
 <br />
 
-### Compound Arguments:
+### Compound Arguments
 
 Compound argument flags are **secondary** argument flags of which **every** character matches the secondary name of an optional argument.
 
@@ -944,6 +945,93 @@ Numbers: 1, 2, 3
 > - If there exists an argument whose secondary name matches a possible compound of other arguments, the parser will still treat the flag as a flag of the **single matching argument**, not as multiple flags.
 > - The argument parser will try to assign the values following a compound argument flag to the argument represented by the **last character** of the compound flag.
 
+<br />
+
+### Parsing Known Arguments
+
+If you wish to handle only the specified command-line arguments and leave all unkown/unrecognized arguments, you can use the `parse_known_args` method.
+
+This method behaves similarly to `parse_args()` (see [Parsing Arguments](#parsing-arguments)), however it does not throw an error if unknown arguments are detected. Instead it returnes all the unknown arguments detected during parsing as a `std::vector<std::string>`.
+
+Consider a simple example:
+
+```cpp
+parser.add_optional_argument("recognized", "r")
+      .nargs(ap::nargs::up_to(2))
+      .help("A recognized optional argument");
+
+parser.try_parse_args(argc, argv);
+
+std::cout << "recognized = " << join(parser.values("recognized")) << std::endl;
+
+/* Example executions:
+> ./program --recognized value1 value2
+recognized = value1, value2
+
+> ./program --recognized value1 value2 value3
+terminate called after throwing an instance of 'ap::parsing_failure'
+  what():  Failed to deduce the argument for values [value3]
+Aborted (core dumped)
+
+> ./program value0 --recognized value1 value2
+terminate called after throwing an instance of 'ap::parsing_failure'
+  what():  Failed to deduce the argument for values [value0]
+Aborted (core dumped)
+
+> ./program --recognized value1 value2 --unrecognized value
+terminate called after throwing an instance of 'ap::parsing_failure'
+  what():  Unknown argument [--unrecognized].
+Aborted (core dumped)
+>
+```
+
+Here the parser throws exceptions for arguments it doesn't recognize. Now consider the same example with `parse_known_args`:
+
+```cpp
+parser.add_optional_argument("recognized", "r")
+      .nargs(ap::nargs::up_to(2))
+      .help("A recognized optional argument");
+
+const auto unknown_args = parser.parse_known_args(argc, argv);
+
+std::cout << "recognized = " << join(parser.values("recognized")) << std::endl
+          << "unkown = " << join(unknown_args) << std::endl;
+
+/* Example execution:
+./program value0 --recognized value1 value2 value3 --unrecognized value
+recognized = value1, value2
+unkown = value0, value3, --unrecognized, value
+```
+
+Now all the values, that caused an exception for the `parse_args` example, are collected and returned as the result of argument parsing.
+
+> [!IMPORTANT]
+>
+> If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument will be reset. That means that any value following an unrecognized flag will be treated as an unknown argument as well. Let's consider an example:
+>
+> ```cpp
+> parser.add_optional_argument("recognized", "r")
+>       .nargs(ap::nargs::any()) // don't restrict the number of arguments
+>       .help("A recognized optional argument");
+>
+> const auto unknown_args = parser.parse_known_args(argc, argv);
+>
+> std::cout << "recognized = " << join(parser.values("recognized")) << std::endl
+>           << "unkown = " << join(unknown_args) << std::endl;
+>
+> /* Example execution:
+> ./program value0 --recognized value1 value2 value3 --unrecognized value --recognized value4
+> recognized = value1, value2, value3, value4
+> unkown = value0, --unrecognized, value
+> ```
+>
+> Here `value` is treated as an unknown argument even though the `recognized` optional argument still accepts values and only after a different flag is encountered the parser stops collecting the values to the unknown arguments list.
+>
+> **NOTE:** If the `AP_UNKNOWN_FLAGS_AS_VALUES` is set, the unrecognized argument flags will be treated as values during parsing and therefore they **may** not be collected as unknown arguments, depending on the argument's configuration and the command-line argument list.
+
+> [!TIP]
+>
+> Similarly to the `parse_args` method, `parse_known_args` has a `try` equivalent - `try_parse_known_args` - which will automatically catch these exceptions, print the error message, and exit with a failure status.
 
 <br/>
 <br/>

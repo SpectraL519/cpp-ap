@@ -88,28 +88,30 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "_parse_args_impl should throw when there is a non-positional value specified "
-    "without an argument flag present before the value"
+    "_parse_args_impl should treat non-positional values specified without an argument flag "
+    "present before as unknown arguments"
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
     arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(first_opt_arg_idx)));
 
-    CHECK_THROWS_WITH_AS(
-        parse_args_impl(arg_tokens),
-        parsing_failure::argument_deduction_failure({init_arg_value(first_opt_arg_idx)}).what(),
-        parsing_failure
+    CHECK_NOTHROW(parse_args_impl(arg_tokens));
+    CHECK_NE(
+        std::ranges::find(unknown_args, init_arg_value(first_opt_arg_idx)), unknown_args.end()
     );
 }
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "_parse_args_impl should not throw when the arguments are correct"
+    "_parse_args_impl should not detect any unknown arguments for correct command-line argument "
+    "list"
 ) {
     add_arguments(n_positional_args, n_optional_args);
     const auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
+
     CHECK_NOTHROW(parse_args_impl(arg_tokens));
+    CHECK(unknown_args.empty());
 }
 
 // _get_argument
@@ -163,7 +165,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should throw if a required positional argument is defined after a non-require "
+    "parse_args should throw if a required positional argument is defined after a non-required "
     "posisitonal argument"
 ) {
     const auto non_required_arg_name = init_arg_name(0ull);
@@ -187,6 +189,30 @@ TEST_CASE_FIXTURE(
         )
             .what(),
         invalid_configuration
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args, "parse_args should throw if unknown arguments are detected"
+) {
+    add_optional_args(n_optional_args, n_positional_args, [](auto& opt_arg) {
+        opt_arg.nargs(0ull);
+    });
+
+    const auto argc = get_argc(n_positional_args, n_optional_args);
+    auto argv = init_argv(n_positional_args, n_optional_args);
+
+    std::vector<std::string> unknown_args;
+    unknown_args.reserve(n_args_total);
+    for (std::size_t i = 0ull; i < n_args_total; ++i)
+        unknown_args.emplace_back(init_arg_value(i));
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::argument_deduction_failure(unknown_args).what(),
+        parsing_failure
     );
 
     free_argv(argc, argv);
@@ -344,7 +370,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should not throw if there is an positional argument which has the bypass_required "
+    "parse_args should not throw if there is a positional argument which has the bypass_required "
     "option enabled and is used"
 ) {
     const std::size_t n_positional_args = 1ull;
@@ -397,6 +423,79 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
     CHECK(sut.value<bool>(bypass_required_arg_name.primary.value()));
+
+    free_argv(argc, argv);
+}
+
+// parse_known_args
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_known_args should return an empty vector for a correct command-line argument list"
+) {
+    add_arguments(n_positional_args, n_optional_args);
+
+    const auto required_arg_name = init_arg_name(n_args_total);
+    sut.add_optional_argument(
+           required_arg_name.primary.value(), required_arg_name.secondary.value()
+    )
+        .required();
+
+    int argc;
+    char** argv;
+
+    SUBCASE("all arguments have values") {
+        const auto n_optional_args_curr = n_optional_args + 1ull;
+        argc = get_argc(n_positional_args, n_optional_args_curr);
+        argv = init_argv(n_positional_args, n_optional_args_curr);
+    }
+    SUBCASE("only the necessary arguments have values") {
+        const auto n_optional_args_curr = 1ull;
+
+        argc = get_argc(n_positional_args, n_optional_args_curr);
+
+        auto argv_vec = init_argv_vec(n_positional_args, n_optional_args_curr);
+        argv_vec[static_cast<std::size_t>(argc - 2)] = init_arg_flag_primary(n_args_total).c_str();
+        argv_vec[static_cast<std::size_t>(argc - 1)] = init_arg_value(n_args_total).c_str();
+
+        argv = to_char_2d_array(argv_vec);
+    }
+
+    CAPTURE(argc);
+    CAPTURE(argv);
+
+    std::vector<std::string> unknown_args;
+    CHECK_NOTHROW(unknown_args = sut.parse_known_args(argc, argv));
+    CHECK(unknown_args.empty());
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_known_args should return a list of unknown command-line arguments"
+) {
+    add_optional_args(n_optional_args, n_positional_args, [](auto& opt_arg) {
+        opt_arg.nargs(0ull);
+    });
+
+    const auto argc = get_argc(n_positional_args, n_optional_args + 1ull);
+    const auto argv_vec = init_argv_vec(n_positional_args, n_optional_args + 1ull);
+    auto argv = to_char_2d_array(argv_vec);
+
+    std::vector<std::string> expected_unknown_args;
+    expected_unknown_args.reserve(n_args_total + 2ull);
+    for (std::size_t i = 0ull; i < n_args_total; ++i)
+        expected_unknown_args.emplace_back(init_arg_value(i));
+
+    // unrecognized argument flags should also be treated as unknown arguments
+    const std::size_t unknown_opt_arg_idx = n_args_total;
+    expected_unknown_args.emplace_back(init_arg_flag_primary(unknown_opt_arg_idx));
+    expected_unknown_args.emplace_back(init_arg_value(unknown_opt_arg_idx));
+
+    std::vector<std::string> unknown_args;
+    CHECK_NOTHROW(unknown_args = sut.parse_known_args(argc, argv));
+    CHECK_EQ(unknown_args, expected_unknown_args);
 
     free_argv(argc, argv);
 }
@@ -783,7 +882,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "values() should return a vector containing a predefined value if an optional argument if no "
+    "values() should return a vector containing a predefined value of an optional argument if no "
     "values for an argument have been parsed"
 ) {
     const std::string default_value = "default_value";
@@ -808,6 +907,7 @@ TEST_CASE_FIXTURE(
         argv_vec.push_back(optional_arg_flag);
     }
 
+    CAPTURE(argv_vec);
     CAPTURE(expected_value);
 
     const int argc = static_cast<int>(argv_vec.size());

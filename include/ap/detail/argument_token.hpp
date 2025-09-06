@@ -45,6 +45,19 @@ struct argument_token {
         return this->type == t_flag_primary or this->type == t_flag_secondary;
     }
 
+    /**
+     * @brief Checks whether the token represents a valid flag.
+     *
+     * A token is considered a valid flag token if:
+     * 1. The token's type if a valid flag token type (`t_flag_primary` or `t_flag_secondary`)
+     * 2. The token's `arg` member is set.
+     *
+     * @return true if `type` is either `t_flag_primary` or `t_flag_secondary`, false otherwise.
+     */
+    [[nodiscard]] bool is_valid_flag_token() const noexcept {
+        return this->is_flag_token() and this->arg.has_value();
+    }
+
     token_type type; ///< The token's type discrimiator value.
     std::string value; ///< The actual token's value.
     arg_ptr_opt_t arg = std::nullopt; ///< The corresponding argument.
