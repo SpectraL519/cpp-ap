@@ -10,7 +10,7 @@
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Parsing Arguments](#parsing-arguments)
-  - [Argument Parsing Rules](#argument-parsing-rules)
+  - [Basic Argument Parsing Rules](#basic-argument-parsing-rules)
   - [Compound Arguments](#compound-arguments)
   - [Parsing Known Arguments](#parsing-known-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
@@ -140,7 +140,7 @@ parser.program_name("Name of the program")
 
 ## Adding Arguments
 
-The parser supports both positional and optional arguments. Both argument types are identified by their names represented as strings. Arguments can be defined with only a primary name or with a primary and a secondary (short) name.
+The parser supports both positional and optional arguments. Both argument types are identified by their names represented as strings. Arguments are identified using their names.
 
 > [!NOTE]
 >
@@ -158,6 +158,17 @@ or
 parser.add_<positional/optional>_argument<value_type>("argument", "a");
 ```
 
+> [!NOTE]
+>
+> An argument consists of a primary and/or secondary name. The primary name is a longer, more descriptive name, while the secondary name is a shorter/abbreviated name of the argument.
+>
+> While passing a primary name is required for creating positional arguments, optional arguments can be initialized using only a secondary name as follows:
+>
+> ```cpp
+> parser.add_optional_argument("a", ap::n_secondary);
+> parser.add_flag("f", ap::n_secondary);
+> ```
+
 > [!IMPORTANT]
 >
 > The library supports any argument value types which meet the following requirements:
@@ -167,10 +178,8 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 >    **IMPORTANT:** The argument parser will always use direct initialization from `std::string` and will use the extraction operator only if an argument's value type cannot be initialized from `std::string`.
 >
 > - The type satisfies the [`std::semiregular`](https://en.cppreference.com/w/cpp/concepts/semiregular.html) concept - is default initializable and copyable.
-
-> [!NOTE]
 >
-> The default value type of any argument is `std::string`.
+> **NOTE:** The default value type of any argument is `std::string`.
 
 You can also add boolean flags:
 
@@ -197,15 +206,6 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
       .help("disables option: another option");
 */
 ```
-
-> [!NOTE]
->
-> While passing a primary name is required for creating positional arguments, optional arguments (and flags) can be initialized using only a secondary name as follows:
->
-> ```cpp
-> parser.add_optional_argument("a", ap::n_secondary);
-> parser.add_flag("f", ap::n_secondary);
-> ```
 
 <br/>
 <br/>
@@ -255,7 +255,7 @@ Optional arguments:
 
 #### 3. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
-> [!NOTE]
+> [!IMPORTANT]
 >
 > - By default positional arguments are set to be required, while optional arguments have this option disabled by default.
 > - The default value of the value parameter of the `required(bool)` function is `true` for both positional and optional arguments.
@@ -726,38 +726,9 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 > parse_args(std::span(argv + 1, argc - 1));
 > ```
 
-> [!WARNING]
->
-> By default the `argument_parser` class treats *all\** command-line arguments beggining with a `--` or `-` prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered *unknown* and an exception will be thrown.
->
-> > [*all\**] If a command-line argument begins with a flag prefix, but contains whitespaces (e.g. `"--flag value"`), then it is treated as a value and not a flag.
->
-> This behavior can be altered so that the unknown argument flags will be treated as values, not flags.
->
-> Example:
-> ```cpp
-> parser.add_optional_argument("option", "o");
-> parser.try_parse_args(argc, argv);
-> std::cout << "option: " << parser.value("option");
->
-> /*
-> ./program --option --unknown-flag
-> option: --unknown-flag
-> ```
->
-> To do this add the following in you `CMakeLists.txt` file:
-> ```cmake
-> target_compile_definitions(cpp-ap PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
-> ```
-> or simply add:
-> ```cpp
-> #define AP_UNKNOWN_FLAGS_AS_VALUES
-> ```
-> before the `#include <ap/argument_parser.hpp>` statement.
-
 > [!TIP]
 >
-> The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides `try_parse_args` methods, which will automatically catch these exceptions, print the error message, and exit with a failure status.
+> The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` methods, which will automatically catch these exceptions, print the error message, and exit with a failure status.
 >
 > Internally, This is equivalent to:
 >
@@ -771,142 +742,192 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 > }
 > ```
 
-```cpp
-// power.cpp
-#include <ap/argument_parser.hpp>
+The simple example below demonstrates how (in terms of the program's structure) the argument parsing should look like.
 
-#include <cmath>
-#include <iostream>
+```cpp
+// include the main library header
+#include <ap/argument_parser.hpp>
 
 int main(int argc, char* argv[]) {
     // create the parser class instance
     ap::argument_parser parser;
-    parser.program_name("power calculator")
-          .program_description("Calculates the value of an expression: base ^ exponent");
 
-    // add arguments
-    parser.add_positional_argument<double>("base").help("the exponentation base value");
-    parser.add_optional_argument<int>("exponent", "e")
-          .nargs(ap::nargs::any())
-          .help("the exponent value");
+    // define the parser's attributes
+    parser.program_name("some-program")
+          .program_description("The program does something with command-line arguments");
+
+    // define the program arguments
+    parser.add_positional_argument("positional").help("A positional argument");
+    parser.add_optional_argument("optional", "o").help("An optional argument");
+    parser.add_flag("flag", "f").help("A boolean flag");
 
     parser.default_optional_arguments({ap::argument::default_optional::help});
 
     // parse command-line arguments
     parser.try_parse_args(argc, argv);
 
-    // check if any values for the `exponent` argument have been parsed
-    if (not parser.has_value("exponent")) {
-        std::cout << "no exponent values given" << std::endl;
-        std::exit(EXIT_SUCCESS);
-    }
-
-    const double base = parser.value<double>("base");
-    const std::vector<int> exponent_values = parser.values<int>("exponent");
-
-    for (const int exponent : exponent_values) {
-        std::cout << base << " ^ " << exponent << " = " << std::pow(base, exponent) << std::endl;
-    }
+    // use the program's arguments
+    std::cout << "positional: " << parser.value("positional") << std::endl
+              << "optional: " << join(parser.values("optional")) << std::endl
+              << "flag: " << std::boolalpha << parser.value<bool>("flag") << std::endl;
 
     return 0;
 }
-
-// compiled with:
-// g++ -o power power.cpp -I <cpp-ap-include-dir> -std=c++20
 ```
 
-### Argument Parsing Rules
+### Basic Argument Parsing Rules
 
-- Positional arguments are parsed first, in the order they were defined in and without a flag.
+#### 1. Optional arguments are parsed only with a flag
 
-  In the example above the first command-line argument must be the value for the `positional` argument:
+An optional argument is recognized only when its primary or secondary flag appears in the command-line input. For example:
 
-  ```shell
-  ./power 2
-  no exponent values given
-  ```
+```cpp
+parser.add_optional_argument("optional", "o");
+```
 
-  ```shell
-  ./power
-  [ERROR] : No values parsed for a required argument [base]
-  Program: power calculator
-
-    Calculates the value of an expression: base ^ exponent
-
-  Positional arguments:
-
-    base : the exponentation base value
-
-  Optional arguments:
-
-    --exponent, -e : the exponent value
-    --help, -h     : Display the help message
-  ```
+Here, the argument is parsed only if either `--optional` (primary flag) or `-o` (secondary flag) is present. If neither flag is given, the argument is ignored.
 
 > [!IMPORTANT]
 >
-> For each positional argument there must be **exactly one value**.
-
-- Optional arguments are parsed only with a flag. The values passed after an argument flag will be treated as the values of the last optional argument that preceeds them. If no argument flag preceeds a value argument, then it will be treated as an **unknown** value.
-
-  ```shell
-  ./power 2 --exponent 1 2 3 # equivalent to: ./power 2 -e 1 2 3
-  2 ^ 1 = 2
-  2 ^ 2 = 4
-  2 ^ 3 = 8
-  ```
-
-  You can use the flag for each command-line value:
-
-  ```shell
-  ./power 2 -e 1 -e 2 -e 3
-  ```
-
-  Not using a flag will result in an error:
-
-  ```shell
-  ./power 2 1 2 3
-  [ERROR] : Failed to deduce the argument for values [1, 2, 3]
-  Program: power calculator
-
-    Calculates the value of an expression: base ^ exponent
-
-  Positional arguments:
-
-    base : the exponentation base value
-
-  Optional arguments:
-
-    --exponent, -e : the exponent value
-    --help, -h     : Display the help message
-  ```
-
-> [!WARNING]
+> The parser will try to assign the values following such flag to the specified argument until:
 >
-> If an optional argument has the `nargs` parameter set with an upper bound, then the values that succeed this argument's flag will be assigned to this argument only until the specified upper bound is reached. Further values will be treated as **unknown** values.
->
-> **Example:**
+> - A different argument flag is encountered:
 >
 > ```cpp
-> parser.add_optional_argument<int>("exponent", "e").nargs(ap::nargs::up_to(3))
+> // program.cpp
+> parser.add_optional_argument("first", "f");
+> parser.add_optional_argument("second", "s");
+>
+> parser.try_parse_args(argc, argv);
+>
+> std::cout << "first: " << join(parser.values("first")) << std::endl
+>           << "second: " << join(parser.values("second")) << std::endl;
+>
+> /* Example execution:
+> > ./program --first value1 value2 --second value3 value4
+> first: value1, value2
+> second: value3, value4
 > ```
-> ```shell
-> ./power 2 -e 1 2 3 4 5
+>
+> - The upper bound of the argument's [nargs](#1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a) parameter is reached:
+>
+> **NOTE:** By default an optional argument accepts an arbitrary number of values (the number of values has no upper bound).
+>
+> ```cpp
+> parser.add_optional_argument<int>("numbers", "n")
+>       .nargs(ap::nargs::up_to(3))
+>       .help("A list of numbers");
+> ```
+> ```txt
+> > ./program --numbers 1 2 3 4 5
 > [ERROR] : Failed to deduce the argument for values [4, 5]
-> Program: power calculator
+> Program: program
 >
->   Calculates the value of an expression: base ^ exponent
->
-> Positional arguments:
->
->   base : the exponentation base value
+>   An example program
 >
 > Optional arguments:
 >
->   --exponent, -e : the exponent value
->   --help, -h     : Display the help message
+>   --help, -h    : Display the help message
+>   --numbers, -n : A list of numbers
 > ```
 
+<br />
+
+#### 2. Positional arguments are parsed in the order of definition
+
+Positional arguments are assigned values in the same order they are defined in the program. They are parsed from the command-line input **excluding any values that have already been consumed by optional arguments**. This means positional arguments no longer need to appear at the beginning of the argument list.
+
+For example:
+
+```cpp
+parser.add_positional_argument("positional1");
+parser.add_positional_argument("positional2");
+
+parser.try_parse_args(argc, argv);
+
+std::cout << "positional1: " << parser.value("positional1") << std::endl
+          << "positional2: " << parser.value("positional2") << std::endl;
+
+/* Example execution:
+> ./program value1 value2
+positional1: value1
+positional2: value2
+```
+
+> [!IMPORTANT]
+>
+> - All positional arguments expect **at most one value**.
+> - A positional argument's value doesn't have to be preset in the command-line only if the argument is defined as **not** [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown).
+
+<br />
+
+#### 3. Positional arguments consume free values
+
+A positional argument consumes only those values that cannot be assigned to optional arguments. This allows positional arguments to appear after optional arguments in the command-line input.
+
+```cpp
+parser.add_positional_argument("positional1");
+parser.add_positional_argument("positional2");
+parser.add_optional_argument("optional").nargs(1); // limit the number of arguments
+
+parser.try_parse_args(argc, argv);
+
+std::cout << "positional1: " << parser.value("positional1") << std::endl
+          << "positional2: " << parser.value("positional2") << std::endl
+          << "optional: " << parser.value("optional") << std::endl;
+
+/* Example executions:
+> ./program pos1-value pos2-value --optional opt-value
+positional1: pos1-value
+positional2: pos2-value
+optional: opt-value
+
+> ./program --optional opt-value pos1-value pos2-value
+positional1: pos1-value
+positional2: pos2-value
+optional: opt-value
+
+> ./program pos1-value --optional opt-value pos2-value
+positional1: pos1-value
+positional2: pos2-value
+optional: opt-value
+```
+
+> [!TIP]
+>
+> Because of the optional arguments accept an arbitrary number of arguments by default, it is a good practice to set the [nargs](#1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a) parameter for optional arguments (where it makes sense).
+
+<br />
+
+#### 4. Unrecognized argument flag handling
+
+By default the `argument_parser` class treats *all\** command-line arguments beggining with a `--` or `-` prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered *unknown* and an exception will be thrown.
+
+> [*all\**] If a command-line argument begins with a flag prefix, but contains whitespaces (e.g. `"--flag value"`), then it is treated as a value and not a flag.
+
+This behavior can be altered so that the unknown argument flags will be treated as values, not flags. For example:
+
+```cpp
+parser.add_optional_argument("option", "o");
+parser.try_parse_args(argc, argv);
+std::cout << "option: " << parser.value("option");
+
+/*
+./program --option --unknown-flag
+option: --unknown-flag
+```
+
+To do this add the following in your `CMakeLists.txt` file:
+```cmake
+target_compile_definitions(cpp-ap PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
+```
+or simply add:
+```cpp
+#define AP_UNKNOWN_FLAGS_AS_VALUES
+```
+before the `#include <ap/argument_parser.hpp>` statement.
+
+<br />
 <br />
 
 ### Compound Arguments
@@ -960,7 +981,7 @@ parser.add_optional_argument("recognized", "r")
       .nargs(ap::nargs::up_to(2))
       .help("A recognized optional argument");
 
-parser.try_parse_args(argc, argv);
+parser.parse_args(argc, argv);
 
 std::cout << "recognized = " << join(parser.values("recognized")) << std::endl;
 
@@ -998,7 +1019,7 @@ std::cout << "recognized = " << join(parser.values("recognized")) << std::endl
           << "unkown = " << join(unknown_args) << std::endl;
 
 /* Example execution:
-./program value0 --recognized value1 value2 value3 --unrecognized value
+> ./program value0 --recognized value1 value2 value3 --unrecognized value
 recognized = value1, value2
 unkown = value0, value3, --unrecognized, value
 ```
@@ -1007,25 +1028,34 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 
 > [!IMPORTANT]
 >
-> If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument will be reset. That means that any value following an unrecognized flag will be treated as an unknown argument as well. Let's consider an example:
+> If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument will be reset. That means that any value following an unrecognized flag will be used to parse positional arguments or treated as an unknown argument as well (if there are no unparsed positional arguments). Let's consider an example:
 >
 > ```cpp
+> parser.add_positional_argument("positional")
+>       .help("A positinal argument");
 > parser.add_optional_argument("recognized", "r")
->       .nargs(ap::nargs::any()) // don't restrict the number of arguments
+>       .nargs(ap::nargs::any())
 >       .help("A recognized optional argument");
 >
 > const auto unknown_args = parser.parse_known_args(argc, argv);
 >
-> std::cout << "recognized = " << join(parser.values("recognized")) << std::endl
+> std::cout << "positional = " << parser.value("positional") << std::endl
+>           << "recognized = " << join(parser.values("recognized")) << std::endl
 >           << "unkown = " << join(unknown_args) << std::endl;
 >
 > /* Example execution:
-> ./program value0 --recognized value1 value2 value3 --unrecognized value --recognized value4
-> recognized = value1, value2, value3, value4
-> unkown = value0, --unrecognized, value
+> > ./program --recognized value1 value2 value3 --unrecognized value4 value5 --recognized value6
+> positional = value4
+> recognized = value1, value2, value3, value6
+> unkown = --unrecognized, value5
+>
+> > ./program value0 --recognized value1 value2 value3 --unrecognized value4 --recognized value5
+> positional = value0
+> recognized = value1, value2, value3, value5
+> unkown = --unrecognized, value4
 > ```
 >
-> Here `value` is treated as an unknown argument even though the `recognized` optional argument still accepts values and only after a different flag is encountered the parser stops collecting the values to the unknown arguments list.
+> Here `value` is treated either as the `positional` argument's value or as an unknown argument (depending on the input arguments) even though the `recognized` optional argument still accepts values and only after the `--recognized` argument flag is encountered the parser continues collecting values for this argument.
 >
 > **NOTE:** If the `AP_UNKNOWN_FLAGS_AS_VALUES` is set, the unrecognized argument flags will be treated as values during parsing and therefore they **may** not be collected as unknown arguments, depending on the argument's configuration and the command-line argument list.
 
@@ -1060,10 +1090,17 @@ You can retrieve the argument's value with:
 Additionally for optional arguments, you can use:
 
 ```cpp
-(const) std::vector<value_type> values = parser.values<value_type>("argument_name");
+(const) std::vector<value_type> values = parser.values<value_type>("argument_name"); // (3)
 ```
 
 which returns a `vector` containing all values parsed for the given argument.
+
+> [!NOTE]
+>
+> The argument value getter functions might throw an exception if:
+> - An argument with the given name does not exist
+> - The argument does not contain any values - parsed or predefined (only getter `(1)`)
+> - The specified `value_type` does not match the value type of the argument
 
 <br/>
 <br/>

@@ -265,7 +265,8 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args, "parse_args should throw when an unknown argument flag is used"
+    test_argument_parser_parse_args,
+    "parse_args should throw when an unrecognized argument flag is used"
 ) {
     add_arguments(no_args, no_args);
 
@@ -279,7 +280,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unknown_argument(unknown_arg_name).what(),
+        parsing_failure::unrecognized_argument(unknown_arg_name).what(),
         parsing_failure
     );
 
@@ -320,7 +321,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unknown_argument(invalid_flag).what(),
+        parsing_failure::unrecognized_argument(invalid_flag).what(),
         parsing_failure
     );
 
@@ -426,6 +427,8 @@ TEST_CASE_FIXTURE(
 
     free_argv(argc, argv);
 }
+
+// TODO: parse_args should accept positional values at various positions
 
 // parse_known_args
 
@@ -978,7 +981,7 @@ TEST_CASE_FIXTURE(
     // parse args
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unknown_argument(invalid_flag).what(),
+        parsing_failure::unrecognized_argument(invalid_flag).what(),
         parsing_failure
     );
 

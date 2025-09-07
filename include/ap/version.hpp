@@ -11,9 +11,9 @@ namespace ap {
 
 /// @brief A helper structure used to represent a program's version.
 struct version {
-    std::uint32_t major; ///< The major version number.
-    std::uint32_t minor; ///< The minor version number.
-    std::uint32_t patch; ///< The patch number.
+    std::uint32_t major = 1u; ///< The major version number.
+    std::uint32_t minor = 0u; ///< The minor version number.
+    std::uint32_t patch = 0u; ///< The patch number.
 
     /// @brief Converts the structure into a string in the `v{major}.{minor}.{path}` format
     [[nodiscard]] std::string str() const noexcept {

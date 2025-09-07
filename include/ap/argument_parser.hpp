@@ -59,7 +59,10 @@ public:
      * @param name The name of the program.
      * @return Reference to the argument parser.
      */
-    argument_parser& program_name(std::string_view name) noexcept {
+    argument_parser& program_name(std::string_view name) {
+        if (detail::contains_whitespaces(name)) // TODO: add tests
+            throw invalid_configuration("The program name cannot contain whitespace characters!");
+
         this->_program_name.emplace(name);
         return *this;
     }
@@ -79,7 +82,11 @@ public:
      * @param version The version of the program.
      * @return Reference to the argument parser.
      */
-    argument_parser& program_version(std::string_view version) noexcept {
+    argument_parser& program_version(std::string_view version) {
+        if (detail::contains_whitespaces(version)) // TODO: add tests
+            throw invalid_configuration("The program version cannot contain whitespace characters!"
+            );
+
         this->_program_version.emplace(version);
         return *this;
     }
@@ -934,7 +941,8 @@ private:
         case detail::argument_token::t_flag_secondary: {
             if (not tok.is_valid_flag_token()) {
                 if (handle_unknown) {
-                    throw parsing_failure::unknown_argument(this->_unstripped_token_value(tok));
+                    throw parsing_failure::unrecognized_argument(this->_unstripped_token_value(tok)
+                    );
                 }
                 else {
                     curr_arg_opt.reset();
@@ -1018,7 +1026,7 @@ private:
             case detail::argument_token::t_flag_secondary: {
                 if (not token_it->is_valid_flag_token()) {
                     if (handle_unknown) {
-                        throw parsing_failure::unknown_argument(
+                        throw parsing_failure::unrecognized_argument(
                             this->_unstripped_token_value(*token_it)
                         );
                     }
@@ -1224,7 +1232,6 @@ inline void add_default_argument(
     case argument::default_optional::help:
         arg_parser.add_flag("help", "h")
             .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
-            .nargs(0ull)
             .help("Display the help message");
         break;
 
