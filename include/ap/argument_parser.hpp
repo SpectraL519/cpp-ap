@@ -642,7 +642,7 @@ private:
     using const_arg_opt_t = std::optional<std::reference_wrapper<const detail::argument_base>>;
 
     using arg_token_list_t = std::vector<detail::argument_token>;
-    using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
+    using arg_token_list_iter_t = typename arg_token_list_t::const_iterator;
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
@@ -896,9 +896,84 @@ private:
         std::vector<std::string>& unknown_args,
         const bool handle_unknown = true
     ) {
-        arg_token_list_iterator_t token_it = arg_tokens.begin();
-        this->_parse_positional_args(token_it, arg_tokens.end());
-        this->_parse_optional_args(token_it, arg_tokens.end(), unknown_args, handle_unknown);
+        // arg_token_list_iter_t token_it = arg_tokens.begin();
+        // this->_parse_positional_args(token_it, arg_tokens.end());
+        // this->_parse_optional_args(token_it, arg_tokens.end(), unknown_args, handle_unknown);
+
+        // set the current argument indicators
+        arg_ptr_opt_t curr_arg_opt = std::nullopt;
+        arg_ptr_list_iter_t curr_positional_arg_it = this->_positional_args.begin();
+
+        if (curr_positional_arg_it != this->_positional_args.end())
+            curr_arg_opt.emplace(*curr_positional_arg_it);
+
+        // process argument tokens
+        std::ranges::for_each(
+            arg_tokens,
+            std::bind_front(
+                &argument_parser::_parse_token,
+                this,
+                std::ref(curr_arg_opt),
+                std::ref(curr_positional_arg_it),
+                std::ref(unknown_args),
+                handle_unknown
+            )
+        );
+    }
+
+    void _parse_token(
+        arg_ptr_opt_t& curr_arg_opt,
+        arg_ptr_list_iter_t& curr_positional_arg_it,
+        std::vector<std::string>& unknown_args,
+        const bool handle_unknown,
+        const detail::argument_token& tok
+    ) {
+        switch (tok.type) {
+        case detail::argument_token::t_flag_primary:
+            [[fallthrough]];
+        case detail::argument_token::t_flag_secondary: {
+            if (not tok.is_valid_flag_token()) {
+                if (handle_unknown) {
+                    throw parsing_failure::unknown_argument(this->_unstripped_token_value(tok));
+                }
+                else {
+                    curr_arg_opt.reset();
+                    unknown_args.emplace_back(this->_unstripped_token_value(tok));
+                    break;
+                }
+            }
+
+            if (tok.arg->get()->mark_used())
+                curr_arg_opt = tok.arg;
+            else
+                curr_arg_opt.reset();
+
+            break;
+        }
+        case detail::argument_token::t_value: {
+            if (not curr_arg_opt) {
+                if (curr_positional_arg_it == this->_positional_args.end()) {
+                    unknown_args.emplace_back(tok.value);
+                    break;
+                }
+
+                curr_arg_opt.emplace(*curr_positional_arg_it);
+            }
+
+            if (auto& curr_arg = *curr_arg_opt->get(); not curr_arg.set_value(tok.value)) {
+                if (curr_arg.is_positional()
+                    and curr_positional_arg_it != this->_positional_args.end()
+                    and ++curr_positional_arg_it != this->_positional_args.end()) {
+                    curr_arg_opt.emplace(*curr_positional_arg_it);
+                    break;
+                }
+
+                curr_arg_opt.reset();
+            }
+
+            break;
+        }
+        }
     }
 
     /**
@@ -907,7 +982,7 @@ private:
      * @param tokens_end The token list end iterator.
      */
     void _parse_positional_args(
-        arg_token_list_iterator_t& token_it, const arg_token_list_iterator_t& tokens_end
+        arg_token_list_iter_t& token_it, const arg_token_list_iter_t& tokens_end
     ) noexcept {
         for (const auto& pos_arg : this->_positional_args) {
             if (token_it == tokens_end)
@@ -929,8 +1004,8 @@ private:
      * @throws ap::parsing_failure
      */
     void _parse_optional_args(
-        arg_token_list_iterator_t& token_it,
-        const arg_token_list_iterator_t& tokens_end,
+        arg_token_list_iter_t& token_it,
+        const arg_token_list_iter_t& tokens_end,
         std::vector<std::string>& unknown_args,
         const bool handle_unknown = true
     ) {
