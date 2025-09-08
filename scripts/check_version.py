@@ -5,28 +5,31 @@ from pathlib import Path
 from collections.abc import Iterable
 
 
+VERSION_REGEX = r"(\d+\.\d+(?:\.\d+)*)"
+
+
 def get_cmake_version(cmake_path: Path) -> str:
     text = cmake_path.read_text()
-    match = re.search(r'project\s*\([^\)]*VERSION\s+(\d+\.\d+\.\d+)', text, re.IGNORECASE)
+    match = re.search(rf'project\s*\([^\)]*VERSION\s+{VERSION_REGEX}', text, re.IGNORECASE)
     if match:
         return match.group(1)
-    raise ValueError(f"[CMake] Could not find project version in {cmake_path}")
+    raise ValueError(f"[CMake] Could not find a valid project version in {cmake_path}")
 
 
 def get_doxy_version(doxyfile_path: Path) -> str:
     text = doxyfile_path.read_text()
-    match = re.search(r'^\s*PROJECT_NUMBER\s*=\s*("?)([\d\.]+)\1', text, re.MULTILINE)
+    match = re.search(rf'^\s*PROJECT_NUMBER\s*=\s*("?){VERSION_REGEX}\1', text, re.MULTILINE)
     if match:
-        return match.group(2)
-    raise ValueError(f"[Doxygen] Could not find PROJECT_NUMBER in {doxyfile_path}")
+        return match.group(2)  # group(2) because group(1) is the optional quote
+    raise ValueError(f"[Doxygen] Could not find a valid PROJECT_NUMBER in {doxyfile_path}")
 
 
 def get_bazel_version(bazel_module_file_path: Path) -> str:
     text = bazel_module_file_path.read_text()
-    match = re.search(r'\bversion\s*=\s*"(\d+\.\d+\.\d+)"', text)
+    match = re.search(rf'\bversion\s*=\s*"{VERSION_REGEX}"', text)
     if match:
         return match.group(1)
-    raise ValueError(f"[Bazel] Could not find module version in {bazel_module_file_path}")
+    raise ValueError(f"[Bazel] Could not find a valid module version in {bazel_module_file_path}")
 
 
 def all_equal(items: Iterable) -> bool:
