@@ -84,7 +84,8 @@ public:
      */
     argument_parser& program_version(std::string_view version) {
         if (detail::contains_whitespaces(version))
-            throw invalid_configuration("The program version cannot contain whitespace characters!");
+            throw invalid_configuration("The program version cannot contain whitespace characters!"
+            );
 
         this->_program_version.emplace(version);
         return *this;
@@ -894,18 +895,14 @@ private:
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
+     * @param handle_unknown A flag specifying whether unknown arguments should be handled or collected.
      * @throws ap::parsing_failure
-     * \todo Use `c_range_of<argument_token>` instead of `arg_token_list_t` directly.
      */
     void _parse_args_impl(
         const arg_token_list_t& arg_tokens,
         std::vector<std::string>& unknown_args,
         const bool handle_unknown = true
     ) {
-        // arg_token_list_iter_t token_it = arg_tokens.begin();
-        // this->_parse_positional_args(token_it, arg_tokens.end());
-        // this->_parse_optional_args(token_it, arg_tokens.end(), unknown_args, handle_unknown);
-
         // set the current argument indicators
         arg_ptr_opt_t curr_arg_opt = std::nullopt;
         arg_ptr_list_iter_t curr_positional_arg_it = this->_positional_args.begin();
@@ -927,6 +924,15 @@ private:
         );
     }
 
+    /**
+     * @brief Parse a single command-line argument token.
+     * @param curr_arg_opt The currently processed argument.
+     * @param curr_positional_arg_it An iterator pointing to the current positional argument.
+     * @param unknown_args The unknown arguments collection.
+     * @param handle_unknown A flag specifying whether unknown arguments should be handled or collected.
+     * @param tok The argument token to be processed.
+     * @throws ap::parsing_failure
+     */
     void _parse_token(
         arg_ptr_opt_t& curr_arg_opt,
         arg_ptr_list_iter_t& curr_positional_arg_it,
@@ -980,83 +986,6 @@ private:
 
             break;
         }
-        }
-    }
-
-    /**
-     * @brief Parse positional arguments based on command-line input.
-     * @param token_it Iterator for iterating through command-line argument tokens.
-     * @param tokens_end The token list end iterator.
-     */
-    void _parse_positional_args(
-        arg_token_list_iter_t& token_it, const arg_token_list_iter_t& tokens_end
-    ) noexcept {
-        for (const auto& pos_arg : this->_positional_args) {
-            if (token_it == tokens_end)
-                return;
-
-            if (token_it->type != detail::argument_token::t_value)
-                return;
-
-            pos_arg->set_value(token_it->value);
-            ++token_it;
-        }
-    }
-
-    /**
-     * @brief Parse optional arguments based on command-line input.
-     * @param token_it Iterator for iterating through command-line argument tokens.
-     * @param tokens_end The token list end iterator.
-     * @param unknown_args Reference to the vector into which the dangling values shall be collected.
-     * @throws ap::parsing_failure
-     */
-    void _parse_optional_args(
-        arg_token_list_iter_t& token_it,
-        const arg_token_list_iter_t& tokens_end,
-        std::vector<std::string>& unknown_args,
-        const bool handle_unknown = true
-    ) {
-        arg_ptr_opt_t curr_opt_arg;
-
-        while (token_it != tokens_end) {
-            switch (token_it->type) {
-            case detail::argument_token::t_flag_primary:
-                [[fallthrough]];
-            case detail::argument_token::t_flag_secondary: {
-                if (not token_it->is_valid_flag_token()) {
-                    if (handle_unknown) {
-                        throw parsing_failure::unrecognized_argument(
-                            this->_unstripped_token_value(*token_it)
-                        );
-                    }
-                    else {
-                        unknown_args.emplace_back(this->_unstripped_token_value(*token_it));
-                        curr_opt_arg.reset();
-                        break;
-                    }
-                }
-
-                if (token_it->arg->get()->mark_used())
-                    curr_opt_arg = token_it->arg;
-                else
-                    curr_opt_arg.reset();
-
-                break;
-            }
-            case detail::argument_token::t_value: {
-                if (not curr_opt_arg) {
-                    unknown_args.emplace_back(token_it->value);
-                    break;
-                }
-
-                if (not curr_opt_arg->get()->set_value(token_it->value))
-                    curr_opt_arg.reset();
-
-                break;
-            }
-            }
-
-            ++token_it;
         }
     }
 
