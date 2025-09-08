@@ -12,8 +12,8 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string_view test_program_name = "test program name";
 
     const std::size_t no_args = 0ull;
-    const std::size_t n_positional_args = 6ull;
-    const std::size_t n_optional_args = 4ull;
+    const std::size_t n_positional_args = 5ull;
+    const std::size_t n_optional_args = n_positional_args;
     const std::size_t n_args_total = n_positional_args + n_optional_args;
     const std::size_t last_pos_arg_idx = n_positional_args - 1ull;
     const std::size_t first_opt_arg_idx = n_positional_args;
@@ -428,7 +428,65 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
-// TODO: parse_args should accept positional values at various positions
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args, "parse_args should consume free values at various positions"
+) {
+    add_positional_args(n_positional_args);
+    add_optional_args(n_optional_args, n_positional_args, [](auto& arg) { arg.nargs(1ull); });
+
+    std::vector<std::string> argv_vec{"program"};
+
+    SUBCASE("at the beginning") {
+        for (std::size_t i = 0ull; i < n_positional_args; ++i)
+            argv_vec.emplace_back(init_arg_value(i));
+
+        for (std::size_t i = n_positional_args; i < n_args_total; ++i) {
+            argv_vec.emplace_back(init_arg_flag_primary(i));
+            argv_vec.emplace_back(init_arg_value(i));
+        }
+    }
+
+    SUBCASE("mixed with optional args (front)") {
+        for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+            argv_vec.emplace_back(init_arg_value(i));
+            argv_vec.emplace_back(init_arg_flag_primary(i + n_positional_args));
+            argv_vec.emplace_back(init_arg_value(i + n_positional_args));
+        }
+    }
+
+    SUBCASE("mixed with optional args (back)") {
+        for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+            argv_vec.emplace_back(init_arg_flag_primary(i + n_positional_args));
+            argv_vec.emplace_back(init_arg_value(i + n_positional_args));
+            argv_vec.emplace_back(init_arg_value(i));
+        }
+    }
+
+    SUBCASE("at the end") {
+        for (std::size_t i = n_positional_args; i < n_args_total; ++i) {
+            argv_vec.emplace_back(init_arg_flag_primary(i));
+            argv_vec.emplace_back(init_arg_value(i));
+        }
+
+        for (std::size_t i = 0ull; i < n_positional_args; ++i)
+            argv_vec.emplace_back(init_arg_value(i));
+    }
+
+    CAPTURE(argv_vec);
+
+    const auto argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    sut.parse_args(argc, argv);
+
+    for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+        const auto arg_name = init_arg_name_primary(i);
+        REQUIRE(sut.has_value(arg_name));
+        CHECK_EQ(sut.value(arg_name), init_arg_value(i));
+    }
+
+    free_argv(argc, argv);
+}
 
 // parse_known_args
 

@@ -60,7 +60,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_name(std::string_view name) {
-        if (detail::contains_whitespaces(name)) // TODO: add tests
+        if (detail::contains_whitespaces(name))
             throw invalid_configuration("The program name cannot contain whitespace characters!");
 
         this->_program_name.emplace(name);
@@ -83,9 +83,8 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_version(std::string_view version) {
-        if (detail::contains_whitespaces(version)) // TODO: add tests
-            throw invalid_configuration("The program version cannot contain whitespace characters!"
-            );
+        if (detail::contains_whitespaces(version))
+            throw invalid_configuration("The program version cannot contain whitespace characters!");
 
         this->_program_version.emplace(version);
         return *this;
