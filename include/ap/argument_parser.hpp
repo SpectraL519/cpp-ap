@@ -59,7 +59,10 @@ public:
      * @param name The name of the program.
      * @return Reference to the argument parser.
      */
-    argument_parser& program_name(std::string_view name) noexcept {
+    argument_parser& program_name(std::string_view name) {
+        if (detail::contains_whitespaces(name))
+            throw invalid_configuration("The program name cannot contain whitespace characters!");
+
         this->_program_name.emplace(name);
         return *this;
     }
@@ -79,7 +82,11 @@ public:
      * @param version The version of the program.
      * @return Reference to the argument parser.
      */
-    argument_parser& program_version(std::string_view version) noexcept {
+    argument_parser& program_version(std::string_view version) {
+        if (detail::contains_whitespaces(version))
+            throw invalid_configuration("The program version cannot contain whitespace characters!"
+            );
+
         this->_program_version.emplace(version);
         return *this;
     }
@@ -642,7 +649,7 @@ private:
     using const_arg_opt_t = std::optional<std::reference_wrapper<const detail::argument_base>>;
 
     using arg_token_list_t = std::vector<detail::argument_token>;
-    using arg_token_list_iterator_t = typename arg_token_list_t::const_iterator;
+    using arg_token_list_iter_t = typename arg_token_list_t::const_iterator;
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
@@ -888,93 +895,97 @@ private:
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
+     * @param handle_unknown A flag specifying whether unknown arguments should be handled or collected.
      * @throws ap::parsing_failure
-     * \todo Use `c_range_of<argument_token>` instead of `arg_token_list_t` directly.
      */
     void _parse_args_impl(
         const arg_token_list_t& arg_tokens,
         std::vector<std::string>& unknown_args,
         const bool handle_unknown = true
     ) {
-        arg_token_list_iterator_t token_it = arg_tokens.begin();
-        this->_parse_positional_args(token_it, arg_tokens.end());
-        this->_parse_optional_args(token_it, arg_tokens.end(), unknown_args, handle_unknown);
+        // set the current argument indicators
+        arg_ptr_opt_t curr_arg_opt = std::nullopt;
+        arg_ptr_list_iter_t curr_positional_arg_it = this->_positional_args.begin();
+
+        if (curr_positional_arg_it != this->_positional_args.end())
+            curr_arg_opt.emplace(*curr_positional_arg_it);
+
+        // process argument tokens
+        std::ranges::for_each(
+            arg_tokens,
+            std::bind_front(
+                &argument_parser::_parse_token,
+                this,
+                std::ref(curr_arg_opt),
+                std::ref(curr_positional_arg_it),
+                std::ref(unknown_args),
+                handle_unknown
+            )
+        );
     }
 
     /**
-     * @brief Parse positional arguments based on command-line input.
-     * @param token_it Iterator for iterating through command-line argument tokens.
-     * @param tokens_end The token list end iterator.
-     */
-    void _parse_positional_args(
-        arg_token_list_iterator_t& token_it, const arg_token_list_iterator_t& tokens_end
-    ) noexcept {
-        for (const auto& pos_arg : this->_positional_args) {
-            if (token_it == tokens_end)
-                return;
-
-            if (token_it->type != detail::argument_token::t_value)
-                return;
-
-            pos_arg->set_value(token_it->value);
-            ++token_it;
-        }
-    }
-
-    /**
-     * @brief Parse optional arguments based on command-line input.
-     * @param token_it Iterator for iterating through command-line argument tokens.
-     * @param tokens_end The token list end iterator.
-     * @param unknown_args Reference to the vector into which the dangling values shall be collected.
+     * @brief Parse a single command-line argument token.
+     * @param curr_arg_opt The currently processed argument.
+     * @param curr_positional_arg_it An iterator pointing to the current positional argument.
+     * @param unknown_args The unknown arguments collection.
+     * @param handle_unknown A flag specifying whether unknown arguments should be handled or collected.
+     * @param tok The argument token to be processed.
      * @throws ap::parsing_failure
      */
-    void _parse_optional_args(
-        arg_token_list_iterator_t& token_it,
-        const arg_token_list_iterator_t& tokens_end,
+    void _parse_token(
+        arg_ptr_opt_t& curr_arg_opt,
+        arg_ptr_list_iter_t& curr_positional_arg_it,
         std::vector<std::string>& unknown_args,
-        const bool handle_unknown = true
+        const bool handle_unknown,
+        const detail::argument_token& tok
     ) {
-        arg_ptr_opt_t curr_opt_arg;
-
-        while (token_it != tokens_end) {
-            switch (token_it->type) {
-            case detail::argument_token::t_flag_primary:
-                [[fallthrough]];
-            case detail::argument_token::t_flag_secondary: {
-                if (not token_it->is_valid_flag_token()) {
-                    if (handle_unknown) {
-                        throw parsing_failure::unknown_argument(
-                            this->_unstripped_token_value(*token_it)
-                        );
-                    }
-                    else {
-                        unknown_args.emplace_back(this->_unstripped_token_value(*token_it));
-                        curr_opt_arg.reset();
-                        break;
-                    }
+        switch (tok.type) {
+        case detail::argument_token::t_flag_primary:
+            [[fallthrough]];
+        case detail::argument_token::t_flag_secondary: {
+            if (not tok.is_valid_flag_token()) {
+                if (handle_unknown) {
+                    throw parsing_failure::unrecognized_argument(this->_unstripped_token_value(tok)
+                    );
                 }
-
-                if (token_it->arg->get()->mark_used())
-                    curr_opt_arg = token_it->arg;
-                else
-                    curr_opt_arg.reset();
-
-                break;
+                else {
+                    curr_arg_opt.reset();
+                    unknown_args.emplace_back(this->_unstripped_token_value(tok));
+                    break;
+                }
             }
-            case detail::argument_token::t_value: {
-                if (not curr_opt_arg) {
-                    unknown_args.emplace_back(token_it->value);
+
+            if (tok.arg->get()->mark_used())
+                curr_arg_opt = tok.arg;
+            else
+                curr_arg_opt.reset();
+
+            break;
+        }
+        case detail::argument_token::t_value: {
+            if (not curr_arg_opt) {
+                if (curr_positional_arg_it == this->_positional_args.end()) {
+                    unknown_args.emplace_back(tok.value);
                     break;
                 }
 
-                if (not curr_opt_arg->get()->set_value(token_it->value))
-                    curr_opt_arg.reset();
-
-                break;
-            }
+                curr_arg_opt.emplace(*curr_positional_arg_it);
             }
 
-            ++token_it;
+            if (auto& curr_arg = *curr_arg_opt->get(); not curr_arg.set_value(tok.value)) {
+                if (curr_arg.is_positional()
+                    and curr_positional_arg_it != this->_positional_args.end()
+                    and ++curr_positional_arg_it != this->_positional_args.end()) {
+                    curr_arg_opt.emplace(*curr_positional_arg_it);
+                    break;
+                }
+
+                curr_arg_opt.reset();
+            }
+
+            break;
+        }
         }
     }
 
@@ -1149,7 +1160,6 @@ inline void add_default_argument(
     case argument::default_optional::help:
         arg_parser.add_flag("help", "h")
             .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
-            .nargs(0ull)
             .help("Display the help message");
         break;
 

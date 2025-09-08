@@ -164,6 +164,16 @@ private:
     using value_action_type =
         action::detail::value_action_variant_type<T>; ///< The argument's value action type.
 
+    /// @brief `true` if the argument is an instance of `positional<T>`, `false` otherwise.
+    [[nodiscard]] bool is_positional() const noexcept override {
+        return true;
+    }
+
+    /// @brief `true` if the argument is an instance of `optional<T>`, `false` otherwise.
+    virtual bool is_optional() const noexcept override {
+        return false;
+    }
+
     /**
      * @param verbose The verbosity mode value.
      * @return An argument descriptor object for the argument.
