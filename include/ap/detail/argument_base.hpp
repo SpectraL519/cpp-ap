@@ -38,14 +38,14 @@ protected:
         return this->_name;
     }
 
-    /// @return Optional help message for the positional argument.
-    [[nodiscard]] const std::optional<std::string>& help() const noexcept {
-        return this->_help_msg;
-    }
-
     /// @return `true` if the argument is hidden, `false` otherwise
     [[nodiscard]] bool is_hidden() const noexcept {
         return this->_hidden;
+    }
+
+    /// @return Optional help message for the positional argument.
+    [[nodiscard]] const std::optional<std::string>& help() const noexcept {
+        return this->_help_msg;
     }
 
     /// @return `true` if the argument is required, `false` otherwise
@@ -60,6 +60,14 @@ protected:
     [[nodiscard]] bool bypass_required_enabled() const noexcept {
         return not this->_required and this->_bypass_required;
     }
+
+    // pure virtual methods
+
+    /// @brief `true` if the argument is an instance of `positional<T>`, `false` otherwise.
+    virtual bool is_positional() const noexcept = 0;
+
+    /// @brief `true` if the argument is an instance of `optional<T>`, `false` otherwise.
+    virtual bool is_optional() const noexcept = 0;
 
     /**
      * @param verbose The verbosity mode value.
