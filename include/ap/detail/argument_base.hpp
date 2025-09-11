@@ -38,14 +38,14 @@ protected:
         return this->_name;
     }
 
-    /// @return `true` if the argument is hidden, `false` otherwise
-    [[nodiscard]] bool is_hidden() const noexcept {
-        return this->_hidden;
-    }
-
     /// @return Optional help message for the positional argument.
     [[nodiscard]] const std::optional<std::string>& help() const noexcept {
         return this->_help_msg;
+    }
+
+    /// @return `true` if the argument is hidden, `false` otherwise
+    [[nodiscard]] bool is_hidden() const noexcept {
+        return this->_hidden;
     }
 
     /// @return `true` if the argument is required, `false` otherwise

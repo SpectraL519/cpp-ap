@@ -35,6 +35,16 @@ public:
     /// @brief `true` if the argument is an instance of `optional<T>`, `false` otherwise.
     virtual bool is_optional() const noexcept = 0;
 
+    virtual const argument_name& name() const noexcept = 0;
+
+    virtual const std::optional<std::string>& help() const noexcept = 0;
+
+    virtual bool is_hidden() const noexcept = 0;
+
+    virtual bool is_required() const noexcept = 0;
+
+    virtual bool bypass_required_enabled() const noexcept = 0;
+
 protected:
     /**
      * @param verbose The verbosity mode value.

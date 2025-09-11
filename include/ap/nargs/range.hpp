@@ -9,15 +9,22 @@
 
 #pragma once
 
+#include <limits>
 #include <optional>
 #include <ostream>
 
 namespace ap::nargs {
 
+using count_type = std::size_t;
+
+constexpr count_type min_bound = std::numeric_limits<count_type>::min();
+constexpr count_type max_bound = std::numeric_limits<count_type>::max();
+
 /// @brief Argument's number of values managing class.
+/// TODO: use concrete bounds + numeric limits instead of optional
 class range {
 public:
-    using count_type = std::size_t;
+    using count_type = std::size_t; // TODO: remove
 
     /// @brief Default constructor: creates range [1, 1].
     range() : _lower_bound(_default_bound), _upper_bound(_default_bound) {}
