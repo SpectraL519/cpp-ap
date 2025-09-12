@@ -29,46 +29,23 @@ public:
 
     friend class ::ap::argument_parser;
 
-protected:
-    argument_base(const argument_name& name, const bool required = false)
-    : _name(name), _required(required) {}
-
-    /// @return Reference the name of the positional argument.
-    [[nodiscard]] const ap::detail::argument_name& name() const noexcept {
-        return this->_name;
-    }
-
-    /// @return Optional help message for the positional argument.
-    [[nodiscard]] const std::optional<std::string>& help() const noexcept {
-        return this->_help_msg;
-    }
-
-    /// @return `true` if the argument is hidden, `false` otherwise
-    [[nodiscard]] bool is_hidden() const noexcept {
-        return this->_hidden;
-    }
-
-    /// @return `true` if the argument is required, `false` otherwise
-    [[nodiscard]] bool is_required() const noexcept {
-        return this->_required;
-    }
-
-    /**
-     * @return `true` if required argument bypassing is enabled for the argument, `false` otherwise.
-     * @note Required argument bypassing is enabled only when both `required` and `bypass_required` flags are set to `true`.
-     */
-    [[nodiscard]] bool bypass_required_enabled() const noexcept {
-        return not this->_required and this->_bypass_required;
-    }
-
-    // pure virtual methods
-
     /// @brief `true` if the argument is an instance of `positional<T>`, `false` otherwise.
     virtual bool is_positional() const noexcept = 0;
 
     /// @brief `true` if the argument is an instance of `optional<T>`, `false` otherwise.
     virtual bool is_optional() const noexcept = 0;
 
+    virtual const argument_name& name() const noexcept = 0;
+
+    virtual const std::optional<std::string>& help() const noexcept = 0;
+
+    virtual bool is_hidden() const noexcept = 0;
+
+    virtual bool is_required() const noexcept = 0;
+
+    virtual bool bypass_required_enabled() const noexcept = 0;
+
+protected:
     /**
      * @param verbose The verbosity mode value.
      * @return An argument descriptor object for the argument.
@@ -108,26 +85,7 @@ protected:
 
     /// @return Reference to the vector of parsed values of the argument.
     virtual const std::vector<std::any>& values() const = 0;
-
-    const ap::detail::argument_name _name;
-    std::optional<std::string> _help_msg;
-
-    bool _required : 1;
-    bool _bypass_required : 1 = false;
-    bool _hidden : 1 = false;
 };
-
-/**
- * @brief Checks if the provided choice is valid for the given set of choices.
- * @param value A value, the validity of which is to be checked.
- * @param choices The set against which the choice validity will be checked.
- * @return `true` if the choice is valid, `false` otherwise.
- * \todo replace with `std::ranges::contains` after transition to C++23
- */
-template <c_argument_value_type T>
-[[nodiscard]] bool is_valid_choice(const T& value, const std::vector<T>& choices) noexcept {
-    return choices.empty() or std::ranges::find(choices, value) != choices.end();
-}
 
 } // namespace detail
 } // namespace ap

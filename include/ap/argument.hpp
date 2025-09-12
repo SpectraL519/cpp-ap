@@ -6,8 +6,7 @@
 
 #include "action/detail/utility.hpp"
 #include "action/predefined_actions.hpp"
-// #include "detail/argument_base.hpp"
-#include "detail/argument_base_new.hpp"
+#include "detail/argument_base.hpp"
 #include "detail/argument_descriptor.hpp"
 #include "detail/concepts.hpp"
 #include "nargs/range.hpp"
@@ -24,14 +23,6 @@ public:
     using count_type = nargs::range::count_type;
 
     static constexpr argument_type type = AT;
-
-    // static consteval is_positional() noexcept {
-    //     return type == argument_type::positional;
-    // }
-
-    // static consteval is_optional() noexcept {
-    //     return type == argument_type::optional;
-    // }
 
     argument() = delete;
 
@@ -88,7 +79,7 @@ public:
         return not this->_required and this->_bypass_required;
     }
 
-    // parameter setters
+    // attribute setters
 
     /**
      * @brief Set the help message for the optional argument.
@@ -158,12 +149,12 @@ public:
 
     /**
      * @brief Set the nargs range for the optional argument.
-     * @param lower_bound The lower bound for nargs range.
-     * @param upper_bound The upper bound for nargs range.
+     * @param lower The lower bound for nargs range.
+     * @param upper The upper bound for nargs range.
      * @return Reference to the optional argument.
      */
-    argument& nargs(const count_type lower_bound, const count_type upper_bound) noexcept {
-        this->_nargs_range = nargs::range(lower_bound, upper_bound);
+    argument& nargs(const count_type lower, const count_type upper) noexcept {
+        this->_nargs_range = nargs::range(lower, upper);
         return *this;
     }
 
@@ -291,7 +282,7 @@ private:
             desc.add_param("required", std::format("{}", this->_required));
         if (this->bypass_required_enabled())
             desc.add_param("bypass required", "true");
-        if (this->_nargs_range.is_bound())
+        if (this->_nargs_range.is_explicitly_bound())
             desc.add_param("nargs", this->_nargs_range);
         if constexpr (detail::c_writable<value_type>) {
             if (not this->_choices.empty())
@@ -376,7 +367,7 @@ private:
         if (this->_values.empty() and this->_has_predefined_values())
             return std::weak_ordering::equivalent;
 
-        return this->_nargs_range.ordering(this->_values.size());
+        return this->_values.size() <=> this->_nargs_range;
     }
 
     /// @return Reference to the stored value of the optional argument.
@@ -428,13 +419,14 @@ private:
         return this->_default_value;
     }
 
+    [[nodiscard]] bool _accepts_further_values() const noexcept {
+        return not std::is_gt(this->_values.size() + 1ull <=> this->_nargs_range);
+    }
+
+    /// @todo Use std::ranges::contains after the switch to C++23
     [[nodiscard]] bool _is_valid_choice(const value_type& value) const noexcept {
         return this->_choices.empty()
             or std::ranges::find(this->_choices, value) != this->_choices.end();
-    }
-
-    [[nodiscard]] bool _accepts_further_values() const noexcept {
-        return not std::is_gt(this->_nargs_range.ordering(this->_values.size() + 1ull));
     }
 
     // TODO: validate whether the members could be reordered to use less memory
@@ -458,7 +450,11 @@ private:
     std::vector<std::any> _values;
 };
 
-// TODO: template argument type aliases
+template <detail::c_argument_value_type T>
+using positional_argument = argument<T, argument_type::positional>;
+
+template <detail::c_argument_value_type T>
+using optional_argument = argument<T, argument_type::optional>;
 
 enum class default_argument {
     p_input,

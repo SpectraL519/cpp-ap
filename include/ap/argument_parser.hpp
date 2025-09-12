@@ -143,19 +143,15 @@ public:
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument<T, argument_type::positional>& add_positional_argument(
-        const std::string_view primary_name
-    ) {
+    positional_argument<T>& add_positional_argument(const std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
         const detail::argument_name arg_name(std::make_optional<std::string>(primary_name));
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(
-            std::make_unique<argument<T, argument_type::positional>>(arg_name)
-        );
-        return static_cast<argument<T, argument_type::positional>&>(*this->_positional_args.back());
+        this->_positional_args.emplace_back(std::make_unique<positional_argument<T>>(arg_name));
+        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
     }
 
     /**
@@ -169,7 +165,7 @@ public:
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument<T, argument_type::positional>& add_positional_argument(
+    positional_argument<T>& add_positional_argument(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         this->_verify_arg_name_pattern(primary_name);
@@ -182,10 +178,8 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(
-            std::make_unique<argument<T, argument_type::positional>>(arg_name)
-        );
-        return static_cast<argument<T, argument_type::positional>&>(*this->_positional_args.back());
+        this->_positional_args.emplace_back(std::make_unique<positional_argument<T>>(arg_name));
+        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
     }
 
     /**
@@ -199,7 +193,7 @@ public:
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument<T, argument_type::optional>& add_optional_argument(
+    optional_argument<T>& add_optional_argument(
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
@@ -216,10 +210,8 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.push_back(
-            std::make_unique<argument<T, argument_type::optional>>(arg_name)
-        );
-        return static_cast<argument<T, argument_type::optional>&>(*this->_optional_args.back());
+        this->_optional_args.push_back(std::make_unique<optional_argument<T>>(arg_name));
+        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
@@ -233,7 +225,7 @@ public:
      * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument<T, argument_type::optional>& add_optional_argument(
+    optional_argument<T>& add_optional_argument(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         this->_verify_arg_name_pattern(primary_name);
@@ -247,10 +239,8 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.emplace_back(
-            std::make_unique<argument<T, argument_type::optional>>(arg_name)
-        );
-        return static_cast<argument<T, argument_type::optional>&>(*this->_optional_args.back());
+        this->_optional_args.emplace_back(std::make_unique<optional_argument<T>>(arg_name));
+        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
@@ -261,7 +251,7 @@ public:
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument<bool, argument_type::optional>& add_flag(
+    optional_argument<bool>& add_flag(
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
@@ -279,7 +269,7 @@ public:
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument<bool, argument_type::optional>& add_flag(
+    optional_argument<bool>& add_flag(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         return this->add_optional_argument<bool>(primary_name, secondary_name)

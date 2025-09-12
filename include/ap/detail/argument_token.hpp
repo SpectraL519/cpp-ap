@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "argument_base_new.hpp"
+#include "argument_base.hpp"
 #include "typing_utility.hpp"
 
 #include <cstdint>
