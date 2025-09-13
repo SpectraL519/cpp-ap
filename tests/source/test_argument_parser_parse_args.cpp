@@ -880,17 +880,7 @@ TEST_CASE_FIXTURE(
     }
 }
 
-// values
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "values() should throw when calling with a positional argument's name"
-) {
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
-
-    CHECK_THROWS_AS(discard_result(sut.values(positional_primary_name)), std::logic_error);
-    CHECK_THROWS_AS(discard_result(sut.values(positional_secondary_name)), std::logic_error);
-}
+// values - TODO: add subcases for positional arguments
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
@@ -898,15 +888,8 @@ TEST_CASE_FIXTURE(
 ) {
     sut.add_optional_argument(optional_primary_name, optional_secondary_name);
 
-    SUBCASE("calling with argument's primary name") {
-        const auto& values = sut.values(optional_primary_name);
-        CHECK(values.empty());
-    }
-
-    SUBCASE("calling with argument's secondary name") {
-        const auto& values = sut.values(optional_secondary_name);
-        CHECK(values.empty());
-    }
+    CHECK(sut.values(optional_primary_name).empty());
+    CHECK(sut.values(optional_secondary_name).empty());
 }
 
 TEST_CASE_FIXTURE(

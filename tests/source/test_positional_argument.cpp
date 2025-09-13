@@ -307,7 +307,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         set_value(sut, value_2),
-        parsing_failure::value_already_set(arg_name_primary).what(),
+        parsing_failure::invalid_nvalues(arg_name_primary, std::weak_ordering::greater).what(),
         parsing_failure
     );
 }
@@ -454,11 +454,6 @@ TEST_CASE_FIXTURE(
 
     REQUIRE(has_value(sut));
     CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), value_1);
-}
-
-TEST_CASE_FIXTURE(argument_test_fixture, "values() should throw logic_error") {
-    auto sut = sut_type(arg_name_primary);
-    CHECK_THROWS_AS(discard_result(get_values(sut)), std::logic_error);
 }
 
 TEST_CASE_FIXTURE(argument_test_fixture, "nvalues_ordering() should return less by default") {

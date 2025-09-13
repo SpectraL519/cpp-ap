@@ -36,11 +36,11 @@ public:
 
     argument(const detail::argument_name& name)
     requires(type == argument_type::positional)
-    : _name(name), _nargs_range(1ull), _required(true) {}
+    : _name(name), _nargs_range(1ull), _required(_default_required) {}
 
     argument(const detail::argument_name& name)
     requires(type == argument_type::optional)
-    : _name(name), _nargs_range(nargs::any()), _required(true), _count(0ull) {}
+    : _name(name), _nargs_range(nargs::any()), _required(_default_required), _count(0ull) {}
 
     /**
      * @brief Equality comparison operator for optional argument.
@@ -273,8 +273,6 @@ private:
     template <typename _T>
     using optional_specific_t = std::conditional_t<type == argument_type::optional, _T, none_type>;
 
-    static constexpr bool _default_required = (type == argument_type::positional);
-
     /**
      * @param verbose The verbosity mode value.
      * @return A descriptor object for the argument.
@@ -286,20 +284,22 @@ private:
             return desc;
 
         desc.params.reserve(6ull);
-        if (this->_required != argument::_default_required)
+        if (this->_required != _default_required)
             desc.add_param("required", std::format("{}", this->_required));
         if (this->bypass_required_enabled())
             desc.add_param("bypass required", "true");
-        if (this->_nargs_range.is_explicitly_bound())
+        if (this->_nargs_range != _default_nargs_range)
             desc.add_param("nargs", this->_nargs_range);
         if constexpr (detail::c_writable<value_type>) {
             if (not this->_choices.empty())
                 desc.add_range_param("choices", this->_choices);
             if (this->_default_value.has_value())
-                desc.add_param("default", std::any_cast<value_type>(this->_default_value));
+                desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
             if constexpr (type == argument_type::optional) {
                 if (this->_implicit_value.has_value())
-                    desc.add_param("implicit", std::any_cast<value_type>(this->_implicit_value));
+                    desc.add_param(
+                        "implicit value", std::any_cast<value_type>(this->_implicit_value)
+                    );
             }
         }
 
@@ -456,6 +456,11 @@ private:
     // parsing result
     [[no_unique_address]] optional_specific_t<std::size_t> _count;
     std::vector<std::any> _values;
+
+    // default attribute values
+    static constexpr bool _default_required = (type == argument_type::positional);
+    static constexpr nargs::range _default_nargs_range =
+        (type == argument_type::positional) ? nargs::range(1ull) : nargs::any();
 };
 
 template <detail::c_argument_value_type T = std::string>

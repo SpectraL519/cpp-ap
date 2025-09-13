@@ -25,20 +25,20 @@ constexpr count_type max_bound = std::numeric_limits<count_type>::max();
 class range {
 public:
     /// @brief Default constructor: creates an unbound range.
-    range() = default;
+    constexpr range() = default;
 
     /**
      * @brief Exact count constructor: creates range [n, n].
      * @param n Expected value count.
      */
-    explicit range(const count_type n) : _lower_bound(n), _upper_bound(n) {}
+    explicit constexpr range(const count_type n) : _lower_bound(n), _upper_bound(n) {}
 
     /**
      * @brief Concrete range constructor: creates range [lower, upper].
      * @param lower The lower bound.
      * @param upper The upper bound.
      */
-    range(const count_type lower, const count_type upper)
+    constexpr range(const count_type lower, const count_type upper)
     : _lower_bound(lower), _upper_bound(upper) {
         if (upper < lower)
             throw std::logic_error(
@@ -46,21 +46,23 @@ public:
             );
     }
 
-    [[nodiscard]] bool has_explicit_lower_bound() const noexcept {
+    [[nodiscard]] constexpr bool has_explicit_lower_bound() const noexcept {
         return this->_lower_bound > min_bound;
     }
 
-    [[nodiscard]] bool has_explicit_upper_bound() const noexcept {
+    [[nodiscard]] constexpr bool has_explicit_upper_bound() const noexcept {
         return this->_upper_bound < max_bound;
     }
 
-    [[nodiscard]] bool is_explicitly_bound() const noexcept {
+    [[nodiscard]] constexpr bool is_explicitly_bound() const noexcept {
         return this->has_explicit_lower_bound() or this->has_explicit_upper_bound();
     }
 
-    [[nodiscard]] bool is_exactly_bound() const noexcept {
+    [[nodiscard]] constexpr bool is_exactly_bound() const noexcept {
         return this->_lower_bound == this->_upper_bound;
     }
+
+    constexpr bool operator==(const range& other) const = default;
 
     /**
      * @brief Determines the ordering of the count against a range instance.
@@ -73,7 +75,7 @@ public:
      * @param n The value count to order.
      * @return Ordering relationship between the count and the range.
      */
-    [[nodiscard]] friend std::weak_ordering operator<=>(
+    [[nodiscard]] friend constexpr std::weak_ordering operator<=>(
         const count_type n, const range& r
     ) noexcept {
         if (n < r._lower_bound)
@@ -105,11 +107,11 @@ public:
         return os;
     }
 
-    friend range at_least(const count_type) noexcept;
-    friend range more_than(const count_type) noexcept;
-    friend range less_than(const count_type) noexcept;
-    friend range up_to(const count_type) noexcept;
-    friend range any() noexcept;
+    friend constexpr range at_least(const count_type) noexcept;
+    friend constexpr range more_than(const count_type) noexcept;
+    friend constexpr range less_than(const count_type) noexcept;
+    friend constexpr range up_to(const count_type) noexcept;
+    friend constexpr range any() noexcept;
 
 private:
     count_type _lower_bound = min_bound;
@@ -121,7 +123,7 @@ private:
  * @param n The lower bound.
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range at_least(const count_type n) noexcept {
+[[nodiscard]] constexpr range at_least(const count_type n) noexcept {
     return range(n, max_bound);
 }
 
@@ -130,7 +132,7 @@ private:
  * @param n The lower bound.
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range more_than(const count_type n) noexcept {
+[[nodiscard]] constexpr range more_than(const count_type n) noexcept {
     return range(n + 1ull, max_bound);
 }
 
@@ -139,7 +141,7 @@ private:
  * @param n The upper bound
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range less_than(const count_type n) noexcept {
+[[nodiscard]] constexpr range less_than(const count_type n) noexcept {
     return range(min_bound, n - 1ull);
 }
 
@@ -148,7 +150,7 @@ private:
  * @param n The upper bound
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range up_to(const count_type n) noexcept {
+[[nodiscard]] constexpr range up_to(const count_type n) noexcept {
     return range(min_bound, n);
 }
 
@@ -156,7 +158,7 @@ private:
  * @brief `range` class builder function. Creates a range [0, inf].
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range any() noexcept {
+[[nodiscard]] constexpr range any() noexcept {
     return range(min_bound, max_bound);
 }
 

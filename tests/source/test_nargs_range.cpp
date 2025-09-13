@@ -42,8 +42,28 @@ TEST_CASE("is_explicitly_bound should return true only if at least one bound is 
     CHECK(range(lower_bound, upper_bound).is_explicitly_bound());
 }
 
+TEST_CASE("range instances should be considered equal only if they have the same bounds") {
+    CHECK_EQ(any(), any());
+    CHECK_EQ(at_least(lower_bound), at_least(lower_bound));
+    CHECK_EQ(more_than(lower_bound), more_than(lower_bound));
+    CHECK_EQ(less_than(upper_bound), less_than(upper_bound));
+    CHECK_EQ(up_to(upper_bound), up_to(upper_bound));
+    CHECK_EQ(range(lower_bound, upper_bound), range(lower_bound, upper_bound));
+    CHECK_EQ(range(exact_bound), range(exact_bound));
+
+    CHECK_NE(at_least(lower_bound), any());
+    CHECK_NE(more_than(lower_bound), any());
+    CHECK_NE(less_than(lower_bound), any());
+    CHECK_NE(up_to(lower_bound), any());
+    CHECK_NE(range(lower_bound, upper_bound), any());
+    CHECK_NE(range(lower_bound, upper_bound), range(lower_bound, upper_bound + 1ull));
+    CHECK_NE(range(lower_bound, upper_bound), range(lower_bound - 1ull, upper_bound));
+    CHECK_NE(range(exact_bound), any());
+    CHECK_NE(range(exact_bound), range(lower_bound, upper_bound));
+}
+
 TEST_CASE("operator<=> should return eq for default range only when n is 1") {
-    const auto sut = range();
+    const auto sut = range(exact_bound);
 
     CHECK(std::is_eq(exact_bound <=> sut));
 
