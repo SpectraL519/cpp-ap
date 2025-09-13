@@ -8,53 +8,68 @@ using namespace ap::nargs;
 
 namespace {
 
-constexpr range::count_type exact_bound = 1ull;
-constexpr range::count_type lower_bound = 3ull;
-constexpr range::count_type upper_bound = 9ull;
-constexpr range::count_type mid = (lower_bound + upper_bound) / 2ull;
-
-constexpr range::count_type min_bound = std::numeric_limits<range::count_type>::min();
-constexpr range::count_type max_bound = std::numeric_limits<range::count_type>::max();
+constexpr count_type exact_bound = 1ull;
+constexpr count_type lower_bound = 3ull;
+constexpr count_type upper_bound = 9ull;
+constexpr count_type mid = (lower_bound + upper_bound) / 2ull;
 
 } // namespace
 
-TEST_CASE("is_bound should return true only if at least one bound is set") {
-    CHECK_FALSE(any().is_bound());
+TEST_CASE("has_explicit_lower_bound should return true only if the lower bound is explicitly set") {
+    CHECK_FALSE(any().is_explicitly_bound());
+    CHECK_FALSE(up_to(upper_bound).has_explicit_lower_bound());
 
-    CHECK(at_least(lower_bound).is_bound());
-    CHECK(up_to(upper_bound).is_bound());
-    CHECK(range(exact_bound).is_bound());
-    CHECK(range(lower_bound, upper_bound).is_bound());
+    CHECK(at_least(lower_bound).has_explicit_lower_bound());
+    CHECK(range(exact_bound).has_explicit_lower_bound());
+    CHECK(range(lower_bound, upper_bound).has_explicit_lower_bound());
 }
 
-TEST_CASE("ordering should return true for default range only when n is 1") {
+TEST_CASE("has_explicit_upper_bound should return true only if the upper bound is explicitly set") {
+    CHECK_FALSE(any().has_explicit_upper_bound());
+    CHECK_FALSE(at_least(lower_bound).has_explicit_upper_bound());
+
+    CHECK(up_to(upper_bound).has_explicit_upper_bound());
+    CHECK(range(exact_bound).has_explicit_upper_bound());
+    CHECK(range(lower_bound, upper_bound).has_explicit_upper_bound());
+}
+
+TEST_CASE("is_explicitly_bound should return true only if at least one bound is explicitly set") {
+    CHECK_FALSE(any().is_explicitly_bound());
+
+    CHECK(at_least(lower_bound).is_explicitly_bound());
+    CHECK(up_to(upper_bound).is_explicitly_bound());
+    CHECK(range(exact_bound).is_explicitly_bound());
+    CHECK(range(lower_bound, upper_bound).is_explicitly_bound());
+}
+
+TEST_CASE("operator<=> should return eq for default range only when n is 1") {
     const auto sut = range();
 
-    REQUIRE(std::is_eq(sut.ordering(exact_bound)));
+    CHECK(std::is_eq(exact_bound <=> sut));
 
-    REQUIRE(std::is_lt(sut.ordering(exact_bound - 1)));
-    REQUIRE(std::is_gt(sut.ordering(exact_bound + 1)));
+    CHECK(std::is_lt(exact_bound - 1 <=> sut));
+    CHECK(std::is_gt(exact_bound + 1 <=> sut));
 }
 
-TEST_CASE("ordering should return true if n is in range") {
+TEST_CASE("operator<=> should return eq if n is in range") {
     SUBCASE("range is [n]") {
         const auto sut = range(mid);
 
-        REQUIRE(std::is_eq(sut.ordering(mid)));
+        CHECK(std::is_eq(mid <=> sut));
 
-        REQUIRE(std::is_lt(sut.ordering(mid - 1)));
-        REQUIRE(std::is_gt(sut.ordering(mid + 1)));
+        CHECK(std::is_lt(mid - 1 <=> sut));
+        CHECK(std::is_gt(mid + 1 <=> sut));
     }
 
     SUBCASE("range is [lower, upper]") {
         const auto sut = range(lower_bound, upper_bound);
 
-        REQUIRE(std::is_eq(sut.ordering(lower_bound)));
-        REQUIRE(std::is_eq(sut.ordering(upper_bound)));
-        REQUIRE(std::is_eq(sut.ordering(mid)));
+        CHECK(std::is_eq(lower_bound <=> sut));
+        CHECK(std::is_eq(upper_bound <=> sut));
+        CHECK(std::is_eq(mid <=> sut));
 
-        REQUIRE(std::is_lt(sut.ordering(lower_bound - 1)));
-        REQUIRE(std::is_gt(sut.ordering(upper_bound + 1)));
+        CHECK(std::is_lt(lower_bound - 1 <=> sut));
+        CHECK(std::is_gt(upper_bound + 1 <=> sut));
     }
 }
 
@@ -62,55 +77,55 @@ TEST_CASE("range builders should return correct range objects") {
     SUBCASE("at_least") {
         const auto sut = at_least(lower_bound);
 
-        REQUIRE(std::is_eq(sut.ordering(lower_bound)));
-        REQUIRE(std::is_eq(sut.ordering(upper_bound)));
-        REQUIRE(std::is_eq(sut.ordering(max_bound)));
+        CHECK(std::is_eq(lower_bound <=> sut));
+        CHECK(std::is_eq(upper_bound <=> sut));
+        CHECK(std::is_eq(max_bound <=> sut));
 
-        REQUIRE(std::is_lt(sut.ordering(lower_bound - 1)));
-        REQUIRE(std::is_lt(sut.ordering(min_bound)));
+        CHECK(std::is_lt(lower_bound - 1 <=> sut));
+        CHECK(std::is_lt(min_bound <=> sut));
     }
 
     SUBCASE("more_than") {
         const auto sut = more_than(lower_bound);
 
-        REQUIRE(std::is_eq(sut.ordering(lower_bound + 1)));
-        REQUIRE(std::is_eq(sut.ordering(upper_bound)));
-        REQUIRE(std::is_eq(sut.ordering(max_bound)));
+        CHECK(std::is_eq(lower_bound + 1 <=> sut));
+        CHECK(std::is_eq(upper_bound <=> sut));
+        CHECK(std::is_eq(max_bound <=> sut));
 
-        REQUIRE(std::is_lt(sut.ordering(lower_bound)));
-        REQUIRE(std::is_lt(sut.ordering(min_bound)));
+        CHECK(std::is_lt(lower_bound <=> sut));
+        CHECK(std::is_lt(min_bound <=> sut));
     }
 
     SUBCASE("less_than") {
         const auto sut = less_than(upper_bound);
 
-        REQUIRE(std::is_eq(sut.ordering(upper_bound - 1)));
-        REQUIRE(std::is_eq(sut.ordering(lower_bound)));
-        REQUIRE(std::is_eq(sut.ordering(min_bound)));
+        CHECK(std::is_eq(upper_bound - 1 <=> sut));
+        CHECK(std::is_eq(lower_bound <=> sut));
+        CHECK(std::is_eq(min_bound <=> sut));
 
-        REQUIRE(std::is_gt(sut.ordering(upper_bound)));
-        REQUIRE(std::is_gt(sut.ordering(max_bound)));
+        CHECK(std::is_gt(upper_bound <=> sut));
+        CHECK(std::is_gt(max_bound <=> sut));
     }
 
     SUBCASE("up_to") {
         const auto sut = up_to(upper_bound);
 
-        REQUIRE(std::is_eq(sut.ordering(upper_bound)));
-        REQUIRE(std::is_eq(sut.ordering(lower_bound)));
-        REQUIRE(std::is_eq(sut.ordering(min_bound)));
+        CHECK(std::is_eq(upper_bound <=> sut));
+        CHECK(std::is_eq(lower_bound <=> sut));
+        CHECK(std::is_eq(min_bound <=> sut));
 
-        REQUIRE(std::is_gt(sut.ordering(upper_bound + 1)));
-        REQUIRE(std::is_gt(sut.ordering(max_bound)));
+        CHECK(std::is_gt(upper_bound + 1 <=> sut));
+        CHECK(std::is_gt(max_bound <=> sut));
     }
 
     SUBCASE("any") {
         const auto sut = any();
 
-        REQUIRE(std::is_eq(sut.ordering(min_bound)));
-        REQUIRE(std::is_eq(sut.ordering(exact_bound)));
-        REQUIRE(std::is_eq(sut.ordering(lower_bound)));
-        REQUIRE(std::is_eq(sut.ordering(mid)));
-        REQUIRE(std::is_eq(sut.ordering(upper_bound)));
-        REQUIRE(std::is_eq(sut.ordering(max_bound)));
+        CHECK(std::is_eq(min_bound <=> sut));
+        CHECK(std::is_eq(exact_bound <=> sut));
+        CHECK(std::is_eq(lower_bound <=> sut));
+        CHECK(std::is_eq(mid <=> sut));
+        CHECK(std::is_eq(upper_bound <=> sut));
+        CHECK(std::is_eq(max_bound <=> sut));
     }
 }

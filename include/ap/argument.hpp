@@ -12,17 +12,25 @@
 #include "nargs/range.hpp"
 #include "none_type.hpp"
 
+#ifdef AP_TESTING
+
+namespace ap_testing {
+struct argument_test_fixture;
+} // namespace ap_testing
+
+#endif
+
 namespace ap {
 
 enum class argument_type : bool { positional, optional };
 
-template <detail::c_argument_value_type T, argument_type AT>
+template <argument_type ArgT, detail::c_argument_value_type T = std::string>
 class argument : public detail::argument_base {
 public:
     using value_type = T;
-    using count_type = nargs::range::count_type;
+    using count_type = nargs::count_type;
 
-    static constexpr argument_type type = AT;
+    static constexpr argument_type type = ArgT;
 
     argument() = delete;
 
@@ -250,7 +258,7 @@ public:
     }
 
 #ifdef AP_TESTING
-    friend struct ::ap_testing::optional_argument_test_fixture;
+    friend struct ::ap_testing::argument_test_fixture;
 #endif
 
 private:
@@ -269,7 +277,7 @@ private:
 
     /**
      * @param verbose The verbosity mode value.
-     * @return An argument descriptor object for the argument.
+     * @return A descriptor object for the argument.
      */
     [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
         detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
@@ -450,11 +458,11 @@ private:
     std::vector<std::any> _values;
 };
 
-template <detail::c_argument_value_type T>
-using positional_argument = argument<T, argument_type::positional>;
+template <detail::c_argument_value_type T = std::string>
+using positional_argument = argument<argument_type::positional, T>;
 
-template <detail::c_argument_value_type T>
-using optional_argument = argument<T, argument_type::optional>;
+template <detail::c_argument_value_type T = std::string>
+using optional_argument = argument<argument_type::optional, T>;
 
 enum class default_argument {
     p_input,

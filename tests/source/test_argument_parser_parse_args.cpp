@@ -3,7 +3,6 @@
 #include "utility.hpp"
 
 using namespace ap_testing;
-using namespace ap::argument;
 using namespace ap::nargs;
 using ap::invalid_configuration;
 using ap::parsing_failure;

@@ -11,12 +11,12 @@ void discard_result(T&&) {
 
 template <ap::detail::c_argument_value_type T = std::string>
 bool is_positional(const ap::detail::argument_base& arg) {
-    return dynamic_cast<const ap::argument<T, ap::argument_type::positional>*>(&arg);
+    return dynamic_cast<const ap::argument<ap::argument_type::positional, T>*>(&arg);
 }
 
 template <ap::detail::c_argument_value_type T = std::string>
 bool is_optional(const ap::detail::argument_base& arg) {
-    return dynamic_cast<const ap::argument<T, ap::argument_type::optional>*>(&arg);
+    return dynamic_cast<const ap::argument<ap::argument_type::optional, T>*>(&arg);
 }
 
 } // namespace ap_testing

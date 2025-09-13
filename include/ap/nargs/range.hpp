@@ -24,8 +24,6 @@ constexpr count_type max_bound = std::numeric_limits<count_type>::max();
 /// TODO: use concrete bounds + numeric limits instead of optional
 class range {
 public:
-    using count_type = std::size_t; // TODO: remove
-
     /// @brief Default constructor: creates an unbound range.
     range() = default;
 
@@ -48,12 +46,12 @@ public:
             );
     }
 
-    [[nodiscard]] bool has_explicit_upper_bound() const noexcept {
-        return this->_upper_bound < max_bound;
-    }
-
     [[nodiscard]] bool has_explicit_lower_bound() const noexcept {
         return this->_lower_bound > min_bound;
+    }
+
+    [[nodiscard]] bool has_explicit_upper_bound() const noexcept {
+        return this->_upper_bound < max_bound;
     }
 
     [[nodiscard]] bool is_explicitly_bound() const noexcept {
@@ -76,7 +74,7 @@ public:
      * @return Ordering relationship between the count and the range.
      */
     [[nodiscard]] friend std::weak_ordering operator<=>(
-        const range::count_type n, const range& r
+        const count_type n, const range& r
     ) noexcept {
         if (n < r._lower_bound)
             return std::weak_ordering::less;
@@ -123,7 +121,7 @@ private:
  * @param n The lower bound.
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range at_least(const range::count_type n) noexcept {
+[[nodiscard]] inline range at_least(const count_type n) noexcept {
     return range(n, max_bound);
 }
 
@@ -132,7 +130,7 @@ private:
  * @param n The lower bound.
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range more_than(const range::count_type n) noexcept {
+[[nodiscard]] inline range more_than(const count_type n) noexcept {
     return range(n + 1ull, max_bound);
 }
 
@@ -141,7 +139,7 @@ private:
  * @param n The upper bound
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range less_than(const range::count_type n) noexcept {
+[[nodiscard]] inline range less_than(const count_type n) noexcept {
     return range(min_bound, n - 1ull);
 }
 
@@ -150,7 +148,7 @@ private:
  * @param n The upper bound
  * @return Built `range` class instance.
  */
-[[nodiscard]] inline range up_to(const range::count_type n) noexcept {
+[[nodiscard]] inline range up_to(const count_type n) noexcept {
     return range(min_bound, n);
 }
 
