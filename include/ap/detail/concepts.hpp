@@ -9,10 +9,15 @@
 
 #pragma once
 
+#include "ap/none_type.hpp"
+
 #include <iostream>
 #include <ranges>
 
 namespace ap::detail {
+
+template <typename T>
+concept c_is_none = std::same_as<T, none_type>;
 
 /**
  * @brief The concept is satisfied when `T` overloads the std::istream operator `>>`.
@@ -47,7 +52,9 @@ concept c_arithmetic = std::is_arithmetic_v<T>;
  * @tparam T Type to check.
  */
 template <typename T>
-concept c_argument_value_type = std::semiregular<T> and (c_trivially_readable<T> or c_readable<T>);
+concept c_argument_value_type =
+    std::same_as<T, ap::none_type>
+    or (std::semiregular<T> and (c_trivially_readable<T> or c_readable<T>));
 
 /**
  * @brief Validates that `T` is the same as one of the types defined by `Types`.

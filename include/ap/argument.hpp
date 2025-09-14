@@ -36,11 +36,14 @@ public:
 
     argument(const detail::argument_name& name)
     requires(type == argument_type::positional)
-    : _name(name), _nargs_range(1ull), _required(_default_required) {}
+    : _name(name), _nargs_range(_default_nargs_range_actual), _required(_default_required) {}
 
     argument(const detail::argument_name& name)
     requires(type == argument_type::optional)
-    : _name(name), _nargs_range(nargs::any()), _required(_default_required), _count(0ull) {}
+    : _name(name),
+      _nargs_range(_default_nargs_range_actual),
+      _required(_default_required),
+      _count(0ull) {}
 
     /**
      * @brief Equality comparison operator for optional argument.
@@ -60,22 +63,22 @@ public:
     }
 
     /// @return Reference the name of the positional argument.
-    [[nodiscard]] const ap::detail::argument_name& name() const noexcept {
+    [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
         return this->_name;
     }
 
     /// @return Optional help message for the positional argument.
-    [[nodiscard]] const std::optional<std::string>& help() const noexcept {
+    [[nodiscard]] const std::optional<std::string>& help() const noexcept override {
         return this->_help_msg;
     }
 
     /// @return `true` if the argument is hidden, `false` otherwise
-    [[nodiscard]] bool is_hidden() const noexcept {
+    [[nodiscard]] bool is_hidden() const noexcept override {
         return this->_hidden;
     }
 
     /// @return `true` if the argument is required, `false` otherwise
-    [[nodiscard]] bool is_required() const noexcept {
+    [[nodiscard]] bool is_required() const noexcept override {
         return this->_required;
     }
 
@@ -83,7 +86,7 @@ public:
      * @return `true` if required argument bypassing is enabled for the argument, `false` otherwise.
      * @note Required argument bypassing is enabled only when both `required` and `bypass_required` flags are set to `true`.
      */
-    [[nodiscard]] bool is_bypass_required_enabled() const noexcept {
+    [[nodiscard]] bool is_bypass_required_enabled() const noexcept override {
         return not this->_required and this->_bypass_required;
     }
 
@@ -140,7 +143,9 @@ public:
      * @param range The nargs range to set.
      * @return Reference to the optional argument.
      */
-    argument& nargs(const nargs::range& range) noexcept {
+    argument& nargs(const nargs::range& range) noexcept
+    requires(not detail::c_is_none<value_type>)
+    {
         this->_nargs_range = range;
         return *this;
     }
@@ -150,7 +155,9 @@ public:
      * @param n The exact bound for nargs range.
      * @return Reference to the optional argument.
      */
-    argument& nargs(const count_type n) noexcept {
+    argument& nargs(const count_type n) noexcept
+    requires(not detail::c_is_none<value_type>)
+    {
         this->_nargs_range = nargs::range(n);
         return *this;
     }
@@ -161,7 +168,9 @@ public:
      * @param upper The upper bound for nargs range.
      * @return Reference to the optional argument.
      */
-    argument& nargs(const count_type lower, const count_type upper) noexcept {
+    argument& nargs(const count_type lower, const count_type upper) noexcept
+    requires(not detail::c_is_none<value_type>)
+    {
         this->_nargs_range = nargs::range(lower, upper);
         return *this;
     }
@@ -175,7 +184,7 @@ public:
      */
     template <action::detail::c_value_action_specifier AS, typename F>
     argument& action(F&& action) noexcept
-    requires(type == argument_type::positional)
+    requires(not detail::c_is_none<value_type>)
     {
         using callable_type = action::detail::callable_type<AS, value_type>;
         this->_value_actions.emplace_back(std::forward<callable_type>(action));
@@ -189,18 +198,11 @@ public:
      * @param action The action function to set.
      * @return Reference to the optional argument.
      */
-    template <action::detail::c_action_specifier AS, typename F>
+    template <action::detail::c_flag_action_specifier AS, typename F>
     argument& action(F&& action) noexcept
     requires(type == argument_type::optional)
     {
-        if constexpr (action::detail::c_value_action_specifier<AS>) {
-            using callable_type = action::detail::callable_type<AS, value_type>;
-            this->_value_actions.emplace_back(std::forward<callable_type>(action));
-        }
-        else {
-            this->_flag_actions.emplace_back(std::forward<flag_action_type>(action));
-        }
-
+        this->_flag_actions.emplace_back(std::forward<flag_action_type>(action));
         return *this;
     }
 
@@ -214,7 +216,7 @@ public:
      */
     template <detail::c_range_of<value_type, detail::type_validator::convertible> CR>
     argument& choices(const CR& choices) noexcept
-    requires(std::equality_comparable<value_type>)
+    requires(not detail::c_is_none<value_type> and std::equality_comparable<value_type>)
     {
         for (const auto& choice : choices)
             this->_choices.emplace_back(choice);
@@ -228,7 +230,7 @@ public:
      * @note `value_type` must be equality comparable.
      */
     argument& choices(std::initializer_list<value_type> choices) noexcept
-    requires(std::equality_comparable<value_type>)
+    requires(not detail::c_is_none<value_type> and std::equality_comparable<value_type>)
     {
         return this->choices<>(choices);
     }
@@ -239,7 +241,9 @@ public:
      * @return Reference to the optional argument.
      * @attention Setting the default value disables the `required` attribute.
      */
-    argument& default_value(const std::convertible_to<value_type> auto& default_value) noexcept {
+    argument& default_value(const std::convertible_to<value_type> auto& default_value) noexcept
+    requires(not detail::c_is_none<value_type>)
+    {
         this->_default_value = std::make_any<value_type>(default_value);
         this->_required = false;
         return *this;
@@ -251,7 +255,7 @@ public:
      * @return Reference to the optional argument.
      */
     argument& implicit_value(const std::convertible_to<value_type> auto& implicit_value) noexcept
-    requires(type == argument_type::optional)
+    requires(not detail::c_is_none<value_type> and type == argument_type::optional)
     {
         this->_implicit_value = std::make_any<value_type>(implicit_value);
         return *this;
@@ -267,11 +271,16 @@ private:
     using flag_action_type = typename action_type::on_flag::type;
 
     template <typename _T>
-    using positional_specific_t =
+    using value_arg_specific_type =
+        std::conditional_t<detail::c_is_none<value_type>, none_type, _T>;
+
+    template <typename _T>
+    using positional_specific_type =
         std::conditional_t<type == argument_type::positional, _T, none_type>;
 
     template <typename _T>
-    using optional_specific_t = std::conditional_t<type == argument_type::optional, _T, none_type>;
+    using optional_specific_type =
+        std::conditional_t<type == argument_type::optional, _T, none_type>;
 
     /**
      * @param verbose The verbosity mode value.
@@ -337,6 +346,129 @@ private:
      * @throws ap::parsing_failure
      */
     bool set_value(const std::string& str_value) override {
+        return this->_set_value_impl(str_value);
+    }
+
+    /// @return True if the optional argument has a value, false otherwise.
+    [[nodiscard]] bool has_value() const noexcept override {
+        return this->has_parsed_values() or this->_has_predefined_values();
+    }
+
+    /// @return True if parsed values are available for the optional argument, false otherwise.
+    [[nodiscard]] bool has_parsed_values() const noexcept override {
+        return not this->_values.empty();
+    }
+
+    /// @return ordering relationship of optional argument range.
+    [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
+        if (this->_values.empty() and this->_has_predefined_values())
+            return std::weak_ordering::equivalent;
+
+        return this->_values.size() <=> this->_nargs_range;
+    }
+
+    /// @return Reference to the stored value of the optional argument.
+    [[nodiscard]] const std::any& value() const override {
+        if (not this->_values.empty())
+            return this->_values.front();
+
+        if constexpr (detail::c_is_none<value_type>)
+            throw std::logic_error(
+                std::format("No values parsed for argument '{}'.", this->_name.str())
+            );
+        else
+            return this->_predefined_value();
+    }
+
+    /// @return Reference to the vector of parsed values for the optional argument.
+    [[nodiscard]] const std::vector<std::any>& values() const override {
+        return this->_values;
+    }
+
+    /// @return True if the optional argument has a predefined value, false otherwise.
+    [[nodiscard]] bool _has_predefined_values() const noexcept
+    requires(detail::c_is_none<value_type>)
+    {
+        return false;
+    }
+
+    /// @return True if the optional argument has a predefined value, false otherwise.
+    [[nodiscard]] bool _has_predefined_values() const noexcept
+    requires(not detail::c_is_none<value_type> and type == argument_type::positional)
+    {
+        return this->_default_value.has_value();
+    }
+
+    /// @return True if the optional argument has a predefined value, false otherwise.
+    [[nodiscard]] bool _has_predefined_values() const noexcept
+    requires(not detail::c_is_none<value_type> and type == argument_type::optional)
+    {
+        return this->_default_value.has_value()
+            or (this->is_used() and this->_implicit_value.has_value());
+    }
+
+    /**
+     * @return Reference to the predefined value of the optional argument.
+     * @throws std::logic_error
+     */
+    [[nodiscard]] const std::any& _predefined_value() const
+    requires(not detail::c_is_none<value_type>)
+    {
+        if constexpr (type == argument_type::optional) {
+            if (this->is_used()) {
+                if (not this->_implicit_value.has_value())
+                    throw(std::logic_error(std::format(
+                        "No implicit value specified for argument '{}'.", this->_name.str()
+                    )));
+
+                return this->_implicit_value;
+            }
+        }
+
+        if (not this->_default_value.has_value())
+            throw(std::logic_error(
+                std::format("No default value specified for argument '{}'.", this->_name.str())
+            ));
+
+        return this->_default_value;
+    }
+
+    [[nodiscard]] bool _accepts_further_values() const noexcept {
+        return not std::is_gt(this->_values.size() + 1ull <=> this->_nargs_range);
+    }
+
+    /// @todo Use std::ranges::contains after the switch to C++23
+    [[nodiscard]] bool _is_valid_choice(const value_type& value) const noexcept
+    requires(not detail::c_is_none<value_type>)
+    {
+        return this->_choices.empty()
+            or std::ranges::find(this->_choices, value) != this->_choices.end();
+    }
+
+    /**
+     * @brief Set the value for the optional argument.
+     * @param str_value The string value to set.
+     * @throws ap::parsing_failure
+     * @attention Always throws! (`set_value` should never be called for a none-type argument).
+     */
+    bool _set_value_impl(const std::string& str_value)
+    requires(detail::c_is_none<value_type>)
+    {
+        throw parsing_failure(std::format(
+            "Cannot set values for a none-type argument '{}' (value: '{}')",
+            this->_name.str(),
+            str_value
+        ));
+    }
+
+    /**
+     * @brief Set the value for the optional argument.
+     * @param str_value The string value to set.
+     * @throws ap::parsing_failure
+     */
+    bool _set_value_impl(const std::string& str_value)
+    requires(not detail::c_is_none<value_type>)
+    {
         if (not this->_accepts_further_values())
             throw parsing_failure::invalid_nvalues(this->_name, std::weak_ordering::greater);
 
@@ -360,107 +492,32 @@ private:
         return this->_accepts_further_values();
     }
 
-    /// @return True if the optional argument has a value, false otherwise.
-    [[nodiscard]] bool has_value() const noexcept override {
-        return this->has_parsed_values() or this->_has_predefined_values();
-    }
-
-    /// @return True if parsed values are available for the optional argument, false otherwise.
-    [[nodiscard]] bool has_parsed_values() const noexcept override {
-        return not this->_values.empty();
-    }
-
-    /// @return ordering relationship of optional argument range.
-    [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
-        if (this->_values.empty() and this->_has_predefined_values())
-            return std::weak_ordering::equivalent;
-
-        return this->_values.size() <=> this->_nargs_range;
-    }
-
-    /// @return Reference to the stored value of the optional argument.
-    [[nodiscard]] const std::any& value() const override {
-        return this->_values.empty() ? this->_predefined_value() : this->_values.front();
-    }
-
-    /// @return Reference to the vector of parsed values for the optional argument.
-    [[nodiscard]] const std::vector<std::any>& values() const override {
-        return this->_values;
-    }
-
-    /// @return True if the optional argument has a predefined value, false otherwise.
-    [[nodiscard]] bool _has_predefined_values() const noexcept
-    requires(type == argument_type::positional)
-    {
-        return this->_default_value.has_value();
-    }
-
-    /// @return True if the optional argument has a predefined value, false otherwise.
-    [[nodiscard]] bool _has_predefined_values() const noexcept
-    requires(type == argument_type::optional)
-    {
-        return this->_default_value.has_value()
-            or (this->is_used() and this->_implicit_value.has_value());
-    }
-
-    /**
-     * @return Reference to the predefined value of the optional argument.
-     * @throws std::logic_error
-     */
-    [[nodiscard]] const std::any& _predefined_value() const {
-        if constexpr (type == argument_type::optional) {
-            if (this->is_used()) {
-                if (not this->_implicit_value.has_value())
-                    throw(std::logic_error(std::format(
-                        "No implicit value specified for argument `{}`.", this->_name.str()
-                    )));
-
-                return this->_implicit_value;
-            }
-        }
-
-        if (not this->_default_value.has_value())
-            throw(std::logic_error(
-                std::format("No default value specified for argument `{}`.", this->_name.str())
-            ));
-
-        return this->_default_value;
-    }
-
-    [[nodiscard]] bool _accepts_further_values() const noexcept {
-        return not std::is_gt(this->_values.size() + 1ull <=> this->_nargs_range);
-    }
-
-    /// @todo Use std::ranges::contains after the switch to C++23
-    [[nodiscard]] bool _is_valid_choice(const value_type& value) const noexcept {
-        return this->_choices.empty()
-            or std::ranges::find(this->_choices, value) != this->_choices.end();
-    }
-
     // TODO: validate whether the members could be reordered to use less memory
 
     // attributes
     const ap::detail::argument_name _name;
     std::optional<std::string> _help_msg;
     nargs::range _nargs_range;
-    std::any _default_value;
-    [[no_unique_address]] optional_specific_t<std::any> _implicit_value;
-    std::vector<value_type> _choices;
-    [[no_unique_address]] optional_specific_t<std::vector<flag_action_type>> _flag_actions;
-    std::vector<value_action_type> _value_actions;
+    [[no_unique_address]] value_arg_specific_type<std::any> _default_value;
+    [[no_unique_address]] value_arg_specific_type<optional_specific_type<std::any>> _implicit_value;
+    [[no_unique_address]] value_arg_specific_type<std::vector<value_type>> _choices;
+    [[no_unique_address]] optional_specific_type<std::vector<flag_action_type>> _flag_actions;
+    [[no_unique_address]] value_arg_specific_type<std::vector<value_action_type>> _value_actions;
 
     bool _required : 1;
     bool _bypass_required : 1 = false;
     bool _hidden : 1 = false;
 
     // parsing result
-    [[no_unique_address]] optional_specific_t<std::size_t> _count;
+    [[no_unique_address]] optional_specific_type<std::size_t> _count;
     std::vector<std::any> _values;
 
     // default attribute values
     static constexpr bool _default_required = (type == argument_type::positional);
     static constexpr nargs::range _default_nargs_range =
         (type == argument_type::positional) ? nargs::range(1ull) : nargs::any();
+    static constexpr nargs::range _default_nargs_range_actual =
+        detail::c_is_none<value_type> ? nargs::range(0ull) : _default_nargs_range;
 };
 
 template <detail::c_argument_value_type T = std::string>
