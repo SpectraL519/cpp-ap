@@ -175,7 +175,7 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(argument_test_fixture, "is_required() should return false by default") {
     auto sut = sut_type(arg_name_primary);
-    CHECK_FALSE(is_required(sut));
+    CHECK_FALSE(sut.is_required());
 }
 
 TEST_CASE_FIXTURE(
@@ -185,10 +185,10 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name_primary);
 
     sut.required();
-    CHECK(is_required(sut));
+    CHECK(sut.is_required());
 
     sut.required(false);
-    CHECK_FALSE(is_required(sut));
+    CHECK_FALSE(sut.is_required());
 }
 
 TEST_CASE_FIXTURE(
@@ -198,15 +198,16 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name_primary);
 
     sut.bypass_required(true);
-    CHECK(is_bypass_required_enabled(sut));
+    CHECK(sut.is_bypass_required_enabled());
 
     sut.bypass_required(false);
-    CHECK_FALSE(is_bypass_required_enabled(sut));
+    CHECK_FALSE(sut.is_bypass_required_enabled());
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "bypass_required_enabled() should return true only if the `required` flag is set to false and "
+    "is_bypass_required_enabled() should return true only if the `required` flag is set to false "
+    "and "
     "the `bypass_required` flags is set to true"
 ) {
     auto sut = sut_type(arg_name_primary);
@@ -214,20 +215,20 @@ TEST_CASE_FIXTURE(
     // disabled
     set_required(sut, false);
     set_bypass_required(sut, false);
-    CHECK_FALSE(is_bypass_required_enabled(sut));
+    CHECK_FALSE(sut.is_bypass_required_enabled());
 
     set_required(sut, true);
     set_bypass_required(sut, false);
-    CHECK_FALSE(is_bypass_required_enabled(sut));
+    CHECK_FALSE(sut.is_bypass_required_enabled());
 
     set_required(sut, true);
     set_bypass_required(sut, true);
-    CHECK_FALSE(is_bypass_required_enabled(sut));
+    CHECK_FALSE(sut.is_bypass_required_enabled());
 
     // enabled
     set_required(sut, false);
     set_bypass_required(sut, true);
-    CHECK(is_bypass_required_enabled(sut));
+    CHECK(sut.is_bypass_required_enabled());
 }
 
 TEST_CASE_FIXTURE(
@@ -237,20 +238,20 @@ TEST_CASE_FIXTURE(
 ) {
     auto sut = sut_type(arg_name_primary);
 
-    REQUIRE_FALSE(is_required(sut));
-    REQUIRE_FALSE(is_bypass_required_enabled(sut));
+    REQUIRE_FALSE(sut.is_required());
+    REQUIRE_FALSE(sut.is_bypass_required_enabled());
 
     sut.bypass_required();
-    CHECK(is_bypass_required_enabled(sut));
-    CHECK_FALSE(is_required(sut));
+    CHECK(sut.is_bypass_required_enabled());
+    CHECK_FALSE(sut.is_required());
 
     sut.required();
-    CHECK(is_required(sut));
-    CHECK_FALSE(is_bypass_required_enabled(sut));
+    CHECK(sut.is_required());
+    CHECK_FALSE(sut.is_bypass_required_enabled());
 
     sut.bypass_required();
-    CHECK(is_bypass_required_enabled(sut));
-    CHECK_FALSE(is_required(sut));
+    CHECK(sut.is_bypass_required_enabled());
+    CHECK_FALSE(sut.is_required());
 }
 
 TEST_CASE_FIXTURE(argument_test_fixture, "is_used() should return false by default") {
@@ -387,16 +388,6 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    argument_test_fixture, "value() should return the argument's value if it has been set"
-) {
-    auto sut = sut_type(arg_name_primary);
-    set_value(sut, arbitrary_value);
-
-    REQUIRE(has_value(sut));
-    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), arbitrary_value);
-}
-
-TEST_CASE_FIXTURE(
     argument_test_fixture,
     "value() should return the default value if one has been provided and argument is not used"
 ) {
@@ -418,6 +409,18 @@ TEST_CASE_FIXTURE(
 
     REQUIRE(has_value(sut));
     CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), implicit_value);
+}
+
+TEST_CASE_FIXTURE(
+    argument_test_fixture, "value() should return the argument's value if it has been set"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+    sut.implicit_value(implicit_value);
+    set_value(sut, arbitrary_value);
+
+    REQUIRE(has_value(sut));
+    CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), arbitrary_value);
 }
 
 TEST_CASE_FIXTURE(
@@ -461,33 +464,19 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    argument_test_fixture, "set_value(any) should accept any number of values by default"
-) {
-    auto sut = sut_type(arg_name_primary);
-    sut.nargs(non_default_range);
-
-    for (const auto value : choices) {
-        REQUIRE_NOTHROW(set_value(sut, value));
-    }
-
-    const auto stored_values = get_values(sut);
-
-    REQUIRE_EQ(stored_values.size(), choices.size());
-    for (std::size_t i = 0; i < stored_values.size(); ++i) {
-        REQUIRE_EQ(std::any_cast<sut_value_type>(stored_values[i]), choices[i]);
-    }
-}
-
-TEST_CASE_FIXTURE(
     argument_test_fixture,
     "set_value(any) should throw when adding the given value would result in exceeding the maximum "
     "number of values specified by nargs"
 ) {
     auto sut = sut_type(arg_name_primary).nargs(non_default_range);
 
-    for (const auto value : choices) {
+    for (const auto value : choices)
         REQUIRE_NOTHROW(set_value(sut, value));
-    }
+
+    const auto stored_values = get_values(sut);
+    REQUIRE_EQ(stored_values.size(), choices.size());
+    for (std::size_t i = 0; i < stored_values.size(); ++i)
+        REQUIRE_EQ(std::any_cast<sut_value_type>(stored_values[i]), choices[i]);
 
     CHECK_THROWS_WITH_AS(
         set_value(sut, arbitrary_value),

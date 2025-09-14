@@ -119,7 +119,7 @@ struct argument_test_fixture {
 
     template <argument_type ArgT, c_argument_value_type T>
     [[nodiscard]] bool is_bypass_required_enabled(const argument<ArgT, T>& arg) const {
-        return arg.bypass_required_enabled();
+        return arg.is_bypass_required_enabled();
     }
 };
 

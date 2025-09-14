@@ -83,7 +83,7 @@ public:
      * @return `true` if required argument bypassing is enabled for the argument, `false` otherwise.
      * @note Required argument bypassing is enabled only when both `required` and `bypass_required` flags are set to `true`.
      */
-    [[nodiscard]] bool bypass_required_enabled() const noexcept {
+    [[nodiscard]] bool is_bypass_required_enabled() const noexcept {
         return not this->_required and this->_bypass_required;
     }
 
@@ -286,7 +286,7 @@ private:
         desc.params.reserve(6ull);
         if (this->_required != _default_required)
             desc.add_param("required", std::format("{}", this->_required));
-        if (this->bypass_required_enabled())
+        if (this->is_bypass_required_enabled())
             desc.add_param("bypass required", "true");
         if (this->_nargs_range != _default_nargs_range)
             desc.add_param("nargs", this->_nargs_range);

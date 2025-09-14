@@ -971,11 +971,11 @@ private:
         return std::ranges::any_of(
                    this->_positional_args,
                    [](const arg_ptr_t& arg) {
-                       return arg->is_used() and arg->bypass_required_enabled();
+                       return arg->is_used() and arg->is_bypass_required_enabled();
                    }
                )
             or std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
-                   return arg->is_used() and arg->bypass_required_enabled();
+                   return arg->is_used() and arg->is_bypass_required_enabled();
                });
     }
 

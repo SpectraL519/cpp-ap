@@ -43,7 +43,7 @@ public:
 
     virtual bool is_required() const noexcept = 0;
 
-    virtual bool bypass_required_enabled() const noexcept = 0;
+    virtual bool is_bypass_required_enabled() const noexcept = 0;
 
 protected:
     /**

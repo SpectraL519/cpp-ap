@@ -117,7 +117,6 @@ struct parsing_failure : public argument_parser_exception {
 };
 
 /// @brief Exception type used for type-related errors.
-/// \todo Use demangled type names
 struct type_error : public argument_parser_exception {
     explicit type_error(const std::string& message) : argument_parser_exception(message) {}
 
