@@ -1139,7 +1139,10 @@ inline void add_default_argument(
         break;
 
     case default_argument::o_output:
-        arg_parser.add_optional_argument("output", "o").required().nargs(1).help("Output file path");
+        arg_parser.add_optional_argument("output", "o")
+            .required()
+            .nargs(1ull)
+            .help("Output file path");
         break;
 
     case default_argument::o_multi_input:
