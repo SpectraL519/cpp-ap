@@ -3,13 +3,13 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file utility.hpp
+ * @file ap/action/detail/utility.hpp
  * @brief Defines general action-related utility.
  */
 
 #pragma once
 
-#include "ap/action/specifiers.hpp"
+#include "ap/action/types.hpp"
 
 #include <utility>
 #include <variant>

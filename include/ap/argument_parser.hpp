@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file argument_parser.hpp
+ * @file ap/argument_parser.hpp
  * @brief Main library header file. Defines the `argument_parser` class.
  */
 
@@ -32,13 +32,26 @@ namespace ap {
 
 class argument_parser;
 
+enum class default_argument {
+    p_input,
+    p_output,
+    o_help,
+    o_input,
+    o_output,
+    o_multi_input,
+    o_multi_output
+};
+
 namespace detail {
 
 void add_default_argument(const default_argument, argument_parser&) noexcept;
 
 } // namespace detail
 
-/// @brief Main argument parser class.
+/**
+ * @brief The main argument parser class.
+ * This class is responsible for the configuration and parsing of command-line arguments.
+ */
 class argument_parser {
 public:
     argument_parser(const argument_parser&) = delete;
@@ -139,8 +152,6 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     positional_argument<T>& add_positional_argument(const std::string_view primary_name) {
@@ -161,8 +172,6 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     positional_argument<T>& add_positional_argument(
@@ -189,8 +198,6 @@ public:
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added optional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
@@ -221,8 +228,6 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
@@ -281,7 +286,7 @@ public:
     /**
      * @brief Parses the command-line arguments.
      *
-     * * Equivalent to:
+     * Equivalent to:
      * ```cpp
      * parse_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)))
      * ```

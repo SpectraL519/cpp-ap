@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file argument_descriptor.hpp
+ * @file ap/detail/argument_descriptor.hpp
  * @brief Defines structures for formatting argument descriptions.
  */
 
