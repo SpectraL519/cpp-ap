@@ -3,18 +3,16 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file argument_parser.hpp
+ * @file ap/argument_parser.hpp
  * @brief Main library header file. Defines the `argument_parser` class.
  */
 
 #pragma once
 
-#include "argument/default.hpp"
-#include "argument/optional.hpp"
-#include "argument/positional.hpp"
+#include "argument.hpp"
 #include "detail/argument_token.hpp"
 #include "detail/concepts.hpp"
-#include "version.hpp"
+#include "types.hpp"
 
 #include <algorithm>
 #include <format>
@@ -34,14 +32,26 @@ namespace ap {
 
 class argument_parser;
 
+enum class default_argument {
+    p_input,
+    p_output,
+    o_help,
+    o_input,
+    o_output,
+    o_multi_input,
+    o_multi_output
+};
+
 namespace detail {
 
-void add_default_argument(const argument::default_positional, argument_parser&) noexcept;
-void add_default_argument(const argument::default_optional, argument_parser&) noexcept;
+void add_default_argument(const default_argument, argument_parser&) noexcept;
 
 } // namespace detail
 
-/// @brief Main argument parser class.
+/**
+ * @brief The main argument parser class.
+ * This class is responsible for the configuration and parsing of command-line arguments.
+ */
 class argument_parser {
 public:
     argument_parser(const argument_parser&) = delete;
@@ -118,8 +128,8 @@ public:
      * @param arg_discriminator_range A range of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
-    template <detail::c_range_of<argument::default_positional> AR>
-    argument_parser& default_positional_arguments(const AR& arg_discriminator_range) noexcept {
+    template <detail::c_range_of<default_argument> AR>
+    argument_parser& default_arguments(const AR& arg_discriminator_range) noexcept {
         for (const auto arg_discriminator : arg_discriminator_range)
             detail::add_default_argument(arg_discriminator, *this);
         return *this;
@@ -130,34 +140,10 @@ public:
      * @param arg_discriminator_list A list of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
-    argument_parser& default_positional_arguments(
-        const std::initializer_list<argument::default_positional> arg_discriminator_list
+    argument_parser& default_arguments(
+        const std::initializer_list<default_argument> arg_discriminator_list
     ) noexcept {
-        return this->default_positional_arguments<>(arg_discriminator_list);
-    }
-
-    /**
-     * @brief Set default optional arguments.
-     * @tparam AR Type of the optional argument discriminator range.
-     * @param arg_discriminator_range A range of default optional argument discriminators.
-     * @return Reference to the argument parser.
-     */
-    template <detail::c_range_of<argument::default_optional> AR>
-    argument_parser& default_optional_arguments(const AR& arg_discriminator_range) noexcept {
-        for (const auto arg_discriminator : arg_discriminator_range)
-            detail::add_default_argument(arg_discriminator, *this);
-        return *this;
-    }
-
-    /**
-     * @brief Set default optional arguments.
-     * @param arg_discriminator_list A list of default optional argument discriminators.
-     * @return Reference to the argument parser.
-     */
-    argument_parser& default_optional_arguments(
-        const std::initializer_list<argument::default_optional> arg_discriminator_list
-    ) noexcept {
-        return this->default_optional_arguments<>(arg_discriminator_list);
+        return this->default_arguments<>(arg_discriminator_list);
     }
 
     /**
@@ -166,19 +152,17 @@ public:
      * @param primary_name The primary name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument::positional<T>& add_positional_argument(const std::string_view primary_name) {
+    positional_argument<T>& add_positional_argument(const std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
         const detail::argument_name arg_name(std::make_optional<std::string>(primary_name));
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_unique<argument::positional<T>>(arg_name));
-        return static_cast<argument::positional<T>&>(*this->_positional_args.back());
+        this->_positional_args.emplace_back(std::make_unique<positional_argument<T>>(arg_name));
+        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
     }
 
     /**
@@ -188,11 +172,9 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument::positional<T>& add_positional_argument(
+    positional_argument<T>& add_positional_argument(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         this->_verify_arg_name_pattern(primary_name);
@@ -205,8 +187,8 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_unique<argument::positional<T>>(arg_name));
-        return static_cast<argument::positional<T>&>(*this->_positional_args.back());
+        this->_positional_args.emplace_back(std::make_unique<positional_argument<T>>(arg_name));
+        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
     }
 
     /**
@@ -216,11 +198,9 @@ public:
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added optional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument::optional<T>& add_optional_argument(
+    optional_argument<T>& add_optional_argument(
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
@@ -237,8 +217,8 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.push_back(std::make_unique<argument::optional<T>>(arg_name));
-        return static_cast<argument::optional<T>&>(*this->_optional_args.back());
+        this->_optional_args.push_back(std::make_unique<optional_argument<T>>(arg_name));
+        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
@@ -248,11 +228,9 @@ public:
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
      * @throws ap::invalid_configuration
-     *
-     * \todo Check forbidden characters (after adding the assignment character).
      */
     template <detail::c_argument_value_type T = std::string>
-    argument::optional<T>& add_optional_argument(
+    optional_argument<T>& add_optional_argument(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         this->_verify_arg_name_pattern(primary_name);
@@ -266,8 +244,8 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.emplace_back(std::make_unique<argument::optional<T>>(arg_name));
-        return static_cast<argument::optional<T>&>(*this->_optional_args.back());
+        this->_optional_args.emplace_back(std::make_unique<optional_argument<T>>(arg_name));
+        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
@@ -278,7 +256,7 @@ public:
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument::optional<bool>& add_flag(
+    optional_argument<bool>& add_flag(
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
@@ -296,7 +274,7 @@ public:
      * @return Reference to the added boolean flag argument.
      */
     template <bool StoreImplicitly = true>
-    argument::optional<bool>& add_flag(
+    optional_argument<bool>& add_flag(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         return this->add_optional_argument<bool>(primary_name, secondary_name)
@@ -308,7 +286,7 @@ public:
     /**
      * @brief Parses the command-line arguments.
      *
-     * * Equivalent to:
+     * Equivalent to:
      * ```cpp
      * parse_args(std::span(argv + 1, static_cast<std::size_t>(argc - 1)))
      * ```
@@ -573,7 +551,8 @@ public:
         const auto& arg = arg_opt->get();
 
         try {
-            if (not arg.has_parsed_values() and arg.has_value())
+            if (arg.has_predefined_values())
+                // currently an argument may have only one predefined value
                 return std::vector<T>{std::any_cast<T>(arg.value())};
 
             std::vector<T> values;
@@ -998,11 +977,11 @@ private:
         return std::ranges::any_of(
                    this->_positional_args,
                    [](const arg_ptr_t& arg) {
-                       return arg->is_used() and arg->bypass_required_enabled();
+                       return arg->is_used() and arg->is_bypass_required_enabled();
                    }
                )
             or std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
-                   return arg->is_used() and arg->bypass_required_enabled();
+                   return arg->is_used() and arg->is_bypass_required_enabled();
                });
     }
 
@@ -1133,37 +1112,26 @@ namespace detail {
  * @param arg_parser The argument parser to which the argument will be added.
  */
 inline void add_default_argument(
-    const argument::default_positional arg_discriminator, argument_parser& arg_parser
+    const default_argument arg_discriminator, argument_parser& arg_parser
 ) noexcept {
     switch (arg_discriminator) {
-    case argument::default_positional::input:
+    case default_argument::p_input:
         arg_parser.add_positional_argument("input")
             .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
 
-    case argument::default_positional::output:
+    case default_argument::p_output:
         arg_parser.add_positional_argument("output").help("Output file path");
         break;
-    }
-}
 
-/**
- * @brief Adds a predefined/default optional argument to the parser.
- * @param arg_discriminator The default argument discriminator.
- * @param arg_parser The argument parser to which the argument will be added.
- */
-inline void add_default_argument(
-    const argument::default_optional arg_discriminator, argument_parser& arg_parser
-) noexcept {
-    switch (arg_discriminator) {
-    case argument::default_optional::help:
+    case default_argument::o_help:
         arg_parser.add_flag("help", "h")
             .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
             .help("Display the help message");
         break;
 
-    case argument::default_optional::input:
+    case default_argument::o_input:
         arg_parser.add_optional_argument("input", "i")
             .required()
             .nargs(1ull)
@@ -1171,11 +1139,14 @@ inline void add_default_argument(
             .help("Input file path");
         break;
 
-    case argument::default_optional::output:
-        arg_parser.add_optional_argument("output", "o").required().nargs(1).help("Output file path");
+    case default_argument::o_output:
+        arg_parser.add_optional_argument("output", "o")
+            .required()
+            .nargs(1ull)
+            .help("Output file path");
         break;
 
-    case argument::default_optional::multi_input:
+    case default_argument::o_multi_input:
         arg_parser.add_optional_argument("input", "i")
             .required()
             .nargs(ap::nargs::at_least(1ull))
@@ -1183,7 +1154,7 @@ inline void add_default_argument(
             .help("Input files paths");
         break;
 
-    case argument::default_optional::multi_output:
+    case default_argument::o_multi_output:
         arg_parser.add_optional_argument("output", "o")
             .required()
             .nargs(ap::nargs::at_least(1ull))

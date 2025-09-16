@@ -3,13 +3,13 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file utility.hpp
+ * @file ap/action/detail/utility.hpp
  * @brief Defines general action-related utility.
  */
 
 #pragma once
 
-#include "ap/action/specifiers.hpp"
+#include "ap/action/types.hpp"
 
 #include <utility>
 #include <variant>
@@ -23,6 +23,13 @@ namespace ap::action::detail {
 template <typename AS>
 concept c_value_action_specifier =
     ap::detail::c_one_of<AS, action_type::observe, action_type::transform, action_type::modify>;
+
+/**
+ * @brief The concept is satisfied when `AS` is a valid *on-flag* action action specifier.
+ * @tparam AS The action specifier type.
+ */
+template <typename AS>
+concept c_flag_action_specifier = ap::detail::c_one_of<AS, action_type::on_flag>;
 
 /**
  * @brief The concept is satisfied when `AS` is a valid action action specifier.

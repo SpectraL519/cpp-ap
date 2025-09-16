@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file str_utility.hpp
+ * @file ap/detail/str_utility.hpp
  * @brief Provides common string utility functions.
  */
 

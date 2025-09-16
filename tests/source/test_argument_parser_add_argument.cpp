@@ -1,10 +1,11 @@
 #include "argument_parser_test_fixture.hpp"
+#include "argument_test_fixture.hpp"
 #include "doctest.h"
-#include "optional_argument_test_fixture.hpp"
 #include "utility.hpp"
 
 using namespace ap_testing;
-using namespace ap::argument;
+using ap::argument;
+using ap::default_argument;
 using ap::invalid_configuration;
 
 struct test_argument_parser_add_argument : public argument_parser_test_fixture {
@@ -227,7 +228,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
     "add_flag should return an optional argument reference with flag parameters"
 ) {
-    const optional_argument_test_fixture opt_arg_fixture;
+    const argument_test_fixture arg_fixture;
 
     SUBCASE("StoreImplicitly = true") {
         auto& argument = sut.add_flag(primary_name_1, secondary_name_1);
@@ -235,7 +236,7 @@ TEST_CASE_FIXTURE(
         REQUIRE(is_optional<bool>(argument));
         CHECK_FALSE(sut.value<bool>(primary_name_1));
 
-        opt_arg_fixture.mark_used(argument);
+        arg_fixture.mark_used(argument);
         CHECK(sut.value<bool>(primary_name_1));
     }
 
@@ -245,7 +246,7 @@ TEST_CASE_FIXTURE(
         REQUIRE(is_optional<bool>(argument));
         CHECK(sut.value<bool>(primary_name_1));
 
-        opt_arg_fixture.mark_used(argument);
+        arg_fixture.mark_used(argument);
         CHECK_FALSE(sut.value<bool>(primary_name_1));
     }
 }
@@ -285,9 +286,9 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "default_positional_arguments should add the specified arguments"
+    "default_arguments should add the specified positional arguments"
 ) {
-    sut.default_positional_arguments({default_positional::input, default_positional::output});
+    sut.default_arguments({default_argument::p_input, default_argument::p_output});
 
     const auto input_arg = get_argument("input");
     REQUIRE(input_arg);
@@ -300,10 +301,10 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
-    "default_optional_arguments should add the specified arguments"
+    "default_arguments should add the specified optional arguments"
 ) {
-    sut.default_optional_arguments(
-        {default_optional::help, default_optional::input, default_optional::output}
+    sut.default_arguments(
+        {default_argument::o_help, default_argument::o_input, default_argument::o_output}
     );
 
     std::string help_flag;

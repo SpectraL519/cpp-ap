@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file argument_base.hpp
+ * @file ap/detail/argument_base.hpp
  * @brief Defines the base argument class and common utility.
  */
 
@@ -29,56 +29,34 @@ public:
 
     friend class ::ap::argument_parser;
 
-protected:
-    argument_base(const argument_name& name, const bool required = false)
-    : _name(name), _required(required) {}
-
-    /// @return Reference the name of the positional argument.
-    [[nodiscard]] const ap::detail::argument_name& name() const noexcept {
-        return this->_name;
-    }
-
-    /// @return `true` if the argument is hidden, `false` otherwise
-    [[nodiscard]] bool is_hidden() const noexcept {
-        return this->_hidden;
-    }
-
-    /// @return Optional help message for the positional argument.
-    [[nodiscard]] const std::optional<std::string>& help() const noexcept {
-        return this->_help_msg;
-    }
-
-    /// @return `true` if the argument is required, `false` otherwise
-    [[nodiscard]] bool is_required() const noexcept {
-        return this->_required;
-    }
-
-    /**
-     * @return `true` if required argument bypassing is enabled for the argument, `false` otherwise.
-     * @note Required argument bypassing is enabled only when both `required` and `bypass_required` flags are set to `true`.
-     */
-    [[nodiscard]] bool bypass_required_enabled() const noexcept {
-        return not this->_required and this->_bypass_required;
-    }
-
-    // pure virtual methods
-
-    /// @brief `true` if the argument is an instance of `positional<T>`, `false` otherwise.
+    /// @return `true` if the argument is a positional argument instance, `false` otherwise.
     virtual bool is_positional() const noexcept = 0;
 
-    /// @brief `true` if the argument is an instance of `optional<T>`, `false` otherwise.
+    /// @return `true` if the argument is an optional argument instance, `false` otherwise.
     virtual bool is_optional() const noexcept = 0;
 
-    /**
-     * @param verbose The verbosity mode value.
-     * @return An argument descriptor object for the argument.
-     */
+    /// @return Returns the argument's name.
+    virtual const argument_name& name() const noexcept = 0;
+
+    /// @return Returns the argument's help message.
+    virtual const std::optional<std::string>& help() const noexcept = 0;
+
+    /// @return `true` if the argument is hidden from help output, `false` otherwise.
+    virtual bool is_hidden() const noexcept = 0;
+
+    /// @return `true` if the argument is required, `false` otherwise.
+    virtual bool is_required() const noexcept = 0;
+
+    /// @return `true` if the argument is allowed to bypass the required check, `false` otherwise.
+    virtual bool is_bypass_required_enabled() const noexcept = 0;
+
+protected:
+    /// @param verbose The verbosity mode value. If `true` all non-default parameters will be included in the output.
+    /// @return An argument descriptor object for the argument.
     virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
 
-    /**
-     * @brief Mark the argument as used.
-     * @return `true` if the argument accepts further values, `false` otherwise.
-     */
+    /// @brief Mark the argument as used.
+    /// @return `true` if the argument accepts further values, `false` otherwise.
     virtual bool mark_used() = 0;
 
     /// @return `true` if the argument has been used, `false` otherwise.
@@ -87,11 +65,9 @@ protected:
     /// @return The number of times an argument has been used.
     virtual std::size_t count() const noexcept = 0;
 
-    /**
-     * @brief Set the value for the argument.
-     * @param value The string representation of the value.
-     * @return `true` if the argument accepts further values, `false` otherwise.
-     */
+    /// @brief Set the value for the argument.
+    /// @param value The string representation of the value.
+    /// @return `true` if the argument accepts further values, `false` otherwise.
     virtual bool set_value(const std::string& value) = 0;
 
     /// @return `true` if the argument has a value, `false` otherwise.
@@ -99,6 +75,9 @@ protected:
 
     /// @return `true` if the argument has parsed values., `false` otherwise.
     virtual bool has_parsed_values() const noexcept = 0;
+
+    /// @return `true` if the argument has predefined values, `false` otherwise.
+    virtual bool has_predefined_values() const noexcept = 0;
 
     /// @return The ordering relationship of argument range.
     virtual std::weak_ordering nvalues_ordering() const noexcept = 0;
@@ -108,26 +87,7 @@ protected:
 
     /// @return Reference to the vector of parsed values of the argument.
     virtual const std::vector<std::any>& values() const = 0;
-
-    const ap::detail::argument_name _name;
-    std::optional<std::string> _help_msg;
-
-    bool _required : 1;
-    bool _bypass_required : 1 = false;
-    bool _hidden : 1 = false;
 };
-
-/**
- * @brief Checks if the provided choice is valid for the given set of choices.
- * @param value A value, the validity of which is to be checked.
- * @param choices The set against which the choice validity will be checked.
- * @return `true` if the choice is valid, `false` otherwise.
- * \todo replace with `std::ranges::contains` after transition to C++23
- */
-template <c_argument_value_type T>
-[[nodiscard]] bool is_valid_choice(const T& value, const std::vector<T>& choices) noexcept {
-    return choices.empty() or std::ranges::find(choices, value) != choices.end();
-}
 
 } // namespace detail
 } // namespace ap

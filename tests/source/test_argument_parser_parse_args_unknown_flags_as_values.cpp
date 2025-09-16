@@ -3,9 +3,6 @@
 #include "utility.hpp"
 
 using namespace ap_testing;
-using namespace ap::argument;
-using namespace ap::nargs;
-using ap::invalid_configuration;
 using ap::parsing_failure;
 
 struct test_argument_parser_parse_args_unknown_flags_as_values

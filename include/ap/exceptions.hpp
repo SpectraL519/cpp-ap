@@ -2,7 +2,7 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file exceptions.hpp
+/// @file ap/exceptions.hpp
 
 #pragma once
 
@@ -117,7 +117,6 @@ struct parsing_failure : public argument_parser_exception {
 };
 
 /// @brief Exception type used for type-related errors.
-/// \todo Use demangled type names
 struct type_error : public argument_parser_exception {
     explicit type_error(const std::string& message) : argument_parser_exception(message) {}
 

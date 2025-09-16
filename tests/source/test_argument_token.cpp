@@ -1,11 +1,11 @@
 #include "doctest.h"
 
-#include <ap/argument/optional.hpp>
+#include <ap/argument.hpp>
 #include <ap/detail/argument_token.hpp>
 
 using sut_type = ap::detail::argument_token;
 using enum sut_type::token_type;
-using ap::argument::optional;
+using ap::optional_argument;
 using ap::detail::argument_base;
 using ap::detail::argument_name;
 
@@ -54,7 +54,8 @@ TEST_CASE("is_valid_flag_token should return true if the token is a flag token a
     CHECK_FALSE(sut_type{t_flag_primary, ""}.is_valid_flag_token());
     CHECK_FALSE(sut_type{t_flag_secondary, ""}.is_valid_flag_token());
 
-    std::unique_ptr<argument_base> arg_ptr = std::make_unique<optional<>>(argument_name{""});
+    std::unique_ptr<argument_base> arg_ptr =
+        std::make_unique<optional_argument<>>(argument_name{""});
     const typename sut_type::arg_ptr_opt_t arg_ptr_opt{std::ref(arg_ptr)};
 
     CHECK(sut_type{t_flag_primary, "", arg_ptr_opt}.is_valid_flag_token());
