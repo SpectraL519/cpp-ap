@@ -162,7 +162,7 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 
 > [!NOTE]
 >
-> An argument' name consists of a primary and/or secondary names. The primary name is a longer, more descriptive name, while the secondary name is a shorter/abbreviated name of the argument.
+> An argument's name consists of a primary and/or secondary names. The primary name is a longer, more descriptive name, while the secondary name is a shorter/abbreviated name of the argument.
 >
 > While passing a primary name is required for creating positional arguments, optional arguments can be initialized using only a secondary name as follows:
 >
@@ -244,7 +244,7 @@ By default all arguments are visible, but this can be modified using the `hidden
 ```cpp
 parser.program_name("hidden-test")
       .program_description("A simple program")
-      .default_optional_arguments({ap::argument::default_optional::help});
+      .default_arguments({ap::default_argument::o_help});
 
 parser.add_optional_argument("hidden")
       .hidden()
@@ -668,20 +668,16 @@ Command                       Result
 The `CPP-AP` library defines several default arguments, which can be added to the parser's configuration as follows.
 
 ```cpp
-parser.default_positional_arguments({...});
-// here `...` represents a collection of ap::argument::default_positional values
-
-parser.default_positional_arguments({...});
-// here `...` represents a collection of ap::argument::default_optional values
+parser.default_arguments(<args>);
 ```
 
 > [!NOTE]
 >
-> These functions work with `std::initializer_list` and all other `std::ranges::range` types with the correct value type - `ap::argument::default_{positional/optional}`
+> - The `default_arguments` function takes as parameter (`<args>`) either a `std::initializer_list<ap::default_argument>` or a type satisfying the [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) concept with the `ap::default_argument` value type.
 
 The available default arguments are:
 
-- `default_positional::input`:
+- `p_input`:
 
   ```cpp
   // equivalent to:
@@ -690,14 +686,14 @@ The available default arguments are:
         .help("Input file path");
   ```
 
-- `default_positional::output`:
+- `p_output`:
 
   ```cpp
   // equivalent to:
   parser.add_positional_argument("output").help("Output file path");
   ```
 
-- `default_optional::help`:
+- `o_help`:
 
   ```cpp
   // equivalent to:
@@ -706,7 +702,7 @@ The available default arguments are:
         .help("Display the help message");
   ```
 
-- `default_optional::input` and `default_optional::multi_input`:
+- `o_input` and `o_multi_input`:
 
   ```cpp
   // input - equivalent to:
@@ -724,7 +720,7 @@ The available default arguments are:
         .help("Input files paths");
   ```
 
-- `default_optional::output` and `default_optional::multi_output`:
+- `o_output` and `o_multi_output`:
 
   ```cpp
   // output - equivalent to:
@@ -793,7 +789,7 @@ int main(int argc, char* argv[]) {
     parser.add_optional_argument("optional", "o").help("An optional argument");
     parser.add_flag("flag", "f").help("A boolean flag");
 
-    parser.default_optional_arguments({ap::argument::default_optional::help});
+    parser.default_arguments({ap::default_argument::o_help});
 
     // parse command-line arguments
     parser.try_parse_args(argc, argv);
@@ -1101,37 +1097,35 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 
 ## Retrieving Argument Values
 
-You can retrieve the argument's value with:
+You can retrieve the argument's value(s) with:
 
 ```cpp
-(const) auto value = parser.value<value_type>("argument_name"); // (1)
-(const) auto value = parser.value_or<value_type>("argument_name", fallback_value); // (2)
-```
-
-1. This will return the value parsed for the given argument.
-
-    For optional arguments this will return the argument's predefined value if no value has been parsed. Additionaly, if more than one value has been parsed for an optional argument, this function will return the first parsed value.
-
-2. When a value has been parsed for the argument, the behavior is the same as in case **(1)**. Otherwise, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deducted type of `fallback_value`), if:
-
-    - There is no value parsed for a positional argument
-    - There is no parsed values and no predefined values for an optional arrument
-
-<br/>
-
-Additionally for optional arguments, you can use:
-
-```cpp
+(const) value_type value = parser.value<value_type>("argument_name"); // (1)
+(const) value_type value = parser.value_or<value_type>("argument_name", fallback_value); // (2)
 (const) std::vector<value_type> values = parser.values<value_type>("argument_name"); // (3)
 ```
 
-which returns a `vector` containing all values parsed for the given argument.
+1. Returns the given argument's value.
+
+    - Returns the argument's parsed value if it has one.
+    - If more than one value has been parsed for the argument, this function will return the first parsed value.
+    - Returns the argument's predefined value if no value has been parsed for the argument.
+
+2. Returns the given argument's value or the specified fallback value if the argument has no values.
+
+    - If the argument has a value (parsed or predefind), the behavior is the same as in case **(1)**.
+    - If the argument has no values, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deduced type of `fallback_value`).
+
+3. Returns a vector of the given argument's values.
+
+    - If the argument has any values (parsed or predefined), they will be returned as a `std::vector<value_type>`.
+    - If th argument has no values an empty vector will be returned.
 
 > [!NOTE]
 >
 > The argument value getter functions might throw an exception if:
 > - An argument with the given name does not exist
-> - The argument does not contain any values - parsed or predefined (only getter `(1)`)
+> - The argument does not contain any values - parsed or predefined (only getter function `(1)`)
 > - The specified `value_type` does not match the value type of the argument
 
 <br/>

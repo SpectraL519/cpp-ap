@@ -12,7 +12,7 @@
 #include "argument.hpp"
 #include "detail/argument_token.hpp"
 #include "detail/concepts.hpp"
-#include "version.hpp"
+#include "types.hpp"
 
 #include <algorithm>
 #include <format>
@@ -551,7 +551,8 @@ public:
         const auto& arg = arg_opt->get();
 
         try {
-            if (not arg.has_parsed_values() and arg.has_value())
+            if (arg.has_predefined_values())
+                // currently an argument may have only one predefined value
                 return std::vector<T>{std::any_cast<T>(arg.value())};
 
             std::vector<T> values;

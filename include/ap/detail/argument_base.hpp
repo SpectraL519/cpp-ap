@@ -76,6 +76,9 @@ protected:
     /// @return `true` if the argument has parsed values., `false` otherwise.
     virtual bool has_parsed_values() const noexcept = 0;
 
+    /// @return `true` if the argument has predefined values, `false` otherwise.
+    virtual bool has_predefined_values() const noexcept = 0;
+
     /// @return The ordering relationship of argument range.
     virtual std::weak_ordering nvalues_ordering() const noexcept = 0;
 

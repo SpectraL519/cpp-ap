@@ -411,7 +411,7 @@ private:
     /// @return `true` if the argument has a value, `false` otherwise.
     /// @note An argument is considered to have a value if it has parsed values or predefined values (default/implicit).
     [[nodiscard]] bool has_value() const noexcept override {
-        return this->has_parsed_values() or this->_has_predefined_values();
+        return this->has_parsed_values() or this->_has_predefined_values_impl();
     }
 
     /// @return `true` if parsed values are available for the argument, `false` otherwise.
@@ -419,9 +419,14 @@ private:
         return not this->_values.empty();
     }
 
+    /// @return `true` if the argument has predefined values, `false` otherwise.
+    [[nodiscard]] bool has_predefined_values() const noexcept override {
+        return this->_has_predefined_values_impl();
+    }
+
     /// @return The ordering relationship of the argument's values and its nargs range attribute.
     [[nodiscard]] std::weak_ordering nvalues_ordering() const noexcept override {
-        if (this->_values.empty() and this->_has_predefined_values())
+        if (this->_values.empty() and this->_has_predefined_values_impl())
             return std::weak_ordering::equivalent;
 
         return this->_values.size() <=> this->_nargs_range;
@@ -450,7 +455,7 @@ private:
     }
 
     /// @return `true` if the argument has a predefined value, `false` otherwise.
-    [[nodiscard]] bool _has_predefined_values() const noexcept
+    [[nodiscard]] bool _has_predefined_values_impl() const noexcept
     requires(detail::c_is_none<value_type>)
     {
         return false;
@@ -462,7 +467,7 @@ private:
      * @note - For positional arguments, a predefined value exists if a default value is set.
      * @note - For optional arguments, a predefined value exists if either a default value is set or if the argument has been used and an implicit value is set.
      */
-    [[nodiscard]] bool _has_predefined_values() const noexcept
+    [[nodiscard]] bool _has_predefined_values_impl() const noexcept
     requires(not detail::c_is_none<value_type>)
     {
         if constexpr (type == argument_type::positional)

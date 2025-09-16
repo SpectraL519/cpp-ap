@@ -306,6 +306,20 @@ TEST_CASE_FIXTURE(argument_test_fixture, "has_parsed_values() should true if the
     CHECK(has_parsed_values(sut));
 }
 
+TEST_CASE_FIXTURE(argument_test_fixture, "has_predefined_values() should return false by default") {
+    const auto sut = sut_type(arg_name_primary);
+    CHECK_FALSE(has_predefined_values(sut));
+}
+
+TEST_CASE_FIXTURE(
+    argument_test_fixture, "has_predefined_values() should return true if the default value is set"
+) {
+    auto sut = sut_type(arg_name_primary);
+    sut.default_value(default_value);
+
+    CHECK(has_predefined_values(sut));
+}
+
 TEST_CASE_FIXTURE(
     argument_test_fixture, "value() should throw if the argument's value has not been set"
 ) {

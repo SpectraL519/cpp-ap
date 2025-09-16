@@ -77,6 +77,11 @@ struct argument_test_fixture {
     }
 
     template <argument_type ArgT, c_argument_value_type T>
+    [[nodiscard]] bool has_predefined_values(const argument<ArgT, T>& arg) const {
+        return arg.has_predefined_values();
+    }
+
+    template <argument_type ArgT, c_argument_value_type T>
     [[nodiscard]] std::weak_ordering nvalues_ordering(const argument<ArgT, T>& arg) const {
         return arg.nvalues_ordering();
     }
