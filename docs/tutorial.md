@@ -7,6 +7,8 @@
 - [The Parser Class](#the-parser-class)
 - [Adding Arguments](#adding-arguments)
 - [Argument Parameters](#argument-parameters)
+  - [Common Parameters](#common-parameters)
+  - [Parameters Specific for Optional Arguments](#parameters-specific-for-optional-arguments)
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Parsing Arguments](#parsing-arguments)
@@ -140,7 +142,7 @@ parser.program_name("Name of the program")
 
 ## Adding Arguments
 
-The parser supports both positional and optional arguments. Both argument types are identified by their names represented as strings. Arguments are identified using their names.
+The parser supports both positional and optional arguments. Both argument types are identified by their names.
 
 > [!NOTE]
 >
@@ -160,7 +162,7 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 
 > [!NOTE]
 >
-> An argument consists of a primary and/or secondary name. The primary name is a longer, more descriptive name, while the secondary name is a shorter/abbreviated name of the argument.
+> An argument's name consists of a primary and/or secondary names. The primary name is a longer, more descriptive name, while the secondary name is a shorter/abbreviated name of the argument.
 >
 > While passing a primary name is required for creating positional arguments, optional arguments can be initialized using only a secondary name as follows:
 >
@@ -171,15 +173,24 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 
 > [!IMPORTANT]
 >
-> The library supports any argument value types which meet the following requirements:
+> An argument's value type must be `ap::none_type` or it must satisfy the following requirements:
 >
 > - The type is [constructible from](https://en.cppreference.com/w/cpp/concepts/constructible_from) `const std::string&` or the stream extraction operator - `std::istream& operator>>` is defined for the type.
 >
 >    **IMPORTANT:** The argument parser will always use direct initialization from `std::string` and will use the extraction operator only if an argument's value type cannot be initialized from `std::string`.
 >
 > - The type satisfies the [`std::semiregular`](https://en.cppreference.com/w/cpp/concepts/semiregular.html) concept - is default initializable and copyable.
+
+> [!NOTE]
 >
-> **NOTE:** The default value type of any argument is `std::string`.
+> - The default value type of any argument is `std::string`.
+>
+> - If the argument's value type is `ap::none_type`, the argument will not accept any values and therefore no value-related parameters can be set for such argument. This includes:
+>   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a)
+>   - [choices](#6-choices---a-list-of-valid-argument-values)
+>   - [value actions](#7-value-actions---function-performed-after-parsing-an-arguments-value)
+>   - [default_value](#8-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed)
+>   - [implicit_value](#2-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow)
 
 You can also add boolean flags:
 
@@ -224,6 +235,8 @@ parser.add_positional_argument<std::size_t>("number", "n")
       .help("a positive integer value");
 ```
 
+<br />
+
 #### 2. `hidden` - If this option is set for an argument, then it will not be included in the program description.
 
 By default all arguments are visible, but this can be modified using the `hidden(bool)` setter as follows:
@@ -231,7 +244,7 @@ By default all arguments are visible, but this can be modified using the `hidden
 ```cpp
 parser.program_name("hidden-test")
       .program_description("A simple program")
-      .default_optional_arguments({ap::argument::default_optional::help});
+      .default_arguments({ap::default_argument::o_help});
 
 parser.add_optional_argument("hidden")
       .hidden()
@@ -252,6 +265,8 @@ Optional arguments:
   --help, -h : Display the help message
   --visible  : A simple visible argument
 ```
+
+<br />
 
 #### 3. `required` - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.
 
@@ -320,6 +335,8 @@ Command                                 Result
 */
 ```
 
+<br />
+
 #### 4. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
 
 > [!NOTE]
@@ -356,7 +373,108 @@ std::ofstream os(parser.value("output"));
 os << data << std::endl;
 ```
 
-#### 5. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
+<br />
+
+#### 5. `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
+
+- Specific number:
+
+  ```cpp
+  parser.add_optional_argument("input", "i").nargs(1);
+  ```
+
+- Fully bound range:
+
+  ```cpp
+  parser.add_optional_argument("input", "i").nargs(1, 3);
+  ```
+
+- Partially bound range:
+
+  ```cpp
+  parser.add_optional_argument("input", "i").nargs(ap::nargs::at_least(1));  // n >= 1
+  parser.add_optional_argument("input", "i").nargs(ap::nargs::more_than(1)); // n > 1
+  parser.add_optional_argument("input", "i").nargs(ap::nargs::less_than(5)); // n < 5
+  parser.add_optional_argument("input", "i").nargs(ap::nargs::up_to(5));     // n <= 5
+  ```
+
+- Unbound range:
+
+  ```cpp
+  parser.add_optional_argument("input", "i").nargs(ap::nargs::any());
+  ```
+
+> [!IMPORTANT]
+>
+> The default `nargs` parameter value is:
+>
+> - `ap::nargs::range(1ull)` for positional arguments
+>
+> - `ap::nargs::any()` for optional arguments
+
+<br />
+
+#### 6. `choices` - A list of valid argument values.
+
+The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
+
+```cpp
+parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
+// passing a value other than a, b or c for the `method` argument will result in an error
+```
+
+> [!IMPORTANT]
+>
+> The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
+
+<br />
+
+#### 7. Value actions - Function performed after parsing an argument's value.
+Actions are represented as functions, which take the argument's value as an argument. The available action types are:
+
+- `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
+
+  ```cpp
+  void is_valid_user_tag(const std::string& tag) {
+      if (tag.empty() or tag.front() != '@')
+          throw std::runtime_error(std::format("Invalid user tag: `{}` — must start with '@'", tag));
+  }
+
+  parser.add_optional_argument<std::string>("user", "u")
+        .action<ap::action_type::observe>(is_valid_user_tag);
+  ```
+
+- `transform` actions | `value_type(const value_type&)` - applied to the parsed value. The returned value will be used to initialize the argument's value.
+
+  ```cpp
+  std::string to_lower(std::string s) {
+      for (auto& c : s)
+          c = static_cast<char>(std::tolower(c));
+      return s;
+  }
+
+  parser.add_optional_argument<std::string>("key", "k")
+        .action<ap::action_type::transform>(to_lower);
+  ```
+
+- `modify` actions | `void(value_type&)` - applied to the initialized value of an argument.
+
+  ```cpp
+  void capitalize(std::string& s) {
+      s.at(0) = std::toupper(s.at(0));
+  }
+
+  parser.add_optional_argument<std::string>("name", "n")
+        .action<ap::action_type::modify>(capitalize);
+  ```
+
+> [!TIP]
+>
+> A single argument can have multiple value actions. Instead of writing complex logic in one action, consider composing several simple, focused actions for better readability and reusability.
+
+<br />
+
+#### 8. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
 
 > [!WARNING]
 >
@@ -410,100 +528,32 @@ Command                                 Result
 >
 > The setter of the `default_value` parameter accepts any type that is convertible to the argument's value type.
 
-#### 6. `choices` - A list of valid argument values.
-
-The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
-
-```cpp
-parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
-// passing a value other than a, b or c for the `method` argument will result in an error
-```
-
-> [!IMPORTANT]
->
-> The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
-
-#### 7. Value actions - Function performed after parsing an argument's value.
-Actions are represented as functions, which take the argument's value as an argument. The available action types are:
-
-- `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
-
-  ```cpp
-  void is_valid_user_tag(const std::string& tag) {
-      if (tag.empty() or tag.front() != '@')
-          throw std::runtime_error(std::format("Invalid user tag: `{}` — must start with '@'", tag));
-  }
-
-  parser.add_optional_argument<std::string>("user", "u")
-        .action<ap::action_type::observe>(is_valid_user_tag);
-  ```
-
-- `transform` actions | `value_type(const value_type&)` - applied to the parsed value. The returned value will be used to initialize the argument's value.
-
-  ```cpp
-  std::string to_lower(std::string s) {
-      for (auto& c : s)
-          c = static_cast<char>(std::tolower(c));
-      return s;
-  }
-
-  parser.add_optional_argument<std::string>("key", "k")
-        .action<ap::action_type::transform>(to_lower);
-  ```
-
-- `modify` actions | `void(value_type&)` - applied to the initialized value of an argument.
-
-  ```cpp
-  void capitalize(std::string& s) {
-      s.at(0) = std::toupper(s.at(0));
-  }
-
-  parser.add_optional_argument<std::string>("name", "n")
-        .action<ap::action_type::modify>(capitalize);
-  ```
-
-> [!TIP]
->
-> A single argument can have multiple value actions. Instead of writing complex logic in one action, consider composing several simple, focused actions for better readability and reusability.
-
 <br/>
+<br />
 
 ### Parameters Specific for Optional Arguments
 
 Apart from the common parameters listed above, for optional arguments you can also specify the following parameters:
 
-#### 1. `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
+#### 1. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
 
-- Specific number:
+```cpp
+void print_debug_info() noexcept {
+#ifdef NDEBUG
+    std::cout << "Running in release mode.\n";
+#else
+    std::cout << "Running in debug mode.\n";
+#endif
+    std::exit(EXIT_SUCCESS);
+};
 
-  ```cpp
-  parser.add_optional_argument("input", "i").nargs(1);
-  ```
+parser.add_optional_argument("--debug-info")
+      .action<ap::action_type::on_flag>(print_debug_info);
+```
 
-- Fully bound range:
+Here the `print_debug_info` function will be called right after parsing the `--debug-info` flag and the program will exit, even if there are more arguments after this flag.
 
-  ```cpp
-  parser.add_optional_argument("input", "i").nargs(1, 3);
-  ```
-
-- Partially bound range:
-
-  ```cpp
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::at_least(1));  // n >= 1
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::more_than(1)); // n > 1
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::less_than(5)); // n < 5
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::up_to(5));     // n <= 5
-  ```
-
-- Unbound range:
-
-  ```cpp
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::any());
-  ```
-
-> [!IMPORTANT]
->
-> The default `nargs` parameter value is `ap::nargs::any()`.
+<br />
 
 #### 2. `implicit_value` - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
 
@@ -533,24 +583,6 @@ Command                       Result
 >
 > - The `implicit_value` parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see [Adding Arguments](#adding-arguments)).
 > - The setter of the `implicit_value` parameter accepts any type that is convertible to the argument's value type.
-
-#### 4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
-
-```cpp
-void print_debug_info() noexcept {
-#ifdef NDEBUG
-    std::cout << "Running in release mode.\n";
-#else
-    std::cout << "Running in debug mode.\n";
-#endif
-    std::exit(EXIT_SUCCESS);
-};
-
-parser.add_optional_argument("--debug-info")
-      .action<ap::action_type::on_flag>(print_debug_info);
-```
-
-Here the `print_debug_info` function will be called right after parsing the `--debug-info` flag and the program will exit, even if there are more arguments after this flag.
 
 <br/>
 <br/>
@@ -636,20 +668,16 @@ Here the `print_debug_info` function will be called right after parsing the `--d
 The `CPP-AP` library defines several default arguments, which can be added to the parser's configuration as follows.
 
 ```cpp
-parser.default_positional_arguments({...});
-// here `...` represents a collection of ap::argument::default_positional values
-
-parser.default_positional_arguments({...});
-// here `...` represents a collection of ap::argument::default_optional values
+parser.default_arguments(<args>);
 ```
 
 > [!NOTE]
 >
-> These functions work with `std::initializer_list` and all other `std::ranges::range` types with the correct value type - `ap::argument::default_{positional/optional}`
+> - The `default_arguments` function takes as parameter (`<args>`) either a `std::initializer_list<ap::default_argument>` or a type satisfying the [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) concept with the `ap::default_argument` value type.
 
 The available default arguments are:
 
-- `default_positional::input`:
+- `p_input`:
 
   ```cpp
   // equivalent to:
@@ -658,14 +686,14 @@ The available default arguments are:
         .help("Input file path");
   ```
 
-- `default_positional::output`:
+- `p_output`:
 
   ```cpp
   // equivalent to:
   parser.add_positional_argument("output").help("Output file path");
   ```
 
-- `default_optional::help`:
+- `o_help`:
 
   ```cpp
   // equivalent to:
@@ -674,7 +702,7 @@ The available default arguments are:
         .help("Display the help message");
   ```
 
-- `default_optional::input` and `default_optional::multi_input`:
+- `o_input` and `o_multi_input`:
 
   ```cpp
   // input - equivalent to:
@@ -692,7 +720,7 @@ The available default arguments are:
         .help("Input files paths");
   ```
 
-- `default_optional::output` and `default_optional::multi_output`:
+- `o_output` and `o_multi_output`:
 
   ```cpp
   // output - equivalent to:
@@ -761,7 +789,7 @@ int main(int argc, char* argv[]) {
     parser.add_optional_argument("optional", "o").help("An optional argument");
     parser.add_flag("flag", "f").help("A boolean flag");
 
-    parser.default_optional_arguments({ap::argument::default_optional::help});
+    parser.default_arguments({ap::default_argument::o_help});
 
     // parse command-line arguments
     parser.try_parse_args(argc, argv);
@@ -1069,37 +1097,35 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 
 ## Retrieving Argument Values
 
-You can retrieve the argument's value with:
+You can retrieve the argument's value(s) with:
 
 ```cpp
-(const) auto value = parser.value<value_type>("argument_name"); // (1)
-(const) auto value = parser.value_or<value_type>("argument_name", fallback_value); // (2)
-```
-
-1. This will return the value parsed for the given argument.
-
-    For optional arguments this will return the argument's predefined value if no value has been parsed. Additionaly, if more than one value has been parsed for an optional argument, this function will return the first parsed value.
-
-2. When a value has been parsed for the argument, the behavior is the same as in case **(1)**. Otherwise, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deducted type of `fallback_value`), if:
-
-    - There is no value parsed for a positional argument
-    - There is no parsed values and no predefined values for an optional arrument
-
-<br/>
-
-Additionally for optional arguments, you can use:
-
-```cpp
+(const) value_type value = parser.value<value_type>("argument_name"); // (1)
+(const) value_type value = parser.value_or<value_type>("argument_name", fallback_value); // (2)
 (const) std::vector<value_type> values = parser.values<value_type>("argument_name"); // (3)
 ```
 
-which returns a `vector` containing all values parsed for the given argument.
+1. Returns the given argument's value.
+
+    - Returns the argument's parsed value if it has one.
+    - If more than one value has been parsed for the argument, this function will return the first parsed value.
+    - Returns the argument's predefined value if no value has been parsed for the argument.
+
+2. Returns the given argument's value or the specified fallback value if the argument has no values.
+
+    - If the argument has a value (parsed or predefind), the behavior is the same as in case **(1)**.
+    - If the argument has no values, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deduced type of `fallback_value`).
+
+3. Returns a vector of the given argument's values.
+
+    - If the argument has any values (parsed or predefined), they will be returned as a `std::vector<value_type>`.
+    - If th argument has no values an empty vector will be returned.
 
 > [!NOTE]
 >
 > The argument value getter functions might throw an exception if:
 > - An argument with the given name does not exist
-> - The argument does not contain any values - parsed or predefined (only getter `(1)`)
+> - The argument does not contain any values - parsed or predefined (only getter function `(1)`)
 > - The specified `value_type` does not match the value type of the argument
 
 <br/>

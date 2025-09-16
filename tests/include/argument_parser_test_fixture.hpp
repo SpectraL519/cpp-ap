@@ -5,8 +5,8 @@
 #include <cstring>
 #include <format>
 
-using ap::argument::optional;
-using ap::argument::positional;
+using ap::optional_argument;
+using ap::positional_argument;
 using ap::detail::argument_name;
 using ap::detail::argument_token;
 using ap::detail::c_argument_value_type;
@@ -104,17 +104,23 @@ struct argument_parser_test_fixture {
         );
     }
 
-    template <c_argument_value_type T = std::string, typename F = std::function<void(positional<T>&)>>
-    void add_positional_args(const std::size_t n, F&& setup_arg = [](positional<T>&) {}) {
+    template <
+        c_argument_value_type T = std::string,
+        typename F = std::function<void(positional_argument<T>&)>>
+    void add_positional_args(const std::size_t n, F&& setup_arg = [](positional_argument<T>&) {}) {
         for (std::size_t i = 0ull; i < n; ++i)
             setup_arg(
                 sut.add_positional_argument<T>(init_arg_name_primary(i), init_arg_name_secondary(i))
             );
     }
 
-    template <c_argument_value_type T = std::string, typename F = std::function<void(optional<T>&)>>
+    template <
+        c_argument_value_type T = std::string,
+        typename F = std::function<void(optional_argument<T>&)>>
     void add_optional_args(
-        const std::size_t n, const std::size_t begin_idx, F&& setup_arg = [](optional<T>&) {}
+        const std::size_t n,
+        const std::size_t begin_idx,
+        F&& setup_arg = [](optional_argument<T>&) {}
     ) {
         for (std::size_t i = 0ull; i < n; ++i)
             setup_arg(sut.add_optional_argument<T>(

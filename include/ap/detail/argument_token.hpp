@@ -2,7 +2,7 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file argument_token.hpp
+/// @file ap/detail/argument_token.hpp
 
 #pragma once
 

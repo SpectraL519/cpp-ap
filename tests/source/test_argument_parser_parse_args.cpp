@@ -3,7 +3,6 @@
 #include "utility.hpp"
 
 using namespace ap_testing;
-using namespace ap::argument;
 using namespace ap::nargs;
 using ap::invalid_configuration;
 using ap::parsing_failure;
@@ -881,38 +880,22 @@ TEST_CASE_FIXTURE(
     }
 }
 
-// values
+// values: optional arguments
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "values() should throw when calling with a positional argument's name"
-) {
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
-
-    CHECK_THROWS_AS(discard_result(sut.values(positional_primary_name)), std::logic_error);
-    CHECK_THROWS_AS(discard_result(sut.values(positional_secondary_name)), std::logic_error);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_parse_args,
-    "values() should return an empty vector if an argument has no values"
+    "values() [optional arguments] should return an empty vector if an argument has no values"
 ) {
     sut.add_optional_argument(optional_primary_name, optional_secondary_name);
 
-    SUBCASE("calling with argument's primary name") {
-        const auto& values = sut.values(optional_primary_name);
-        CHECK(values.empty());
-    }
-
-    SUBCASE("calling with argument's secondary name") {
-        const auto& values = sut.values(optional_secondary_name);
-        CHECK(values.empty());
-    }
+    CHECK(sut.values(optional_primary_name).empty());
+    CHECK(sut.values(optional_secondary_name).empty());
 }
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "values() should throw when an argument has values but the given type is invalid"
+    "values() [optional arguments] should throw when an argument has values but the given type is "
+    "invalid"
 ) {
     sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(at_least(1));
 
@@ -943,8 +926,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "values() should return a vector containing a predefined value of an optional argument if no "
-    "values for an argument have been parsed"
+    "values() [optional arguments] should return a vector containing a predefined value of an "
+    "argument if no values for an argument have been parsed"
 ) {
     const std::string default_value = "default_value";
     const std::string implicit_value = "implicit_value";
@@ -987,8 +970,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "values() should return a correct vector of values when there is an argument with "
-    "a given name and has parsed values"
+    "values() [optional arguments] should return a correct vector of values when there is an "
+    "argument with a given name and has parsed values"
 ) {
     sut.add_optional_argument(optional_primary_name, optional_secondary_name).nargs(at_least(1));
 
@@ -1013,8 +996,100 @@ TEST_CASE_FIXTURE(
     const auto& stored_values = sut.values(optional_primary_name);
 
     REQUIRE_EQ(stored_values.size(), optional_arg_values.size());
-    for (std::size_t i = 0ull; i < stored_values.size(); ++i)
-        CHECK_EQ(stored_values[i], optional_arg_values[i]);
+    CHECK_EQ(stored_values, optional_arg_values);
+
+    free_argv(argc, argv);
+}
+
+// values: positional arguments
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "values() [positional arguments] should return an empty vector if an argument has no values"
+) {
+    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
+
+    CHECK(sut.values(positional_primary_name).empty());
+    CHECK(sut.values(positional_secondary_name).empty());
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "values() [positional arguments] should throw when an argument has values but the given type "
+    "is invalid"
+) {
+    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
+
+    // prepare argc & argv
+    const int argc = get_argc(1ull, no_args);
+    auto argv = init_argv(1ull, no_args);
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    CHECK_THROWS_AS(
+        discard_result(sut.values<invalid_argument_value_type>(positional_primary_name)),
+        ap::type_error
+    );
+    CHECK_THROWS_AS(
+        discard_result(sut.values<invalid_argument_value_type>(positional_secondary_name)),
+        ap::type_error
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "values() [positional arguments] should return a vector containing a predefined value of an "
+    "argument if no values for an argument have been parsed"
+) {
+    const std::string default_value = "default_value";
+
+    sut.add_positional_argument(positional_primary_name, positional_secondary_name)
+        .default_value(default_value);
+
+    // prepare argc & argv
+    const int argc = get_argc(no_args, no_args);
+    auto argv = init_argv(no_args, no_args);
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    const auto& stored_values = sut.values(positional_primary_name);
+
+    REQUIRE_EQ(stored_values.size(), 1);
+    CHECK_EQ(stored_values.front(), default_value);
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "values() [positional arguments] should return a correct vector of values when there is an "
+    "argument with a given name and has parsed values"
+) {
+    sut.add_positional_argument(positional_primary_name, positional_secondary_name).nargs(any());
+
+    // prepare argc & argv
+    const std::size_t n_positional_values = 3ull;
+    std::vector<std::string> positional_arg_values;
+    for (std::size_t i = 0ull; i < n_positional_values; ++i)
+        positional_arg_values.emplace_back(std::format("positional_value_{}", i + 1ull));
+
+    std::vector<std::string> argv_vec{"program"};
+    argv_vec.insert(argv_vec.end(), positional_arg_values.begin(), positional_arg_values.end());
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // parse args
+    sut.parse_args(argc, argv);
+
+    const auto& stored_values = sut.values(positional_primary_name);
+
+    REQUIRE_EQ(stored_values.size(), positional_arg_values.size());
+    CHECK_EQ(stored_values, positional_arg_values);
 
     free_argv(argc, argv);
 }

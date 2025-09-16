@@ -3,16 +3,25 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file concepts.hpp
+ * @file ap/detail/concepts.hpp
  * @brief Provides the general concept definitions.
  */
 
 #pragma once
 
+#include "ap/types.hpp"
+
 #include <iostream>
 #include <ranges>
 
 namespace ap::detail {
+
+/**
+ * @brief The concept is satisfied when `T` is @ref ap::none_type.
+ * @tparam T Type to check.
+ */
+template <typename T>
+concept c_is_none = std::same_as<T, none_type>;
 
 /**
  * @brief The concept is satisfied when `T` overloads the std::istream operator `>>`.
@@ -47,7 +56,9 @@ concept c_arithmetic = std::is_arithmetic_v<T>;
  * @tparam T Type to check.
  */
 template <typename T>
-concept c_argument_value_type = std::semiregular<T> and (c_trivially_readable<T> or c_readable<T>);
+concept c_argument_value_type =
+    std::same_as<T, ap::none_type>
+    or (std::semiregular<T> and (c_trivially_readable<T> or c_readable<T>));
 
 /**
  * @brief Validates that `T` is the same as one of the types defined by `Types`.
@@ -125,6 +136,5 @@ template <typename R, typename V, type_validator TV = type_validator::same>
 concept c_sized_range_of =
     std::ranges::sized_range<R>
     and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
-
 
 } // namespace ap::detail
