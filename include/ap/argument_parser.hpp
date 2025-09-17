@@ -125,25 +125,37 @@ public:
     /**
      * @brief Set default positional arguments.
      * @tparam AR Type of the positional argument discriminator range.
-     * @param arg_discriminator_range A range of default positional argument discriminators.
+     * @param arg_discriminators A range of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
     template <detail::c_range_of<default_argument> AR>
-    argument_parser& default_arguments(const AR& arg_discriminator_range) noexcept {
-        for (const auto arg_discriminator : arg_discriminator_range)
+    argument_parser& default_arguments(const AR& arg_discriminators) noexcept {
+        for (const auto arg_discriminator : arg_discriminators)
             detail::add_default_argument(arg_discriminator, *this);
         return *this;
     }
 
     /**
      * @brief Set default positional arguments.
-     * @param arg_discriminator_list A list of default positional argument discriminators.
+     * @param arg_discriminators A list of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
     argument_parser& default_arguments(
-        const std::initializer_list<default_argument> arg_discriminator_list
+        const std::initializer_list<default_argument>& arg_discriminators
     ) noexcept {
-        return this->default_arguments<>(arg_discriminator_list);
+        return this->default_arguments<>(arg_discriminators);
+    }
+
+    /**
+     * @brief Set default positional arguments.
+     * @param arg_discriminators A list of default positional argument discriminators.
+     * @return Reference to the argument parser.
+     */
+    argument_parser& default_arguments(
+        const std::same_as<default_argument> auto... arg_discriminators
+    ) noexcept {
+        (detail::add_default_argument(arg_discriminators, *this), ...);
+        return *this;
     }
 
     /**
