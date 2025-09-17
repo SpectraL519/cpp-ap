@@ -551,17 +551,10 @@ public:
         const auto& arg = arg_opt->get();
 
         try {
-            if (arg.has_predefined_values())
-                // currently an argument may have only one predefined value
-                return std::vector<T>{std::any_cast<T>(arg.value())};
-
             std::vector<T> values;
             // TODO: use std::ranges::to after transition to C++23
             std::ranges::copy(
-                std::views::transform(
-                    arg.values(), [](const std::any& value) { return std::any_cast<T>(value); }
-                ),
-                std::back_inserter(values)
+                detail::any_range_cast_view<T>(arg.values()), std::back_inserter(values)
             );
             return values;
         }

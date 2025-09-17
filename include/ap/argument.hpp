@@ -11,6 +11,7 @@
 #include "detail/argument_base.hpp"
 #include "detail/argument_descriptor.hpp"
 #include "detail/concepts.hpp"
+#include "detail/ranges_utility.hpp"
 #include "nargs/range.hpp"
 #include "types.hpp"
 
@@ -276,7 +277,7 @@ public:
     }
 
     /**
-     * @brief Set the default value for the argument.
+     * @brief Add a default value for the argument.
      * @param default_value The attribute value.
      * @return Reference to the argument instance.
      * @attention Setting the default value sets the `required` attribute to `false`.
@@ -285,13 +286,13 @@ public:
     argument& default_value(const std::convertible_to<value_type> auto& default_value) noexcept
     requires(not detail::c_is_none<value_type>)
     {
-        this->_default_value = std::make_any<value_type>(default_value);
+        this->_default_values.emplace_back(std::make_any<value_type>(default_value));
         this->_required = false;
         return *this;
     }
 
     /**
-     * @brief Set the implicit value for the optional argument.
+     * @brief Add an implicit value for the optional argument.
      * @param implicit_value The implicit value to set.
      * @return Reference to the optional argument instance.
      * @note The method is enabled only for optional arguments and if `value_type` is not `none_type`.
@@ -299,7 +300,7 @@ public:
     argument& implicit_value(const std::convertible_to<value_type> auto& implicit_value) noexcept
     requires(not detail::c_is_none<value_type> and type == argument_type::optional)
     {
-        this->_implicit_value = std::make_any<value_type>(implicit_value);
+        this->_implicit_values.emplace_back(std::make_any<value_type>(implicit_value));
         return *this;
     }
 
@@ -356,12 +357,16 @@ private:
         if constexpr (detail::c_writable<value_type>) {
             if (not this->_choices.empty())
                 desc.add_range_param("choices", this->_choices);
-            if (this->_default_value.has_value())
-                desc.add_param("default value", std::any_cast<value_type>(this->_default_value));
+            if (not this->_default_values.empty())
+                desc.add_range_param(
+                    "default value(s)",
+                    detail::any_range_cast_view<value_type>(this->_default_values)
+                );
             if constexpr (type == argument_type::optional) {
-                if (this->_implicit_value.has_value())
-                    desc.add_param(
-                        "implicit value", std::any_cast<value_type>(this->_implicit_value)
+                if (not this->_implicit_values.empty())
+                    desc.add_range_param(
+                        "implicit value(s)",
+                        detail::any_range_cast_view<value_type>(this->_implicit_values)
                     );
             }
         }
@@ -438,7 +443,7 @@ private:
      * @throws std::logic_error if no values are available.
      */
     [[nodiscard]] const std::any& value() const override {
-        if (not this->_values.empty())
+        if (this->has_parsed_values())
             return this->_values.front();
 
         if constexpr (detail::c_is_none<value_type>)
@@ -446,12 +451,32 @@ private:
                 std::format("No values parsed for argument '{}'.", this->_name.str())
             );
         else
-            return this->_predefined_value();
+            return this->_predefined_values().front();
     }
 
     /// @return Reference to the vector of parsed values for the argument.
     [[nodiscard]] const std::vector<std::any>& values() const override {
+        return this->_values_impl();
+    }
+
+    [[nodiscard]] const std::vector<std::any>& _values_impl() const noexcept
+    requires(detail::c_is_none<value_type>)
+    {
         return this->_values;
+    }
+
+    [[nodiscard]] const std::vector<std::any>& _values_impl() const noexcept
+    requires(not detail::c_is_none<value_type>)
+    {
+        if (this->has_parsed_values())
+            return this->_values;
+
+        try {
+            return this->_predefined_values();
+        }
+        catch (const std::logic_error&) {
+            return this->_values; // fallback: empty vector
+        }
     }
 
     /// @return `true` if the argument has a predefined value, `false` otherwise.
@@ -471,39 +496,39 @@ private:
     requires(not detail::c_is_none<value_type>)
     {
         if constexpr (type == argument_type::positional)
-            return this->_default_value.has_value();
+            return not this->_default_values.empty();
         else
-            return this->_default_value.has_value()
-                or (this->is_used() and this->_implicit_value.has_value());
+            return not this->_default_values.empty()
+                or (this->is_used() and not this->_implicit_values.empty());
     }
 
     /**
-     * @return Reference to the predefined value of the argument.
-     * @throws std::logic_error if no predefined value is available.
+     * @return Reference to the argument's predefined value list.
+     * @throws std::logic_error if no predefined values are available.
      * @note The method is enabled only if `value_type` is not `none_type`.
-     * @note - For positional arguments, the default value is returned.
-     * @note - For optional arguments, if the argument has been used, the implicit value is returned, otherwise the default value is returned.
+     * @note - For positional arguments, the default value list is returned.
+     * @note - For optional arguments, if the argument has been used, the implicit value list is returned, otherwise the default value list is returned.
      */
-    [[nodiscard]] const std::any& _predefined_value() const
+    [[nodiscard]] const std::vector<std::any>& _predefined_values() const
     requires(not detail::c_is_none<value_type>)
     {
         if constexpr (type == argument_type::optional) {
             if (this->is_used()) {
-                if (not this->_implicit_value.has_value())
+                if (this->_implicit_values.empty())
                     throw(std::logic_error(std::format(
-                        "No implicit value specified for argument '{}'.", this->_name.str()
+                        "No implicit values specified for argument '{}'.", this->_name.str()
                     )));
 
-                return this->_implicit_value;
+                return this->_implicit_values;
             }
         }
 
-        if (not this->_default_value.has_value())
+        if (this->_default_values.empty())
             throw(std::logic_error(
-                std::format("No default value specified for argument '{}'.", this->_name.str())
+                std::format("No default values specified for argument '{}'.", this->_name.str())
             ));
 
-        return this->_default_value;
+        return this->_default_values;
     }
 
     /// @return `true` if the argument accepts further values, `false` otherwise.
@@ -576,10 +601,10 @@ private:
     const ap::detail::argument_name _name; ///< The argument's name.
     std::optional<std::string> _help_msg; ///< The argument's help message.
     nargs::range _nargs_range; ///< The argument's nargs range attribute.
-    [[no_unique_address]] value_arg_specific_type<std::any>
-        _default_value; ///< The argument's default value.
-    [[no_unique_address]] value_arg_specific_type<optional_specific_type<std::any>>
-        _implicit_value; ///< The optional argument's implicit value.
+    [[no_unique_address]] value_arg_specific_type<std::vector<std::any>>
+        _default_values; ///< The argument's default value list.
+    [[no_unique_address]] value_arg_specific_type<optional_specific_type<std::vector<std::any>>>
+        _implicit_values; ///< The optional argument's implicit value list.
     [[no_unique_address]] value_arg_specific_type<std::vector<value_type>>
         _choices; ///< The argument's valid choices collection.
     [[no_unique_address]] optional_specific_type<std::vector<flag_action_type>>

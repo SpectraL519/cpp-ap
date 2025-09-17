@@ -143,7 +143,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(choices_it->value, ap::detail::join(choices, ", "));
 
     const auto default_value_it =
-        std::ranges::find(desc.params, "default value", &parameter_descriptor::name);
+        std::ranges::find(desc.params, "default value(s)", &parameter_descriptor::name);
     REQUIRE_NE(default_value_it, desc.params.end());
     CHECK_EQ(default_value_it->value, std::to_string(default_value));
 }
