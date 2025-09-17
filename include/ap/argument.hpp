@@ -47,7 +47,7 @@ enum class argument_type : bool { positional, optional };
  * parser.add_positional_argument("input", "i")
  *       .help("An input file path");
  * parser.add_optional_argument("output", "o")
- *       .default_value("out.txt")
+ *       .default_values("out.txt")
  *       .help("An output file path");
  * @endcode
  *
@@ -247,7 +247,7 @@ public:
     }
 
     /**
-     * @brief Set the choices for the argument.
+     * @brief Add the choices for the argument.
      * @tparam CR The choices range type.
      * @param choices The range of valid choices for the argument.
      * @return Reference to the argument instance.
@@ -265,7 +265,7 @@ public:
     }
 
     /**
-     * @brief Set the choices for the argument.
+     * @brief Add the choices for the argument.
      * @param choices The list of valid choices for the argument.
      * @return Reference to the argument instance.
      * @note The method is enabled only if `value_type` is not `none_type` and is equality comparable.
@@ -277,30 +277,102 @@ public:
     }
 
     /**
-     * @brief Add a default value for the argument.
-     * @param default_value The attribute value.
+     * @brief Add the choices for the argument.
+     * @tparam Args The types of the choices.
+     * @param choices The list of valid choices for the argument.
      * @return Reference to the argument instance.
-     * @attention Setting the default value sets the `required` attribute to `false`.
+     * @note The method is enabled only if `value_type` is not `none_type` and is equality comparable.
+     */
+    argument& choices(const std::convertible_to<value_type> auto&... choices) noexcept
+    requires(not detail::c_is_none<value_type> and std::equality_comparable<value_type>)
+    {
+        (this->_choices.emplace_back(choices), ...);
+        return *this;
+    }
+
+    /**
+     * @brief Add default values for the argument.
+     * @param values The default values to add.
+     * @return Reference to the argument instance.
+     * @attention Setting the default values sets the `required` attribute to `false`.
      * @note The method is enabled only if `value_type` is not `none_type`.
      */
-    argument& default_value(const std::convertible_to<value_type> auto& default_value) noexcept
-    requires(not detail::c_is_none<value_type>)
+    template <detail::c_range_of<value_type, detail::type_validator::convertible> CR>
+    argument& default_values(const CR& values) noexcept
+    requires(not detail::c_is_none<value_type> and std::equality_comparable<value_type>)
     {
-        this->_default_values.emplace_back(std::make_any<value_type>(default_value));
+        for (const auto& value : values)
+            this->_default_values.emplace_back(std::make_any<value_type>(value));
         this->_required = false;
         return *this;
     }
 
     /**
-     * @brief Add an implicit value for the optional argument.
-     * @param implicit_value The implicit value to set.
+     * @brief Add default values for the argument.
+     * @param values The default values to add.
+     * @return Reference to the argument instance.
+     * @attention Setting the default values sets the `required` attribute to `false`.
+     * @note The method is enabled only if `value_type` is not `none_type`.
+     */
+    argument& default_values(std::initializer_list<value_type> values) noexcept
+    requires(not detail::c_is_none<value_type> and std::equality_comparable<value_type>)
+    {
+        return this->default_values<>(values);
+    }
+
+    /**
+     * @brief Add default values for the argument.
+     * @param values The default values to add.
+     * @return Reference to the argument instance.
+     * @attention Setting the default values sets the `required` attribute to `false`.
+     * @note The method is enabled only if `value_type` is not `none_type`.
+     */
+    argument& default_values(const std::convertible_to<value_type> auto&... values) noexcept
+    requires(not detail::c_is_none<value_type>)
+    {
+        (this->_default_values.emplace_back(std::make_any<value_type>(values)), ...);
+        this->_required = false;
+        return *this;
+    }
+
+    /**
+     * @brief Add implicit values for the optional argument.
+     * @tparam CR The choices range type.
+     * @param values The range of implicit values to set.
      * @return Reference to the optional argument instance.
      * @note The method is enabled only for optional arguments and if `value_type` is not `none_type`.
      */
-    argument& implicit_value(const std::convertible_to<value_type> auto& implicit_value) noexcept
+    template <detail::c_range_of<value_type, detail::type_validator::convertible> CR>
+    argument& implicit_values(const CR& values) noexcept
     requires(not detail::c_is_none<value_type> and type == argument_type::optional)
     {
-        this->_implicit_values.emplace_back(std::make_any<value_type>(implicit_value));
+        for (const auto& value : values)
+            this->_implicit_values.emplace_back(std::make_any<value_type>(value));
+        return *this;
+    }
+
+    /**
+     * @brief Add implicit values for the optional argument.
+     * @param values The initializer list of implicit values to set.
+     * @return Reference to the optional argument instance.
+     * @note The method is enabled only for optional arguments and if `value_type` is not `none_type`.
+     */
+    argument& implicit_values(std::initializer_list<value_type> values) noexcept
+    requires(not detail::c_is_none<value_type> and type == argument_type::optional)
+    {
+        return this->implicit_values<>(values);
+    }
+
+    /**
+     * @brief Add a implicit values for the optional argument.
+     * @param values The implicit values to set.
+     * @return Reference to the optional argument instance.
+     * @note The method is enabled only for optional arguments and if `value_type` is not `none_type`.
+     */
+    argument& implicit_values(const std::convertible_to<value_type> auto&... values) noexcept
+    requires(not detail::c_is_none<value_type> and type == argument_type::optional)
+    {
+        (this->_implicit_values.emplace_back(std::make_any<value_type>(values)), ...);
         return *this;
     }
 

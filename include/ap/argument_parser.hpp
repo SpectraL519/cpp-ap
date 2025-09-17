@@ -250,7 +250,7 @@ public:
 
     /**
      * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
-     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
      * @param name The primary name of the flag.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added boolean flag argument.
@@ -261,14 +261,14 @@ public:
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
         return this->add_optional_argument<bool>(name, name_discr)
-            .default_value(not StoreImplicitly)
-            .implicit_value(StoreImplicitly)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
             .nargs(0ull);
     }
 
     /**
      * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
-     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
      * @param primary_name The primary name of the flag.
      * @param secondary_name The secondary name of the flag.
      * @return Reference to the added boolean flag argument.
@@ -278,8 +278,8 @@ public:
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         return this->add_optional_argument<bool>(primary_name, secondary_name)
-            .default_value(not StoreImplicitly)
-            .implicit_value(StoreImplicitly)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
             .nargs(0ull);
     }
 
