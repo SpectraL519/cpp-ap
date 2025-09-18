@@ -22,9 +22,9 @@ struct argument_token {
 
     /// @brief The token type discriminator.
     enum class token_type : std::uint8_t {
+        t_value, ///< Represents a value argument.
         t_flag_primary, ///< Represents the primary (--) flag argument.
-        t_flag_secondary, ///< Represents the secondary (-) flag argument.
-        t_value ///< Represents a value argument.
+        t_flag_secondary ///< Represents the secondary (-) flag argument.
     };
     using enum token_type;
 

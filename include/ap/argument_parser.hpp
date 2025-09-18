@@ -326,11 +326,11 @@ public:
     void parse_args(const AR& argv_rng) {
         this->_validate_argument_configuration();
 
-        std::vector<std::string> unknown_args;
-        this->_parse_args_impl(this->_tokenize(argv_rng), unknown_args);
+        parsing_state state{.curr_arg = nullptr, .curr_pos_arg_it = this->_positional_args.begin()};
+        this->_parse_args_impl(this->_tokenize(argv_rng), state);
 
-        if (not unknown_args.empty())
-            throw parsing_failure::argument_deduction_failure(unknown_args);
+        if (not state.unknown_args.empty())
+            throw parsing_failure::argument_deduction_failure(state.unknown_args);
 
         if (not this->_are_required_args_bypassed()) {
             this->_verify_required_args();
@@ -417,15 +417,19 @@ public:
     std::vector<std::string> parse_known_args(const AR& argv_rng) {
         this->_validate_argument_configuration();
 
-        std::vector<std::string> unknown_args;
-        this->_parse_args_impl(this->_tokenize(argv_rng), unknown_args, false);
+        parsing_state state{
+            .curr_arg = nullptr,
+            .curr_pos_arg_it = this->_positional_args.begin(),
+            .throw_on_unknown = false
+        };
+        this->_parse_args_impl(this->_tokenize(argv_rng), state);
 
         if (not this->_are_required_args_bypassed()) {
             this->_verify_required_args();
             this->_verify_nvalues();
         }
 
-        return unknown_args;
+        return std::move(state.unknown_args);
     }
 
     /**
@@ -637,6 +641,16 @@ private:
 
     using arg_token_list_t = std::vector<detail::argument_token>;
     using arg_token_list_iter_t = typename arg_token_list_t::const_iterator;
+
+    /// @brief A collection of values used during the parsing process.
+    struct parsing_state {
+        arg_ptr_t curr_arg; ///< The currently processed argument.
+        arg_ptr_list_iter_t
+            curr_pos_arg_it; ///< An iterator pointing to the next positional argument to be processed.
+        std::vector<std::string> unknown_args = {}; ///< A vector of unknown argument values.
+        bool throw_on_unknown =
+            true; ///< A flag indicating whether to throw an error on unknown arguments.
+    };
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
@@ -881,94 +895,69 @@ private:
     /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
-     * @param handle_unknown A flag specifying whether unknown arguments should be handled or collected.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_args_impl(
-        const arg_token_list_t& arg_tokens,
-        std::vector<std::string>& unknown_args,
-        const bool handle_unknown = true
-    ) {
-        // set the current argument indicators
-        arg_ptr_t curr_arg_opt = nullptr;
-        arg_ptr_list_iter_t curr_positional_arg_it = this->_positional_args.begin();
-
-        if (curr_positional_arg_it != this->_positional_args.end())
-            curr_arg_opt = *curr_positional_arg_it;
+    void _parse_args_impl(const arg_token_list_t& arg_tokens, parsing_state& state) {
+        if (state.curr_pos_arg_it != this->_positional_args.end())
+            state.curr_arg = *state.curr_pos_arg_it;
 
         // process argument tokens
         std::ranges::for_each(
-            arg_tokens,
-            std::bind_front(
-                &argument_parser::_parse_token,
-                this,
-                std::ref(curr_arg_opt),
-                std::ref(curr_positional_arg_it),
-                std::ref(unknown_args),
-                handle_unknown
-            )
+            arg_tokens, std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
         );
     }
 
     /**
      * @brief Parse a single command-line argument token.
-     * @param curr_arg_opt The currently processed argument.
-     * @param curr_positional_arg_it An iterator pointing to the current positional argument.
-     * @param unknown_args The unknown arguments collection.
-     * @param handle_unknown A flag specifying whether unknown arguments should be handled or collected.
-     * @param tok The argument token to be processed.
+     * @param curr_arg The currently processed argument.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_token(
-        arg_ptr_t& curr_arg_opt,
-        arg_ptr_list_iter_t& curr_positional_arg_it,
-        std::vector<std::string>& unknown_args,
-        const bool handle_unknown,
-        const detail::argument_token& tok
-    ) {
+    void _parse_token(parsing_state& state, const detail::argument_token& tok) {
         switch (tok.type) {
         case detail::argument_token::t_flag_primary:
             [[fallthrough]];
         case detail::argument_token::t_flag_secondary: {
             if (not tok.is_valid_flag_token()) {
-                if (handle_unknown) {
+                if (state.throw_on_unknown) {
                     throw parsing_failure::unrecognized_argument(this->_unstripped_token_value(tok)
                     );
                 }
                 else {
-                    curr_arg_opt.reset();
-                    unknown_args.emplace_back(this->_unstripped_token_value(tok));
+                    state.curr_arg.reset();
+                    state.unknown_args.emplace_back(this->_unstripped_token_value(tok));
                     break;
                 }
             }
 
             if (tok.arg->mark_used())
-                curr_arg_opt = tok.arg;
+                state.curr_arg = tok.arg;
             else
-                curr_arg_opt.reset();
+                state.curr_arg.reset();
 
             break;
         }
         case detail::argument_token::t_value: {
-            if (not curr_arg_opt) {
-                if (curr_positional_arg_it == this->_positional_args.end()) {
-                    unknown_args.emplace_back(tok.value);
+            if (not state.curr_arg) {
+                if (state.curr_pos_arg_it == this->_positional_args.end()) {
+                    state.unknown_args.emplace_back(tok.value);
                     break;
                 }
 
-                curr_arg_opt = *curr_positional_arg_it;
+                state.curr_arg = *state.curr_pos_arg_it;
             }
 
-            if (auto& curr_arg = *curr_arg_opt; not curr_arg.set_value(std::string(tok.value))) {
+            if (not state.curr_arg->set_value(std::string(tok.value))) {
                 // advance to the next positional argument if possible
-                if (curr_arg.is_positional()
-                    and curr_positional_arg_it != this->_positional_args.end()
-                    and ++curr_positional_arg_it != this->_positional_args.end()) {
-                    curr_arg_opt = *curr_positional_arg_it;
+                if (state.curr_arg->is_positional()
+                    and state.curr_pos_arg_it != this->_positional_args.end()
+                    and ++state.curr_pos_arg_it != this->_positional_args.end()) {
+                    state.curr_arg = *state.curr_pos_arg_it;
                     break;
                 }
 
-                curr_arg_opt.reset();
+                state.curr_arg.reset();
             }
 
             break;

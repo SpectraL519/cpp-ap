@@ -97,7 +97,8 @@ TEST_CASE_FIXTURE(
 
     CHECK_NOTHROW(parse_args_impl(arg_tokens));
     CHECK_NE(
-        std::ranges::find(unknown_args, init_arg_value(first_opt_arg_idx)), unknown_args.end()
+        std::ranges::find(state.unknown_args, init_arg_value(first_opt_arg_idx)),
+        state.unknown_args.end()
     );
 }
 
@@ -110,7 +111,7 @@ TEST_CASE_FIXTURE(
     const auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
 
     CHECK_NOTHROW(parse_args_impl(arg_tokens));
-    CHECK(unknown_args.empty());
+    CHECK(state.unknown_args.empty());
 }
 
 // _get_argument

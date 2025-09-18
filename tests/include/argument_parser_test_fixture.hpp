@@ -14,14 +14,16 @@ using ap::detail::c_argument_value_type;
 namespace ap_testing {
 
 struct argument_parser_test_fixture {
-    argument_parser_test_fixture() = default;
-    virtual ~argument_parser_test_fixture() = default;
-
     using arg_ptr_t = ap::argument_parser::arg_ptr_t;
     using arg_token_list_t = ap::argument_parser::arg_token_list_t;
 
+    using parsing_state = ap::argument_parser::parsing_state;
+
     using argument_value_type = std::string;
     using invalid_argument_value_type = int;
+
+    argument_parser_test_fixture() = default;
+    virtual ~argument_parser_test_fixture() = default;
 
     // test utility functions
     [[nodiscard]] std::string init_arg_flag_primary(std::size_t i) const {
@@ -178,7 +180,9 @@ struct argument_parser_test_fixture {
     }
 
     void parse_args_impl(const arg_token_list_t& arg_tokens) {
-        this->sut._parse_args_impl(arg_tokens, this->unknown_args);
+        this->state.curr_arg = nullptr;
+        this->state.curr_pos_arg_it = this->sut._positional_args.begin();
+        this->sut._parse_args_impl(arg_tokens, this->state);
     }
 
     [[nodiscard]] arg_ptr_t get_argument(std::string_view arg_name) const {
@@ -186,7 +190,7 @@ struct argument_parser_test_fixture {
     }
 
     ap::argument_parser sut;
-    std::vector<std::string> unknown_args;
+    parsing_state state;
 };
 
 } // namespace ap_testing
