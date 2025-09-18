@@ -95,6 +95,11 @@ TEST_CASE_FIXTURE(
     auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
     arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(first_opt_arg_idx)));
 
+    std::cout << "Arg tokens:\n";
+    for (const auto& tok : arg_tokens)
+        std::cout << "  Type: " << static_cast<int>(tok.type) << ", Value: " << tok.value << '\n';
+    std::cout << std::endl;
+
     CHECK_NOTHROW(parse_args_impl(arg_tokens));
     CHECK_NE(
         std::ranges::find(unknown_args, init_arg_value(first_opt_arg_idx)), unknown_args.end()

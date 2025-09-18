@@ -54,10 +54,9 @@ TEST_CASE("is_valid_flag_token should return true if the token is a flag token a
     CHECK_FALSE(sut_type{t_flag_primary, ""}.is_valid_flag_token());
     CHECK_FALSE(sut_type{t_flag_secondary, ""}.is_valid_flag_token());
 
-    std::unique_ptr<argument_base> arg_ptr =
-        std::make_unique<optional_argument<>>(argument_name{""});
-    const typename sut_type::arg_ptr_opt_t arg_ptr_opt{std::ref(arg_ptr)};
+    std::shared_ptr<argument_base> arg_ptr =
+        std::make_shared<optional_argument<>>(argument_name{""});
 
-    CHECK(sut_type{t_flag_primary, "", arg_ptr_opt}.is_valid_flag_token());
-    CHECK(sut_type{t_flag_secondary, "", arg_ptr_opt}.is_valid_flag_token());
+    CHECK(sut_type{t_flag_primary, "", arg_ptr}.is_valid_flag_token());
+    CHECK(sut_type{t_flag_secondary, "", arg_ptr}.is_valid_flag_token());
 }

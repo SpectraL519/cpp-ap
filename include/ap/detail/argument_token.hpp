@@ -18,7 +18,7 @@ namespace ap::detail {
 
 /// @brief Structure representing a single command-line argument token.
 struct argument_token {
-    using arg_ptr_opt_t = uptr_opt_t<detail::argument_base>;
+    using arg_ptr_t = std::shared_ptr<detail::argument_base>; ///< Argument pointer type alias.
 
     /// @brief The token type discriminator.
     enum class token_type : std::uint8_t {
@@ -55,12 +55,12 @@ struct argument_token {
      * @return true if `type` is either `t_flag_primary` or `t_flag_secondary`, false otherwise.
      */
     [[nodiscard]] bool is_valid_flag_token() const noexcept {
-        return this->is_flag_token() and this->arg.has_value();
+        return this->is_flag_token() and this->arg != nullptr;
     }
 
     token_type type; ///< The token's type discrimiator value.
     std::string value; ///< The actual token's value.
-    arg_ptr_opt_t arg = std::nullopt; ///< The corresponding argument.
+    arg_ptr_t arg = nullptr; ///< The corresponding argument
 };
 
 } // namespace ap::detail

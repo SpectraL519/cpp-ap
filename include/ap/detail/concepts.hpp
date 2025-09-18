@@ -137,4 +137,8 @@ concept c_sized_range_of =
     std::ranges::sized_range<R>
     and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
 
+template <typename I, typename V, type_validator TV = type_validator::same>
+concept c_forward_iterator_of =
+    std::forward_iterator<I> and c_valid_type<std::remove_cvref_t<std::iter_value_t<I>>, V, TV>;
+
 } // namespace ap::detail

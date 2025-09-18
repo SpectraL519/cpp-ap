@@ -173,7 +173,7 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_unique<positional_argument<T>>(arg_name));
+        this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
         return static_cast<positional_argument<T>&>(*this->_positional_args.back());
     }
 
@@ -199,7 +199,7 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_unique<positional_argument<T>>(arg_name));
+        this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
         return static_cast<positional_argument<T>&>(*this->_positional_args.back());
     }
 
@@ -229,7 +229,7 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.push_back(std::make_unique<optional_argument<T>>(arg_name));
+        this->_optional_args.push_back(std::make_shared<optional_argument<T>>(arg_name));
         return static_cast<optional_argument<T>&>(*this->_optional_args.back());
     }
 
@@ -256,7 +256,7 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.emplace_back(std::make_unique<optional_argument<T>>(arg_name));
+        this->_optional_args.emplace_back(std::make_shared<optional_argument<T>>(arg_name));
         return static_cast<optional_argument<T>&>(*this->_optional_args.back());
     }
 
@@ -315,6 +315,7 @@ public:
     }
 
     /**
+     * @todo use std::ranges::forward_range
      * @brief Parses the command-line arguments.
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
@@ -354,6 +355,7 @@ public:
     }
 
     /**
+     * @todo use std::ranges::forward_range
      * @brief Parses the command-line arguments and exits on error.
      *
      * Calls `parse_args(argv_rng)` in a try-catch block. If an error is thrown, then its
@@ -398,6 +400,7 @@ public:
     }
 
     /**
+     * @todo use std::ranges::forward_range
      * @brief Parses the known command-line arguments.
      *
      * * An argument is considered "known" if it was defined using the parser's argument declaraion methods:
@@ -443,6 +446,7 @@ public:
     }
 
     /**
+     * @todo use std::ranges::forward_range
      * @brief Parses known the command-line arguments and exits on error.
      *
      * Calls `parse_known_args(argv_rng)` in a try-catch block. If an error is thrown, then its message
@@ -488,8 +492,8 @@ public:
      * @return True if the argument has a value, false otherwise.
      */
     [[nodiscard]] bool has_value(std::string_view arg_name) const noexcept {
-        const auto arg_opt = this->_get_argument(arg_name);
-        return arg_opt ? arg_opt->get().has_value() : false;
+        const auto arg = this->_get_argument(arg_name);
+        return arg ? arg->has_value() : false;
     }
 
     /**
@@ -497,8 +501,8 @@ public:
      * @return The count of times the argument has been used.
      */
     [[nodiscard]] std::size_t count(std::string_view arg_name) const noexcept {
-        const auto arg_opt = this->_get_argument(arg_name);
-        return arg_opt ? arg_opt->get().count() : 0ull;
+        const auto arg = this->_get_argument(arg_name);
+        return arg ? arg->count() : 0ull;
     }
 
     /**
@@ -509,16 +513,16 @@ public:
      */
     template <detail::c_argument_value_type T = std::string>
     [[nodiscard]] T value(std::string_view arg_name) const {
-        const auto arg_opt = this->_get_argument(arg_name);
-        if (not arg_opt)
+        const auto arg = this->_get_argument(arg_name);
+        if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
 
-        const auto& arg_value = arg_opt->get().value();
+        const auto& arg_value = arg->value();
         try {
             return std::any_cast<T>(arg_value);
         }
         catch (const std::bad_any_cast&) {
-            throw type_error::invalid_value_type<T>(arg_opt->get().name());
+            throw type_error::invalid_value_type<T>(arg->name());
         }
     }
 
@@ -532,12 +536,12 @@ public:
      */
     template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
     [[nodiscard]] T value_or(std::string_view arg_name, U&& fallback_value) const {
-        const auto arg_opt = this->_get_argument(arg_name);
-        if (not arg_opt)
+        const auto arg = this->_get_argument(arg_name);
+        if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
 
         try {
-            const auto& arg_value = arg_opt->get().value();
+            const auto& arg_value = arg->value();
             return std::any_cast<T>(arg_value);
         }
         catch (const std::logic_error&) {
@@ -546,7 +550,7 @@ public:
             return T{std::forward<U>(fallback_value)};
         }
         catch (const std::bad_any_cast&) {
-            throw type_error::invalid_value_type<T>(arg_opt->get().name());
+            throw type_error::invalid_value_type<T>(arg->name());
         }
     }
 
@@ -558,22 +562,20 @@ public:
      */
     template <detail::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
-        const auto arg_opt = this->_get_argument(arg_name);
-        if (not arg_opt)
+        const auto arg = this->_get_argument(arg_name);
+        if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
-
-        const auto& arg = arg_opt->get();
 
         try {
             std::vector<T> values;
             // TODO: use std::ranges::to after transition to C++23
             std::ranges::copy(
-                detail::any_range_cast_view<T>(arg.values()), std::back_inserter(values)
+                detail::any_range_cast_view<T>(arg->values()), std::back_inserter(values)
             );
             return values;
         }
         catch (const std::bad_any_cast&) {
-            throw type_error::invalid_value_type<T>(arg.name());
+            throw type_error::invalid_value_type<T>(arg->name());
         }
     }
 
@@ -627,11 +629,10 @@ public:
 #endif
 
 private:
-    using arg_ptr_t = std::unique_ptr<detail::argument_base>;
+    using arg_ptr_t = std::shared_ptr<detail::argument_base>;
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
     using arg_ptr_list_iter_t = typename arg_ptr_list_t::iterator;
     using arg_ptr_opt_t = detail::uptr_opt_t<detail::argument_base>;
-    using arg_opt_t = std::optional<std::reference_wrapper<detail::argument_base>>;
     using const_arg_opt_t = std::optional<std::reference_wrapper<const detail::argument_base>>;
 
     using arg_token_list_t = std::vector<detail::argument_token>;
@@ -747,14 +748,13 @@ private:
     template <detail::c_sized_range_of<std::string_view, detail::type_validator::convertible> AR>
     [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) {
         const auto n_args = std::ranges::size(arg_range);
-        if (n_args == 0ull)
-            return arg_token_list_t{};
 
         arg_token_list_t toks;
         toks.reserve(n_args);
         std::ranges::for_each(
             arg_range, std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(toks))
         );
+
         return toks;
     }
 
@@ -821,8 +821,32 @@ private:
         if (opt_arg_it == this->_optional_args.end())
             return false;
 
-        tok.arg.emplace(*opt_arg_it);
+        tok.arg = *opt_arg_it;
         return true;
+    }
+
+    /**
+     * @brief Get the unstripped token value (including the flag prefix).
+     *
+     * Given an argument token, this function reconstructs and returns the original argument string,
+     * including any flag prefix that may have been stripped during tokenization.
+     *
+     * @param tok An argument token, the value of which will be processed.
+     * @return The reconstructed argument value:
+     *   - If the token type is `t_flag_primary`, returns the value prefixed with "--".
+     *   - If the token type is `t_flag_secondary`, returns the value prefixed with "-".
+     *   - For all other token types, returns the token's value as is (without any prefix).
+     */
+    [[nodiscard]] std::string _unstripped_token_value(const detail::argument_token& tok
+    ) const noexcept {
+        switch (tok.type) {
+        case detail::argument_token::t_flag_primary:
+            return std::format("{}{}", this->_flag_prefix, tok.value);
+        case detail::argument_token::t_flag_secondary:
+            return std::format("{}{}", this->_flag_prefix_char, tok.value);
+        default:
+            return tok.value;
+        }
     }
 
     /**
@@ -855,30 +879,6 @@ private:
     }
 
     /**
-     * @brief Get the unstripped token value (including the flag prefix).
-     *
-     * Given an argument token, this function reconstructs and returns the original argument string,
-     * including any flag prefix that may have been stripped during tokenization.
-     *
-     * @param tok An argument token, the value of which will be processed.
-     * @return The reconstructed argument value:
-     *   - If the token type is `t_flag_primary`, returns the value prefixed with "--".
-     *   - If the token type is `t_flag_secondary`, returns the value prefixed with "-".
-     *   - For all other token types, returns the token's value as is (without any prefix).
-     */
-    [[nodiscard]] std::string _unstripped_token_value(const detail::argument_token& tok
-    ) const noexcept {
-        switch (tok.type) {
-        case detail::argument_token::t_flag_primary:
-            return std::format("{}{}", this->_flag_prefix, tok.value);
-        case detail::argument_token::t_flag_secondary:
-            return std::format("{}{}", this->_flag_prefix_char, tok.value);
-        default:
-            return tok.value;
-        }
-    }
-
-    /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
      * @param handle_unknown A flag specifying whether unknown arguments should be handled or collected.
@@ -889,12 +889,17 @@ private:
         std::vector<std::string>& unknown_args,
         const bool handle_unknown = true
     ) {
+        std::cout << "Arg tokens:\n";
+        for (const auto& t : arg_tokens)
+            std::cout << " - " << t.value << '\n';
+        std::cout << std::endl;
+
         // set the current argument indicators
-        arg_ptr_opt_t curr_arg_opt = std::nullopt;
+        arg_ptr_t curr_arg_opt = nullptr;
         arg_ptr_list_iter_t curr_positional_arg_it = this->_positional_args.begin();
 
         if (curr_positional_arg_it != this->_positional_args.end())
-            curr_arg_opt.emplace(*curr_positional_arg_it);
+            curr_arg_opt = *curr_positional_arg_it;
 
         // process argument tokens
         std::ranges::for_each(
@@ -920,53 +925,82 @@ private:
      * @throws ap::parsing_failure
      */
     void _parse_token(
-        arg_ptr_opt_t& curr_arg_opt,
+        arg_ptr_t& curr_arg_opt,
         arg_ptr_list_iter_t& curr_positional_arg_it,
         std::vector<std::string>& unknown_args,
         const bool handle_unknown,
         const detail::argument_token& tok
     ) {
+        std::cout << "Processing token: " << tok.value << '\n';
+
         switch (tok.type) {
         case detail::argument_token::t_flag_primary:
             [[fallthrough]];
         case detail::argument_token::t_flag_secondary: {
             if (not tok.is_valid_flag_token()) {
+                std::cout << " - invalid flag token\n";
                 if (handle_unknown) {
                     throw parsing_failure::unrecognized_argument(this->_unstripped_token_value(tok)
                     );
                 }
                 else {
+                    std::cout << " - unknown argument\n";
                     curr_arg_opt.reset();
                     unknown_args.emplace_back(this->_unstripped_token_value(tok));
+                    std::cout << " - added to unknown args:";
+                    for (const auto& ua : unknown_args)
+                        std::cout << ' ' << ua;
+                    std::cout << std::endl;
                     break;
                 }
             }
 
-            if (tok.arg->get()->mark_used())
+            std::cout << " - valid flag token\n";
+            if (tok.arg->mark_used()) {
+                std::cout << " - argument accepts further values\n";
                 curr_arg_opt = tok.arg;
-            else
+            }
+            else {
+                std::cout << " - argument does not accept further values\n";
                 curr_arg_opt.reset();
+            }
 
             break;
         }
         case detail::argument_token::t_value: {
+            std::cout << " - value token\n";
+
             if (not curr_arg_opt) {
+                std::cout << " - no current argument\n";
                 if (curr_positional_arg_it == this->_positional_args.end()) {
+                    std::cout << " - no positional arguments left\n";
                     unknown_args.emplace_back(tok.value);
+                    std::cout << " - added to unknown args:";
+                    for (const auto& ua : unknown_args)
+                        std::cout << ' ' << ua;
+                    std::cout << std::endl;
                     break;
                 }
 
-                curr_arg_opt.emplace(*curr_positional_arg_it);
+                std::cout << " - switching to the next positional argument" << std::endl;
+                curr_arg_opt = *curr_positional_arg_it;
             }
 
-            if (auto& curr_arg = *curr_arg_opt->get(); not curr_arg.set_value(tok.value)) {
+            std::cout
+                << " - setting value for argument: " << curr_arg_opt->name().str() << std::endl;
+            if (auto& curr_arg = *curr_arg_opt; not curr_arg.set_value(std::string(tok.value))) {
+                // advance to the next positional argument if possible
+                std::cout << " - argument cannot accept further values" << std::endl;
                 if (curr_arg.is_positional()
                     and curr_positional_arg_it != this->_positional_args.end()
                     and ++curr_positional_arg_it != this->_positional_args.end()) {
-                    curr_arg_opt.emplace(*curr_positional_arg_it);
+                    std::cout << " - switching to the next positional argument" << std::endl;
+                    curr_arg_opt = *curr_positional_arg_it;
                     break;
                 }
 
+                std::cout << " - no positional arguments left or the current argument is optional"
+                          << std::endl;
                 curr_arg_opt.reset();
             }
 
@@ -1027,20 +1061,20 @@ private:
      * @param arg_name The name of the argument.
      * @return The argument with the specified name, if found; otherwise, std::nullopt.
      */
-    arg_opt_t _get_argument(std::string_view arg_name) const noexcept {
+    arg_ptr_t _get_argument(std::string_view arg_name) const noexcept {
         const auto predicate = this->_name_match_predicate(arg_name);
 
         if (auto pos_arg_it = std::ranges::find_if(this->_positional_args, predicate);
             pos_arg_it != this->_positional_args.end()) {
-            return std::ref(**pos_arg_it);
+            return *pos_arg_it;
         }
 
         if (auto opt_arg_it = std::ranges::find_if(this->_optional_args, predicate);
             opt_arg_it != this->_optional_args.end()) {
-            return std::ref(**opt_arg_it);
+            return *opt_arg_it;
         }
 
-        return std::nullopt;
+        return nullptr;
     }
 
     /**
