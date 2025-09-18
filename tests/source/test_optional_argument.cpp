@@ -132,8 +132,8 @@ TEST_CASE_FIXTURE(
     sut.bypass_required();
     sut.nargs(non_default_range);
     sut.choices(choices);
-    sut.default_value(default_value);
-    sut.implicit_value(implicit_value);
+    sut.default_values(default_value);
+    sut.implicit_values(implicit_value);
 
     // check the descriptor parameters
     desc = get_desc(sut, verbose);
@@ -152,12 +152,12 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(choices_it->value, ap::detail::join(choices, ", "));
 
     const auto default_value_it =
-        std::ranges::find(desc.params, "default value", &parameter_descriptor::name);
+        std::ranges::find(desc.params, "default value(s)", &parameter_descriptor::name);
     REQUIRE_NE(default_value_it, desc.params.end());
     CHECK_EQ(default_value_it->value, std::to_string(default_value));
 
     const auto implicit_value_it =
-        std::ranges::find(desc.params, "implicit value", &parameter_descriptor::name);
+        std::ranges::find(desc.params, "implicit value(s)", &parameter_descriptor::name);
     REQUIRE_NE(implicit_value_it, desc.params.end());
     CHECK_EQ(implicit_value_it->value, std::to_string(implicit_value));
 }
@@ -314,7 +314,7 @@ TEST_CASE_FIXTURE(
     "default value"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     REQUIRE(has_value(sut));
     CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), default_value);
@@ -325,7 +325,7 @@ TEST_CASE_FIXTURE(
     "has_value() should return false if only the implicit value is set but the argument is not used"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.implicit_value(implicit_value);
+    sut.implicit_values(implicit_value);
 
     CHECK_FALSE(has_value(sut));
 }
@@ -335,7 +335,7 @@ TEST_CASE_FIXTURE(
     "has_value() should return true if the implicit value is set and the agument is used"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.implicit_value(implicit_value);
+    sut.implicit_values(implicit_value);
 
     mark_used(sut);
 
@@ -351,23 +351,23 @@ TEST_CASE_FIXTURE(argument_test_fixture, "has_parsed_values() should return fals
 TEST_CASE_FIXTURE(
     argument_test_fixture,
     "has_parsed_values() should return false regardles of the "
-    "default_value and implicit_value parameters"
+    "default_values and implicit_values parameters"
 ) {
     auto sut = sut_type(arg_name_primary);
 
-    SUBCASE("default_value") {
-        sut.default_value(default_value);
+    SUBCASE("default_values") {
+        sut.default_values(default_value);
         CHECK_FALSE(has_parsed_values(sut));
     }
 
-    SUBCASE("implicit_value") {
-        sut.implicit_value(implicit_value);
+    SUBCASE("implicit_values") {
+        sut.implicit_values(implicit_value);
         CHECK_FALSE(has_parsed_values(sut));
     }
 
-    SUBCASE("default_value and implicit_value") {
-        sut.default_value(default_value);
-        sut.implicit_value(implicit_value);
+    SUBCASE("default_values and implicit_values") {
+        sut.default_values(default_value);
+        sut.implicit_values(implicit_value);
         CHECK_FALSE(has_parsed_values(sut));
     }
 }
@@ -387,7 +387,7 @@ TEST_CASE_FIXTURE(
     argument_test_fixture, "has_predefined_values() should return true if the default value is set"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     CHECK(has_predefined_values(sut));
 }
@@ -398,7 +398,7 @@ TEST_CASE_FIXTURE(
     "not used"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.implicit_value(implicit_value);
+    sut.implicit_values(implicit_value);
 
     CHECK_FALSE(has_predefined_values(sut));
 }
@@ -409,7 +409,7 @@ TEST_CASE_FIXTURE(
     "used"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.implicit_value(implicit_value);
+    sut.implicit_values(implicit_value);
 
     mark_used(sut);
 
@@ -421,8 +421,8 @@ TEST_CASE_FIXTURE(
     "has_predefined_values() should return true if both the default and implicit values are set"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
-    sut.implicit_value(implicit_value);
+    sut.default_values(default_value);
+    sut.implicit_values(implicit_value);
 
     CHECK(has_predefined_values(sut));
 }
@@ -441,7 +441,7 @@ TEST_CASE_FIXTURE(
     "value() should return the default value if one has been provided and argument is not used"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(arbitrary_value);
+    sut.default_values(arbitrary_value);
 
     REQUIRE(has_value(sut));
     CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), arbitrary_value);
@@ -452,7 +452,7 @@ TEST_CASE_FIXTURE(
     "value() should return the implicit value if one has been provided and argument is used"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.implicit_value(implicit_value);
+    sut.implicit_values(implicit_value);
 
     mark_used(sut);
 
@@ -464,8 +464,8 @@ TEST_CASE_FIXTURE(
     argument_test_fixture, "value() should return the argument's value if it has been set"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
-    sut.implicit_value(implicit_value);
+    sut.default_values(default_value);
+    sut.implicit_values(implicit_value);
     set_value(sut, arbitrary_value);
 
     REQUIRE(has_value(sut));
@@ -591,7 +591,7 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name_primary);
     sut.nargs(non_default_range);
 
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     CHECK(std::is_eq(nvalues_ordering(sut)));
 }

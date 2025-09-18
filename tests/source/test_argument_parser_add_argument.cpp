@@ -304,7 +304,7 @@ TEST_CASE_FIXTURE(
     "default_arguments should add the specified optional arguments"
 ) {
     sut.default_arguments(
-        {default_argument::o_help, default_argument::o_input, default_argument::o_output}
+        default_argument::o_help, default_argument::o_input, default_argument::o_output
     );
 
     std::string help_flag;
