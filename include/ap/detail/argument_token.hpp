@@ -7,11 +7,8 @@
 #pragma once
 
 #include "argument_base.hpp"
-#include "typing_utility.hpp"
 
 #include <cstdint>
-#include <functional>
-#include <optional>
 #include <string>
 
 namespace ap::detail {

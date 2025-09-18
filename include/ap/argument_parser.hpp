@@ -126,6 +126,7 @@ public:
      * @brief Add default arguments to the argument parser.
      * @tparam AR Type of the positional argument discriminator range.
      * @param arg_discriminators A range of default positional argument discriminators.
+     * @note `arg_discriminators` must be a `std::ranges::range` with the `ap::default_argument` value type.
      * @return Reference to the argument parser.
      */
     template <detail::c_range_of<default_argument> AR>
@@ -319,6 +320,7 @@ public:
      * @brief Parses the command-line arguments.
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
+     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_args` function assumes that the program name argument has already been discarded.
      */
@@ -364,6 +366,7 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
+     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @attention This overload of the `try_parse_args` function assumes that the program name argument has already been discarded.
      */
     template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
@@ -410,6 +413,7 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
+     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_known_args` function assumes that the program name argument already been discarded.
      */
@@ -420,7 +424,7 @@ public:
         parsing_state state{
             .curr_arg = nullptr,
             .curr_pos_arg_it = this->_positional_args.begin(),
-            .throw_on_unknown = false
+            .fail_on_unknown = false
         };
         this->_parse_args_impl(this->_tokenize(argv_rng), state);
 
@@ -459,6 +463,7 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
+     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @return A vector of unknown argument values.
      * @attention This overload of the `try_parse_known_args` function assumes that the program name argument has already been discarded.
      */
@@ -648,8 +653,8 @@ private:
         arg_ptr_list_iter_t
             curr_pos_arg_it; ///< An iterator pointing to the next positional argument to be processed.
         std::vector<std::string> unknown_args = {}; ///< A vector of unknown argument values.
-        bool throw_on_unknown =
-            true; ///< A flag indicating whether to throw an error on unknown arguments.
+        const bool fail_on_unknown =
+            true; ///< A flag indicating whether to end parsing with an error on unknown arguments.
     };
 
     /**
@@ -757,14 +762,16 @@ private:
      * @brief Converts the command-line arguments into a list of tokens.
      * @tparam AR The command-line argument value range type.
      * @param arg_range The command-line argument value range.
+     * @note `arg_range` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @return A list of preprocessed command-line argument tokens.
      */
-    template <detail::c_sized_range_of<std::string_view, detail::type_validator::convertible> AR>
+    template <detail::c_range_of<std::string_view, detail::type_validator::convertible> AR>
     [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) {
-        const auto n_args = std::ranges::size(arg_range);
-
         arg_token_list_t toks;
-        toks.reserve(n_args);
+
+        if constexpr (std::ranges::sized_range<AR>)
+            toks.reserve(std::ranges::size(arg_range));
+
         std::ranges::for_each(
             arg_range, std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(toks))
         );
@@ -931,7 +938,7 @@ private:
             [[fallthrough]];
         case detail::argument_token::t_flag_secondary: {
             if (not tok.is_valid_flag_token()) {
-                if (state.throw_on_unknown) {
+                if (state.fail_on_unknown) {
                     throw parsing_failure::unrecognized_argument(tok.value);
                 }
                 else {
