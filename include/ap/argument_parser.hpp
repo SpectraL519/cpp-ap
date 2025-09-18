@@ -889,11 +889,6 @@ private:
         std::vector<std::string>& unknown_args,
         const bool handle_unknown = true
     ) {
-        std::cout << "Arg tokens:\n";
-        for (const auto& t : arg_tokens)
-            std::cout << " - " << t.value << '\n';
-        std::cout << std::endl;
-
         // set the current argument indicators
         arg_ptr_t curr_arg_opt = nullptr;
         arg_ptr_list_iter_t curr_positional_arg_it = this->_positional_args.begin();
@@ -931,76 +926,48 @@ private:
         const bool handle_unknown,
         const detail::argument_token& tok
     ) {
-        std::cout << "Processing token: " << tok.value << '\n';
-
         switch (tok.type) {
         case detail::argument_token::t_flag_primary:
             [[fallthrough]];
         case detail::argument_token::t_flag_secondary: {
             if (not tok.is_valid_flag_token()) {
-                std::cout << " - invalid flag token\n";
                 if (handle_unknown) {
                     throw parsing_failure::unrecognized_argument(this->_unstripped_token_value(tok)
                     );
                 }
                 else {
-                    std::cout << " - unknown argument\n";
                     curr_arg_opt.reset();
                     unknown_args.emplace_back(this->_unstripped_token_value(tok));
-                    std::cout << " - added to unknown args:";
-                    for (const auto& ua : unknown_args)
-                        std::cout << ' ' << ua;
-                    std::cout << std::endl;
                     break;
                 }
             }
 
-            std::cout << " - valid flag token\n";
-            if (tok.arg->mark_used()) {
-                std::cout << " - argument accepts further values\n";
+            if (tok.arg->mark_used())
                 curr_arg_opt = tok.arg;
-            }
-            else {
-                std::cout << " - argument does not accept further values\n";
+            else
                 curr_arg_opt.reset();
-            }
 
             break;
         }
         case detail::argument_token::t_value: {
-            std::cout << " - value token\n";
-
             if (not curr_arg_opt) {
-                std::cout << " - no current argument\n";
                 if (curr_positional_arg_it == this->_positional_args.end()) {
-                    std::cout << " - no positional arguments left\n";
                     unknown_args.emplace_back(tok.value);
-                    std::cout << " - added to unknown args:";
-                    for (const auto& ua : unknown_args)
-                        std::cout << ' ' << ua;
-                    std::cout << std::endl;
                     break;
                 }
 
-                std::cout << " - switching to the next positional argument" << std::endl;
                 curr_arg_opt = *curr_positional_arg_it;
             }
 
-            std::cout
-                << " - setting value for argument: " << curr_arg_opt->name().str() << std::endl;
             if (auto& curr_arg = *curr_arg_opt; not curr_arg.set_value(std::string(tok.value))) {
                 // advance to the next positional argument if possible
-                std::cout << " - argument cannot accept further values" << std::endl;
                 if (curr_arg.is_positional()
                     and curr_positional_arg_it != this->_positional_args.end()
                     and ++curr_positional_arg_it != this->_positional_args.end()) {
-                    std::cout << " - switching to the next positional argument" << std::endl;
                     curr_arg_opt = *curr_positional_arg_it;
                     break;
                 }
 
-                std::cout << " - no positional arguments left or the current argument is optional"
-                          << std::endl;
                 curr_arg_opt.reset();
             }
 
