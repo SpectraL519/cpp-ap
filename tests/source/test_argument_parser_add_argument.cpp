@@ -292,11 +292,11 @@ TEST_CASE_FIXTURE(
 
     const auto input_arg = get_argument("input");
     REQUIRE(input_arg);
-    CHECK(is_positional<std::string>(input_arg.value()));
+    CHECK(is_positional<std::string>(*input_arg));
 
     const auto output_arg = get_argument("output");
     REQUIRE(output_arg);
-    CHECK(is_positional<std::string>(output_arg.value()));
+    CHECK(is_positional<std::string>(*output_arg));
 }
 
 TEST_CASE_FIXTURE(
@@ -329,14 +329,14 @@ TEST_CASE_FIXTURE(
 
     const auto help_arg = get_argument(help_flag);
     REQUIRE(help_arg);
-    CHECK(is_optional<bool>(help_arg.value()));
+    CHECK(is_optional<bool>(*help_arg));
 
     const auto input_arg = get_argument(input_flag);
     REQUIRE(input_arg);
-    CHECK(is_optional<std::string>(input_arg.value()));
+    CHECK(is_optional<std::string>(*input_arg));
 
 
     const auto output_arg = get_argument(output_flag);
     REQUIRE(output_arg);
-    CHECK(is_optional<std::string>(output_arg.value()));
+    CHECK(is_optional<std::string>(*output_arg));
 }
