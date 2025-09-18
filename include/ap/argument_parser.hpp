@@ -778,7 +778,9 @@ private:
      * @param arg_value The command-line argument's value to be processed.
      */
     void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) {
-        auto tok = this->_build_token(arg_value);
+        detail::argument_token tok{
+            .type = this->_deduce_token_type(arg_value), .value = std::string(arg_value)
+        };
 
         if (not tok.is_flag_token() or this->_validate_flag_token(tok)) {
             toks.emplace_back(std::move(tok));
@@ -793,10 +795,40 @@ private:
         }
 
 #ifdef AP_UNKNOWN_FLAGS_AS_VALUES
-        toks.emplace_back(detail::argument_token::t_value, std::string(arg_value));
-#else
-        toks.emplace_back(std::move(tok));
+        tok.type = detail::argument_token::t_value;
 #endif
+        toks.emplace_back(std::move(tok));
+    }
+
+    [[nodiscard]] detail::argument_token::token_type _deduce_token_type(
+        const std::string_view arg_value
+    ) const noexcept {
+        if (detail::contains_whitespaces(arg_value))
+            return detail::argument_token::t_value;
+
+        if (arg_value.starts_with(this->_flag_prefix))
+            return detail::argument_token::t_flag_primary;
+
+        if (arg_value.starts_with(this->_flag_prefix_char))
+            return detail::argument_token::t_flag_secondary;
+
+        return detail::argument_token::t_value;
+    }
+
+    /**
+     * @brief Removes the flag prefix from a flag token's value.
+     * @param tok The argument token to be processed.
+     * @return The token's value without the flag prefix.
+     */
+    [[nodiscard]] std::string _strip_flag_prefix(const detail::argument_token& tok) const noexcept {
+        switch (tok.type) {
+        case detail::argument_token::t_flag_primary:
+            return tok.value.substr(this->_primary_flag_prefix_length);
+        case detail::argument_token::t_flag_secondary:
+            return tok.value.substr(this->_secondary_flag_prefix_length);
+        default:
+            return tok.value;
+        }
     }
 
     /**
@@ -840,30 +872,6 @@ private:
     }
 
     /**
-     * @brief Get the unstripped token value (including the flag prefix).
-     *
-     * Given an argument token, this function reconstructs and returns the original argument string,
-     * including any flag prefix that may have been stripped during tokenization.
-     *
-     * @param tok An argument token, the value of which will be processed.
-     * @return The reconstructed argument value:
-     *   - If the token type is `t_flag_primary`, returns the value prefixed with "--".
-     *   - If the token type is `t_flag_secondary`, returns the value prefixed with "-".
-     *   - For all other token types, returns the token's value as is (without any prefix).
-     */
-    [[nodiscard]] std::string _unstripped_token_value(const detail::argument_token& tok
-    ) const noexcept {
-        switch (tok.type) {
-        case detail::argument_token::t_flag_primary:
-            return std::format("{}{}", this->_flag_prefix, tok.value);
-        case detail::argument_token::t_flag_secondary:
-            return std::format("{}{}", this->_flag_prefix_char, tok.value);
-        default:
-            return tok.value;
-        }
-    }
-
-    /**
      * @brief Tries to split a secondary flag token into separate flag token (one for each character of the token's value).
      * @param tok The token to be processed.
      * @return A vector of new argument tokens.
@@ -873,14 +881,17 @@ private:
         const detail::argument_token& tok
     ) noexcept {
         std::vector<detail::argument_token> compound_toks;
-        compound_toks.reserve(tok.value.size());
+        const auto actual_tok_value = this->_strip_flag_prefix(tok);
+
+        compound_toks.reserve(actual_tok_value.size());
 
         if (tok.type != detail::argument_token::t_flag_secondary)
             return compound_toks;
 
-        for (const char c : tok.value) {
+        for (const char c : actual_tok_value) {
             detail::argument_token ctok{
-                detail::argument_token::t_flag_secondary, std::string(1ull, c)
+                detail::argument_token::t_flag_secondary,
+                std::format("{}{}", this->_flag_prefix_char, c)
             };
             if (not this->_validate_flag_token(ctok)) {
                 compound_toks.clear();
@@ -921,12 +932,11 @@ private:
         case detail::argument_token::t_flag_secondary: {
             if (not tok.is_valid_flag_token()) {
                 if (state.throw_on_unknown) {
-                    throw parsing_failure::unrecognized_argument(this->_unstripped_token_value(tok)
-                    );
+                    throw parsing_failure::unrecognized_argument(tok.value);
                 }
                 else {
                     state.curr_arg.reset();
-                    state.unknown_args.emplace_back(this->_unstripped_token_value(tok));
+                    state.unknown_args.emplace_back(tok.value);
                     break;
                 }
             }
@@ -948,7 +958,7 @@ private:
                 state.curr_arg = *state.curr_pos_arg_it;
             }
 
-            if (not state.curr_arg->set_value(std::string(tok.value))) {
+            if (not state.curr_arg->set_value(tok.value)) {
                 // advance to the next positional argument if possible
                 if (state.curr_arg->is_positional()
                     and state.curr_pos_arg_it != this->_positional_args.end()
@@ -1041,18 +1051,18 @@ private:
      */
     [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(const detail::argument_token& flag_tok
     ) noexcept {
-        switch (flag_tok.type) {
-        case detail::argument_token::t_flag_primary:
-            return std::ranges::find(this->_optional_args, flag_tok.value, [](const auto& arg_ptr) {
-                return arg_ptr->name().primary;
-            });
-        case detail::argument_token::t_flag_secondary:
-            return std::ranges::find(this->_optional_args, flag_tok.value, [](const auto& arg_ptr) {
-                return arg_ptr->name().secondary;
-            });
-        default:
+        if (not flag_tok.is_flag_token())
             return this->_optional_args.end();
-        }
+
+        const auto actual_tok_value = this->_strip_flag_prefix(flag_tok);
+        const auto match_type =
+            flag_tok.type == detail::argument_token::t_flag_primary
+                ? detail::argument_name::m_primary
+                : detail::argument_name::m_secondary;
+
+        return std::ranges::find_if(
+            this->_optional_args, this->_name_match_predicate(actual_tok_value, match_type)
+        );
     }
 
     /**

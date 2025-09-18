@@ -72,7 +72,8 @@ TEST_CASE_FIXTURE(
     std::size_t opt_arg_idx = n_positional_args;
     for (std::size_t i = n_positional_args; i < arg_tokens.size(); i += 2ull) {
         REQUIRE_EQ(arg_tokens.at(i).type, argument_token::t_flag_primary);
-        CHECK(init_arg_name(opt_arg_idx).match(arg_tokens.at(i).value));
+        const auto stripped_flag = strip_flag_prefix(arg_tokens.at(i));
+        CHECK(init_arg_name(opt_arg_idx).match(stripped_flag));
 
         REQUIRE_EQ(arg_tokens.at(i + 1ull).type, argument_token::t_value);
         CHECK_EQ(arg_tokens.at(i + 1ull).value, init_arg_value(opt_arg_idx));

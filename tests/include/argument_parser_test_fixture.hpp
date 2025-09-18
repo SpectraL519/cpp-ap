@@ -34,6 +34,10 @@ struct argument_parser_test_fixture {
         return std::format("-ta-{}", i);
     }
 
+    [[nodiscard]] std::string strip_flag_prefix(const argument_token& tok) const {
+        return this->sut._strip_flag_prefix(tok);
+    }
+
     [[nodiscard]] argument_value_type init_arg_value(std::size_t i) const {
         return std::format("test-value-{}", i);
     }
@@ -147,9 +151,8 @@ struct argument_parser_test_fixture {
 
         for (std::size_t i = 0ull; i < n_optional_args; ++i) {
             const auto arg_idx = n_positional_args + i;
-            const auto arg_name = init_arg_name_primary(arg_idx);
 
-            argument_token flag_tok{argument_token::t_flag_primary, arg_name};
+            argument_token flag_tok{argument_token::t_flag_primary, init_arg_flag_primary(arg_idx)};
             const auto opt_arg_it = this->sut._find_opt_arg(flag_tok);
             if (opt_arg_it != this->sut._optional_args.end())
                 flag_tok.arg = *opt_arg_it;
