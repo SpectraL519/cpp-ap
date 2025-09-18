@@ -116,7 +116,7 @@ template <typename T, typename U, type_validator TV = type_validator::same>
 concept c_valid_type = is_valid_type_v<T, U, TV>;
 
 /**
- * @brief Validates that R is a range of type T (ignoring the cvref attributes).
+ * @brief Validates that R is a range of type T (ignoring the cvref qualifiers).
  * @tparam R The range type to check.
  * @tparam V The expected range value type.
  * @tparam TV The validation rule (`same` or `convertible`).
@@ -124,17 +124,6 @@ concept c_valid_type = is_valid_type_v<T, U, TV>;
 template <typename R, typename V, type_validator TV = type_validator::same>
 concept c_range_of =
     std::ranges::range<R>
-    and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
-
-/**
- * @brief Validates that R is a sized range of type T (ignoring the cvref attributes).
- * @tparam R The range type to check.
- * @tparam V The expected range value type.
- * @tparam TV The validation rule (`same` or `convertible`).
- */
-template <typename R, typename V, type_validator TV = type_validator::same>
-concept c_sized_range_of =
-    std::ranges::sized_range<R>
     and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
 
 } // namespace ap::detail
