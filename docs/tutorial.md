@@ -189,8 +189,8 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 >   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a)
 >   - [choices](#6-choices---a-list-of-valid-argument-values)
 >   - [value actions](#7-value-actions---function-performed-after-parsing-an-arguments-value)
->   - [default_value](#8-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed)
->   - [implicit_value](#2-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow)
+>   - [default_values](#8-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
+>   - [implicit_values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
 
 You can also add boolean flags:
 
@@ -198,8 +198,8 @@ You can also add boolean flags:
 parser.add_flag("enable_some_option", "eso").help("enables option: some option");
 /* equivalent to:
 parser.add_optional_argument<bool>("enable_some_option", "eso")
-      .default_value(false)
-      .implicit_value(true)
+      .default_values(false)
+      .implicit_values(true)
       .nargs(0)
       .help("enables option: some option");
 */
@@ -211,8 +211,8 @@ Boolean flags store `true` by default but you can specify whether the flag shoul
 parser.add_flag<false>("disable_another_option", "dao").help("disables option: another option");
 /* equivalent to:
 parser.add_optional_argument<bool>("disable_another_option", "dao")
-      .default_value(true)
-      .implicit_value(false)
+      .default_values(true)
+      .implicit_values(false)
       .nargs(0)
       .help("disables option: another option");
 */
@@ -244,7 +244,7 @@ By default all arguments are visible, but this can be modified using the `hidden
 ```cpp
 parser.program_name("hidden-test")
       .program_description("A simple program")
-      .default_arguments({ap::default_argument::o_help});
+      .default_arguments(ap::default_argument::o_help);
 
 parser.add_optional_argument("hidden")
       .hidden()
@@ -416,16 +416,18 @@ os << data << std::endl;
 
 #### 6. `choices` - A list of valid argument values.
 
-The `choices` parameter takes as an argument an instance of `std::initializer_list` or any `std::ranges::range` type such that its value type is convertible to the argument's `value_type`.
-
 ```cpp
-parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
+parser.add_optional_argument<char>("method", "m").choices('a', 'b', 'c');
+// equivalent to: parser.add_optional_argument<char>("method", "m").choices({'a', 'b', 'c'});
 // passing a value other than a, b or c for the `method` argument will result in an error
 ```
 
 > [!IMPORTANT]
 >
-> The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator).
+> - The `choices` function can be used only if the argument's `value_type` is equality comparable (defines the `==` operator)
+> - The `choices` function can be called with:
+>   - A variadic number of values [convertible to](https://en.cppreference.com/w/cpp/concepts/convertible_to.html) the argument's value type
+>   - An arbitrary [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) type with a value type [convertible to](https://en.cppreference.com/w/cpp/concepts/convertible_to.html) the argument's value type
 
 <br />
 
@@ -474,16 +476,16 @@ Actions are represented as functions, which take the argument's value as an argu
 
 <br />
 
-#### 8. `default_value` - The default value for an argument which will be used if no values for this argument are parsed
+#### 8. `default_values` - A list of values which will be used if no values for an argument have been parsed
 
 > [!WARNING]
 >
-> For both positional and optional arguments, setting the `default_value` parameter disables the `required` option.
+> For both positional and optional arguments, setting the `default_values` parameter disables the `required` option.
 
 ```cpp
 // example: positional arguments
 parser.add_positional_argument("input");
-parser.add_positional_argument("output").default_value("output.txt");
+parser.add_positional_argument("output").default_values("output.txt");
 
 parser.parse_args(argc, argv);
 
@@ -505,7 +507,7 @@ Command                           Result
 ```cpp
 // example: optional arguments
 parser.add_optional_argument("input", "i").required();
-parser.add_optional_argument("output", "o").default_value("output.txt");
+parser.add_optional_argument("output", "o").default_values("output.txt");
 
 parser.parse_args(argc, argv);
 
@@ -524,9 +526,11 @@ Command                                 Result
 ./program -i input.txt -o myfile.txt    Parsing success; Printing data to the `myfile.txt` file
 ```
 
-> [!TIP]
+> [!NOTE]
 >
-> The setter of the `default_value` parameter accepts any type that is convertible to the argument's value type.
+> The `default_values` function can be called with:
+> - A variadic number of values [convertible to](https://en.cppreference.com/w/cpp/concepts/convertible_to.html) the argument's value type
+> - An arbitrary [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) type with a value type [convertible to](https://en.cppreference.com/w/cpp/concepts/convertible_to.html) the argument's value type
 
 <br/>
 <br />
@@ -555,11 +559,11 @@ Here the `print_debug_info` function will be called right after parsing the `--d
 
 <br />
 
-#### 2. `implicit_value` - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
+#### 2. `implicit_values` - A list of values which will be set for an argument if only its flag but no values are parsed from the command-line.
 
 ```cpp
 // example
-parser.add_optional_argument("save", "s").implicit_value("output.txt");
+parser.add_optional_argument("save", "s").implicit_values("output.txt");
 
 parser.parse_args(argc, argv);
 
@@ -579,10 +583,15 @@ Command                       Result
 ./program --save myfile.txt   The data will be saved to `myfile.txt`
 ```
 
+> [!NOTE]
+>
+> The `implicit_values` function can be called with:
+> - A variadic number of values [convertible to](https://en.cppreference.com/w/cpp/concepts/convertible_to.html) the argument's value type
+> - An arbitrary [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) type with a value type [convertible to](https://en.cppreference.com/w/cpp/concepts/convertible_to.html) the argument's value type
+
 > [!TIP]
 >
-> - The `implicit_value` parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see [Adding Arguments](#adding-arguments)).
-> - The setter of the `implicit_value` parameter accepts any type that is convertible to the argument's value type.
+> The `implicit_values` parameter is extremely useful when combined with default value (e.g. in case of boolean flags - see [Adding Arguments](#adding-arguments)).
 
 <br/>
 <br/>
@@ -673,9 +682,9 @@ parser.default_arguments(<args>);
 
 > [!NOTE]
 >
-> - The `default_arguments` function takes as parameter (`<args>`) either a `std::initializer_list<ap::default_argument>` or a type satisfying the [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) concept with the `ap::default_argument` value type.
-
-The available default arguments are:
+> The `default_arguments` function can be called with:
+> - A variadic number of `ap::default_argument` values
+> - An arbitrary [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) type with the `ap::default_argument` value type
 
 - `p_input`:
 
@@ -789,7 +798,7 @@ int main(int argc, char* argv[]) {
     parser.add_optional_argument("optional", "o").help("An optional argument");
     parser.add_flag("flag", "f").help("A boolean flag");
 
-    parser.default_arguments({ap::default_argument::o_help});
+    parser.default_arguments(ap::default_argument::o_help);
 
     // parse command-line arguments
     parser.try_parse_args(argc, argv);

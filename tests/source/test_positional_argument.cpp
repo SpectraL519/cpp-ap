@@ -118,7 +118,7 @@ TEST_CASE_FIXTURE(
     sut.bypass_required();
     sut.nargs(non_default_range);
     sut.choices(choices);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     // check the descriptor parameters
     desc = get_desc(sut, verbose);
@@ -143,7 +143,7 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(choices_it->value, ap::detail::join(choices, ", "));
 
     const auto default_value_it =
-        std::ranges::find(desc.params, "default value", &parameter_descriptor::name);
+        std::ranges::find(desc.params, "default value(s)", &parameter_descriptor::name);
     REQUIRE_NE(default_value_it, desc.params.end());
     CHECK_EQ(default_value_it->value, std::to_string(default_value));
 }
@@ -279,7 +279,7 @@ TEST_CASE_FIXTURE(
     argument_test_fixture, "has_value() should return true if the default value is set"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     CHECK(has_value(sut));
 }
@@ -294,7 +294,7 @@ TEST_CASE_FIXTURE(
     "has_parsed_values() should return false regardless of the default value parameter"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     CHECK_FALSE(has_parsed_values(sut));
 }
@@ -315,7 +315,7 @@ TEST_CASE_FIXTURE(
     argument_test_fixture, "has_predefined_values() should return true if the default value is set"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     CHECK(has_predefined_values(sut));
 }
@@ -345,7 +345,7 @@ TEST_CASE_FIXTURE(
     "were parsed"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     REQUIRE(has_value(sut));
     CHECK_EQ(std::any_cast<sut_value_type>(get_value(sut)), default_value);
@@ -355,7 +355,7 @@ TEST_CASE_FIXTURE(
     argument_test_fixture, "value() should return the argument's parsed value if it has been set"
 ) {
     auto sut = sut_type(arg_name_primary);
-    sut.default_value(default_value);
+    sut.default_values(default_value);
     set_value(sut, valid_value);
 
     REQUIRE(has_value(sut));
@@ -480,7 +480,7 @@ TEST_CASE_FIXTURE(
     auto sut = sut_type(arg_name_primary);
     sut.nargs(non_default_range);
 
-    sut.default_value(default_value);
+    sut.default_values(default_value);
 
     CHECK(std::is_eq(nvalues_ordering(sut)));
 }

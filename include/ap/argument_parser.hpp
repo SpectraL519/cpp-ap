@@ -123,27 +123,39 @@ public:
     }
 
     /**
-     * @brief Set default positional arguments.
+     * @brief Add default arguments to the argument parser.
      * @tparam AR Type of the positional argument discriminator range.
-     * @param arg_discriminator_range A range of default positional argument discriminators.
+     * @param arg_discriminators A range of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
     template <detail::c_range_of<default_argument> AR>
-    argument_parser& default_arguments(const AR& arg_discriminator_range) noexcept {
-        for (const auto arg_discriminator : arg_discriminator_range)
+    argument_parser& default_arguments(const AR& arg_discriminators) noexcept {
+        for (const auto arg_discriminator : arg_discriminators)
             detail::add_default_argument(arg_discriminator, *this);
         return *this;
     }
 
     /**
-     * @brief Set default positional arguments.
-     * @param arg_discriminator_list A list of default positional argument discriminators.
+     * @brief Add default arguments to the argument parser.
+     * @param arg_discriminators A list of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
     argument_parser& default_arguments(
-        const std::initializer_list<default_argument> arg_discriminator_list
+        const std::initializer_list<default_argument>& arg_discriminators
     ) noexcept {
-        return this->default_arguments<>(arg_discriminator_list);
+        return this->default_arguments<>(arg_discriminators);
+    }
+
+    /**
+     * @brief Add default arguments to the argument parser.
+     * @param arg_discriminators A list of default positional argument discriminators.
+     * @return Reference to the argument parser.
+     */
+    argument_parser& default_arguments(
+        const std::same_as<default_argument> auto... arg_discriminators
+    ) noexcept {
+        (detail::add_default_argument(arg_discriminators, *this), ...);
+        return *this;
     }
 
     /**
@@ -250,7 +262,8 @@ public:
 
     /**
      * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
-     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
+     * @note The argument's `default_values` attribute will be set to `not StoreImplicitly`.
      * @param name The primary name of the flag.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added boolean flag argument.
@@ -261,14 +274,15 @@ public:
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
         return this->add_optional_argument<bool>(name, name_discr)
-            .default_value(not StoreImplicitly)
-            .implicit_value(StoreImplicitly)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
             .nargs(0ull);
     }
 
     /**
      * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
-     * @tparam StoreImplicitly A boolean value used as the `implicit_value` parameter of the argument.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
+     * @note The argument's `default_values` attribute will be set to `not StoreImplicitly`.
      * @param primary_name The primary name of the flag.
      * @param secondary_name The secondary name of the flag.
      * @return Reference to the added boolean flag argument.
@@ -278,8 +292,8 @@ public:
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
         return this->add_optional_argument<bool>(primary_name, secondary_name)
-            .default_value(not StoreImplicitly)
-            .implicit_value(StoreImplicitly)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
             .nargs(0ull);
     }
 
@@ -551,17 +565,10 @@ public:
         const auto& arg = arg_opt->get();
 
         try {
-            if (arg.has_predefined_values())
-                // currently an argument may have only one predefined value
-                return std::vector<T>{std::any_cast<T>(arg.value())};
-
             std::vector<T> values;
             // TODO: use std::ranges::to after transition to C++23
             std::ranges::copy(
-                std::views::transform(
-                    arg.values(), [](const std::any& value) { return std::any_cast<T>(value); }
-                ),
-                std::back_inserter(values)
+                detail::any_range_cast_view<T>(arg.values()), std::back_inserter(values)
             );
             return values;
         }
