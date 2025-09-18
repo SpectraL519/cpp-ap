@@ -123,7 +123,7 @@ public:
     }
 
     /**
-     * @brief Set default positional arguments.
+     * @brief Add default arguments to the argument parser.
      * @tparam AR Type of the positional argument discriminator range.
      * @param arg_discriminators A range of default positional argument discriminators.
      * @return Reference to the argument parser.
@@ -136,7 +136,7 @@ public:
     }
 
     /**
-     * @brief Set default positional arguments.
+     * @brief Add default arguments to the argument parser.
      * @param arg_discriminators A list of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
@@ -147,7 +147,7 @@ public:
     }
 
     /**
-     * @brief Set default positional arguments.
+     * @brief Add default arguments to the argument parser.
      * @param arg_discriminators A list of default positional argument discriminators.
      * @return Reference to the argument parser.
      */
@@ -263,6 +263,7 @@ public:
     /**
      * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
      * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
+     * @note The argument's `default_values` attribute will be set to `not StoreImplicitly`.
      * @param name The primary name of the flag.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added boolean flag argument.
@@ -281,6 +282,7 @@ public:
     /**
      * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration.
      * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
+     * @note The argument's `default_values` attribute will be set to `not StoreImplicitly`.
      * @param primary_name The primary name of the flag.
      * @param secondary_name The secondary name of the flag.
      * @return Reference to the added boolean flag argument.

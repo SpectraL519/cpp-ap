@@ -189,8 +189,8 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 >   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a)
 >   - [choices](#6-choices---a-list-of-valid-argument-values)
 >   - [value actions](#7-value-actions---function-performed-after-parsing-an-arguments-value)
->   - [default_values](#8-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-are-parsed)
->   - [implicit_values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow)
+>   - [default_values](#8-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
+>   - [implicit_values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
 
 You can also add boolean flags:
 
@@ -476,7 +476,7 @@ Actions are represented as functions, which take the argument's value as an argu
 
 <br />
 
-#### 8. `default_values` - A list of values which will be used if no values for an argument are parsed
+#### 8. `default_values` - A list of values which will be used if no values for an argument have been parsed
 
 > [!WARNING]
 >
@@ -559,7 +559,7 @@ Here the `print_debug_info` function will be called right after parsing the `--d
 
 <br />
 
-#### 2. `implicit_values` - A list of values which will be set for an argument if only it's flag is parsed from the command-line but no values follow.
+#### 2. `implicit_values` - A list of values which will be set for an argument if only its flag but no values are parsed from the command-line.
 
 ```cpp
 // example

@@ -855,13 +855,13 @@ TEST_CASE_FIXTURE(
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
-        const default_value_type default_values = 2 * static_cast<default_value_type>(i);
+        const default_value_type fallback_value = 2 * static_cast<default_value_type>(i);
 
         CHECK_EQ(
-            sut.value_or<value_type>(arg_name.primary.value(), default_values), default_values
+            sut.value_or<value_type>(arg_name.primary.value(), fallback_value), fallback_value
         );
         CHECK_EQ(
-            sut.value_or<value_type>(arg_name.secondary.value(), default_values), default_values
+            sut.value_or<value_type>(arg_name.secondary.value(), fallback_value), fallback_value
         );
     }
 }
@@ -875,10 +875,10 @@ TEST_CASE_FIXTURE(
 
     for (std::size_t i = 0ull; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
-        const auto default_values = init_arg_value(i);
+        const auto fallback_value = init_arg_value(i);
 
-        CHECK_EQ(sut.value_or(arg_name.primary.value(), default_values), default_values);
-        CHECK_EQ(sut.value_or(arg_name.secondary.value(), default_values), default_values);
+        CHECK_EQ(sut.value_or(arg_name.primary.value(), fallback_value), fallback_value);
+        CHECK_EQ(sut.value_or(arg_name.secondary.value(), fallback_value), fallback_value);
     }
 }
 

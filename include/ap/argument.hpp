@@ -294,7 +294,7 @@ public:
      * @brief Add default values for the argument.
      * @param values The default values to add.
      * @return Reference to the argument instance.
-     * @attention Setting the default values sets the `required` attribute to `false`.
+     * @attention Setting the default values resets the `required` attribute to `false`.
      * @note The method is enabled only if `value_type` is not `none_type`.
      */
     template <detail::c_range_of<value_type, detail::type_validator::convertible> CR>
@@ -311,7 +311,7 @@ public:
      * @brief Add default values for the argument.
      * @param values The default values to add.
      * @return Reference to the argument instance.
-     * @attention Setting the default values sets the `required` attribute to `false`.
+     * @attention Setting the default values resets the `required` attribute to `false`.
      * @note The method is enabled only if `value_type` is not `none_type`.
      */
     argument& default_values(std::initializer_list<value_type> values) noexcept
@@ -324,7 +324,7 @@ public:
      * @brief Add default values for the argument.
      * @param values The default values to add.
      * @return Reference to the argument instance.
-     * @attention Setting the default values sets the `required` attribute to `false`.
+     * @attention Setting the default values resets the `required` attribute to `false`.
      * @note The method is enabled only if `value_type` is not `none_type`.
      */
     argument& default_values(const std::convertible_to<value_type> auto&... values) noexcept
