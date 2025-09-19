@@ -15,11 +15,11 @@
 #include <sstream>
 #include <string_view>
 
-namespace ap::detail {
+namespace ap::util {
 
 /**
  * @brief Converts a value to `std::string`.
- * @tparam T The value type (must satisfy the @ref ap::detail::c_writable concept).
+ * @tparam T The value type (must satisfy the @ref ap::util::c_writable concept).
  * @param value The value to convert.
  */
 template <c_writable T>
@@ -59,4 +59,4 @@ requires(c_writable<std::ranges::range_value_t<R>>)
     return oss.str();
 }
 
-} // namespace ap::detail
+} // namespace ap::util

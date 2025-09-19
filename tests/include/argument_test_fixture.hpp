@@ -7,8 +7,8 @@ using ap::argument;
 using ap::argument_type;
 using ap::detail::argument_descriptor;
 using ap::detail::argument_name;
-using ap::detail::as_string;
-using ap::detail::c_argument_value_type;
+using ap::util::as_string;
+using ap::util::c_argument_value_type;
 
 namespace ap_testing {
 

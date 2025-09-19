@@ -54,7 +54,7 @@ inline detail::callable_type<ap::action_type::observe, std::string> check_file_e
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive lower bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
+template <ap::util::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (not (value > lower_bound))
@@ -69,7 +69,7 @@ detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexc
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive lower bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
+template <ap::util::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (! (value >= lower_bound))
@@ -84,7 +84,7 @@ detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noex
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive upper bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
+template <ap::util::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value < upper_bound))
@@ -99,7 +99,7 @@ detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexc
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive upper bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
+template <ap::util::c_arithmetic T>
 detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value <= upper_bound))
@@ -120,7 +120,7 @@ detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noex
  * @param lower_bound The lower bound of the interval.
  * @param upper_bound The upper bound of the interval.
  */
-template <ap::detail::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
+template <ap::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
 detail::callable_type<ap::action_type::observe, T> within(
     const T lower_bound, const T upper_bound
 ) noexcept {

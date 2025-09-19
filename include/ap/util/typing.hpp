@@ -15,10 +15,7 @@
 #include <source_location>
 #include <string_view>
 
-namespace ap::detail {
-
-template <typename T>
-using uptr_opt_t = std::optional<std::reference_wrapper<std::unique_ptr<T>>>;
+namespace ap::util {
 
 template <typename T>
 constexpr std::string_view get_demangled_type_name() {
@@ -43,4 +40,4 @@ constexpr std::string_view get_demangled_type_name() {
 #endif
 }
 
-} // namespace ap::detail
+} // namespace ap::util

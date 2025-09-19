@@ -6,7 +6,7 @@
 #include <format>
 #include <vector>
 
-using namespace ap::detail;
+using namespace ap::util;
 
 namespace {
 

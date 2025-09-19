@@ -14,7 +14,7 @@
 #include <any>
 #include <ranges>
 
-namespace ap::detail {
+namespace ap::util {
 
 template <typename T>
 auto any_range_cast_view(const c_range_of<std::any> auto& range) {
@@ -23,4 +23,4 @@ auto any_range_cast_view(const c_range_of<std::any> auto& range) {
            });
 }
 
-} // namespace ap::detail
+} // namespace ap::util

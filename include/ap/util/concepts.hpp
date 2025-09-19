@@ -14,7 +14,7 @@
 #include <iostream>
 #include <ranges>
 
-namespace ap::detail {
+namespace ap::util {
 
 /**
  * @brief The concept is satisfied when `T` is @ref ap::none_type.
@@ -126,4 +126,4 @@ concept c_range_of =
     std::ranges::range<R>
     and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
 
-} // namespace ap::detail
+} // namespace ap::util

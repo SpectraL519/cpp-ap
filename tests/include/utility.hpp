@@ -9,12 +9,12 @@ void discard_result(T&&) {
     // do nothing
 }
 
-template <ap::detail::c_argument_value_type T = std::string>
+template <ap::util::c_argument_value_type T = std::string>
 bool is_positional(const ap::detail::argument_base& arg) {
     return dynamic_cast<const ap::positional_argument<T>*>(&arg);
 }
 
-template <ap::detail::c_argument_value_type T = std::string>
+template <ap::util::c_argument_value_type T = std::string>
 bool is_optional(const ap::detail::argument_base& arg) {
     return dynamic_cast<const ap::optional_argument<T>*>(&arg);
 }

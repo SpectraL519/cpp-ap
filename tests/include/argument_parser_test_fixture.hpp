@@ -9,7 +9,7 @@ using ap::optional_argument;
 using ap::positional_argument;
 using ap::detail::argument_name;
 using ap::detail::argument_token;
-using ap::detail::c_argument_value_type;
+using ap::util::c_argument_value_type;
 
 namespace ap_testing {
 
