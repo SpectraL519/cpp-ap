@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "action/detail/utility.hpp"
 #include "action/predefined.hpp"
+#include "action/util/helpers.hpp"
 #include "detail/argument_base.hpp"
 #include "detail/argument_descriptor.hpp"
 #include "nargs/range.hpp"
@@ -221,11 +221,11 @@ public:
      * @note - `value_type` is not `none_type`.
      * @note - `AS` is a valid value action specifier: `action_type::observe`, `action_type::transform`, `action_type::modify`.
      */
-    template <action::detail::c_value_action_specifier AS, typename F>
+    template <action::util::c_value_action_specifier AS, typename F>
     argument& action(F&& action) noexcept
     requires(not util::c_is_none<value_type>)
     {
-        using callable_type = action::detail::callable_type<AS, value_type>;
+        using callable_type = action::util::callable_type<AS, value_type>;
         this->_value_actions.emplace_back(std::forward<callable_type>(action));
         return *this;
     }
@@ -238,7 +238,7 @@ public:
      * @return Reference to the argument instance.
      * @note The method is enabled only for optional arguments and if `AS` is `action_type::on_flag`.
      */
-    template <action::detail::c_flag_action_specifier AS, typename F>
+    template <action::util::c_flag_action_specifier AS, typename F>
     argument& action(F&& action) noexcept
     requires(type == argument_type::optional)
     {
@@ -382,7 +382,7 @@ public:
 
 private:
     /// @brief The argument's value action type alias.
-    using value_action_type = action::detail::value_action_variant_type<T>;
+    using value_action_type = action::util::value_action_variant_type<T>;
 
     /// @brief The argument's flag action type alias.
     using flag_action_type = typename action_type::on_flag::type;
@@ -660,7 +660,7 @@ private:
         if (not this->_is_valid_choice(value))
             throw parsing_failure::invalid_choice(this->_name, str_value);
 
-        const auto apply_visitor = action::detail::apply_visitor<value_type>{value};
+        const auto apply_visitor = action::util::apply_visitor<value_type>{value};
         for (const auto& action : this->_value_actions)
             std::visit(apply_visitor, action);
 

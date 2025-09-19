@@ -3,40 +3,18 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/action/detail/utility.hpp
- * @brief Defines general action-related utility.
+ * @file ap/action/util/helpers.hpp
+ * @brief Defines general action-related helper utility.
  */
 
 #pragma once
 
-#include "ap/action/types.hpp"
+#include "concepts.hpp"
 
 #include <utility>
 #include <variant>
 
-namespace ap::action::detail {
-
-/**
- * @brief The concept is satisfied when `AS` is a valid *value* action action specifier.
- * @tparam AS The action specifier type.
- */
-template <typename AS>
-concept c_value_action_specifier =
-    ap::util::c_one_of<AS, action_type::observe, action_type::transform, action_type::modify>;
-
-/**
- * @brief The concept is satisfied when `AS` is a valid *on-flag* action action specifier.
- * @tparam AS The action specifier type.
- */
-template <typename AS>
-concept c_flag_action_specifier = ap::util::c_one_of<AS, action_type::on_flag>;
-
-/**
- * @brief The concept is satisfied when `AS` is a valid action action specifier.
- * @tparam AS The action specifier type.
- */
-template <typename AS>
-concept c_action_specifier = c_value_action_specifier<AS> or std::same_as<AS, action_type::on_flag>;
+namespace ap::action::util {
 
 /// @brief Template argument action callable type alias.
 template <c_value_action_specifier AS, ap::util::c_argument_value_type T>
@@ -84,4 +62,4 @@ struct apply_visitor {
     value_type& value; ///< A reference to the argument's value for which the action will be applied.
 };
 
-} // namespace ap::action::detail
+} // namespace ap::action::util
