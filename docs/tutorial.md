@@ -1152,4 +1152,4 @@ The library usage examples / demo projects can be found in the [cpp-ap-demo](htt
 
 ## Common Utility
 
-The CPP-AP library provides some additional utility, the descriptions of which can be found on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html)
+The CPP-AP library provides some additional utility, the descriptions of which can be found on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).
