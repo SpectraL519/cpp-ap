@@ -7,8 +7,8 @@
 #pragma once
 
 #include "ap/detail/argument_name.hpp"
-#include "ap/detail/str_utility.hpp"
-#include "ap/detail/typing_utility.hpp"
+#include "ap/util/string.hpp"
+#include "ap/util/typing.hpp"
 
 #include <format>
 

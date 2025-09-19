@@ -1,6 +1,6 @@
 #include "doctest.h"
 
-#include <ap/detail/str_utility.hpp>
+#include <ap/util/string.hpp>
 
 #include <array>
 #include <format>

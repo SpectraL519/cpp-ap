@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ap/argument.hpp>
-#include <ap/detail/str_utility.hpp>
+#include <ap/util/string.hpp>
 
 using ap::argument;
 using ap::argument_type;

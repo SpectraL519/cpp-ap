@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "ap/detail/concepts.hpp"
+#include "ap/util/concepts.hpp"
 
 #include <functional>
 

@@ -10,10 +10,10 @@
 #include "action/predefined.hpp"
 #include "detail/argument_base.hpp"
 #include "detail/argument_descriptor.hpp"
-#include "detail/concepts.hpp"
-#include "detail/ranges_utility.hpp"
 #include "nargs/range.hpp"
 #include "types.hpp"
+#include "util/concepts.hpp"
+#include "util/ranges.hpp"
 
 #ifdef AP_TESTING
 

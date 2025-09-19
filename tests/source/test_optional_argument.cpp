@@ -1,7 +1,7 @@
 #include "argument_test_fixture.hpp"
 #include "doctest.h"
 
-#include <ap/detail/str_utility.hpp>
+#include <ap/util/string.hpp>
 
 using namespace ap_testing;
 using namespace ap::nargs;
