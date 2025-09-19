@@ -21,6 +21,7 @@ namespace ap::util {
  * @brief Converts a value to `std::string`.
  * @tparam T The value type (must satisfy the @ref ap::util::c_writable concept).
  * @param value The value to convert.
+ * @ingroup util
  */
 template <c_writable T>
 [[nodiscard]] std::string as_string(const T& value) noexcept {
@@ -41,6 +42,7 @@ template <c_writable T>
  * @param delimiter The separator string to insert between elements.
  * @return A single string with all elements joined by the delimiter.
  * \todo Replace with std::views::join after transition to C++23.
+ * @ingroup util
  */
 template <std::ranges::range R>
 requires(c_writable<std::ranges::range_value_t<R>>)

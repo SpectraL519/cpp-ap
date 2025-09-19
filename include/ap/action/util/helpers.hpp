@@ -17,6 +17,7 @@
 namespace ap::action::util {
 
 /// @brief Template argument action callable type alias.
+/// @ingroup util
 template <c_value_action_specifier AS, ap::util::c_argument_value_type T>
 using callable_type = typename AS::template type<T>;
 
@@ -30,6 +31,7 @@ using value_action_variant_type = std::variant<
 /**
  * @brief A visitor structure used to apply *value* actions.
  * @tparam T The argument's value type
+ * @ingroup util
  */
 template <ap::util::c_argument_value_type T>
 struct apply_visitor {

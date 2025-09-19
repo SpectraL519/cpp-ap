@@ -19,6 +19,7 @@ namespace ap::action::util {
 /**
  * @brief The concept is satisfied when `AS` is a valid *value* action action specifier.
  * @tparam AS The action specifier type.
+ * @ingroup util
  */
 template <typename AS>
 concept c_value_action_specifier =
@@ -27,6 +28,7 @@ concept c_value_action_specifier =
 /**
  * @brief The concept is satisfied when `AS` is a valid *on-flag* action action specifier.
  * @tparam AS The action specifier type.
+ * @ingroup util
  */
 template <typename AS>
 concept c_flag_action_specifier = ap::util::c_one_of<AS, action_type::on_flag>;
@@ -34,6 +36,7 @@ concept c_flag_action_specifier = ap::util::c_one_of<AS, action_type::on_flag>;
 /**
  * @brief The concept is satisfied when `AS` is a valid action action specifier.
  * @tparam AS The action specifier type.
+ * @ingroup util
  */
 template <typename AS>
 concept c_action_specifier = c_value_action_specifier<AS> or std::same_as<AS, action_type::on_flag>;

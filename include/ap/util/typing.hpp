@@ -17,6 +17,14 @@
 
 namespace ap::util {
 
+/**
+ * @brief Retrieves the demangled name of a type `T`.
+ * @tparam T The type to retrieve the name for.
+ * @return A string view representing the demangled name of type `T`.
+ * @note - The function uses compiler-specific macros to extract the type name.
+ * @note - Supported compilers: GCC, Clang, MSVC.
+ * @ingroup util
+ */
 template <typename T>
 constexpr std::string_view get_demangled_type_name() {
 #if defined(__clang__) || defined(__GNUC__)
