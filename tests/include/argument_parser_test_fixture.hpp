@@ -34,7 +34,7 @@ struct argument_parser_test_fixture {
         return std::format("-ta-{}", i);
     }
 
-    [[nodiscard]] std::string strip_flag_prefix(const argument_token& tok) const {
+    [[nodiscard]] std::string_view strip_flag_prefix(const argument_token& tok) const {
         return this->sut._strip_flag_prefix(tok);
     }
 

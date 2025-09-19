@@ -827,12 +827,13 @@ private:
      * @param tok The argument token to be processed.
      * @return The token's value without the flag prefix.
      */
-    [[nodiscard]] std::string _strip_flag_prefix(const detail::argument_token& tok) const noexcept {
+    [[nodiscard]] std::string_view _strip_flag_prefix(const detail::argument_token& tok
+    ) const noexcept {
         switch (tok.type) {
         case detail::argument_token::t_flag_primary:
-            return tok.value.substr(this->_primary_flag_prefix_length);
+            return std::string_view(tok.value).substr(this->_primary_flag_prefix_length);
         case detail::argument_token::t_flag_secondary:
-            return tok.value.substr(this->_secondary_flag_prefix_length);
+            return std::string_view(tok.value).substr(this->_secondary_flag_prefix_length);
         default:
             return tok.value;
         }
