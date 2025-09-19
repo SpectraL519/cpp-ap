@@ -7,8 +7,8 @@
 #pragma once
 
 #include "ap/detail/argument_name.hpp"
-#include "ap/detail/str_utility.hpp"
-#include "ap/detail/typing_utility.hpp"
+#include "ap/util/string.hpp"
+#include "ap/util/typing.hpp"
 
 #include <format>
 
@@ -93,7 +93,7 @@ struct parsing_failure : public argument_parser_exception {
     static parsing_failure argument_deduction_failure(const std::vector<std::string>& values
     ) noexcept {
         return parsing_failure(
-            std::format("Failed to deduce the argument for values [{}]", detail::join(values))
+            std::format("Failed to deduce the argument for values [{}]", util::join(values))
         );
     }
 
@@ -135,7 +135,7 @@ struct type_error : public argument_parser_exception {
         return type_error(std::format(
             "Invalid value type specified for argument [{}] = {}.",
             arg_name.str(),
-            detail::get_demangled_type_name<InvalidType>()
+            util::get_demangled_type_name<InvalidType>()
         ));
     }
 };

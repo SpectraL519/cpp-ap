@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "ap/detail/argument_name.hpp"
-#include "concepts.hpp"
-#include "str_utility.hpp"
+#include "ap/util/concepts.hpp"
+#include "ap/util/string.hpp"
+#include "argument_name.hpp"
 
 #include <cstdint>
 #include <format>
@@ -49,11 +49,11 @@ public:
 
     /**
      * @brief Adds a parameter descriptor with the given value.
-     * @tparam T The type of the parameter; must satisfy the @ref ap::detail::c_writable concept.
+     * @tparam T The type of the parameter; must satisfy the @ref ap::util::c_writable concept.
      * @param param_name The parameter's name.
      * @param value The parameter's value.
      */
-    template <c_writable T>
+    template <util::c_writable T>
     void add_param(const std::string& param_name, const T& value) {
         std::ostringstream oss;
         oss << std::boolalpha << value;
@@ -62,19 +62,19 @@ public:
 
     /**
      * @brief Adds a range parameter descriptor with the given value.
-     * @tparam R The type of the parameter range. The value type of R must satisfy the @ref ap::detail::c_writable concept.
+     * @tparam R The type of the parameter range. The value type of R must satisfy the @ref ap::util::c_writable concept.
      * @param param_name The parameter's name.
      * @param range The parameter value range.
      * @param delimiter The delimiter used to separate the range values.
      */
     template <std::ranges::range R>
-    requires(c_writable<std::ranges::range_value_t<R>>)
+    requires(util::c_writable<std::ranges::range_value_t<R>>)
     void add_range_param(
         const std::string& param_name,
         const R& range,
         const std::string_view delimiter = default_delimiter
     ) {
-        this->params.emplace_back(param_name, join(range, delimiter));
+        this->params.emplace_back(param_name, util::join(range, delimiter));
     }
 
     /**
@@ -151,7 +151,7 @@ private:
         oss << this->get_basic(indent_width);
         if (not this->params.empty()) {
             oss << " ("
-                << join(this->params | std::views::transform(
+                << util::join(this->params | std::views::transform(
                     [](const auto& param) { return std::format("{}: {}", param.name, param.value); }
                 ))
                 << ")";

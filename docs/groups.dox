@@ -1,0 +1,9 @@
+/**
+ * @file groups.dox
+ * @brief Defines custom groups for documentation.
+ */
+
+/**
+ * @defgroup util Utility
+ * @brief Helper functions, types, concepts, etc.
+ */

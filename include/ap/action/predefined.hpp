@@ -7,7 +7,7 @@
 #pragma once
 
 #include "ap/exceptions.hpp"
-#include "detail/utility.hpp"
+#include "util/helpers.hpp"
 
 #include <filesystem>
 #include <ostream>
@@ -38,7 +38,7 @@ inline typename ap::action_type::on_flag::type print_config(
 }
 
 /// @brief Returns an *observe* action which checks whether lower_bound file with the given name exists.
-inline detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept {
+inline util::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept {
     return [](const std::string& file_path) {
         if (not std::filesystem::exists(file_path))
             throw std::filesystem::filesystem_error(
@@ -54,8 +54,8 @@ inline detail::callable_type<ap::action_type::observe, std::string> check_file_e
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive lower bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept {
+template <ap::util::c_arithmetic T>
+util::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (not (value > lower_bound))
             throw std::out_of_range(
@@ -69,8 +69,8 @@ detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexc
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive lower bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept {
+template <ap::util::c_arithmetic T>
+util::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (! (value >= lower_bound))
             throw std::out_of_range(
@@ -84,8 +84,8 @@ detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noex
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive upper bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept {
+template <ap::util::c_arithmetic T>
+util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value < upper_bound))
             throw std::out_of_range(
@@ -99,8 +99,8 @@ detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexc
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive upper bound to validate against.
  */
-template <ap::detail::c_arithmetic T>
-detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept {
+template <ap::util::c_arithmetic T>
+util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value <= upper_bound))
             throw std::out_of_range(
@@ -120,8 +120,8 @@ detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noex
  * @param lower_bound The lower bound of the interval.
  * @param upper_bound The upper bound of the interval.
  */
-template <ap::detail::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
-detail::callable_type<ap::action_type::observe, T> within(
+template <ap::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
+util::callable_type<ap::action_type::observe, T> within(
     const T lower_bound, const T upper_bound
 ) noexcept {
     return [lower_bound, upper_bound](const T& value) {

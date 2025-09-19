@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/detail/str_utility.hpp
+ * @file ap/util/string.hpp
  * @brief Provides common string utility functions.
  */
 
@@ -15,12 +15,13 @@
 #include <sstream>
 #include <string_view>
 
-namespace ap::detail {
+namespace ap::util {
 
 /**
  * @brief Converts a value to `std::string`.
- * @tparam T The value type (must satisfy the @ref ap::detail::c_writable concept).
+ * @tparam T The value type (must satisfy the @ref ap::util::c_writable concept).
  * @param value The value to convert.
+ * @ingroup util
  */
 template <c_writable T>
 [[nodiscard]] std::string as_string(const T& value) noexcept {
@@ -41,6 +42,7 @@ template <c_writable T>
  * @param delimiter The separator string to insert between elements.
  * @return A single string with all elements joined by the delimiter.
  * \todo Replace with std::views::join after transition to C++23.
+ * @ingroup util
  */
 template <std::ranges::range R>
 requires(c_writable<std::ranges::range_value_t<R>>)
@@ -59,4 +61,4 @@ requires(c_writable<std::ranges::range_value_t<R>>)
     return oss.str();
 }
 
-} // namespace ap::detail
+} // namespace ap::util

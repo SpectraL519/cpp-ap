@@ -9,7 +9,7 @@ using ap::optional_argument;
 using ap::positional_argument;
 using ap::detail::argument_name;
 using ap::detail::argument_token;
-using ap::detail::c_argument_value_type;
+using ap::util::c_argument_value_type;
 
 namespace ap_testing {
 
@@ -34,7 +34,7 @@ struct argument_parser_test_fixture {
         return std::format("-ta-{}", i);
     }
 
-    [[nodiscard]] std::string strip_flag_prefix(const argument_token& tok) const {
+    [[nodiscard]] std::string_view strip_flag_prefix(const argument_token& tok) const {
         return this->sut._strip_flag_prefix(tok);
     }
 

@@ -136,11 +136,11 @@ TEST_CASE_FIXTURE(
 
     const auto nargs_it = std::ranges::find(desc.params, "nargs", &parameter_descriptor::name);
     REQUIRE_NE(nargs_it, desc.params.end());
-    CHECK_EQ(nargs_it->value, ap::detail::as_string(non_default_range));
+    CHECK_EQ(nargs_it->value, ap::util::as_string(non_default_range));
 
     const auto choices_it = std::ranges::find(desc.params, "choices", &parameter_descriptor::name);
     REQUIRE_NE(choices_it, desc.params.end());
-    CHECK_EQ(choices_it->value, ap::detail::join(choices, ", "));
+    CHECK_EQ(choices_it->value, ap::util::join(choices, ", "));
 
     const auto default_value_it =
         std::ranges::find(desc.params, "default value(s)", &parameter_descriptor::name);
