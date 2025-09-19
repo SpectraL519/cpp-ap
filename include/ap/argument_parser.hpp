@@ -11,7 +11,6 @@
 
 #include "argument.hpp"
 #include "detail/argument_token.hpp"
-#include "detail/concepts.hpp"
 #include "types.hpp"
 
 #include <algorithm>
@@ -70,7 +69,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_name(std::string_view name) {
-        if (detail::contains_whitespaces(name))
+        if (util::contains_whitespaces(name))
             throw invalid_configuration("The program name cannot contain whitespace characters!");
 
         this->_program_name.emplace(name);
@@ -93,7 +92,7 @@ public:
      * @return Reference to the argument parser.
      */
     argument_parser& program_version(std::string_view version) {
-        if (detail::contains_whitespaces(version))
+        if (util::contains_whitespaces(version))
             throw invalid_configuration("The program version cannot contain whitespace characters!"
             );
 
@@ -129,7 +128,7 @@ public:
      * @note `arg_discriminators` must be a `std::ranges::range` with the `ap::default_argument` value type.
      * @return Reference to the argument parser.
      */
-    template <detail::c_range_of<default_argument> AR>
+    template <util::c_range_of<default_argument> AR>
     argument_parser& default_arguments(const AR& arg_discriminators) noexcept {
         for (const auto arg_discriminator : arg_discriminators)
             detail::add_default_argument(arg_discriminator, *this);
@@ -166,7 +165,7 @@ public:
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
      */
-    template <detail::c_argument_value_type T = std::string>
+    template <util::c_argument_value_type T = std::string>
     positional_argument<T>& add_positional_argument(const std::string_view primary_name) {
         this->_verify_arg_name_pattern(primary_name);
 
@@ -186,7 +185,7 @@ public:
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
      */
-    template <detail::c_argument_value_type T = std::string>
+    template <util::c_argument_value_type T = std::string>
     positional_argument<T>& add_positional_argument(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
@@ -212,7 +211,7 @@ public:
      * @return Reference to the added optional argument.
      * @throws ap::invalid_configuration
      */
-    template <detail::c_argument_value_type T = std::string>
+    template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
@@ -242,7 +241,7 @@ public:
      * @return Reference to the added optional argument.
      * @throws ap::invalid_configuration
      */
-    template <detail::c_argument_value_type T = std::string>
+    template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
@@ -324,7 +323,7 @@ public:
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_args` function assumes that the program name argument has already been discarded.
      */
-    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
     void parse_args(const AR& argv_rng) {
         this->_validate_argument_configuration();
 
@@ -369,7 +368,7 @@ public:
      * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @attention This overload of the `try_parse_args` function assumes that the program name argument has already been discarded.
      */
-    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
     void try_parse_args(const AR& argv_rng) {
         try {
             this->parse_args(argv_rng);
@@ -417,7 +416,7 @@ public:
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_known_args` function assumes that the program name argument already been discarded.
      */
-    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
     std::vector<std::string> parse_known_args(const AR& argv_rng) {
         this->_validate_argument_configuration();
 
@@ -467,7 +466,7 @@ public:
      * @return A vector of unknown argument values.
      * @attention This overload of the `try_parse_known_args` function assumes that the program name argument has already been discarded.
      */
-    template <detail::c_range_of<std::string, detail::type_validator::convertible> AR>
+    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
     std::vector<std::string> try_parse_known_args(const AR& argv_rng) {
         try {
             return this->parse_known_args(argv_rng);
@@ -520,7 +519,7 @@ public:
      * @return The value of the argument.
      * @throws ap::lookup_failure, ap::type_error
      */
-    template <detail::c_argument_value_type T = std::string>
+    template <util::c_argument_value_type T = std::string>
     [[nodiscard]] T value(std::string_view arg_name) const {
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
@@ -543,7 +542,7 @@ public:
      * @return The value of the argument.
      * @throws ap::lookup_failure, ap::type_error
      */
-    template <detail::c_argument_value_type T = std::string, std::convertible_to<T> U>
+    template <util::c_argument_value_type T = std::string, std::convertible_to<T> U>
     [[nodiscard]] T value_or(std::string_view arg_name, U&& fallback_value) const {
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
@@ -569,7 +568,7 @@ public:
      * @return The values of the argument as a vector.
      * @throws ap::lookup_failure, ap::type_error
      */
-    template <detail::c_argument_value_type T = std::string>
+    template <util::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
@@ -579,7 +578,7 @@ public:
             std::vector<T> values;
             // TODO: use std::ranges::to after transition to C++23
             std::ranges::copy(
-                detail::any_range_cast_view<T>(arg->values()), std::back_inserter(values)
+                util::any_range_cast_view<T>(arg->values()), std::back_inserter(values)
             );
             return values;
         }
@@ -641,7 +640,6 @@ private:
     using arg_ptr_t = std::shared_ptr<detail::argument_base>;
     using arg_ptr_list_t = std::vector<arg_ptr_t>;
     using arg_ptr_list_iter_t = typename arg_ptr_list_t::iterator;
-    using arg_ptr_opt_t = detail::uptr_opt_t<detail::argument_base>;
     using const_arg_opt_t = std::optional<std::reference_wrapper<const detail::argument_base>>;
 
     using arg_token_list_t = std::vector<detail::argument_token>;
@@ -667,7 +665,7 @@ private:
                 arg_name, "An argument name cannot be empty."
             );
 
-        if (detail::contains_whitespaces(arg_name))
+        if (util::contains_whitespaces(arg_name))
             throw invalid_configuration::invalid_argument_name(
                 arg_name, "An argument name cannot contain whitespaces."
             );
@@ -765,7 +763,7 @@ private:
      * @note `arg_range` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @return A list of preprocessed command-line argument tokens.
      */
-    template <detail::c_range_of<std::string_view, detail::type_validator::convertible> AR>
+    template <util::c_range_of<std::string_view, util::type_validator::convertible> AR>
     [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) {
         arg_token_list_t toks;
 
@@ -810,7 +808,7 @@ private:
     [[nodiscard]] detail::argument_token::token_type _deduce_token_type(
         const std::string_view arg_value
     ) const noexcept {
-        if (detail::contains_whitespaces(arg_value))
+        if (util::contains_whitespaces(arg_value))
             return detail::argument_token::t_value;
 
         if (arg_value.starts_with(this->_flag_prefix))
@@ -827,12 +825,13 @@ private:
      * @param tok The argument token to be processed.
      * @return The token's value without the flag prefix.
      */
-    [[nodiscard]] std::string _strip_flag_prefix(const detail::argument_token& tok) const noexcept {
+    [[nodiscard]] std::string_view _strip_flag_prefix(const detail::argument_token& tok
+    ) const noexcept {
         switch (tok.type) {
         case detail::argument_token::t_flag_primary:
-            return tok.value.substr(this->_primary_flag_prefix_length);
+            return std::string_view(tok.value).substr(this->_primary_flag_prefix_length);
         case detail::argument_token::t_flag_secondary:
-            return tok.value.substr(this->_secondary_flag_prefix_length);
+            return std::string_view(tok.value).substr(this->_secondary_flag_prefix_length);
         default:
             return tok.value;
         }
@@ -845,7 +844,7 @@ private:
      */
     [[nodiscard]] detail::argument_token _build_token(const std::string_view arg_value
     ) const noexcept {
-        if (detail::contains_whitespaces(arg_value))
+        if (util::contains_whitespaces(arg_value))
             return {.type = detail::argument_token::t_value, .value = std::string(arg_value)};
 
         if (arg_value.starts_with(this->_flag_prefix))

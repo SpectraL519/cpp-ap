@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "ap/detail/concepts.hpp"
+#include "ap/util/concepts.hpp"
 
 #include <functional>
 
@@ -22,7 +22,7 @@ namespace ap::action_type {
  * performs some logic on it without modifying it.
  */
 struct observe {
-    template <ap::detail::c_argument_value_type T>
+    template <ap::util::c_argument_value_type T>
     using type = std::function<void(const T&)>;
 };
 
@@ -33,7 +33,7 @@ struct observe {
  * returns a new value with which the argument will be initialized.
  */
 struct transform {
-    template <ap::detail::c_argument_value_type T>
+    template <ap::util::c_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
@@ -44,7 +44,7 @@ struct transform {
  * already initialized argument.
  */
 struct modify {
-    template <ap::detail::c_argument_value_type T>
+    template <ap::util::c_argument_value_type T>
     using type = std::function<void(T&)>;
 };
 

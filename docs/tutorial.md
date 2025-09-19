@@ -17,6 +17,7 @@
   - [Parsing Known Arguments](#parsing-known-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
 - [Examples](#examples)
+- [Common Utility](#common-utility)
 
 <br/>
 
@@ -618,7 +619,7 @@ Command                       Result
   Throws if the provided file path does not exist.
 
   ```cpp
-  detail::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept;
+  ap::action::util::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept;
   ```
 
 - `gt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -626,8 +627,8 @@ Command                       Result
   Validates that the value is strictly greater than `lower_bound`.
 
   ```cpp
-  template <ap::detail::c_arithmetic T>
-  detail::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept;
+  template <ap::util::c_arithmetic T>
+  ap::action::util::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept;
   ```
 
 - `geq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -635,8 +636,8 @@ Command                       Result
   Validates that the value is greater than or equal to `lower_bound`.
 
   ```cpp
-  template <ap::detail::c_arithmetic T>
-  detail::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept;
+  template <ap::util::c_arithmetic T>
+  ap::action::util::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept;
   ```
 
 - `lt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -644,8 +645,8 @@ Command                       Result
   Validates that the value is strictly less than `upper_bound`.
 
   ```cpp
-  template <ap::detail::c_arithmetic T>
-  detail::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept
+  template <ap::util::c_arithmetic T>
+  ap::action::util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept
   ```
 
 - `leq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -653,8 +654,8 @@ Command                       Result
   Validates that the value is less than or equal to `upper_bound`.
 
   ```cpp
-  template <ap::detail::c_arithmetic T>
-  detail::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept
+  template <ap::util::c_arithmetic T>
+  ap::action::util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept
   ```
 
 - `within` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -662,8 +663,8 @@ Command                       Result
   Checks if the value is within the given interval. Bound inclusivity is customizable using template parameters.
 
   ```cpp
-  template <ap::detail::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
-  detail::callable_type<ap::action_type::observe, T> within(
+  template <ap::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
+  ap::action::util::callable_type<ap::action_type::observe, T> within(
       const T lower_bound, const T upper_bound
   ) noexcept
   ```
@@ -805,7 +806,7 @@ int main(int argc, char* argv[]) {
 
     // use the program's arguments
     std::cout << "positional: " << parser.value("positional") << std::endl
-              << "optional: " << join(parser.values("optional")) << std::endl
+              << "optional: " << ap::util::join(parser.values("optional")) << std::endl
               << "flag: " << std::boolalpha << parser.value<bool>("flag") << std::endl;
 
     return 0;
@@ -837,8 +838,8 @@ Here, the argument is parsed only if either `--optional` (primary flag) or `-o` 
 >
 > parser.try_parse_args(argc, argv);
 >
-> std::cout << "first: " << join(parser.values("first")) << std::endl
->           << "second: " << join(parser.values("second")) << std::endl;
+> std::cout << "first: " << ap::util::join(parser.values("first")) << std::endl
+>           << "second: " << ap::util::join(parser.values("second")) << std::endl;
 >
 > /* Example execution:
 > > ./program --first value1 value2 --second value3 value4
@@ -988,7 +989,7 @@ parser.try_parse_args(argc, argv);
 
 std::cout << "Verbosity level: " << parser.count("verbose")
           << "\nOption used: " << std::boolalpha << parser.value<bool>("use-option")
-          << "\nNumbers: " << join(parser.values<int>("numbers"), ", ") // join is an imaginary function :)
+          << "\nNumbers: " << ap::util::join(parser.values<int>("numbers"), ", ")
           << std::endl;
 
 /*
@@ -1020,7 +1021,7 @@ parser.add_optional_argument("recognized", "r")
 
 parser.parse_args(argc, argv);
 
-std::cout << "recognized = " << join(parser.values("recognized")) << std::endl;
+std::cout << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl;
 
 /* Example executions:
 > ./program --recognized value1 value2
@@ -1052,8 +1053,8 @@ parser.add_optional_argument("recognized", "r")
 
 const auto unknown_args = parser.parse_known_args(argc, argv);
 
-std::cout << "recognized = " << join(parser.values("recognized")) << std::endl
-          << "unkown = " << join(unknown_args) << std::endl;
+std::cout << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
+          << "unkown = " << ap::util::join(unknown_args) << std::endl;
 
 /* Example execution:
 > ./program value0 --recognized value1 value2 value3 --unrecognized value
@@ -1077,8 +1078,8 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 > const auto unknown_args = parser.parse_known_args(argc, argv);
 >
 > std::cout << "positional = " << parser.value("positional") << std::endl
->           << "recognized = " << join(parser.values("recognized")) << std::endl
->           << "unkown = " << join(unknown_args) << std::endl;
+>           << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
+>           << "unkown = " << ap::util::join(unknown_args) << std::endl;
 >
 > /* Example execution:
 > > ./program --recognized value1 value2 value3 --unrecognized value4 value5 --recognized value6
@@ -1144,3 +1145,11 @@ You can retrieve the argument's value(s) with:
 ## Examples
 
 The library usage examples / demo projects can be found in the [cpp-ap-demo](https://github.com/SpectraL519/cpp-ap-demo) repository.
+
+<br/>
+<br/>
+<br/>
+
+## Common Utility
+
+The CPP-AP library provides some additional utility, the descriptions of which can be found on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).

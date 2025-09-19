@@ -2,7 +2,10 @@
 // This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/detail/typing_utility.hpp
+/**
+ * @file ap/util/typing.hpp
+ * @brief Provides common typing utility functions.
+ */
 
 #pragma once
 
@@ -12,11 +15,16 @@
 #include <source_location>
 #include <string_view>
 
-namespace ap::detail {
+namespace ap::util {
 
-template <typename T>
-using uptr_opt_t = std::optional<std::reference_wrapper<std::unique_ptr<T>>>;
-
+/**
+ * @brief Retrieves the demangled name of a type `T`.
+ * @tparam T The type to retrieve the name for.
+ * @return A string view representing the demangled name of type `T`.
+ * @note - The function uses compiler-specific macros to extract the type name.
+ * @note - Supported compilers: GCC, Clang, MSVC.
+ * @ingroup util
+ */
 template <typename T>
 constexpr std::string_view get_demangled_type_name() {
 #if defined(__clang__) || defined(__GNUC__)
@@ -40,4 +48,4 @@ constexpr std::string_view get_demangled_type_name() {
 #endif
 }
 
-} // namespace ap::detail
+} // namespace ap::util

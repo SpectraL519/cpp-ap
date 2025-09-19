@@ -63,6 +63,7 @@ Command-line argument parser for C++20
     - [Parsing Known Arguments](/docs/tutorial.md#parsing-known-arguments)
   - [Retrieving Argument Values](/docs/tutorial.md#retrieving-argument-values)
   - [Examples](/docs/tutorial.md#examples)
+  - [Common Utility](/docs/tutorial.md#common-utility)
 - [Dev notes](/docs/dev_notes.md#dev-notes)
   - [Building and testing](/docs/dev_notes.md#building-and-testing)
   - [Formatting](/docs/dev_notes.md#formatting)
