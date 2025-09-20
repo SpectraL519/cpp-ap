@@ -42,7 +42,7 @@ enum class argument_type : bool { positional, optional };
  * @attention Some member functions are conditionally enabled/disabled depending on the argument type and value type.
  *
  * Example usage:
- * @code
+ * @code{.cpp}
  * ap::argument_parser parser;
  * parser.add_positional_argument("input", "i")
  *       .help("An input file path");

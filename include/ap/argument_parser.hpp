@@ -31,7 +31,8 @@ namespace ap {
 
 class argument_parser;
 
-enum class default_argument {
+// TODO: add doc comment
+enum class default_argument : std::uint8_t {
     p_input,
     p_output,
     o_help,
@@ -41,6 +42,9 @@ enum class default_argument {
     o_multi_output
 };
 
+// TODO: add doc comment
+enum class unknown_policy : std::uint8_t { fail, warn, ignore, as_values };
+
 namespace detail {
 
 void add_default_argument(const default_argument, argument_parser&) noexcept;
@@ -49,7 +53,39 @@ void add_default_argument(const default_argument, argument_parser&) noexcept;
 
 /**
  * @brief The main argument parser class.
- * This class is responsible for the configuration and parsing of command-line arguments.
+ *
+ * This class provides methods to define positional and optional arguments, set parser options,
+ * and parse the command-line input.
+ *
+ * Example usage:
+ * @code{.cpp}
+ * #include <ap/argument_parser.hpp>
+ *
+ * int main(int argc, char* argv[]) {
+ *     // Create the argument parser instance
+ *     ap::argument_parser parser;
+ *     parser.program_name("fcopy")
+ *           .program_version({ .major = 1, .minor = 0, .patch = 0 })
+ *           .program_description("A simple file copy utility.")
+ *           .default_arguments(
+ *               ap::default_argument::o_help,
+ *               ap::default_argument::o_input,
+ *               ap::default_argument::o_output
+ *           )
+ *           .verbose()
+ *           .unknown_arguments_policy(ap::unknown_policy::ignore)
+ *           .try_parse_args(argc, argv);
+ *
+ *     // Access parsed argument values
+ *     const std::string input_file = parser.value("input");
+ *     const std::string output_file = parser.value("output");
+ *
+ *     // Application logic here
+ *     std::cout << "Copying from " << input_file << " to " << output_file << std::endl;
+ *
+ *     return 0;
+ * }
+ * @endcode
  */
 class argument_parser {
 public:
@@ -118,6 +154,17 @@ public:
      */
     argument_parser& verbose(const bool v = true) noexcept {
         this->_verbose = v;
+        return *this;
+    }
+
+    /**
+     * @brief Set the unknown argument flags handling policy.
+     * @param policy The unknown arguments policy value.
+     * @return Reference to the argument parser.
+     * @note The default unknown arguments policy value is `ap::unknown_policy::fail`.
+     */
+    argument_parser& unknown_arguments_policy(const unknown_policy policy) noexcept {
+        this->_unknown_policy = policy;
         return *this;
     }
 
@@ -328,7 +375,7 @@ public:
         this->_validate_argument_configuration();
 
         parsing_state state{.curr_arg = nullptr, .curr_pos_arg_it = this->_positional_args.begin()};
-        this->_parse_args_impl(this->_tokenize(argv_rng), state);
+        this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
 
         if (not state.unknown_args.empty())
             throw parsing_failure::argument_deduction_failure(state.unknown_args);
@@ -374,7 +421,7 @@ public:
             this->parse_args(argv_rng);
         }
         catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ERROR] : " << err.what() << std::endl << *this << std::endl;
+            std::cerr << "[ap::error] " << err.what() << std::endl << *this << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -423,9 +470,9 @@ public:
         parsing_state state{
             .curr_arg = nullptr,
             .curr_pos_arg_it = this->_positional_args.begin(),
-            .fail_on_unknown = false
+            .parse_known_only = true
         };
-        this->_parse_args_impl(this->_tokenize(argv_rng), state);
+        this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
 
         if (not this->_are_required_args_bypassed()) {
             this->_verify_required_args();
@@ -472,7 +519,7 @@ public:
             return this->parse_known_args(argv_rng);
         }
         catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ERROR] : " << err.what() << std::endl << *this << std::endl;
+            std::cerr << "[ap::error] " << err.what() << std::endl << *this << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -651,8 +698,8 @@ private:
         arg_ptr_list_iter_t
             curr_pos_arg_it; ///< An iterator pointing to the next positional argument to be processed.
         std::vector<std::string> unknown_args = {}; ///< A vector of unknown argument values.
-        const bool fail_on_unknown =
-            true; ///< A flag indicating whether to end parsing with an error on unknown arguments.
+        const bool parse_known_only =
+            false; ///< A flag indicating whether only known arguments should be parsed.
     };
 
     /**
@@ -764,14 +811,15 @@ private:
      * @return A list of preprocessed command-line argument tokens.
      */
     template <util::c_range_of<std::string_view, util::type_validator::convertible> AR>
-    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range) {
+    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range, const parsing_state& state) {
         arg_token_list_t toks;
 
         if constexpr (std::ranges::sized_range<AR>)
             toks.reserve(std::ranges::size(arg_range));
 
         std::ranges::for_each(
-            arg_range, std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(toks))
+            arg_range,
+            std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(state), std::ref(toks))
         );
 
         return toks;
@@ -782,7 +830,9 @@ private:
      * @param toks The argument token list to which the processed token(s) will be appended.
      * @param arg_value The command-line argument's value to be processed.
      */
-    void _tokenize_arg(arg_token_list_t& toks, const std::string_view arg_value) {
+    void _tokenize_arg(
+        const parsing_state& state, arg_token_list_t& toks, const std::string_view arg_value
+    ) {
         detail::argument_token tok{
             .type = this->_deduce_token_type(arg_value), .value = std::string(arg_value)
         };
@@ -799,10 +849,26 @@ private:
             return;
         }
 
-#ifdef AP_UNKNOWN_FLAGS_AS_VALUES
-        tok.type = detail::argument_token::t_value;
-#endif
-        toks.emplace_back(std::move(tok));
+        // unknown flag
+        if (state.parse_known_only) {
+            toks.emplace_back(std::move(tok));
+            return;
+        }
+
+        switch (this->_unknown_policy) {
+        case unknown_policy::fail:
+            throw parsing_failure::unrecognized_argument(tok.value);
+        case unknown_policy::warn:
+            std::cerr << "[ap::warning] Unrecognized argument '" << tok.value
+                      << "' will be ignored." << std::endl;
+            [[fallthrough]];
+        case unknown_policy::ignore:
+            return;
+        case unknown_policy::as_values:
+            tok.type = detail::argument_token::t_value;
+            toks.emplace_back(std::move(tok));
+            break;
+        }
     }
 
     [[nodiscard]] detail::argument_token::token_type _deduce_token_type(
@@ -818,23 +884,6 @@ private:
             return detail::argument_token::t_flag_secondary;
 
         return detail::argument_token::t_value;
-    }
-
-    /**
-     * @brief Removes the flag prefix from a flag token's value.
-     * @param tok The argument token to be processed.
-     * @return The token's value without the flag prefix.
-     */
-    [[nodiscard]] std::string_view _strip_flag_prefix(const detail::argument_token& tok
-    ) const noexcept {
-        switch (tok.type) {
-        case detail::argument_token::t_flag_primary:
-            return std::string_view(tok.value).substr(this->_primary_flag_prefix_length);
-        case detail::argument_token::t_flag_secondary:
-            return std::string_view(tok.value).substr(this->_secondary_flag_prefix_length);
-        default:
-            return tok.value;
-        }
     }
 
     /**
@@ -910,6 +959,23 @@ private:
     }
 
     /**
+     * @brief Removes the flag prefix from a flag token's value.
+     * @param tok The argument token to be processed.
+     * @return The token's value without the flag prefix.
+     */
+    [[nodiscard]] std::string_view _strip_flag_prefix(const detail::argument_token& tok
+    ) const noexcept {
+        switch (tok.type) {
+        case detail::argument_token::t_flag_primary:
+            return std::string_view(tok.value).substr(this->_primary_flag_prefix_length);
+        case detail::argument_token::t_flag_secondary:
+            return std::string_view(tok.value).substr(this->_secondary_flag_prefix_length);
+        default:
+            return tok.value;
+        }
+    }
+
+    /**
      * @brief Implementation of parsing command-line arguments.
      * @param arg_tokens The list of command-line argument tokens.
      * @param state The current parsing state.
@@ -937,13 +1003,14 @@ private:
             [[fallthrough]];
         case detail::argument_token::t_flag_secondary: {
             if (not tok.is_valid_flag_token()) {
-                if (state.fail_on_unknown) {
-                    throw parsing_failure::unrecognized_argument(tok.value);
-                }
-                else {
+                if (state.parse_known_only) {
                     state.curr_arg.reset();
                     state.unknown_args.emplace_back(tok.value);
                     break;
+                }
+                else {
+                    // should never happen as unknown flags are filtered out during tokenization
+                    throw parsing_failure::unrecognized_argument(tok.value);
                 }
             }
 
@@ -1106,15 +1173,16 @@ private:
     std::optional<std::string> _program_version;
     std::optional<std::string> _program_description;
     bool _verbose = false;
+    unknown_policy _unknown_policy = unknown_policy::fail;
 
     arg_ptr_list_t _positional_args;
     arg_ptr_list_t _optional_args;
 
-    static constexpr uint8_t _primary_flag_prefix_length = 2u;
-    static constexpr uint8_t _secondary_flag_prefix_length = 1u;
+    static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
+    static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;
     static constexpr char _flag_prefix_char = '-';
     static constexpr std::string_view _flag_prefix = "--";
-    static constexpr uint8_t _indent_width = 2;
+    static constexpr std::uint8_t _indent_width = 2;
 };
 
 namespace detail {
