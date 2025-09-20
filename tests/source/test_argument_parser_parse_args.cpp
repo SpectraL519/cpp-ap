@@ -281,7 +281,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unrecognized_argument(unknown_arg_name).what(),
+        parsing_failure::unknwon_argument(unknown_arg_name).what(),
         parsing_failure
     );
 
@@ -322,7 +322,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unrecognized_argument(invalid_flag).what(),
+        parsing_failure::unknwon_argument(invalid_flag).what(),
         parsing_failure
     );
 
@@ -1118,7 +1118,7 @@ TEST_CASE_FIXTURE(
     // parse args
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unrecognized_argument(invalid_flag).what(),
+        parsing_failure::unknwon_argument(invalid_flag).what(),
         parsing_failure
     );
 

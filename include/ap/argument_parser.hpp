@@ -31,19 +31,94 @@ namespace ap {
 
 class argument_parser;
 
-// TODO: add doc comment
+/// @brief The enumeration of default arguments provided by the library.
 enum class default_argument : std::uint8_t {
+    /**
+     * @brief A positional argument representing a single input file path.
+     * Equivalent to:
+     * @code{.cpp}
+     * parser.add_positional_argument("input")
+     *       .action<ap::action_type::observe>(ap::action::check_file_exists())
+     *       .help("Input file path");
+     * @endcode
+     */
     p_input,
+
+    /**
+     * @brief A positional argument representing a single output file path.
+     * Equivalent to:
+     * @code{.cpp}
+     * parser.add_positional_argument("output")
+     *       .help("Output file path");
+     * @endcode
+     */
     p_output,
+
+    /**
+     * @brief An optional argument representing the program's help flag.
+     * Equivalent to:
+     * @code{.cpp}
+     * parser.add_optional_argument<ap::none_type>("help")
+     *       .action<ap::action_type::on_flag>(ap::action::print_help(parser, EXIT_SUCCESS))
+     *       .help("Display the help message");
+     * @endcode
+     */
     o_help,
+
+    /**
+     * @brief A positional argument representing multiple input file paths.
+     * Equivalent to:
+     * @code{.cpp}
+     * parser.add_positional_argument("input", "i")
+     *       .nargs(1ull)
+     *       .action<ap::action_type::observe>(ap::action::check_file_exists())
+     *       .help("Input file path");
+     * @endcode
+     */
     o_input,
+
+    /**
+     * @brief A positional argument representing multiple output file paths.
+     * Equivalent to:
+     * @code{.cpp}
+     * parser.add_positional_argument("output", "o")
+     *       .nargs(1ull)
+     *       .help("Output file path");
+     * @endcode
+     */
     o_output,
+
+    /**
+     * @brief A positional argument representing multiple input file paths.
+     * Equivalent to:
+     * @code{.cpp}
+     * parser.add_positional_argument("input", "i")
+     *       .nargs(ap::nargs::at_least(1ull))
+     *       .action<ap::action_type::observe>(ap::action::check_file_exists())
+     *       .help("Input file path");
+     * @endcode
+     */
     o_multi_input,
+
+    /**
+     * @brief A positional argument representing multiple output file paths.
+     * Equivalent to:
+     * @code{.cpp}
+     * parser.add_positional_argument("output", "o")
+     *       .nargs(ap::nargs::at_least(1ull))
+     *       .help("Output file path");
+     * @endcode
+     */
     o_multi_output
 };
 
-// TODO: add doc comment
-enum class unknown_policy : std::uint8_t { fail, warn, ignore, as_values };
+/// @brief The enumeration of policies for handling unknown arguments.
+enum class unknown_policy : std::uint8_t {
+    fail, ///< Throw an exception when an unknown argument is encountered.
+    warn, ///< Issue a warning when an unknown argument is encountered.
+    ignore, ///< Ignore unknown arguments.
+    as_values ///< Treat unknown arguments as values.
+};
 
 namespace detail {
 
@@ -532,7 +607,7 @@ public:
      * Checks the value of the `help` boolean flag argument and if the value `is` true,
      * prints the parser to `std::cout` anb exists with `EXIT_SUCCESS` status.
      */
-    [[deprecated("The default help argument now uses the `print_config` on-flag action")]]
+    [[deprecated("The default help argument now uses the `print_help` on-flag action")]]
     void handle_help_action() const noexcept {
         if (this->value<bool>("help")) {
             std::cout << *this << std::endl;
@@ -635,11 +710,11 @@ public:
     }
 
     /**
-     * @brief Prints the argument parser's details to an output stream.
+     * @brief Prints the argument parser's help message to an output stream.
      * @param verbose The verbosity mode value.
      * @param os Output stream.
      */
-    void print_config(const bool verbose, std::ostream& os = std::cout) const noexcept {
+    void print_help(const bool verbose, std::ostream& os = std::cout) const noexcept {
         if (this->_program_name) {
             os << "Program: " << this->_program_name.value();
             if (this->_program_version)
@@ -666,7 +741,7 @@ public:
     /**
      * @brief Prints the argument parser's details to an output stream.
      *
-     * An `os << parser` operation is equivalent to a `parser.print_config(_verbose, os)` call,
+     * An `os << parser` operation is equivalent to a `parser.print_help(_verbose, os)` call,
      * where `_verbose` is the inner verbosity mode, which can be set with the @ref verbose function.
      *
      * @param os Output stream.
@@ -674,7 +749,7 @@ public:
      * @return The modified output stream.
      */
     friend std::ostream& operator<<(std::ostream& os, const argument_parser& parser) noexcept {
-        parser.print_config(parser._verbose, os);
+        parser.print_help(parser._verbose, os);
         return os;
     }
 
@@ -857,10 +932,10 @@ private:
 
         switch (this->_unknown_policy) {
         case unknown_policy::fail:
-            throw parsing_failure::unrecognized_argument(tok.value);
+            throw parsing_failure::unknwon_argument(tok.value);
         case unknown_policy::warn:
-            std::cerr << "[ap::warning] Unrecognized argument '" << tok.value
-                      << "' will be ignored." << std::endl;
+            std::cerr << "[ap::warning] Unknown argument '" << tok.value << "' will be ignored."
+                      << std::endl;
             [[fallthrough]];
         case unknown_policy::ignore:
             return;
@@ -1010,7 +1085,7 @@ private:
                 }
                 else {
                     // should never happen as unknown flags are filtered out during tokenization
-                    throw parsing_failure::unrecognized_argument(tok.value);
+                    throw parsing_failure::unknwon_argument(tok.value);
                 }
             }
 
@@ -1207,29 +1282,24 @@ inline void add_default_argument(
         break;
 
     case default_argument::o_help:
-        arg_parser.add_flag("help", "h")
-            .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
+        arg_parser.add_optional_argument<none_type>("help", "h")
+            .action<action_type::on_flag>(action::print_help(arg_parser, EXIT_SUCCESS))
             .help("Display the help message");
         break;
 
     case default_argument::o_input:
         arg_parser.add_optional_argument("input", "i")
-            .required()
             .nargs(1ull)
             .action<action_type::observe>(action::check_file_exists())
             .help("Input file path");
         break;
 
     case default_argument::o_output:
-        arg_parser.add_optional_argument("output", "o")
-            .required()
-            .nargs(1ull)
-            .help("Output file path");
+        arg_parser.add_optional_argument("output", "o").nargs(1ull).help("Output file path");
         break;
 
     case default_argument::o_multi_input:
         arg_parser.add_optional_argument("input", "i")
-            .required()
             .nargs(ap::nargs::at_least(1ull))
             .action<action_type::observe>(action::check_file_exists())
             .help("Input files paths");
@@ -1237,7 +1307,6 @@ inline void add_default_argument(
 
     case default_argument::o_multi_output:
         arg_parser.add_optional_argument("output", "o")
-            .required()
             .nargs(ap::nargs::at_least(1ull))
             .help("Output files paths");
         break;
