@@ -179,7 +179,7 @@ struct argument_parser_test_fixture {
 
     // private function callers
     [[nodiscard]] arg_token_list_t tokenize(int argc, char* argv[]) {
-        return this->sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)));
+        return this->sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)), state);
     }
 
     void parse_args_impl(const arg_token_list_t& arg_tokens) {

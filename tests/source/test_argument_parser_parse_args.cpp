@@ -6,6 +6,7 @@ using namespace ap_testing;
 using namespace ap::nargs;
 using ap::invalid_configuration;
 using ap::parsing_failure;
+using ap::unknown_policy;
 
 struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string_view test_program_name = "test program name";
@@ -277,11 +278,11 @@ TEST_CASE_FIXTURE(
     auto argc = get_argc(no_args, n_opt_clargs);
     auto argv = init_argv(no_args, n_opt_clargs);
 
-    const auto unknown_arg_name = init_arg_flag_primary(opt_arg_idx);
+    const auto unknown_arg_flag = init_arg_flag_primary(opt_arg_idx);
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unrecognized_argument(unknown_arg_name).what(),
+        parsing_failure::unknown_argument(unknown_arg_flag).what(),
         parsing_failure
     );
 
@@ -322,7 +323,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unrecognized_argument(invalid_flag).what(),
+        parsing_failure::unknown_argument(invalid_flag).what(),
         parsing_failure
     );
 
@@ -1118,7 +1119,7 @@ TEST_CASE_FIXTURE(
     // parse args
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::unrecognized_argument(invalid_flag).what(),
+        parsing_failure::unknown_argument(invalid_flag).what(),
         parsing_failure
     );
 
@@ -1172,5 +1173,128 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(sut.count("third-arg"), third_arg_count);
 
     // cleanup
+    free_argv(argc, argv);
+}
+
+// unknown_arguments_policy
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should throw when an unrecognized argument flag is used with the default unknown "
+    "arguments handling policy (fail)"
+) {
+    add_arguments(no_args, no_args);
+
+    constexpr std::size_t n_opt_clargs = 1ull;
+    constexpr std::size_t opt_arg_idx = 0ull;
+
+    auto argc = get_argc(no_args, n_opt_clargs);
+    auto argv = init_argv(no_args, n_opt_clargs);
+
+    const auto unknown_arg_name = init_arg_flag_primary(opt_arg_idx);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::unknown_argument(unknown_arg_name).what(),
+        parsing_failure
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should throw when an unrecognized argument flag is used with the default unknown "
+    "arguments handling policy (fail)"
+) {
+    const auto unknown_arg_flag = "--unknown";
+    const std::vector<std::string> argv_vec{"program", unknown_arg_flag};
+
+    const auto argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        parsing_failure::unknown_argument(unknown_arg_flag).what(),
+        parsing_failure
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should print a warning to std::cerr when an unrecognized argument flag is used "
+    "with the warn unknown arguments handling policy"
+) {
+    sut.unknown_arguments_policy(unknown_policy::warn);
+
+    const auto unknown_arg_flag = "--unknown";
+    const std::vector<std::string> argv_vec{"program", unknown_arg_flag};
+
+    const auto argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // redirect std::cerr
+    std::stringstream tmp_buffer;
+    auto* cerr_buffer = std::cerr.rdbuf(tmp_buffer.rdbuf());
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+    CHECK_EQ(
+        tmp_buffer.str(),
+        std::format("[ap::warning] Unknown argument '{}' will be ignored.\n", unknown_arg_flag)
+    );
+
+    free_argv(argc, argv);
+
+    // reset std::cerr
+    std::cerr.rdbuf(cerr_buffer);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should do nothing when an unrecognized argument flag is used with the ignore "
+    "unknown arguments handling policy"
+) {
+    sut.unknown_arguments_policy(unknown_policy::ignore);
+
+    const auto unknown_arg_flag = "--unknown";
+    const std::vector<std::string> argv_vec{"program", unknown_arg_flag};
+
+    const auto argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    // redirect std::cerr
+    std::stringstream tmp_buffer;
+    auto* cerr_buffer = std::cerr.rdbuf(tmp_buffer.rdbuf());
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+    CHECK_EQ(tmp_buffer.str(), "");
+
+    free_argv(argc, argv);
+
+    // reset std::cerr
+    std::cerr.rdbuf(cerr_buffer);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should treat an unrecognized argument flag as a value with the as_values unknown "
+    "arguments handling policy"
+) {
+    sut.unknown_arguments_policy(unknown_policy::as_values);
+    sut.add_positional_argument("known");
+
+    const auto unknown_arg_flag = "--unknown";
+    const std::vector<std::string> argv_vec{"program", unknown_arg_flag};
+
+    const auto argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    CHECK_NOTHROW(sut.parse_args(argc, argv));
+    CHECK_EQ(sut.value("known"), unknown_arg_flag);
+
     free_argv(argc, argv);
 }
