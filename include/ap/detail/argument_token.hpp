@@ -76,7 +76,7 @@ struct argument_token {
 
     token_type type; ///< The token's type discrimiator value.
     std::string value; ///< The actual token's value.
-    arg_ptr_list_t args; ///< The corresponding argument
+    arg_ptr_list_t args = {}; ///< The corresponding argument
 };
 
 } // namespace ap::detail

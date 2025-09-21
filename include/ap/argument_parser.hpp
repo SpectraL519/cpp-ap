@@ -1034,8 +1034,8 @@ private:
 
     /**
      * @brief Parse a single command-line argument token.
-     * @param curr_arg The currently processed argument.
      * @param state The current parsing state.
+     * @param tok The token to be parsed.
      * @throws ap::parsing_failure
      */
     void _parse_token(parsing_state& state, const detail::argument_token& tok) {
@@ -1044,73 +1044,77 @@ private:
             return;
         }
 
-        switch (tok.type) {
-        case detail::argument_token::t_flag_primary:
-            [[fallthrough]];
-        case detail::argument_token::t_flag_secondary:
-            [[fallthrough]];
-        case detail::argument_token::t_flag_compound: {
-            if (not tok.is_valid_flag_token()) {
-                if (state.parse_known_only) {
-                    state.curr_arg.reset();
-                    state.unknown_args.emplace_back(tok.value);
-                    break;
-                }
-                else {
-                    // should never happen as unknown flags are filtered out during tokenization
-                    throw parsing_failure::unknown_argument(tok.value);
-                }
+        if (tok.is_flag_token())
+            this->_parse_flag_token(state, tok);
+        else
+            this->_parse_value_token(state, tok);
+    }
+
+    /**
+     * @brief Parse a single command-line argument *flag* token.
+     * @param state The current parsing state.
+     * @param tok The token to be parsed.
+     * @throws ap::parsing_failure
+     */
+    void _parse_flag_token(parsing_state& state, const detail::argument_token& tok) {
+        if (not tok.is_valid_flag_token()) {
+            if (state.parse_known_only) {
+                state.curr_arg.reset();
+                state.unknown_args.emplace_back(tok.value);
+                return;
             }
-
-            for (const auto& arg : tok.args) {
-                if (arg->mark_used())
-                    state.curr_arg = arg;
-                else
-                    state.curr_arg.reset();
+            else {
+                // should never happen as unknown flags are filtered out during tokenization
+                throw parsing_failure::unknown_argument(tok.value);
             }
-
-
-            break;
         }
-        case detail::argument_token::t_value: {
-            if (not state.curr_arg) {
-                if (state.curr_pos_arg_it == this->_positional_args.end()) {
-                    state.unknown_args.emplace_back(tok.value);
-                    break;
-                }
 
-                state.curr_arg = *state.curr_pos_arg_it;
-            }
-
-            this->_set_argument_value(state, tok.value);
-            break;
-        }
+        for (const auto& arg : tok.args) {
+            if (arg->mark_used())
+                state.curr_arg = arg;
+            else
+                state.curr_arg.reset();
         }
     }
 
-    // TODO: add doc comment
+    /**
+     * @brief Parse a single command-line argument *value* token.
+     * @param state The current parsing state.
+     * @param tok The token to be parsed.
+     * @throws ap::parsing_failure
+     */
+    void _parse_value_token(parsing_state& state, const detail::argument_token& tok) {
+        if (not state.curr_arg) {
+            if (state.curr_pos_arg_it == this->_positional_args.end()) {
+                state.unknown_args.emplace_back(tok.value);
+                return;
+            }
+
+            state.curr_arg = *state.curr_pos_arg_it;
+        }
+
+        this->_set_argument_value(state, tok.value);
+    }
+
+    /**
+     * @brief Set the value for the currently processed argument.
+     * @attention This function assumes that the current argument is set (i.e. `state.curr_arg != nullptr`).
+     * @param state The current parsing state.
+     * @param value The value to be set for the current argument.
+     */
     void _set_argument_value(parsing_state& state, const std::string_view value) noexcept {
         if (state.curr_arg->set_value(std::string(value)))
             return; // argument still accepts values
 
-        if (this->_try_advance_positional(state))
+        // advance to the next positional argument if possible
+        if (state.curr_arg->is_positional()
+            and state.curr_pos_arg_it != this->_positional_args.end()
+            and ++state.curr_pos_arg_it != this->_positional_args.end()) {
+            state.curr_arg = *state.curr_pos_arg_it;
             return;
+        }
 
         state.curr_arg.reset();
-    }
-
-    // TODO: add doc comment
-    [[nodiscard]] bool _try_advance_positional(parsing_state& state) const noexcept {
-        if (not state.curr_arg->is_positional())
-            return false;
-
-        if (state.curr_pos_arg_it == this->_positional_args.end())
-            return false;
-
-        if (++state.curr_pos_arg_it == this->_positional_args.end())
-            return false;
-
-        return true;
     }
 
     /**
