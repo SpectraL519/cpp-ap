@@ -123,6 +123,11 @@ public:
         return not this->_required and this->_bypass_required;
     }
 
+    /// @return `true` if the argument is greedy, `false` otherwise.
+    [[nodiscard]] bool is_greedy() const noexcept override {
+        return this->_greedy;
+    }
+
     // attribute setters
 
     /**
@@ -172,6 +177,19 @@ public:
     }
 
     /**
+     * @brief Set the `greedy` attribute of the argument.
+     * @param g The attribute value.
+     * @return Reference to the argument instance.
+     * @note The method is enabled only if `value_type` is not `none_type`.
+     */
+    argument& greedy(const bool g = true) noexcept
+    requires(not util::c_is_none<value_type>)
+    {
+        this->_greedy = g;
+        return *this;
+    }
+
+    /**
      * @brief Set the nargs range for the argument.
      * @param range The attribute value.
      * @return Reference to the argument instance.
@@ -193,8 +211,7 @@ public:
     argument& nargs(const count_type n) noexcept
     requires(not util::c_is_none<value_type>)
     {
-        this->_nargs_range = nargs::range(n);
-        return *this;
+        return this->nargs(nargs::range(n));
     }
 
     /**
@@ -207,8 +224,7 @@ public:
     argument& nargs(const count_type lower, const count_type upper) noexcept
     requires(not util::c_is_none<value_type>)
     {
-        this->_nargs_range = nargs::range(lower, upper);
-        return *this;
+        return this->nargs(nargs::range(lower, upper));
     }
 
     /**
@@ -671,7 +687,7 @@ private:
     // attributes
     const ap::detail::argument_name _name; ///< The argument's name.
     std::optional<std::string> _help_msg; ///< The argument's help message.
-    nargs::range _nargs_range; ///< The argument's nargs range attribute.
+    nargs::range _nargs_range; ///< The argument's nargs range attribute value.
     [[no_unique_address]] value_arg_specific_type<std::vector<std::any>>
         _default_values; ///< The argument's default value list.
     [[no_unique_address]] value_arg_specific_type<optional_specific_type<std::vector<std::any>>>
@@ -683,9 +699,10 @@ private:
     [[no_unique_address]] value_arg_specific_type<std::vector<value_action_type>>
         _value_actions; ///< The argument's value actions collection.
 
-    bool _required : 1; ///< The argument's `required` attribute.
-    bool _bypass_required : 1 = false; ///< The argument's `bypass_required` attribute.
-    bool _hidden : 1 = false; ///< The argument's `hidden` attribute.
+    bool _required : 1; ///< The argument's `required` attribute value.
+    bool _bypass_required : 1 = false; ///< The argument's `bypass_required` attribute value.
+    bool _greedy : 1 = false; ///< The argument's `greedy` attribute value.
+    bool _hidden : 1 = false; ///< The argument's `hidden` attribute value.
 
     // parsing result
     [[no_unique_address]] optional_specific_type<std::size_t>

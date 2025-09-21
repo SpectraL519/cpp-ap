@@ -50,6 +50,9 @@ public:
     /// @return `true` if the argument is allowed to bypass the required check, `false` otherwise.
     virtual bool is_bypass_required_enabled() const noexcept = 0;
 
+    /// @return `true` if the argument is greedy, `false` otherwise.
+    virtual bool is_greedy() const noexcept = 0;
+
 protected:
     /// @param verbose The verbosity mode value. If `true` all non-default parameters will be included in the output.
     /// @return An argument descriptor object for the argument.

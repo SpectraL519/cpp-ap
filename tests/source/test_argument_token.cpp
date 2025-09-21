@@ -47,8 +47,8 @@ TEST_CASE("is_flag_token should return true if the token's type is either primar
     CHECK_FALSE(sut_type{t_value, ""}.is_flag_token());
 }
 
-TEST_CASE("is_valid_flag_token should return true if the token is a flag token and it's arg member "
-          "is set") {
+TEST_CASE("is_valid_flag_token should return true if the token is a flag token and it's args list "
+          "is not empty") {
     CHECK_FALSE(sut_type{t_value, ""}.is_valid_flag_token());
 
     CHECK_FALSE(sut_type{t_flag_primary, ""}.is_valid_flag_token());
@@ -57,6 +57,6 @@ TEST_CASE("is_valid_flag_token should return true if the token is a flag token a
     std::shared_ptr<argument_base> arg_ptr =
         std::make_shared<optional_argument<>>(argument_name{""});
 
-    CHECK(sut_type{t_flag_primary, "", arg_ptr}.is_valid_flag_token());
-    CHECK(sut_type{t_flag_secondary, "", arg_ptr}.is_valid_flag_token());
+    CHECK(sut_type{t_flag_primary, "", {arg_ptr}}.is_valid_flag_token());
+    CHECK(sut_type{t_flag_secondary, "", {arg_ptr}}.is_valid_flag_token());
 }
