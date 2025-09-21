@@ -932,7 +932,7 @@ private:
 
         switch (this->_unknown_policy) {
         case unknown_policy::fail:
-            throw parsing_failure::unknwon_argument(tok.value);
+            throw parsing_failure::unknown_argument(tok.value);
         case unknown_policy::warn:
             std::cerr << "[ap::warning] Unknown argument '" << tok.value << "' will be ignored."
                       << std::endl;
@@ -1085,7 +1085,7 @@ private:
                 }
                 else {
                     // should never happen as unknown flags are filtered out during tokenization
-                    throw parsing_failure::unknwon_argument(tok.value);
+                    throw parsing_failure::unknown_argument(tok.value);
                 }
             }
 

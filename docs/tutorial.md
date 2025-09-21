@@ -1014,6 +1014,19 @@ The available policies are:
 >
 > - The unkown argument flags handling polciy only affects the parser's behaviour when calling the `parse_args` or `try_parse_args` methods.
 > - When parsing known args with `parse_known_args` or `try_parse_known_args` all unknown arguments (flags and values) are collected and returned as the parsing result, ignoring the specified policy for handling unknown arguments.
+>
+> Consider a similar example as above with only the argument parsing function changed:
+> ```cpp
+> const auto unknown_args = parser.try_parse_known_args(argc, argv);
+> std::cout << "known = " << ap::util::join(parser.values("known")) << std::endl
+>           << "unknown = " << ap::util::join(unknown_args) << std::endl;
+> ```
+> This would produce the following output regardless of the specified unknown arguments policy.
+> ```shell
+> > ./test --known --unknown
+> known =
+> unknown = --unknown
+> ```
 
 <br />
 <br />

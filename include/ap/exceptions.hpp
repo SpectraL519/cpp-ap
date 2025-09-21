@@ -57,7 +57,7 @@ struct invalid_configuration : public argument_parser_exception {
 struct parsing_failure : public argument_parser_exception {
     explicit parsing_failure(const std::string& message) : argument_parser_exception(message) {}
 
-    static parsing_failure unknwon_argument(const std::string_view arg_name) noexcept {
+    static parsing_failure unknown_argument(const std::string_view arg_name) noexcept {
         return parsing_failure(std::format("Unknown argument [{}].", arg_name));
     }
 
