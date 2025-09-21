@@ -899,15 +899,9 @@ private:
             return;
         }
 
-        // invalid flag - check for compound secondary flag
-        const auto compound_toks = this->_try_split_compound_flag(tok);
-        if (not compound_toks.empty()) { // not a valid compound flag
-            toks.insert(toks.end(), compound_toks.begin(), compound_toks.end());
-            return;
-        }
-
-        // unknown flag
-        if (state.parse_known_only) {
+        // not a value token -> flag token
+        // flag token could not be validated -> unknown flag
+        if (state.parse_known_only) { // do nothing (will be handled during parsing)
             toks.emplace_back(std::move(tok));
             return;
         }
@@ -944,31 +938,6 @@ private:
     }
 
     /**
-     * @brief Builds an argument token from the given value.
-     * @param arg_value The command-line argument's value to be processed.
-     * @return An argument token with removed flag prefix (if present) and an adequate token type.
-     */
-    [[nodiscard]] detail::argument_token _build_token(const std::string_view arg_value
-    ) const noexcept {
-        if (util::contains_whitespaces(arg_value))
-            return {.type = detail::argument_token::t_value, .value = std::string(arg_value)};
-
-        if (arg_value.starts_with(this->_flag_prefix))
-            return {
-                .type = detail::argument_token::t_flag_primary,
-                .value = std::string(arg_value.substr(this->_primary_flag_prefix_length))
-            };
-
-        if (arg_value.starts_with(this->_flag_prefix_char))
-            return {
-                .type = detail::argument_token::t_flag_secondary,
-                .value = std::string(arg_value.substr(this->_secondary_flag_prefix_length))
-            };
-
-        return {.type = detail::argument_token::t_value, .value = std::string(arg_value)};
-    }
-
-    /**
      * @brief Check if a flag token is valid based on its value.
      * @attention Sets the `arg` member of the token if an argument with the given name (token's value) is present.
      * @param tok The argument token to validate.
@@ -977,42 +946,57 @@ private:
     [[nodiscard]] bool _validate_flag_token(detail::argument_token& tok) noexcept {
         const auto opt_arg_it = this->_find_opt_arg(tok);
         if (opt_arg_it == this->_optional_args.end())
+            return this->_validate_compound_flag_token(tok);
+
+        tok.args.emplace_back(*opt_arg_it);
+        return true;
+    }
+
+    // TODO: add doc comment
+    bool _validate_compound_flag_token(detail::argument_token& tok) noexcept {
+        if (tok.type != detail::argument_token::t_flag_secondary)
             return false;
 
-        tok.arg = *opt_arg_it;
+        const auto actual_tok_value = this->_strip_flag_prefix(tok);
+        tok.args.reserve(actual_tok_value.size());
+
+        for (const char c : actual_tok_value) {
+            const auto opt_arg_it = std::ranges::find_if(
+                this->_optional_args,
+                this->_name_match_predicate(
+                    std::string_view(&c, 1ull), detail::argument_name::m_secondary
+                )
+            );
+            if (opt_arg_it == this->_optional_args.end())
+                return false;
+
+            tok.args.emplace_back(*opt_arg_it);
+        }
+
+        tok.type = detail::argument_token::t_flag_compound;
         return true;
     }
 
     /**
-     * @brief Tries to split a secondary flag token into separate flag token (one for each character of the token's value).
-     * @param tok The token to be processed.
-     * @return A vector of new argument tokens.
-     * @note If ANY of the characters in the token's value does not match an argument, an empty vector will be returned.
+     * @brief Find an optional argument based on a flag token.
+     * @param flag_tok An argument_token instance, the value of which will be used to find the argument.
+     * @return An iterator to the argument's position.
+     * @note If the `flag_tok.type` is not a valid flag token, then the end iterator will be returned.
      */
-    [[nodiscard]] std::vector<detail::argument_token> _try_split_compound_flag(
-        const detail::argument_token& tok
+    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(const detail::argument_token& flag_tok
     ) noexcept {
-        std::vector<detail::argument_token> compound_toks;
-        const auto actual_tok_value = this->_strip_flag_prefix(tok);
+        if (not flag_tok.is_flag_token())
+            return this->_optional_args.end();
 
-        compound_toks.reserve(actual_tok_value.size());
+        const auto actual_tok_value = this->_strip_flag_prefix(flag_tok);
+        const auto match_type =
+            flag_tok.type == detail::argument_token::t_flag_primary
+                ? detail::argument_name::m_primary
+                : detail::argument_name::m_secondary;
 
-        if (tok.type != detail::argument_token::t_flag_secondary)
-            return compound_toks;
-
-        for (const char c : actual_tok_value) {
-            detail::argument_token ctok{
-                detail::argument_token::t_flag_secondary,
-                std::format("{}{}", this->_flag_prefix_char, c)
-            };
-            if (not this->_validate_flag_token(ctok)) {
-                compound_toks.clear();
-                return compound_toks;
-            }
-            compound_toks.emplace_back(std::move(ctok));
-        }
-
-        return compound_toks;
+        return std::ranges::find_if(
+            this->_optional_args, this->_name_match_predicate(actual_tok_value, match_type)
+        );
     }
 
     /**
@@ -1055,10 +1039,17 @@ private:
      * @throws ap::parsing_failure
      */
     void _parse_token(parsing_state& state, const detail::argument_token& tok) {
+        if (state.curr_arg and state.curr_arg->is_greedy()) {
+            this->_set_argument_value(state, tok.value);
+            return;
+        }
+
         switch (tok.type) {
         case detail::argument_token::t_flag_primary:
             [[fallthrough]];
-        case detail::argument_token::t_flag_secondary: {
+        case detail::argument_token::t_flag_secondary:
+            [[fallthrough]];
+        case detail::argument_token::t_flag_compound: {
             if (not tok.is_valid_flag_token()) {
                 if (state.parse_known_only) {
                     state.curr_arg.reset();
@@ -1071,10 +1062,13 @@ private:
                 }
             }
 
-            if (tok.arg->mark_used())
-                state.curr_arg = tok.arg;
-            else
-                state.curr_arg.reset();
+            for (const auto& arg : tok.args) {
+                if (arg->mark_used())
+                    state.curr_arg = arg;
+                else
+                    state.curr_arg.reset();
+            }
+
 
             break;
         }
@@ -1088,21 +1082,35 @@ private:
                 state.curr_arg = *state.curr_pos_arg_it;
             }
 
-            if (not state.curr_arg->set_value(tok.value)) {
-                // advance to the next positional argument if possible
-                if (state.curr_arg->is_positional()
-                    and state.curr_pos_arg_it != this->_positional_args.end()
-                    and ++state.curr_pos_arg_it != this->_positional_args.end()) {
-                    state.curr_arg = *state.curr_pos_arg_it;
-                    break;
-                }
-
-                state.curr_arg.reset();
-            }
-
+            this->_set_argument_value(state, tok.value);
             break;
         }
         }
+    }
+
+    // TODO: add doc comment
+    void _set_argument_value(parsing_state& state, const std::string_view value) noexcept {
+        if (state.curr_arg->set_value(std::string(value)))
+            return; // argument still accepts values
+
+        if (this->_try_advance_positional(state))
+            return;
+
+        state.curr_arg.reset();
+    }
+
+    // TODO: add doc comment
+    [[nodiscard]] bool _try_advance_positional(parsing_state& state) const noexcept {
+        if (not state.curr_arg->is_positional())
+            return false;
+
+        if (state.curr_pos_arg_it == this->_positional_args.end())
+            return false;
+
+        if (++state.curr_pos_arg_it == this->_positional_args.end())
+            return false;
+
+        return true;
     }
 
     /**
@@ -1171,28 +1179,6 @@ private:
         }
 
         return nullptr;
-    }
-
-    /**
-     * @brief Find an optional argument based on a flag token.
-     * @param flag_tok An argument_token instance, the value of which will be used to find the argument.
-     * @return An iterator to the argument's position.
-     * @note If the `flag_tok.type` is not a valid flag token, then the end iterator will be returned.
-     */
-    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(const detail::argument_token& flag_tok
-    ) noexcept {
-        if (not flag_tok.is_flag_token())
-            return this->_optional_args.end();
-
-        const auto actual_tok_value = this->_strip_flag_prefix(flag_tok);
-        const auto match_type =
-            flag_tok.type == detail::argument_token::t_flag_primary
-                ? detail::argument_name::m_primary
-                : detail::argument_name::m_secondary;
-
-        return std::ranges::find_if(
-            this->_optional_args, this->_name_match_predicate(actual_tok_value, match_type)
-        );
     }
 
     /**
