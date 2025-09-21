@@ -20,12 +20,12 @@ std::ostream& operator<<(std::ostream& os, const argument_parser&) noexcept;
 namespace action {
 
 /**
- * @brief Returns an *on-flag* action which prints the argument parser's configuration.
- * @param parser The argument parser the configuration of which will be printed.
+ * @brief Returns an *on-flag* action which prints the argument parser's help message.
+ * @param parser The argument parser the help message of which will be printed.
  * @param exit_code The exit code with which `std::exit` will be called (if not `std::nullopt`).
- * @param os The output stream to which the configuration will be printed.
+ * @param os The output stream to which the help message will be printed.
  */
-inline typename ap::action_type::on_flag::type print_config(
+inline typename ap::action_type::on_flag::type print_help(
     const argument_parser& parser,
     const std::optional<int> exit_code = std::nullopt,
     std::ostream& os = std::cout

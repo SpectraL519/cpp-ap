@@ -112,6 +112,7 @@ The parameters you can specify for a parser's instance are:
 - The program's name, version and description - used in the parser's configuration output (`std::cout << parser`).
 - Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
 - [Arguments](#adding-arguments) - specify the values/options accepted by the program.
+- [The unknown argument flags handling policy](#4-unknown-argument-flag-handling).
 
 ```cpp
 ap::argument_parser parser;
@@ -602,12 +603,12 @@ Command                       Result
 
 ### Actions
 
-- `print_config` | on-flag
+- `print_help` | on-flag
 
-  Prints the configuration of the parser to the output stream and optionally exits with the given code.
+  Prints the parser's help message to the output stream and optionally exits with the given code.
 
   ```cpp
-  typename ap::action_type::on_flag::type print_config(
+  typename ap::action_type::on_flag::type print_help(
       const ap::argument_parser& parser,
       const std::optional<int> exit_code = std::nullopt,
       std::ostream& os = std::cout
@@ -707,8 +708,8 @@ parser.default_arguments(<args>);
 
   ```cpp
   // equivalent to:
-  parser.add_flag("help", "h")
-        .action<action_type::on_flag>(action::print_config(arg_parser, EXIT_SUCCESS))
+  parser.add_optional_argument<ap::none_type>("help", "h")
+        .action<action_type::on_flag>(ap::action::print_help(parser, EXIT_SUCCESS))
         .help("Display the help message");
   ```
 
@@ -937,33 +938,95 @@ optional: opt-value
 
 <br />
 
-#### 4. Unrecognized argument flag handling
+#### 4. Unknown Argument Flag Handling
 
-By default the `argument_parser` class treats *all\** command-line arguments beggining with a `--` or `-` prefix as optional argument flags and if the flag's value does not match any of the specified arguments, then such flag is considered *unknown* and an exception will be thrown.
+A command-line argument beginning with a flag prefix (`--` or `-`) that doesn't match any of the specified optional arguments or a compound of optional arguments (only for short flags) is considered **unknown** or **unrecognized**.
 
-> [*all\**] If a command-line argument begins with a flag prefix, but contains whitespaces (e.g. `"--flag value"`), then it is treated as a value and not a flag.
+By default an argument parser will throw an exception if an unkown argument flag is encountered.
 
-This behavior can be altered so that the unknown argument flags will be treated as values, not flags. For example:
+This behavior can be modified using the `unknown_arguments_policy` method of the `argument_parser` class, which sets the policy for handling unknown argument flags.
+
+
+**Example:**
 
 ```cpp
-parser.add_optional_argument("option", "o");
-parser.try_parse_args(argc, argv);
-std::cout << "option: " << parser.value("option");
+#include <ap/argument_parser.hpp>
 
-/*
-./program --option --unknown-flag
-option: --unknown-flag
+int main(int argc, char* argv[]) {
+    ap::argument_parser parser;
+
+    parser.program_name("test")
+          .program_description("A simple test program")
+          .default_arguments(ap::default_argument::o_help)
+          // set the unknown argument flags handling policy
+          .unknown_arguments_policy(ap::unknown_policy::<policy>);
+
+    parser.add_optional_argument("known", "k")
+          .help("A known optional argument");
+
+    parser.try_parse_args(argc, argv);
+
+    std::cout << "known = " << ap::util::join(parser.values("known")) << std::endl;
+
+    return 0;
+}
 ```
 
-To do this add the following in your `CMakeLists.txt` file:
-```cmake
-target_compile_definitions(cpp-ap PRIVATE AP_UNKNOWN_FLAGS_AS_VALUES)
-```
-or simply add:
-```cpp
-#define AP_UNKNOWN_FLAGS_AS_VALUES
-```
-before the `#include <ap/argument_parser.hpp>` statement.
+The available policies are:
+- `ap::unknown_policy::fail` (default) - throws an exception if an unknown argument flag is encountered:
+
+    ```bash
+    > ./test --known --unknown
+    [ap::error] Unknown argument [--unknown].
+    Program: test
+
+      A simple test program
+
+    Optional arguments:
+
+      --help, -h  : Display the help message
+      --known, -k : A known optional argument
+    ```
+
+- `ap::unknown_policy::warn` - prints a warning message to the standard error stream and continues parsing the remaining arguments:
+
+    ```bash
+    > ./test --known --unknown
+    [ap::warning] Unknown argument '--unknown' will be ignored.
+    known =
+    ```
+
+- `ap::unknown_policy::ignore` - ignores unknown argument flags and continues parsing the remaining arguments:
+
+    ```shell
+    ./test --known --unknown
+    known =
+    ```
+
+- `ap::unknown_policy::as_values` - treats unknown argument flags as values:
+
+    ```shell
+    > ./test --known --unknown
+    known = --unknown
+    ```
+
+> [!IMPORTANT]
+>
+> - The unkown argument flags handling polciy only affects the parser's behaviour when calling the `parse_args` or `try_parse_args` methods.
+> - When parsing known args with `parse_known_args` or `try_parse_known_args` all unknown arguments (flags and values) are collected and returned as the parsing result, ignoring the specified policy for handling unknown arguments.
+>
+> Consider a similar example as above with only the argument parsing function changed:
+> ```cpp
+> const auto unknown_args = parser.try_parse_known_args(argc, argv);
+> std::cout << "known = " << ap::util::join(parser.values("known")) << std::endl
+>           << "unknown = " << ap::util::join(unknown_args) << std::endl;
+> ```
+> This would produce the following output regardless of the specified unknown arguments policy.
+> ```shell
+> > ./test --known --unknown
+> known =
+> unknown = --unknown
+> ```
 
 <br />
 <br />
@@ -1094,8 +1157,6 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 > ```
 >
 > Here `value` is treated either as the `positional` argument's value or as an unknown argument (depending on the input arguments) even though the `recognized` optional argument still accepts values and only after the `--recognized` argument flag is encountered the parser continues collecting values for this argument.
->
-> **NOTE:** If the `AP_UNKNOWN_FLAGS_AS_VALUES` is set, the unrecognized argument flags will be treated as values during parsing and therefore they **may** not be collected as unknown arguments, depending on the argument's configuration and the command-line argument list.
 
 > [!TIP]
 >

@@ -329,7 +329,7 @@ TEST_CASE_FIXTURE(
 
     const auto help_arg = get_argument(help_flag);
     REQUIRE(help_arg);
-    CHECK(is_optional<bool>(*help_arg));
+    CHECK(is_optional<ap::none_type>(*help_arg));
 
     const auto input_arg = get_argument(input_flag);
     REQUIRE(input_arg);
