@@ -180,6 +180,7 @@ public:
      * @brief Set the `greedy` attribute of the argument.
      * @param g The attribute value.
      * @return Reference to the argument instance.
+     * @note The method is enabled only if `value_type` is not `none_type`.
      */
     argument& greedy(const bool g = true) noexcept
     requires(not util::c_is_none<value_type>)

@@ -922,6 +922,15 @@ private:
         }
     }
 
+    /**
+     * @brief Returns the most appropriate *initial* token type based on a command-line argument's value.
+     *
+     * The token's *initial* type is deduced using the following rules:
+     * - `t_value`: an argument contains whitespace characters or cannot be a flag token
+     * - `t_flag_primary`: an argument begins with a primary flag prefix (`--`)
+     * - `t_flag_secondary`: an argument begins with a secondary flag prefix (`-`)
+     * - `t_flag_compound`: INITIALLY a token can NEVER have a compound flag type (may only be set when a flag token is validated)
+     */
     [[nodiscard]] detail::argument_token::token_type _deduce_token_type(
         const std::string_view arg_value
     ) const noexcept {
@@ -939,9 +948,9 @@ private:
 
     /**
      * @brief Check if a flag token is valid based on its value.
-     * @attention Sets the `arg` member of the token if an argument with the given name (token's value) is present.
+     * @attention Sets the `args` member of the token if an argument with the given name (token's value) is present.
      * @param tok The argument token to validate.
-     * @return true if the given token represents a valid argument flag.
+     * @return `true` if the given token represents a valid argument flag.
      */
     [[nodiscard]] bool _validate_flag_token(detail::argument_token& tok) noexcept {
         const auto opt_arg_it = this->_find_opt_arg(tok);
@@ -952,7 +961,13 @@ private:
         return true;
     }
 
-    // TODO: add doc comment
+    /**
+     * @brief Check if a flag token is a valid compound argument flag based on its value.
+     * @attention If the token indeed represents valid compound flag, the token's type is changed to `t_flag_compuund`
+     * @attention and its `args` list is filled with all the arguments the token represents.
+     * @param tok The argument token to validate.
+     * @return `true` if the given token represents a valid compound argument flag.
+     */
     bool _validate_compound_flag_token(detail::argument_token& tok) noexcept {
         if (tok.type != detail::argument_token::t_flag_secondary)
             return false;
@@ -967,8 +982,11 @@ private:
                     std::string_view(&c, 1ull), detail::argument_name::m_secondary
                 )
             );
-            if (opt_arg_it == this->_optional_args.end())
+
+            if (opt_arg_it == this->_optional_args.end()) {
+                tok.args.clear();
                 return false;
+            }
 
             tok.args.emplace_back(*opt_arg_it);
         }
@@ -1023,9 +1041,6 @@ private:
      * @throws ap::parsing_failure
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens, parsing_state& state) {
-        // if (state.curr_pos_arg_it != this->_positional_args.end())
-        //     state.curr_arg = *state.curr_pos_arg_it;
-
         // process argument tokens
         std::ranges::for_each(
             arg_tokens, std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
