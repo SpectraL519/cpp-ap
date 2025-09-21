@@ -102,12 +102,12 @@ struct parsing_failure : public argument_parser_exception {
     ) noexcept {
         if (std::is_lt(ordering))
             return parsing_failure(
-                std::format("Not enough values provided for optional argument [{}]", arg_name.str())
+                std::format("Not enough values provided for argument [{}]", arg_name.str())
             );
 
         if (std::is_gt(ordering))
             return parsing_failure(
-                std::format("Too many values provided for optional argument [{}]", arg_name.str())
+                std::format("Too many values provided for argument [{}]", arg_name.str())
             );
 
         return parsing_failure(

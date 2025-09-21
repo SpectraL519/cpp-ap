@@ -8,7 +8,18 @@
 - [Adding Arguments](#adding-arguments)
 - [Argument Parameters](#argument-parameters)
   - [Common Parameters](#common-parameters)
+    - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance)
+    - [hidden](#2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description)
+    - [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown)
+    - [bypass required](#4-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line)
+    - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument)
+    - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
+    - [choices](#7-choices---a-list-of-valid-argument-values)
+    - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value)
+    - [default values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
   - [Parameters Specific for Optional Arguments](#parameters-specific-for-optional-arguments)
+    - [on-flag actions](#1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag)
+    - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Parsing Arguments](#parsing-arguments)
@@ -189,9 +200,10 @@ parser.add_<positional/optional>_argument<value_type>("argument", "a");
 >
 > - If the argument's value type is `ap::none_type`, the argument will not accept any values and therefore no value-related parameters can be set for such argument. This includes:
 >   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a)
->   - [choices](#6-choices---a-list-of-valid-argument-values)
->   - [value actions](#7-value-actions---function-performed-after-parsing-an-arguments-value)
->   - [default_values](#8-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
+>   - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
+>   - [choices](#7-choices---a-list-of-valid-argument-values)
+>   - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value)
+>   - [default_values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
 >   - [implicit_values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
 
 You can also add boolean flags:
@@ -343,8 +355,8 @@ Command                                 Result
 
 > [!NOTE]
 >
-> - Both positional and optional arguments have the `bypass_required` option disabled.
-> - The default value of the value parameter of the `bypass_required(bool)` function is `true` for both positional and optional arguments.
+> - Both all arguments have the `bypass_required` option disabled.
+> - The default value of the value parameter of the `argument::bypass_required(bool)` method is `true` for all arguments.
 
 > [!WARNING]
 >
@@ -377,7 +389,9 @@ os << data << std::endl;
 
 <br />
 
-#### 5. `nargs` - Sets the allowed number of values to be parsed for an argument. This can be set as a:
+#### 5. `nargs` - Sets the allowed number of values to be parsed for an argument.
+
+The `nargs` parameter can be set as:
 
 - Specific number:
 
@@ -416,7 +430,49 @@ os << data << std::endl;
 
 <br />
 
-#### 6. `choices` - A list of valid argument values.
+#### 6. `greedy` - If this option is set, the argument will consume ALL command-line values until it's upper nargs bound is reached.
+
+> [!NOTE]
+>
+> - By default the `greedy` option is disabled for all arguments.
+> - The default value of the parameter of the `argument::greedy(bool)` method is true for all arguments.
+
+> [!TIP]
+>
+> - Enabling the `greedy` option for an argument only makes sense for arguments with string-like value types.
+> - If no explicit `nargs` bound is set for a greedy argument, once it starts being parsed, it will consume all remaining command-line arguments.
+
+Consider a simple example:
+
+```cpp
+ap::argument_parser parser;
+parser.program_name("run-script")
+      .default_arguments(ap::default_argument::o_help);
+
+parser.add_positional_argument("script")
+      .help("The name of the script to run");
+parser.add_optional_argument("args")
+      .greedy()
+      .help("Set the execution option");
+
+parser.try_parse_args(argc, argv);
+
+// Application logic here
+std::cout << "Executing: " << parser.value("script") << " " << ap::util::join(parser.values("args")) << std::endl;
+```
+
+Here the program execution should look something like this:
+
+```txt
+> ./run-script remove-comments --args module.py -v --type py
+Executing: remove-comments module.py -v --type py
+```
+
+Notice that even though the `-v` and `--type` command-line arguments have flag prefixes and are not defined in the program, they are not treated as unknown arguments (and therefore no exception is thrown) because the `--args` argument is marked as `greedy` and it consumes these command-line arguments as its values.
+
+<br />
+
+#### 7. `choices` - A list of valid argument values.
 
 ```cpp
 parser.add_optional_argument<char>("method", "m").choices('a', 'b', 'c');
@@ -433,7 +489,7 @@ parser.add_optional_argument<char>("method", "m").choices('a', 'b', 'c');
 
 <br />
 
-#### 7. Value actions - Function performed after parsing an argument's value.
+#### 8. value actions - Functions that are called after parsing an argument's value.
 Actions are represented as functions, which take the argument's value as an argument. The available action types are:
 
 - `observe` actions | `void(const value_type&)` - applied to the parsed value. No value is returned - this action type is used to perform some logic on the parsed value without modifying it.
@@ -478,7 +534,7 @@ Actions are represented as functions, which take the argument's value as an argu
 
 <br />
 
-#### 8. `default_values` - A list of values which will be used if no values for an argument have been parsed
+#### 9. `default_values` - A list of values which will be used if no values for an argument have been parsed
 
 > [!WARNING]
 >
@@ -541,7 +597,7 @@ Command                                 Result
 
 Apart from the common parameters listed above, for optional arguments you can also specify the following parameters:
 
-#### 1. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.
+#### 1. on-flag actions - Functions that are called immediately after parsing an argument's flag.
 
 ```cpp
 void print_debug_info() noexcept {

@@ -155,7 +155,7 @@ struct argument_parser_test_fixture {
             argument_token flag_tok{argument_token::t_flag_primary, init_arg_flag_primary(arg_idx)};
             const auto opt_arg_it = this->sut._find_opt_arg(flag_tok);
             if (opt_arg_it != this->sut._optional_args.end())
-                flag_tok.arg = *opt_arg_it;
+                flag_tok.args.emplace_back(*opt_arg_it);
 
             arg_tokens.push_back(std::move(flag_tok));
             arg_tokens.push_back(argument_token{argument_token::t_value, init_arg_value(arg_idx)});
