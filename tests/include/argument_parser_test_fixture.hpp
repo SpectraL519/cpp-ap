@@ -15,7 +15,7 @@ namespace ap_testing {
 
 struct argument_parser_test_fixture {
     using arg_ptr_t = ap::argument_parser::arg_ptr_t;
-    using arg_token_list_t = ap::argument_parser::arg_token_list_t;
+    using arg_token_vec_t = ap::argument_parser::arg_token_vec_t;
 
     using parsing_state = ap::argument_parser::parsing_state;
 
@@ -140,10 +140,10 @@ struct argument_parser_test_fixture {
         add_optional_args(n_optional_args, n_positional_args);
     }
 
-    [[nodiscard]] arg_token_list_t init_arg_tokens(
+    [[nodiscard]] arg_token_vec_t init_arg_tokens(
         std::size_t n_positional_args, std::size_t n_optional_args
     ) {
-        arg_token_list_t arg_tokens;
+        arg_token_vec_t arg_tokens;
         arg_tokens.reserve(get_args_length(n_positional_args, n_optional_args));
 
         for (std::size_t i = 0ull; i < n_positional_args; ++i)
@@ -178,11 +178,11 @@ struct argument_parser_test_fixture {
     }
 
     // private function callers
-    [[nodiscard]] arg_token_list_t tokenize(int argc, char* argv[]) {
+    [[nodiscard]] arg_token_vec_t tokenize(int argc, char* argv[]) {
         return this->sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)), state);
     }
 
-    void parse_args_impl(const arg_token_list_t& arg_tokens) {
+    void parse_args_impl(const arg_token_vec_t& arg_tokens) {
         this->state.curr_arg = nullptr;
         this->state.curr_pos_arg_it = this->sut._positional_args.begin();
         this->sut._parse_args_impl(arg_tokens, this->state);
