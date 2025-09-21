@@ -1023,8 +1023,8 @@ private:
      * @throws ap::parsing_failure
      */
     void _parse_args_impl(const arg_token_list_t& arg_tokens, parsing_state& state) {
-        if (state.curr_pos_arg_it != this->_positional_args.end())
-            state.curr_arg = *state.curr_pos_arg_it;
+        // if (state.curr_pos_arg_it != this->_positional_args.end())
+        //     state.curr_arg = *state.curr_pos_arg_it;
 
         // process argument tokens
         std::ranges::for_each(
@@ -1108,11 +1108,8 @@ private:
 
         // advance to the next positional argument if possible
         if (state.curr_arg->is_positional()
-            and state.curr_pos_arg_it != this->_positional_args.end()
-            and ++state.curr_pos_arg_it != this->_positional_args.end()) {
-            state.curr_arg = *state.curr_pos_arg_it;
-            return;
-        }
+            and state.curr_pos_arg_it != this->_positional_args.end())
+            ++state.curr_pos_arg_it;
 
         state.curr_arg.reset();
     }

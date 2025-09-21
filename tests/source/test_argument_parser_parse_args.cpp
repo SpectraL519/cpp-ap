@@ -1176,6 +1176,61 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
+// greedy arguments
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "greedy arguments should consume all command-line values until their upper nargs bound is "
+    "reached regardless of the tokens' types"
+) {
+    const std::string greedy_arg_name = "greedy";
+    const std::string actual_value = "value";
+
+    const std::size_t n_greedily_consumed_values = 3ull;
+    const std::size_t greedy_nargs_bound = 1ull + n_greedily_consumed_values;
+    const std::size_t opt_begin_idx = 0ull;
+
+    std::vector<std::string> argv_vec{"program"};
+
+    SUBCASE("greedy positional argument") {
+        sut.add_positional_argument(greedy_arg_name).greedy().nargs(greedy_nargs_bound);
+        argv_vec.emplace_back(actual_value);
+    }
+    SUBCASE("greedy optional arg") {
+        sut.add_optional_argument(greedy_arg_name).greedy().nargs(greedy_nargs_bound);
+        argv_vec.emplace_back(std::format("--{}", greedy_arg_name));
+        argv_vec.emplace_back(actual_value);
+    }
+
+    CAPTURE(sut);
+    CAPTURE(argv_vec);
+
+    add_optional_args(n_greedily_consumed_values, opt_begin_idx);
+
+    // add the greedily consumed flags
+    std::vector<std::string> expected_greedy_arg_values{actual_value};
+    for (std::size_t i = opt_begin_idx; i < n_greedily_consumed_values; ++i) {
+        expected_greedy_arg_values.emplace_back(init_arg_flag_primary(i));
+        argv_vec.emplace_back(init_arg_flag_primary(i));
+    }
+
+    // add the normally parsed flags
+    const std::size_t expected_opt_count = 1ull;
+    for (std::size_t i = opt_begin_idx; i < n_greedily_consumed_values; ++i)
+        argv_vec.emplace_back(init_arg_flag_primary(i));
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+
+    CHECK_EQ(sut.values(greedy_arg_name), expected_greedy_arg_values);
+    for (std::size_t i = opt_begin_idx; i < n_greedily_consumed_values; ++i)
+        CHECK_EQ(sut.count(init_arg_name_primary(i)), expected_opt_count);
+
+    free_argv(argc, argv);
+}
+
 // unknown_arguments_policy
 
 TEST_CASE_FIXTURE(

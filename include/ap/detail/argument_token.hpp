@@ -62,10 +62,7 @@ struct argument_token {
      * @brief Checks whether the token represents a valid flag.
      *
      * A token is considered a valid flag token if:
-     * 1. The token's type if a valid flag token type:
-     *    - t_flag_primary
-     *    - t_flag_secondary
-     *    - t_flag_compound
+     * 1. The token's type if a valid flag token type (see @ref is_flag_token)
      * 2. The token's `arg` member is set.
      *
      * @return true if `type` is either `t_flag_primary` or `t_flag_secondary`, false otherwise.
