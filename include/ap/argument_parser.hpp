@@ -117,7 +117,7 @@ enum class unknown_policy : std::uint8_t {
     fail, ///< Throw an exception when an unknown argument is encountered.
     warn, ///< Issue a warning when an unknown argument is encountered.
     ignore, ///< Ignore unknown arguments.
-    as_values ///< Treat unknown arguments as values.
+    as_values ///< Treat unknown arguments as positional values.
 };
 
 namespace detail {
@@ -609,7 +609,7 @@ public:
      */
     [[deprecated("The default help argument now uses the `print_help` on-flag action")]]
     void handle_help_action() const noexcept {
-        if (this->value<bool>("help")) {
+        if (this->count("help")) {
             std::cout << *this << std::endl;
             std::exit(EXIT_SUCCESS);
         }

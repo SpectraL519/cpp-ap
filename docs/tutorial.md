@@ -1157,8 +1157,6 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 > ```
 >
 > Here `value` is treated either as the `positional` argument's value or as an unknown argument (depending on the input arguments) even though the `recognized` optional argument still accepts values and only after the `--recognized` argument flag is encountered the parser continues collecting values for this argument.
->
-> **NOTE:** If the `AP_UNKNOWN_FLAGS_AS_VALUES` is set, the unrecognized argument flags will be treated as values during parsing and therefore they **may** not be collected as unknown arguments, depending on the argument's configuration and the command-line argument list.
 
 > [!TIP]
 >
