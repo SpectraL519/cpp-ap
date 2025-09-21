@@ -181,7 +181,9 @@ public:
      * @param g The attribute value.
      * @return Reference to the argument instance.
      */
-    argument& greedy(const bool g = true) noexcept {
+    argument& greedy(const bool g = true) noexcept
+    requires(not util::c_is_none<value_type>)
+    {
         this->_greedy = g;
         return *this;
     }
