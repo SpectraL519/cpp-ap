@@ -1225,7 +1225,7 @@ private:
     }
 
     // TODO: add doc comment
-    void _verify_final_state() const noexcept {
+    void _verify_final_state() const {
         if (not this->_are_required_args_bypassed()) {
             this->_verify_required_args();
             this->_verify_nvalues();
