@@ -168,7 +168,9 @@ public:
     argument_parser(const argument_parser&) = delete;
     argument_parser& operator=(const argument_parser&) = delete;
 
-    argument_parser() = default;
+    argument_parser()
+    : _gr_positional_args(add_group("Positional Arguments")),
+      _gr_optional_args(add_group("Optional Arguments")) {}
 
     argument_parser(argument_parser&&) = default;
     argument_parser& operator=(argument_parser&&) = default;
@@ -296,8 +298,10 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
+        auto& new_arg_ptr =
+            this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
+        this->_gr_positional_args._add_argument(new_arg_ptr);
+        return static_cast<positional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
@@ -322,8 +326,10 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
+        auto& new_arg_ptr =
+            this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
+        this->_gr_positional_args._add_argument(new_arg_ptr);
+        return static_cast<positional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
@@ -339,21 +345,7 @@ public:
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
-        this->_verify_arg_name_pattern(name);
-
-        const auto arg_name =
-            name_discr == n_primary
-                ? detail::
-                      argument_name{std::make_optional<std::string>(name), std::nullopt, this->_flag_prefix_char}
-                : detail::argument_name{
-                      std::nullopt, std::make_optional<std::string>(name), this->_flag_prefix_char
-                  };
-
-        if (this->_is_arg_name_used(arg_name))
-            throw invalid_configuration::argument_name_used(arg_name);
-
-        this->_optional_args.push_back(std::make_shared<optional_argument<T>>(arg_name));
-        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
+        return this->add_optional_argument<T>(this->_gr_optional_args, name, name_discr);
     }
 
     /**
@@ -368,19 +360,9 @@ public:
     optional_argument<T>& add_optional_argument(
         const std::string_view primary_name, const std::string_view secondary_name
     ) {
-        this->_verify_arg_name_pattern(primary_name);
-        this->_verify_arg_name_pattern(secondary_name);
-
-        const detail::argument_name arg_name(
-            std::make_optional<std::string>(primary_name),
-            std::make_optional<std::string>(secondary_name),
-            this->_flag_prefix_char
+        return this->add_optional_argument<T>(
+            this->_gr_optional_args, primary_name, secondary_name
         );
-        if (this->_is_arg_name_used(arg_name))
-            throw invalid_configuration::argument_name_used(arg_name);
-
-        this->_optional_args.emplace_back(std::make_shared<optional_argument<T>>(arg_name));
-        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
     }
 
     /**
@@ -390,7 +372,7 @@ public:
      * @param name The name of the argument.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added optional argument.
-     * @throws ap::invalid_configuration
+     * @throws std::logic_error, ap::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
@@ -399,9 +381,23 @@ public:
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
         this->_validate_group(group);
-        auto& new_arg = this->add_optional_argument(name, name_discr);
-        group._add_argument(this->_optional_args.back());
-        return new_arg;
+        this->_verify_arg_name_pattern(name);
+
+        const auto arg_name =
+            name_discr == n_primary
+                ? detail::
+                      argument_name{std::make_optional<std::string>(name), std::nullopt, this->_flag_prefix_char}
+                : detail::argument_name{
+                      std::nullopt, std::make_optional<std::string>(name), this->_flag_prefix_char
+                  };
+
+        if (this->_is_arg_name_used(arg_name))
+            throw invalid_configuration::argument_name_used(arg_name);
+
+        auto& new_arg_ptr =
+            this->_optional_args.emplace_back(std::make_shared<optional_argument<T>>(arg_name));
+        group._add_argument(new_arg_ptr);
+        return static_cast<optional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
@@ -419,10 +415,21 @@ public:
         const std::string_view primary_name,
         const std::string_view secondary_name
     ) {
-        this->_validate_group(group);
-        auto& new_arg = this->add_optional_argument(primary_name, secondary_name);
-        group._add_argument(this->_optional_args.back());
-        return new_arg;
+        this->_verify_arg_name_pattern(primary_name);
+        this->_verify_arg_name_pattern(secondary_name);
+
+        const detail::argument_name arg_name(
+            std::make_optional<std::string>(primary_name),
+            std::make_optional<std::string>(secondary_name),
+            this->_flag_prefix_char
+        );
+        if (this->_is_arg_name_used(arg_name))
+            throw invalid_configuration::argument_name_used(arg_name);
+
+        auto& new_arg_ptr =
+            this->_optional_args.emplace_back(std::make_shared<optional_argument<T>>(arg_name));
+        group._add_argument(new_arg_ptr);
+        return static_cast<optional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
@@ -477,10 +484,10 @@ public:
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
-        this->_validate_group(group);
-        auto& new_arg = this->add_flag<StoreImplicitly>(name, name_discr);
-        group._add_argument(this->_optional_args.back());
-        return new_arg;
+        return this->add_optional_argument<bool>(group, name, name_discr)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
+            .nargs(0ull);
     }
 
     /**
@@ -498,10 +505,10 @@ public:
         const std::string_view primary_name,
         const std::string_view secondary_name
     ) {
-        this->_validate_group(group);
-        auto& new_arg = this->add_flag<StoreImplicitly>(primary_name, secondary_name);
-        group._add_argument(this->_optional_args.back());
-        return new_arg;
+        return this->add_optional_argument<bool>(group, primary_name, secondary_name)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
+            .nargs(0ull);
     }
 
     // TODO: doc comment
@@ -799,14 +806,9 @@ public:
                << std::string(this->_indent_width, ' ') << this->_program_description.value()
                << '\n';
 
-        if (not this->_positional_args.empty()) {
-            os << "\nPositional arguments:\n";
-            this->_print(os, this->_positional_args, verbose);
-        }
-
-        if (not this->_optional_args.empty()) {
-            os << "\nOptional arguments:\n";
-            this->_print(os, this->_optional_args, verbose);
+        for (const auto& group : this->_argument_groups) {
+            std::cout << '\n';
+            this->_print_group(os, *group, verbose);
         }
     }
 
@@ -1300,11 +1302,21 @@ private:
     /**
      * @brief Print the given argument list to an output stream.
      * @param os The output stream to print to.
-     * @param args The argument list to print.
+     * @param group The argument group to print.
+     * @param verbose A verbosity mode indicator flag.
      */
-    void _print(std::ostream& os, const arg_ptr_vec_t& args, const bool verbose) const noexcept {
-        auto visible_args =
-            std::views::filter(args, [](const auto& arg) { return not arg->is_hidden(); });
+    void _print_group(std::ostream& os, const argument_group& group, const bool verbose)
+        const noexcept {
+        os << group._name << ":\n";
+
+        if (group._arguments.empty()) {
+            os << '\n' << std::string(this->_indent_width, ' ') << "No arguments" << '\n';
+            return;
+        }
+
+        auto visible_args = std::views::filter(group._arguments, [](const auto& arg) {
+            return not arg->is_hidden();
+        });
 
         if (verbose) {
             for (const auto& arg : visible_args)
@@ -1312,7 +1324,7 @@ private:
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
-            descriptors.reserve(args.size());
+            descriptors.reserve(group._arguments.size());
 
             for (const auto& arg : visible_args)
                 descriptors.emplace_back(arg->desc(verbose));
@@ -1336,7 +1348,10 @@ private:
 
     arg_ptr_vec_t _positional_args;
     arg_ptr_vec_t _optional_args;
+
     arg_group_ptr_vec_t _argument_groups;
+    argument_group& _gr_positional_args;
+    argument_group& _gr_optional_args;
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;
