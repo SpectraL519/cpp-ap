@@ -14,6 +14,8 @@ class argument_group {
 public:
     argument_group() = delete;
 
+    // TODO: description
+
     argument_group& required(const bool r = true) noexcept {
         this->_required = r;
         return *this;

@@ -415,6 +415,7 @@ public:
         const std::string_view primary_name,
         const std::string_view secondary_name
     ) {
+        this->_validate_group(group);
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
@@ -1284,8 +1285,9 @@ private:
 
     // TODO: add doc comments
     void _verify_argument_group(const argument_group& group) const {
-        const std::size_t n_used_args =
-            std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); });
+        const auto n_used_args = static_cast<std::size_t>(
+            std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
+        );
 
         if (group._required and n_used_args == 0ull)
             throw parsing_failure(std::format(
