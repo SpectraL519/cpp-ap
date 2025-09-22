@@ -512,7 +512,11 @@ public:
             .nargs(0ull);
     }
 
-    // TODO: doc comment
+    /**
+     * @brief Adds an argument group with the given name to the parser's configuration.
+     * @param name Name of the group.
+     * @return Reference to the added argument group.
+     */
     argument_group& add_group(const std::string_view name) noexcept {
         return *this->_argument_groups.emplace_back(argument_group::create(*this, name));
     }
@@ -926,7 +930,11 @@ private:
         return false;
     }
 
-    // TODO: doc comment
+    /**
+     * @brief Check if the given group belongs to the parser.
+     * @param group The group to validate.
+     * @throws std::logic_error if the group doesn't belong to the parser.
+     */
     void _validate_group(const argument_group& group) {
         if (group._parser != this)
             throw std::logic_error(std::format(
@@ -1225,7 +1233,10 @@ private:
         state.curr_arg.reset();
     }
 
-    // TODO: add doc comment
+    /**
+     * @brief Verifies the correctness of the parsed command-line arguments.
+     * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
+     */
     void _verify_final_state() const {
         if (not this->_are_required_args_bypassed()) {
             this->_verify_required_args();
@@ -1233,7 +1244,7 @@ private:
         }
 
         for (const auto& group : this->_argument_groups)
-            this->_verify_argument_group(*group);
+            this->_verify_group_requirements(*group);
     }
 
     /**
@@ -1283,8 +1294,12 @@ private:
                 throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
     }
 
-    // TODO: add doc comments
-    void _verify_argument_group(const argument_group& group) const {
+    /**
+     * @brief Verifies whether the requirements of the given argument group are satisfied.
+     * @param group The argument group to verify.
+     * @throws ap::parsing_failure if the requirements are not satistied.
+     */
+    void _verify_group_requirements(const argument_group& group) const {
         const auto n_used_args = static_cast<std::size_t>(
             std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
         );
