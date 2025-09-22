@@ -168,12 +168,12 @@ public:
     argument_parser(const argument_parser&) = delete;
     argument_parser& operator=(const argument_parser&) = delete;
 
+    argument_parser(argument_parser&&) = delete;
+    argument_parser& operator=(argument_parser&&) = delete;
+
     argument_parser()
     : _gr_positional_args(add_group("Positional Arguments")),
       _gr_optional_args(add_group("Optional Arguments")) {}
-
-    argument_parser(argument_parser&&) = default;
-    argument_parser& operator=(argument_parser&&) = default;
 
     ~argument_parser() = default;
 
@@ -552,10 +552,7 @@ public:
         if (not state.unknown_args.empty())
             throw parsing_failure::argument_deduction_failure(state.unknown_args);
 
-        if (not this->_are_required_args_bypassed()) {
-            this->_verify_required_args();
-            this->_verify_nvalues();
-        }
+        this->_verify_final_state();
     }
 
     /**
@@ -646,11 +643,7 @@ public:
         };
         this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
 
-        if (not this->_are_required_args_bypassed()) {
-            this->_verify_required_args();
-            this->_verify_nvalues();
-        }
-
+        this->_verify_final_state();
         return std::move(state.unknown_args);
     }
 
@@ -1231,6 +1224,17 @@ private:
         state.curr_arg.reset();
     }
 
+    // TODO: add doc comment
+    void _verify_final_state() const noexcept {
+        if (not this->_are_required_args_bypassed()) {
+            this->_verify_required_args();
+            this->_verify_nvalues();
+        }
+
+        for (const auto& group : this->_argument_groups)
+            this->_verify_argument_group(*group);
+    }
+
     /**
      * @brief Check whether required argument bypassing is enabled
      * @return true if at least one argument with enabled required argument bypassing is used, false otherwise.
@@ -1276,6 +1280,23 @@ private:
         for (const auto& arg : this->_optional_args)
             if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
                 throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
+    }
+
+    // TODO: add doc comments
+    void _verify_argument_group(const argument_group& group) const {
+        const std::size_t n_used_args =
+            std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); });
+
+        if (group._required and n_used_args == 0ull)
+            throw parsing_failure(std::format(
+                "At least one argument from the required group '{}' must be used", group._name
+            ));
+
+        if (group._mutually_exclusive and n_used_args > 1ull)
+            throw parsing_failure(std::format(
+                "At most one argument from the mutually exclusive group '{}' can be used",
+                group._name
+            ));
     }
 
     /**
