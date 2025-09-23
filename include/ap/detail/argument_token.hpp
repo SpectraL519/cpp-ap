@@ -17,7 +17,7 @@ namespace ap::detail {
 /// @brief Structure representing a single command-line argument token.
 struct argument_token {
     using arg_ptr_t = std::shared_ptr<detail::argument_base>; ///< Argument pointer type alias.
-    using arg_ptr_list_t = std::vector<arg_ptr_t>;
+    using arg_ptr_vec_t = std::vector<arg_ptr_t>;
 
     /// @brief The token type discriminator.
     enum class token_type : std::uint8_t {
@@ -73,7 +73,7 @@ struct argument_token {
 
     token_type type; ///< The token's type discrimiator value.
     std::string value; ///< The actual token's value.
-    arg_ptr_list_t args = {}; ///< The corresponding argument
+    arg_ptr_vec_t args = {}; ///< The corresponding argument
 };
 
 } // namespace ap::detail

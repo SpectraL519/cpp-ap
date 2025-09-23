@@ -27,8 +27,6 @@ class argument_base {
 public:
     virtual ~argument_base() = default;
 
-    friend class ::ap::argument_parser;
-
     /// @return `true` if the argument is a positional argument instance, `false` otherwise.
     virtual bool is_positional() const noexcept = 0;
 
@@ -52,6 +50,8 @@ public:
 
     /// @return `true` if the argument is greedy, `false` otherwise.
     virtual bool is_greedy() const noexcept = 0;
+
+    friend class ::ap::argument_parser;
 
 protected:
     /// @param verbose The verbosity mode value. If `true` all non-default parameters will be included in the output.

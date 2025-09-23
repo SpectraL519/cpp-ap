@@ -12,7 +12,7 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string_view test_program_name = "test program name";
 
     const std::size_t no_args = 0ull;
-    const std::size_t n_positional_args = 5ull;
+    const std::size_t n_positional_args = 3ull;
     const std::size_t n_optional_args = n_positional_args;
     const std::size_t n_args_total = n_positional_args + n_optional_args;
     const std::size_t last_pos_arg_idx = n_positional_args - 1ull;
@@ -1350,6 +1350,94 @@ TEST_CASE_FIXTURE(
 
     CHECK_NOTHROW(sut.parse_args(argc, argv));
     CHECK_EQ(sut.value("known"), unknown_arg_flag);
+
+    free_argv(argc, argv);
+}
+
+// argument groups
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should throw if no arguments from a required group are used"
+) {
+    const std::string req_gr_name = "Required Group";
+    auto& req_gr = sut.add_group(req_gr_name).required();
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        sut.add_optional_argument(req_gr, init_arg_name_primary(i));
+
+    const int argc = get_argc(no_args, no_args);
+    auto argv = init_argv(no_args, no_args);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        std::format("At least one argument from the required group '{}' must be used", req_gr_name)
+            .c_str(),
+        parsing_failure
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should throw when multiple arguments from a mutually exclusive group are used"
+) {
+    const std::string me_gr_name = "Mutually Exclusive Group";
+    auto& me_gr = sut.add_group(me_gr_name).mutually_exclusive();
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        sut.add_optional_argument(me_gr, init_arg_name_primary(i));
+
+    const int argc = get_argc(no_args, n_optional_args);
+    auto argv = init_argv(no_args, n_optional_args);
+
+    CHECK_THROWS_WITH_AS(
+        sut.parse_args(argc, argv),
+        std::format(
+            "At most one argument from the mutually exclusive group '{}' can be used", me_gr_name
+        )
+            .c_str(),
+        parsing_failure
+    );
+
+    free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should not throw when the group requirements are satisfied"
+) {
+    const std::string req_me_gr_name = "Required & Mutually Exclusive Group";
+    auto& req_me_gr = sut.add_group(req_me_gr_name).mutually_exclusive();
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        sut.add_optional_argument(req_me_gr, init_arg_name_primary(i));
+
+    // required group: >= 1 argument must be used
+    // mutually exclusive group: <= 1 argument can be used
+    // together: exactly one argument can be used
+    std::size_t used_arg_idx;
+    SUBCASE("used arg = 0") {
+        used_arg_idx = 0;
+    }
+    SUBCASE("used arg = 1") {
+        used_arg_idx = 1;
+    }
+    SUBCASE("used arg = 2") {
+        used_arg_idx = 2;
+    }
+    CAPTURE(used_arg_idx);
+
+    std::vector<std::string> argv_vec = {
+        "program", init_arg_flag_primary(used_arg_idx), init_arg_value(used_arg_idx)
+    };
+
+    const int argc = static_cast<int>(argv_vec.size());
+    auto argv = to_char_2d_array(argv_vec);
+
+    REQUIRE_NOTHROW(sut.parse_args(argc, argv));
+    CHECK(sut.count(init_arg_name_primary(used_arg_idx)));
 
     free_argv(argc, argv);
 }

@@ -57,6 +57,7 @@ Command-line argument parser for C++20
     - [Common Parameters](/docs/tutorial.md#common-parameters)
     - [Parameters Specific for Optional Arguments](/docs/tutorial.md#parameters-specific-for-optional-arguments)
   - [Default Arguments](/docs/tutorial.md#default-arguments)
+  - [Argument Groups](/docs/tutorial.md#argument-groups)
   - [Parsing Arguments](/docs/tutorial.md#parsing-arguments)
     - [Basic Argument Parsing Rules](/docs/tutorial.md#basic-argument-parsing-rules)
     - [Compound Arguments](/docs/tutorial.md#compound-arguments)
