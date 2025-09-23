@@ -346,7 +346,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_add_argument,
     "add_optional_argument and add_flag should throw if a group does not belong to the parser"
 ) {
-    argument_parser different_parser;
+    argument_parser different_parser("different-program");
 
     const std::string group_name = "Group From a Different Parser";
     auto& group = different_parser.add_group(group_name);

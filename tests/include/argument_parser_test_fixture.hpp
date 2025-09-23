@@ -165,7 +165,7 @@ struct argument_parser_test_fixture {
     }
 
     // argument_parser private member accessors
-    [[nodiscard]] const std::optional<std::string>& get_program_name() const {
+    [[nodiscard]] const std::string& get_program_name() const {
         return this->sut._program_name;
     }
 
@@ -192,8 +192,10 @@ struct argument_parser_test_fixture {
         return this->sut._get_argument(arg_name);
     }
 
-    ap::argument_parser sut;
+    ap::argument_parser sut{program_name};
     parsing_state state;
+
+    static constexpr std::string_view program_name = "program";
 };
 
 } // namespace ap_testing

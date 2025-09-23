@@ -139,9 +139,8 @@ void add_default_argument(const default_argument, argument_parser&) noexcept;
  *
  * int main(int argc, char* argv[]) {
  *     // Create the argument parser instance
- *     ap::argument_parser parser;
- *     parser.program_name("fcopy")
- *           .program_version({ .major = 1, .minor = 0, .patch = 0 })
+ *     ap::argument_parser parser("fcopy");
+ *     parser.program_version({ .major = 1, .minor = 0, .patch = 0 })
  *           .program_description("A simple file copy utility.")
  *           .default_arguments(
  *               ap::default_argument::o_help,
