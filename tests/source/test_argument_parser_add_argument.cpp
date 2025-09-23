@@ -5,6 +5,7 @@
 
 using namespace ap_testing;
 using ap::argument;
+using ap::argument_parser;
 using ap::default_argument;
 using ap::invalid_configuration;
 
@@ -339,4 +340,49 @@ TEST_CASE_FIXTURE(
     const auto output_arg = get_argument(output_flag);
     REQUIRE(output_arg);
     CHECK(is_optional<std::string>(*output_arg));
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_add_argument,
+    "add_optional_argument and add_flag should throw if a group does not belong to the parser"
+) {
+    argument_parser different_parser("different-program");
+
+    const std::string group_name = "Group From a Different Parser";
+    auto& group = different_parser.add_group(group_name);
+
+    const std::string expected_err_msg =
+        std::format("An argument group '{}' does not belong to the given parser.", group_name);
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_optional_argument(group, primary_name_1), expected_err_msg.c_str(), std::logic_error
+    );
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_optional_argument(group, secondary_name_1, ap::n_secondary),
+        expected_err_msg.c_str(),
+        std::logic_error
+    );
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_optional_argument(group, primary_name_1, secondary_name_1),
+        expected_err_msg.c_str(),
+        std::logic_error
+    );
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_flag(group, primary_name_1), expected_err_msg.c_str(), std::logic_error
+    );
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_flag(group, secondary_name_1, ap::n_secondary),
+        expected_err_msg.c_str(),
+        std::logic_error
+    );
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_flag(group, primary_name_1, secondary_name_1),
+        expected_err_msg.c_str(),
+        std::logic_error
+    );
 }

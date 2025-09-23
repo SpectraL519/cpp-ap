@@ -10,6 +10,7 @@
 #pragma once
 
 #include "argument.hpp"
+#include "argument_group.hpp"
 #include "detail/argument_token.hpp"
 #include "types.hpp"
 
@@ -138,9 +139,8 @@ void add_default_argument(const default_argument, argument_parser&) noexcept;
  *
  * int main(int argc, char* argv[]) {
  *     // Create the argument parser instance
- *     ap::argument_parser parser;
- *     parser.program_name("fcopy")
- *           .program_version({ .major = 1, .minor = 0, .patch = 0 })
+ *     ap::argument_parser parser("fcopy");
+ *     parser.program_version({ .major = 1, .minor = 0, .patch = 0 })
  *           .program_description("A simple file copy utility.")
  *           .default_arguments(
  *               ap::default_argument::o_help,
@@ -167,25 +167,18 @@ public:
     argument_parser(const argument_parser&) = delete;
     argument_parser& operator=(const argument_parser&) = delete;
 
-    argument_parser() = default;
+    argument_parser(argument_parser&&) = delete;
+    argument_parser& operator=(argument_parser&&) = delete;
 
-    argument_parser(argument_parser&&) = default;
-    argument_parser& operator=(argument_parser&&) = default;
-
-    ~argument_parser() = default;
-
-    /**
-     * @brief Set the program name.
-     * @param name The name of the program.
-     * @return Reference to the argument parser.
-     */
-    argument_parser& program_name(std::string_view name) {
+    argument_parser(const std::string_view name)
+    : _program_name(name),
+      _gr_positional_args(add_group("Positional Arguments")),
+      _gr_optional_args(add_group("Optional Arguments")) {
         if (util::contains_whitespaces(name))
             throw invalid_configuration("The program name cannot contain whitespace characters!");
-
-        this->_program_name.emplace(name);
-        return *this;
     }
+
+    ~argument_parser() = default;
 
     /**
      * @brief Set the program version.
@@ -295,8 +288,10 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
+        auto& new_arg_ptr =
+            this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
+        this->_gr_positional_args._add_argument(new_arg_ptr);
+        return static_cast<positional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
@@ -321,12 +316,14 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        return static_cast<positional_argument<T>&>(*this->_positional_args.back());
+        auto& new_arg_ptr =
+            this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
+        this->_gr_positional_args._add_argument(new_arg_ptr);
+        return static_cast<positional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration.
+     * @brief Adds an optional argument to the parser's configuration.
      * @tparam T Type of the argument value.
      * @param name The name of the argument.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
@@ -338,6 +335,42 @@ public:
         const std::string_view name,
         const detail::argument_name_discriminator name_discr = n_primary
     ) {
+        return this->add_optional_argument<T>(this->_gr_optional_args, name, name_discr);
+    }
+
+    /**
+     * @brief Adds an optional argument to the parser's configuration.
+     * @tparam T Type of the argument value.
+     * @param primary_name The primary name of the argument.
+     * @param secondary_name The secondary name of the argument.
+     * @return Reference to the added optional argument.
+     * @throws ap::invalid_configuration
+     */
+    template <util::c_argument_value_type T = std::string>
+    optional_argument<T>& add_optional_argument(
+        const std::string_view primary_name, const std::string_view secondary_name
+    ) {
+        return this->add_optional_argument<T>(
+            this->_gr_optional_args, primary_name, secondary_name
+        );
+    }
+
+    /**
+     * @brief Adds an optional argument to the parser's configuration and binds it to the given group.
+     * @tparam T Type of the argument value.
+     * @param group The argument group to bind the new argument to.
+     * @param name The name of the argument.
+     * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
+     * @return Reference to the added optional argument.
+     * @throws std::logic_error, ap::invalid_configuration
+     */
+    template <util::c_argument_value_type T = std::string>
+    optional_argument<T>& add_optional_argument(
+        argument_group& group,
+        const std::string_view name,
+        const detail::argument_name_discriminator name_discr = n_primary
+    ) {
+        this->_validate_group(group);
         this->_verify_arg_name_pattern(name);
 
         const auto arg_name =
@@ -351,13 +384,16 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.push_back(std::make_shared<optional_argument<T>>(arg_name));
-        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
+        auto& new_arg_ptr =
+            this->_optional_args.emplace_back(std::make_shared<optional_argument<T>>(arg_name));
+        group._add_argument(new_arg_ptr);
+        return static_cast<optional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration.
+     * @brief Adds an optional argument to the parser's configuration and binds it to the given group.
      * @tparam T Type of the argument value.
+     * @param group The argument group to bind the new argument to.
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
@@ -365,8 +401,11 @@ public:
      */
     template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
-        const std::string_view primary_name, const std::string_view secondary_name
+        argument_group& group,
+        const std::string_view primary_name,
+        const std::string_view secondary_name
     ) {
+        this->_validate_group(group);
         this->_verify_arg_name_pattern(primary_name);
         this->_verify_arg_name_pattern(secondary_name);
 
@@ -378,8 +417,10 @@ public:
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
-        this->_optional_args.emplace_back(std::make_shared<optional_argument<T>>(arg_name));
-        return static_cast<optional_argument<T>&>(*this->_optional_args.back());
+        auto& new_arg_ptr =
+            this->_optional_args.emplace_back(std::make_shared<optional_argument<T>>(arg_name));
+        group._add_argument(new_arg_ptr);
+        return static_cast<optional_argument<T>&>(*new_arg_ptr);
     }
 
     /**
@@ -420,6 +461,57 @@ public:
     }
 
     /**
+     * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration and binds it to the given group.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
+     * @note The argument's `default_values` attribute will be set to `not StoreImplicitly`.
+     * @param group The argument group to bind the new argument to.
+     * @param name The primary name of the flag.
+     * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
+     * @return Reference to the added boolean flag argument.
+     */
+    template <bool StoreImplicitly = true>
+    optional_argument<bool>& add_flag(
+        argument_group& group,
+        const std::string_view name,
+        const detail::argument_name_discriminator name_discr = n_primary
+    ) {
+        return this->add_optional_argument<bool>(group, name, name_discr)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
+            .nargs(0ull);
+    }
+
+    /**
+     * @brief Adds a boolean flag argument (an optional argument with `value_type = bool`) to the parser's configuration and binds it to the given group.
+     * @tparam StoreImplicitly A boolean value used as the `implicit_values` parameter of the argument.
+     * @note The argument's `default_values` attribute will be set to `not StoreImplicitly`.
+     * @param group The argument group to bind the new argument to.
+     * @param primary_name The primary name of the flag.
+     * @param secondary_name The secondary name of the flag.
+     * @return Reference to the added boolean flag argument.
+     */
+    template <bool StoreImplicitly = true>
+    optional_argument<bool>& add_flag(
+        argument_group& group,
+        const std::string_view primary_name,
+        const std::string_view secondary_name
+    ) {
+        return this->add_optional_argument<bool>(group, primary_name, secondary_name)
+            .default_values(not StoreImplicitly)
+            .implicit_values(StoreImplicitly)
+            .nargs(0ull);
+    }
+
+    /**
+     * @brief Adds an argument group with the given name to the parser's configuration.
+     * @param name Name of the group.
+     * @return Reference to the added argument group.
+     */
+    argument_group& add_group(const std::string_view name) noexcept {
+        return *this->_argument_groups.emplace_back(argument_group::create(*this, name));
+    }
+
+    /**
      * @brief Parses the command-line arguments.
      *
      * Equivalent to:
@@ -455,10 +547,7 @@ public:
         if (not state.unknown_args.empty())
             throw parsing_failure::argument_deduction_failure(state.unknown_args);
 
-        if (not this->_are_required_args_bypassed()) {
-            this->_verify_required_args();
-            this->_verify_nvalues();
-        }
+        this->_verify_final_state();
     }
 
     /**
@@ -549,11 +638,7 @@ public:
         };
         this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
 
-        if (not this->_are_required_args_bypassed()) {
-            this->_verify_required_args();
-            this->_verify_nvalues();
-        }
-
+        this->_verify_final_state();
         return std::move(state.unknown_args);
     }
 
@@ -697,26 +782,19 @@ public:
      * @param os Output stream.
      */
     void print_help(const bool verbose, std::ostream& os = std::cout) const noexcept {
-        if (this->_program_name) {
-            os << "Program: " << this->_program_name.value();
-            if (this->_program_version)
-                os << " (" << this->_program_version.value() << ')';
-            os << '\n';
-        }
+        os << "Program: " << this->_program_name;
+        if (this->_program_version)
+            os << " (" << this->_program_version.value() << ')';
+        os << '\n';
 
         if (this->_program_description)
             os << '\n'
                << std::string(this->_indent_width, ' ') << this->_program_description.value()
                << '\n';
 
-        if (not this->_positional_args.empty()) {
-            os << "\nPositional arguments:\n";
-            this->_print(os, this->_positional_args, verbose);
-        }
-
-        if (not this->_optional_args.empty()) {
-            os << "\nOptional arguments:\n";
-            this->_print(os, this->_optional_args, verbose);
+        for (const auto& group : this->_argument_groups) {
+            std::cout << '\n';
+            this->_print_group(os, *group, verbose);
         }
     }
 
@@ -742,17 +820,19 @@ public:
 
 private:
     using arg_ptr_t = std::shared_ptr<detail::argument_base>;
-    using arg_ptr_list_t = std::vector<arg_ptr_t>;
-    using arg_ptr_list_iter_t = typename arg_ptr_list_t::iterator;
-    using const_arg_opt_t = std::optional<std::reference_wrapper<const detail::argument_base>>;
+    using arg_ptr_vec_t = std::vector<arg_ptr_t>;
+    using arg_ptr_vec_iter_t = typename arg_ptr_vec_t::iterator;
 
-    using arg_token_list_t = std::vector<detail::argument_token>;
-    using arg_token_list_iter_t = typename arg_token_list_t::const_iterator;
+    using arg_group_ptr_t = std::unique_ptr<argument_group>;
+    using arg_group_ptr_vec_t = std::vector<arg_group_ptr_t>;
+    // using arg_group_vec_iter_t = typename arg_group_vec_t::iterator;
+
+    using arg_token_vec_t = std::vector<detail::argument_token>;
 
     /// @brief A collection of values used during the parsing process.
     struct parsing_state {
         arg_ptr_t curr_arg; ///< The currently processed argument.
-        arg_ptr_list_iter_t
+        arg_ptr_vec_iter_t
             curr_pos_arg_it; ///< An iterator pointing to the next positional argument to be processed.
         std::vector<std::string> unknown_args = {}; ///< A vector of unknown argument values.
         const bool parse_known_only =
@@ -839,6 +919,18 @@ private:
     }
 
     /**
+     * @brief Check if the given group belongs to the parser.
+     * @param group The group to validate.
+     * @throws std::logic_error if the group doesn't belong to the parser.
+     */
+    void _validate_group(const argument_group& group) {
+        if (group._parser != this)
+            throw std::logic_error(std::format(
+                "An argument group '{}' does not belong to the given parser.", group._name
+            ));
+    }
+
+    /**
      * @brief Validate whether the definition/configuration of the parser's arguments is correct.
      *
      * What is verified:
@@ -846,16 +938,16 @@ private:
      */
     void _validate_argument_configuration() const {
         // step 1
-        const_arg_opt_t non_required_arg = std::nullopt;
+        arg_ptr_t non_required_arg = nullptr;
         for (const auto& arg : this->_positional_args) {
             if (not arg->is_required()) {
-                non_required_arg = std::ref(*arg);
+                non_required_arg = arg;
                 continue;
             }
 
             if (non_required_arg and arg->is_required())
                 throw invalid_configuration::positional::required_after_non_required(
-                    arg->name(), non_required_arg->get().name()
+                    arg->name(), non_required_arg->name()
                 );
         }
     }
@@ -868,8 +960,8 @@ private:
      * @return A list of preprocessed command-line argument tokens.
      */
     template <util::c_range_of<std::string_view, util::type_validator::convertible> AR>
-    [[nodiscard]] arg_token_list_t _tokenize(const AR& arg_range, const parsing_state& state) {
-        arg_token_list_t toks;
+    [[nodiscard]] arg_token_vec_t _tokenize(const AR& arg_range, const parsing_state& state) {
+        arg_token_vec_t toks;
 
         if constexpr (std::ranges::sized_range<AR>)
             toks.reserve(std::ranges::size(arg_range));
@@ -888,7 +980,7 @@ private:
      * @param arg_value The command-line argument's value to be processed.
      */
     void _tokenize_arg(
-        const parsing_state& state, arg_token_list_t& toks, const std::string_view arg_value
+        const parsing_state& state, arg_token_vec_t& toks, const std::string_view arg_value
     ) {
         detail::argument_token tok{
             .type = this->_deduce_token_type(arg_value), .value = std::string(arg_value)
@@ -1001,7 +1093,7 @@ private:
      * @return An iterator to the argument's position.
      * @note If the `flag_tok.type` is not a valid flag token, then the end iterator will be returned.
      */
-    [[nodiscard]] arg_ptr_list_iter_t _find_opt_arg(const detail::argument_token& flag_tok
+    [[nodiscard]] arg_ptr_vec_iter_t _find_opt_arg(const detail::argument_token& flag_tok
     ) noexcept {
         if (not flag_tok.is_flag_token())
             return this->_optional_args.end();
@@ -1040,7 +1132,7 @@ private:
      * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_args_impl(const arg_token_list_t& arg_tokens, parsing_state& state) {
+    void _parse_args_impl(const arg_token_vec_t& arg_tokens, parsing_state& state) {
         // process argument tokens
         std::ranges::for_each(
             arg_tokens, std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
@@ -1130,6 +1222,20 @@ private:
     }
 
     /**
+     * @brief Verifies the correctness of the parsed command-line arguments.
+     * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
+     */
+    void _verify_final_state() const {
+        if (not this->_are_required_args_bypassed()) {
+            this->_verify_required_args();
+            this->_verify_nvalues();
+        }
+
+        for (const auto& group : this->_argument_groups)
+            this->_verify_group_requirements(*group);
+    }
+
+    /**
      * @brief Check whether required argument bypassing is enabled
      * @return true if at least one argument with enabled required argument bypassing is used, false otherwise.
      */
@@ -1177,6 +1283,28 @@ private:
     }
 
     /**
+     * @brief Verifies whether the requirements of the given argument group are satisfied.
+     * @param group The argument group to verify.
+     * @throws ap::parsing_failure if the requirements are not satistied.
+     */
+    void _verify_group_requirements(const argument_group& group) const {
+        const auto n_used_args = static_cast<std::size_t>(
+            std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
+        );
+
+        if (group._required and n_used_args == 0ull)
+            throw parsing_failure(std::format(
+                "At least one argument from the required group '{}' must be used", group._name
+            ));
+
+        if (group._mutually_exclusive and n_used_args > 1ull)
+            throw parsing_failure(std::format(
+                "At most one argument from the mutually exclusive group '{}' can be used",
+                group._name
+            ));
+    }
+
+    /**
      * @brief Get the argument with the specified name.
      * @param arg_name The name of the argument.
      * @return The argument with the specified name, if found; otherwise, std::nullopt.
@@ -1200,11 +1328,30 @@ private:
     /**
      * @brief Print the given argument list to an output stream.
      * @param os The output stream to print to.
-     * @param args The argument list to print.
+     * @param group The argument group to print.
+     * @param verbose A verbosity mode indicator flag.
+     * @attention If a group has no visible arguments, nothing will be printed.
      */
-    void _print(std::ostream& os, const arg_ptr_list_t& args, const bool verbose) const noexcept {
-        auto visible_args =
-            std::views::filter(args, [](const auto& arg) { return not arg->is_hidden(); });
+    void _print_group(std::ostream& os, const argument_group& group, const bool verbose)
+        const noexcept {
+        auto visible_args = std::views::filter(group._arguments, [](const auto& arg) {
+            return not arg->is_hidden();
+        });
+
+        if (std::ranges::empty(visible_args))
+            return;
+
+        os << group._name << ":";
+
+        std::vector<std::string> group_attrs;
+        if (group._required)
+            group_attrs.emplace_back("required");
+        if (group._mutually_exclusive)
+            group_attrs.emplace_back("mutually exclusive");
+        if (not group_attrs.empty())
+            os << " (" << util::join(group_attrs) << ')';
+
+        os << '\n';
 
         if (verbose) {
             for (const auto& arg : visible_args)
@@ -1212,7 +1359,7 @@ private:
         }
         else {
             std::vector<detail::argument_descriptor> descriptors;
-            descriptors.reserve(args.size());
+            descriptors.reserve(group._arguments.size());
 
             for (const auto& arg : visible_args)
                 descriptors.emplace_back(arg->desc(verbose));
@@ -1228,14 +1375,18 @@ private:
         }
     }
 
-    std::optional<std::string> _program_name;
+    std::string _program_name;
     std::optional<std::string> _program_version;
     std::optional<std::string> _program_description;
     bool _verbose = false;
     unknown_policy _unknown_policy = unknown_policy::fail;
 
-    arg_ptr_list_t _positional_args;
-    arg_ptr_list_t _optional_args;
+    arg_ptr_vec_t _positional_args;
+    arg_ptr_vec_t _optional_args;
+
+    arg_group_ptr_vec_t _argument_groups;
+    argument_group& _gr_positional_args;
+    argument_group& _gr_optional_args;
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;

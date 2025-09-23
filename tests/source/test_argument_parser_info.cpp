@@ -3,46 +3,33 @@
 
 using namespace ap_testing;
 
+using ap::argument_parser;
 using ap::invalid_configuration;
 
 struct test_argument_parser_info : public argument_parser_test_fixture {
-    const std::string test_name = "test-program-name";
     const std::string test_description = "test program description";
     const ap::version test_version{1u, 2u, 3u};
     const std::string test_str_version = "alpha";
 };
 
-TEST_CASE_FIXTURE(
-    test_argument_parser_info, "parser's program name member should be nullopt by default"
-) {
-    const auto stored_program_name = get_program_name();
-    CHECK_FALSE(stored_program_name);
-}
-
-TEST_CASE_FIXTURE(
-    test_argument_parser_info, "program_name() should throw if the name contains whitespaces"
-) {
+TEST_CASE("argument_parser() should throw if the name contains whitespaces") {
     CHECK_THROWS_WITH_AS(
-        sut.program_name("invalid name"),
+        argument_parser("invalid name"),
         "The program name cannot contain whitespace characters!",
         invalid_configuration
     );
 }
 
-TEST_CASE_FIXTURE(test_argument_parser_info, "program_name() should set the program name member") {
-    sut.program_name(test_name);
-
-    const auto stored_program_name = get_program_name();
-
-    REQUIRE(stored_program_name);
-    CHECK_EQ(stored_program_name.value(), test_name);
+TEST_CASE_FIXTURE(
+    test_argument_parser_info, "argument_parser() should set the program name member"
+) {
+    CHECK_EQ(get_program_name(), program_name);
 }
 
 TEST_CASE_FIXTURE(
     test_argument_parser_info, "parser's program version member should be nullopt by default"
 ) {
-    const auto stored_program_version = get_program_version();
-    CHECK_FALSE(stored_program_version);
+    CHECK_FALSE(get_program_version());
 }
 
 TEST_CASE_FIXTURE(
