@@ -323,7 +323,7 @@ public:
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration.
+     * @brief Adds an optional argument to the parser's configuration.
      * @tparam T Type of the argument value.
      * @param name The name of the argument.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
@@ -339,7 +339,7 @@ public:
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration.
+     * @brief Adds an optional argument to the parser's configuration.
      * @tparam T Type of the argument value.
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
@@ -356,7 +356,7 @@ public:
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration and binds it to the given group.
+     * @brief Adds an optional argument to the parser's configuration and binds it to the given group.
      * @tparam T Type of the argument value.
      * @param group The argument group to bind the new argument to.
      * @param name The name of the argument.
@@ -391,7 +391,7 @@ public:
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration and binds it to the given group.
+     * @brief Adds an optional argument to the parser's configuration and binds it to the given group.
      * @tparam T Type of the argument value.
      * @param group The argument group to bind the new argument to.
      * @param primary_name The primary name of the argument.

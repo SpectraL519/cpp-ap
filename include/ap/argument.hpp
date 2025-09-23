@@ -392,8 +392,6 @@ public:
         return *this;
     }
 
-    // argument& in_group()
-
 #ifdef AP_TESTING
     friend struct ::ap_testing::argument_test_fixture;
 #endif
