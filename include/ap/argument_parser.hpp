@@ -171,24 +171,15 @@ public:
     argument_parser(argument_parser&&) = delete;
     argument_parser& operator=(argument_parser&&) = delete;
 
-    argument_parser()
-    : _gr_positional_args(add_group("Positional Arguments")),
-      _gr_optional_args(add_group("Optional Arguments")) {}
-
-    ~argument_parser() = default;
-
-    /**
-     * @brief Set the program name.
-     * @param name The name of the program.
-     * @return Reference to the argument parser.
-     */
-    argument_parser& program_name(std::string_view name) {
+    argument_parser(const std::string_view name)
+    : _program_name(name),
+      _gr_positional_args(add_group("Positional Arguments")),
+      _gr_optional_args(add_group("Optional Arguments")) {
         if (util::contains_whitespaces(name))
             throw invalid_configuration("The program name cannot contain whitespace characters!");
-
-        this->_program_name.emplace(name);
-        return *this;
     }
+
+    ~argument_parser() = default;
 
     /**
      * @brief Set the program version.
@@ -792,12 +783,10 @@ public:
      * @param os Output stream.
      */
     void print_help(const bool verbose, std::ostream& os = std::cout) const noexcept {
-        if (this->_program_name) {
-            os << "Program: " << this->_program_name.value();
-            if (this->_program_version)
-                os << " (" << this->_program_version.value() << ')';
-            os << '\n';
-        }
+        os << "Program: " << this->_program_name;
+        if (this->_program_version)
+            os << " (" << this->_program_version.value() << ')';
+        os << '\n';
 
         if (this->_program_description)
             os << '\n'
@@ -1342,19 +1331,28 @@ private:
      * @param os The output stream to print to.
      * @param group The argument group to print.
      * @param verbose A verbosity mode indicator flag.
+     * @attention If a group has no visible arguments, nothing will be printed.
      */
     void _print_group(std::ostream& os, const argument_group& group, const bool verbose)
         const noexcept {
-        os << group._name << ":\n";
-
-        if (group._arguments.empty()) {
-            os << '\n' << std::string(this->_indent_width, ' ') << "No arguments" << '\n';
-            return;
-        }
-
         auto visible_args = std::views::filter(group._arguments, [](const auto& arg) {
             return not arg->is_hidden();
         });
+
+        if (std::ranges::empty(visible_args))
+            return;
+
+        os << group._name << ":";
+
+        std::vector<std::string> group_attrs;
+        if (group._required)
+            group_attrs.emplace_back("required");
+        if (group._mutually_exclusive)
+            group_attrs.emplace_back("mutually exclusive");
+        if (not group_attrs.empty())
+            os << " (" << util::join(group_attrs) << ')';
+
+        os << '\n';
 
         if (verbose) {
             for (const auto& arg : visible_args)
@@ -1378,7 +1376,7 @@ private:
         }
     }
 
-    std::optional<std::string> _program_name;
+    std::string _program_name;
     std::optional<std::string> _program_version;
     std::optional<std::string> _program_description;
     bool _verbose = false;

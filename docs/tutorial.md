@@ -22,6 +22,7 @@
     - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
+- [Argument Groups](#argument-groups)
 - [Parsing Arguments](#parsing-arguments)
   - [Basic Argument Parsing Rules](#basic-argument-parsing-rules)
   - [Compound Arguments](#compound-arguments)
@@ -118,20 +119,25 @@ If you do not use CMake you can dowload the desired [library release](https://gi
 
 To use the argument parser in your code you need to use the `ap::argument_parser` class.
 
-The parameters you can specify for a parser's instance are:
-
-- The program's name, version and description - used in the parser's configuration output (`std::cout << parser`).
-- Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
-- [Arguments](#adding-arguments) - specify the values/options accepted by the program.
-- [The unknown argument flags handling policy](#4-unknown-argument-flag-handling).
-
 ```cpp
-ap::argument_parser parser;
-parser.program_name("Name of the program")
-      .program_version("alhpa")
+ap::argument_parser parser("program");
+parser.program_version("alhpa")
       .program_description("Description of the program")
       .verbose();
 ```
+
+> [!IMPORTANT]
+>
+> - When creating an argument parser instance, you must provide a program name to the constructor.
+>
+>   The program name given to the parser cannot contain whitespace characters.
+>
+> - Additional parameters you can specify for a parser's instance incldue:
+>   - The program's version and description - used in the parser's configuration output (`std::cout << parser`).
+>   - Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
+>   - [Arguments](#adding-arguments) - specify the values/options accepted by the program.
+>   - [Argument Groups](#argument-groups) - organize related optional arguments into sections and optionally enforce usage rules.
+>   - [The unknown argument flags handling policy](#4-unknown-argument-flag-handling).
 
 > [!TIP]
 >
@@ -256,8 +262,8 @@ parser.add_positional_argument<std::size_t>("number", "n")
 By default all arguments are visible, but this can be modified using the `hidden(bool)` setter as follows:
 
 ```cpp
-parser.program_name("hidden-test")
-      .program_description("A simple program")
+ap::argument_parser("hidden-test")
+parser.program_description("A simple test program for argument hiding")
       .default_arguments(ap::default_argument::o_help);
 
 parser.add_optional_argument("hidden")
@@ -272,7 +278,7 @@ parser.try_parse_args(argc, argv);
 > ./hidden-test --help
 Program: hidden-test
 
-  A simple program
+  A simple test program for argument hiding
 
 Optional arguments:
 
@@ -445,9 +451,8 @@ The `nargs` parameter can be set as:
 Consider a simple example:
 
 ```cpp
-ap::argument_parser parser;
-parser.program_name("run-script")
-      .default_arguments(ap::default_argument::o_help);
+ap::argument_parser parser("run-script");
+parser.default_arguments(ap::default_argument::o_help);
 
 parser.add_positional_argument("script")
       .help("The name of the script to run");
@@ -807,6 +812,106 @@ parser.default_arguments(<args>);
 <br/>
 <br/>
 
+## Argument Groups
+
+Argument groups provide a way to organize related optional arguments into logical sections. They make the command-line interface easier to read in help messages, and can enforce rules such as **mutual exclusivity** or **required usage**.
+
+By default, every parser comes with two predefined groups:
+
+- **Positional Arguments** – contains all arguments added via `add_positional_argument`.
+- **Optional Arguments** – contains all arguments added via `add_optional_argument` or `add_flag` without explicitly specifying an argument group.
+
+User-defined groups can only contain optional arguments (including flags). This allows you to structure your command-line interface into meaningful sections such as "Input Options", "Output Options", or "Debug Settings".
+
+
+### Creating New Groups
+
+A new group can be created by calling the `add_group` method of an argument parser:
+
+```cpp
+ap::argument_parser parser("myprog");
+auto& out_opts = parser.add_group("Output Options");
+```
+
+The group’s name will appear as a dedicated section in the help message and arguments added to this group will be listed under `Output Options` instead of the default `Optional Arguments` section.
+
+> [!NOTE]
+>
+> If a group has no visible arguments, it will not be included in the parser's help message output at all.
+
+### Adding Arguments to Groups
+
+Arguments are added to a group by passing the group reference as the first parameter to the `add_optional_argument` and `add_flag` functions:
+
+```cpp
+parser.add_optional_argument(out_opts, "output", "o")
+      .nargs(1)
+      .help("Print output to the given file");
+
+parser.add_flag(out_opts, "print", "p")
+      .help("Print output to the console");
+```
+
+### Group Attributes
+
+User-defined groups can be configured with special attributes that change how the parser enforces their usage:
+
+- `required()` – at least one argument from the group must be provided by the user, otherwise parsing will fail.
+- `mutually_exclusive()` – at most one argument from the group can be provided; using more than one at the same time results in an error.
+
+Both attributes are **off by default**, and they can be combined (e.g., a group can require that exactly one argument is chosen).
+
+```cpp
+auto& out_opts = parser.add_group("Output Options")
+                       .required()            // at least one option is required
+                       .mutually_exclusive(); // but at most one can be chosen
+```
+
+### Complete Example
+
+Below is a small program that demonstrates how to use a mutually exclusive group of required arguments:
+
+```cpp
+#include <ap/argument_parser.hpp>
+
+int main(int argc, char* argv[]) {
+    ap::argument_parser parser("myprog");
+    parser.default_arguments(ap::default_argument::o_help);
+
+    // create the argument group
+    auto& out_opts = parser.add_group("Output Options")
+                           .required()
+                           .mutually_exclusive();
+
+    // add arguments to the custom group
+    parser.add_optional_argument(out_opts, "output", "o")
+          .nargs(1)
+          .help("Print output to a given file");
+
+    parser.add_flag(out_opts, "print", "p")
+          .help("Print output to the console");
+
+    parser.try_parse_args(argc, argv);
+
+    return 0;
+}
+```
+
+When invoked with the `--help` flag, the above program produces a help message that clearly shows the group and its rules:
+
+```
+Program: myprog
+
+Output Options: (required, mutually exclusive)
+
+  --output, -o : Print output to a given file
+  --print, -p  : Print output to the console
+```
+
+<br/>
+<br/>
+<br/>
+
 ## Parsing Arguments
 
 To parse the command-line arguments use the `void argument_parser::parse_args(const AR& argv)` method, where `AR` must be a type that satisfies `std::ranges::range` and its value type is convertible to `std::string`.
@@ -845,18 +950,17 @@ The simple example below demonstrates how (in terms of the program's structure) 
 
 int main(int argc, char* argv[]) {
     // create the parser class instance
-    ap::argument_parser parser;
+    ap::argument_parser parser("some-program");
 
-    // define the parser's attributes
-    parser.program_name("some-program")
-          .program_description("The program does something with command-line arguments");
+    // define the parser's attributes and default arguments
+    parser.program_version({0u, 0u, 0u})
+          .program_description("The program does something with command-line arguments")
+          .default_arguments(ap::default_argument::o_help);
 
     // define the program arguments
     parser.add_positional_argument("positional").help("A positional argument");
     parser.add_optional_argument("optional", "o").help("An optional argument");
     parser.add_flag("flag", "f").help("A boolean flag");
-
-    parser.default_arguments(ap::default_argument::o_help);
 
     // parse command-line arguments
     parser.try_parse_args(argc, argv);
@@ -1009,10 +1113,9 @@ This behavior can be modified using the `unknown_arguments_policy` method of the
 #include <ap/argument_parser.hpp>
 
 int main(int argc, char* argv[]) {
-    ap::argument_parser parser;
+    ap::argument_parser parser("unknown-policy-test");
 
-    parser.program_name("test")
-          .program_description("A simple test program")
+    parser.program_description("A simple test program for unknwon argument handling policies")
           .default_arguments(ap::default_argument::o_help)
           // set the unknown argument flags handling policy
           .unknown_arguments_policy(ap::unknown_policy::<policy>);
@@ -1031,12 +1134,12 @@ int main(int argc, char* argv[]) {
 The available policies are:
 - `ap::unknown_policy::fail` (default) - throws an exception if an unknown argument flag is encountered:
 
-    ```bash
-    > ./test --known --unknown
+    ```txt
+    > ./unknown-policy-test --known --unknown
     [ap::error] Unknown argument [--unknown].
-    Program: test
+    Program: unknown-policy-test
 
-      A simple test program
+      A simple test program for unknwon argument handling policies
 
     Optional arguments:
 
@@ -1046,23 +1149,23 @@ The available policies are:
 
 - `ap::unknown_policy::warn` - prints a warning message to the standard error stream and continues parsing the remaining arguments:
 
-    ```bash
-    > ./test --known --unknown
+    ```txt
+    > ./unknown-policy-test --known --unknown
     [ap::warning] Unknown argument '--unknown' will be ignored.
     known =
     ```
 
 - `ap::unknown_policy::ignore` - ignores unknown argument flags and continues parsing the remaining arguments:
 
-    ```shell
-    ./test --known --unknown
+    ```txt
+    ./unknown-policy-test --known --unknown
     known =
     ```
 
 - `ap::unknown_policy::as_values` - treats unknown argument flags as values:
 
-    ```shell
-    > ./test --known --unknown
+    ```txt
+    > ./unknown-policy-test --known --unknown
     known = --unknown
     ```
 
