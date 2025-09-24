@@ -545,7 +545,6 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses the command-line arguments.
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
@@ -579,7 +578,6 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses the command-line arguments and exits on error.
      *
      * Calls `parse_args(argv_rng)` in a try-catch block. If an error is thrown, then its
@@ -598,7 +596,7 @@ public:
         }
         catch (const ap::argument_parser_exception& err) {
             std::cerr << "[ap::error] " << err.what() << std::endl
-                      << this->used_parser() << std::endl;
+                      << this->resolved_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -626,7 +624,6 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses the known command-line arguments.
      *
      * * An argument is considered "known" if it was defined using the parser's argument declaraion methods:
@@ -665,7 +662,6 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses known the command-line arguments and exits on error.
      *
      * Calls `parse_known_args(argv_rng)` in a try-catch block. If an error is thrown, then its message
@@ -685,32 +681,65 @@ public:
         }
         catch (const ap::argument_parser_exception& err) {
             std::cerr << "[ap::error] " << err.what() << std::endl
-                      << this->used_parser() << std::endl;
+                      << this->resolved_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
 
-    /**
-     * @todo
-     */
-    [[nodiscard]] bool is_used() const noexcept {
-        return this->_is_used;
+    /// @brief Returns the parser's name.
+    [[nodiscard]] std::string_view name() const noexcept {
+        return this->_name;
     }
 
     /**
-     * @todo
+     * @brief Returns the parser's full program name.
+     *
+     * - For top-level parsers, this is the same as the parser's name.
+     * - For subparsers, the name is prefixed with its parent parser names.
+     *
+     * @example
+     * Top-level parser: `git`
+     * Subparser: `git submodule`
+     * Nested subparser : `git submodule init`
      */
-    [[nodiscard]] argument_parser& used_parser() noexcept {
+    [[nodiscard]] std::string_view program_name() const noexcept {
+        return this->_program_name;
+    }
+
+    /**
+     * @brief Check whether this parser was invoked.
+     * @return `true` if the parser was selected when parsing the command-line arguments, `false` otherwise.
+     * @note A parser is *invoked* as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.
+     */
+    [[nodiscard]] bool invoked() const noexcept {
+        return this->_invoked;
+    }
+
+    /**
+     * @brief Check whether the parser has finalized parsing its own arguments.
+     * @return `true` if parsing was completed for the parser, `false` otherwise.
+     */
+    [[nodiscard]] bool finalized() const noexcept {
+        return this->_finalized;
+    }
+
+    /**
+     * @brief Returns the *deepest invoked parser*.
+     * @return Reference to the finalized parser that ultimately processed the arguments.
+     */
+    [[nodiscard]] argument_parser& resolved_parser() noexcept {
         const auto used_subparser_it = std::ranges::find_if(
-            this->_subparsers, [](const auto& subparser) { return subparser->is_used(); }
+            this->_subparsers, [](const auto& subparser) { return subparser->_invoked; }
         );
         if (used_subparser_it == this->_subparsers.end())
             return *this;
-        return (*used_subparser_it)->used_parser();
+        return (*used_subparser_it)->resolved_parser();
     }
 
     /**
-     * @todo
+     * @brief Check if a specific argument was used in the command-line.
+     * @param arg_name The name of the argument.
+     * @return `true` if the argument was used on the command line, `false` otherwise.
      */
     [[nodiscard]] bool is_used(std::string_view arg_name) const noexcept {
         const auto arg = this->_get_argument(arg_name);
@@ -718,8 +747,9 @@ public:
     }
 
     /**
+     * @brief Check if the given argument has a value.
      * @param arg_name The name of the argument.
-     * @return True if the argument has a value, false otherwise.
+     * @return `true` if the argument has a value, `false` otherwise.
      */
     [[nodiscard]] bool has_value(std::string_view arg_name) const noexcept {
         const auto arg = this->_get_argument(arg_name);
@@ -727,8 +757,9 @@ public:
     }
 
     /**
+     * @brief Get the given argument's usage count.
      * @param arg_name The name of the argument.
-     * @return The count of times the argument has been used.
+     * @return The number of times the argument has been used.
      */
     [[nodiscard]] std::size_t count(std::string_view arg_name) const noexcept {
         const auto arg = this->_get_argument(arg_name);
@@ -736,6 +767,7 @@ public:
     }
 
     /**
+     * @brief Get the value of the given argument.
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
@@ -757,6 +789,7 @@ public:
     }
 
     /**
+     * @brief Get the value of the given argument, if it has any, or a fallback value, if not.
      * @tparam T Type of the argument value.
      * @tparam U The default value type.
      * @param arg_name The name of the argument.
@@ -785,6 +818,7 @@ public:
     }
 
     /**
+     * @brief Get all values of the given argument.
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
@@ -810,17 +844,9 @@ public:
     }
 
     /**
-     * @todo
-     */
-    void print_version(std::ostream& os = std::cout) const noexcept {
-        os << this->_program_name << " : version " << this->_program_version.value_or("unspecified")
-           << std::endl;
-    }
-
-    /**
      * @brief Prints the argument parser's help message to an output stream.
      * @param verbose The verbosity mode value.
-     * @param os Output stream.
+     * @param os The output stream.
      */
     void print_help(const bool verbose, std::ostream& os = std::cout) const noexcept {
         os << "Program: " << this->_program_name;
@@ -839,12 +865,24 @@ public:
     }
 
     /**
+     * @brief Prints the argument parser's version info to an output stream.
+     *
+     * If no version was spcified for the parser, `unspecified` will be printed.
+     *
+     * @param os The output stream.
+     */
+    void print_version(std::ostream& os = std::cout) const noexcept {
+        os << this->_program_name << " : version " << this->_program_version.value_or("unspecified")
+           << std::endl;
+    }
+
+    /**
      * @brief Prints the argument parser's details to an output stream.
      *
      * An `os << parser` operation is equivalent to a `parser.print_help(_verbose, os)` call,
      * where `_verbose` is the inner verbosity mode, which can be set with the @ref verbose function.
      *
-     * @param os Output stream.
+     * @param os The output stream.
      * @param parser The argument parser to print.
      * @return The modified output stream.
      */
@@ -879,6 +917,8 @@ private:
           curr_pos_arg_it(parser._positional_args.begin()),
           parse_known_only(parse_known_only) {}
 
+        /// @brief Update the parser-specific parameters of the state object.
+        /// @param parser The new parser.
         void set_parser(argument_parser& parser) {
             this->curr_arg = nullptr;
             this->curr_pos_arg_it = parser._positional_args.begin();
@@ -1009,7 +1049,7 @@ private:
      */
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
     void _parse_args_impl(AIt args_begin, const AIt args_end, parsing_state& state) {
-        this->_is_used = true;
+        this->_invoked = true;
 
         if (args_begin != args_end) {
             // try to match a subparser
@@ -1032,6 +1072,7 @@ private:
             std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
         );
         this->_verify_final_state();
+        this->_finalized = true;
     }
 
     /**
@@ -1050,7 +1091,7 @@ private:
             }
 
             if (non_required_arg and arg->is_required())
-                // TODO: remove static builder
+                // TODO: remove static builder in v3 release commit
                 throw invalid_configuration::positional::required_after_non_required(
                     arg->name(), non_required_arg->name()
                 );
@@ -1426,7 +1467,7 @@ private:
         if (this->_subparsers.empty())
             return;
 
-        os << "\nSubcommands:\n";
+        os << "\nCommands:\n";
 
         std::vector<detail::help_builder> builders;
         builders.reserve(this->_subparsers.size());
@@ -1508,7 +1549,8 @@ private:
     argument_group& _gr_optional_args;
     arg_parser_ptr_vec_t _subparsers;
 
-    bool _is_used = false;
+    bool _invoked = false;
+    bool _finalized = false;
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;

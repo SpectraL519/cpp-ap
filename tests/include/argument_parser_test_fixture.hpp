@@ -168,10 +168,6 @@ struct argument_parser_test_fixture {
     }
 
     // argument_parser private member accessors
-    [[nodiscard]] const std::string& get_program_name(const ap::argument_parser& parser) const {
-        return parser._program_name;
-    }
-
     [[nodiscard]] const std::optional<std::string>& get_program_description() const {
         return this->sut._program_description;
     }

@@ -21,9 +21,10 @@ TEST_CASE("argument_parser() should throw if the name contains whitespaces") {
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_info, "argument_parser() should set the program name member"
+    test_argument_parser_info, "argument_parser() should set the name and program name members"
 ) {
-    CHECK_EQ(get_program_name(sut), program_name);
+    CHECK_EQ(sut.name(), program_name);
+    CHECK_EQ(sut.program_name(), program_name);
 }
 
 TEST_CASE_FIXTURE(
@@ -34,9 +35,8 @@ TEST_CASE_FIXTURE(
     constexpr std::string_view subparser_name = "subprogram";
 
     auto& subparser = sut.add_subparser(subparser_name);
-    CHECK_EQ(
-        get_program_name(subparser), std::format("{} {}", get_program_name(sut), subparser_name)
-    );
+    CHECK_EQ(subparser.name(), subparser_name);
+    CHECK_EQ(subparser.program_name(), std::format("{} {}", sut.name(), subparser_name));
 }
 
 TEST_CASE_FIXTURE(

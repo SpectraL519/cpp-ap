@@ -1483,8 +1483,12 @@ TEST_CASE_FIXTURE(
 
     sut.parse_args(argv_vec);
 
-    REQUIRE(sut.is_used());
-    CHECK(subparser.is_used());
+    REQUIRE(sut.invoked());
+    CHECK_FALSE(sut.finalized());
+
+    REQUIRE(subparser.invoked());
+    CHECK(subparser.finalized());
+    CHECK_EQ(&subparser, &sut.resolved_parser());
     CHECK_EQ(subparser.value(pos_arg_name), pos_arg_val);
     CHECK_EQ(subparser.value(opt_arg_name), opt_arg_val);
 }

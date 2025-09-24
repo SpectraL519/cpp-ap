@@ -6,6 +6,10 @@
   - [Downloading the Library](#downloading-the-library)
 - [The Parser Class](#the-parser-class)
 - [Adding Arguments](#adding-arguments)
+  - [Syntax](#syntax)
+  - [Names](#names)
+  - [Value Types](#value-types)
+  - [Boolean Flags](#boolean-flags)
 - [Argument Parameters](#argument-parameters)
   - [Common Parameters](#common-parameters)
     - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance)
@@ -32,6 +36,11 @@
   - [Compound Arguments](#compound-arguments)
   - [Parsing Known Arguments](#parsing-known-arguments)
 - [Retrieving Argument Values](#retrieving-argument-values)
+- [Subparsers](#subparsers)
+  - [Creating Subparsers](#creating-subparsers)
+  - [Using Multiple Subparsers](#using-multiple-subparsers)
+  - [Parsing Arguments with Subparsers](#parsing-arguments-with-subparsers)
+  - [Tracking Parser State](#tracking-parser-state)
 - [Examples](#examples)
 - [Common Utility](#common-utility)
 
@@ -165,58 +174,64 @@ parser.program_version("alhpa")
 
 ## Adding Arguments
 
-The parser supports both positional and optional arguments. Both argument types are identified by their names.
+The parser supports **positional** and **optional** arguments.
 
 > [!NOTE]
 >
-> The basic rules of parsing positional and optional arguments are described in the [Parsing arguments](#parsing-arguments) section.
+> The general rules for parsing arguments are described in the [Parsing arguments](#parsing-arguments) section.
 
-To add an argument to the parameter's configurations use the following syntax:
+### Syntax
 
-```cpp
-parser.add_<positional/optional>_argument<value_type>("argument");
-```
-
-or
+To add an argument, use:
 
 ```cpp
-parser.add_<positional/optional>_argument<value_type>("argument", "a");
+parser.add_positional_argument<value_type>("name");
+parser.add_optional_argument<value_type>("name");
 ```
 
-> [!NOTE]
->
-> An argument's name consists of a primary and/or secondary names. The primary name is a longer, more descriptive name, while the secondary name is a shorter/abbreviated name of the argument.
->
-> While passing a primary name is required for creating positional arguments, optional arguments can be initialized using only a secondary name as follows:
->
-> ```cpp
-> parser.add_optional_argument("a", ap::n_secondary);
-> parser.add_flag("f", ap::n_secondary);
-> ```
+For **optional arguments**, you may also specify a secondary (short) name:
+
+```cpp
+parser.add_optional_argument<value_type>("name", "n")
+```
+
+or use only the secondary name:
+
+```cpp
+parser.add_optional_argument("n", ap::n_secondary);
+```
+
+### Names
+
+- Positional arguments must have exactly one name (no secondary/short names allowed).
+- Optional arguments can have:
+  - only a primary (long) name,
+  - only a secondary (short) name, or
+  - both a primary and a secondary name.
+
+### Value Types
 
 > [!IMPORTANT]
+> An argument's value type must be `ap::none_type` **or** satisfy all of the following requirements:
 >
-> An argument's value type must be `ap::none_type` or it must satisfy the following requirements:
->
-> - The type is [constructible from](https://en.cppreference.com/w/cpp/concepts/constructible_from) `const std::string&` or the stream extraction operator - `std::istream& operator>>` is defined for the type.
->
->    **IMPORTANT:** The argument parser will always use direct initialization from `std::string` and will use the extraction operator only if an argument's value type cannot be initialized from `std::string`.
->
-> - The type satisfies the [`std::semiregular`](https://en.cppreference.com/w/cpp/concepts/semiregular.html) concept - is default initializable and copyable.
+> - [Constructible from](https://en.cppreference.com/w/cpp/concepts/constructible_from) `const std::string&` or overload `std::istream& operator>>`.
+>   - The parser will always try direct initialization from std::string first, and only fall back to the extraction operator if direct initialization fails.
+> - Satisfy the [`std::semiregular`](https://en.cppreference.com/w/cpp/concepts/semiregular.html) concept (default-initializable and copyable).
 
 > [!NOTE]
 >
 > - The default value type of any argument is `std::string`.
->
 > - If the argument's value type is `ap::none_type`, the argument will not accept any values and therefore no value-related parameters can be set for such argument. This includes:
 >   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a)
 >   - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
 >   - [choices](#7-choices---a-list-of-valid-argument-values)
 >   - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value)
->   - [default_values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
->   - [implicit_values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
+>   - [default values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
+>   - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
 
-You can also add boolean flags:
+### Boolean Flags
+
+Flags are essentialy optional arguments with a boolean value type.
 
 ```cpp
 parser.add_flag("enable_some_option", "eso").help("enables option: some option");
@@ -229,7 +244,7 @@ parser.add_optional_argument<bool>("enable_some_option", "eso")
 */
 ```
 
-Boolean flags store `true` by default but you can specify whether the flag should store `true` or `false` when used:
+By default, flags store `true` when parsed from the command-line. You can invert this behavior:
 
 ```cpp
 parser.add_flag<false>("disable_another_option", "dao").help("disables option: another option");
@@ -240,6 +255,7 @@ parser.add_optional_argument<bool>("disable_another_option", "dao")
       .nargs(0)
       .help("disables option: another option");
 */
+
 ```
 
 <br/>
@@ -918,7 +934,7 @@ Output Options: (required, mutually exclusive)
 
 ## Parsing Arguments
 
-To parse the command-line arguments use the `void argument_parser::parse_args(const AR& argv)` method, where `AR` must be a type that satisfies `std::ranges::range` and its value type is convertible to `std::string`.
+To parse the command-line arguments use the `void argument_parser::parse_args(const AR& argv)` method, where `AR` must be a type that satisfies the [`std::ranges::forward_range`](https://en.cppreference.com/w/cpp/ranges/forward_range.html) concept and its value type is convertible to `std::string`.
 
 The `argument_parser` class also defines the `void parse_args(int argc, char* argv[])` overload, which works directly with the `argc` and `argv` arguments of the `main` function.
 
@@ -932,7 +948,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!TIP]
 >
-> The `parse_args` function may throw an `ap::argument_parser_exception` (specifically the `ap::parsing_failure` derived exception) if the provided command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` methods, which will automatically catch these exceptions, print the error message, and exit with a failure status.
+> The `parse_args` function may throw an `ap::argument_parser_exception` if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` methods, which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see [Subparsers](#subparsers)), and exit with a failure status.
 >
 > Internally, This is equivalent to:
 >
@@ -941,7 +957,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 >     parser.parse_args(...);
 > }
 > catch (const ap::argument_parser_exception& err) {
->     std::cerr << "[ERROR] : " << err.what() << std::endl << parser << std::endl;
+>     std::cerr << "[ap::error] " << err.what() << std::endl << parser.resolved_parser() << std::endl;
 >     std::exit(EXIT_FAILURE);
 > }
 > ```
@@ -1365,6 +1381,157 @@ You can retrieve the argument's value(s) with:
 <br/>
 <br/>
 <br/>
+
+<br/>
+<br/>
+<br/>
+
+## Subparsers
+
+Subparsers allow you to build **hierarchical command-line interfaces**, where a top-level parser delegates parsing to its subcommands. This is particularly useful for creating CLI applications like `git`, where commands such as `git add`, `git commit`, and `git push` each have their own arguments.
+
+### Creating Subparsers
+
+```cpp
+auto& subparser = parser.add_subparser("subprogram");
+```
+
+Each subparser is a separate instance of `ap::argument_parser` and therefore it can have it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.
+
+For example:
+
+```cpp
+// top-level parser
+ap::argument_parser git("ap-git");
+git.program_version({.major = 2u, .minor = 43u, .patch = 0u})
+   .program_description("A version control system built with CPP-AP")
+   .default_arguments(ap::default_argument::o_help, ap::default_argument::o_version);
+
+// subcommand: status
+auto& status = git.add_subparser("status");
+status.default_arguments(ap::default_argument::o_help)
+      .program_description("Show the working tree status");
+status.add_flag("short", "s")
+      .help("Give the output in the short-format");
+```
+
+This defines `git` and `git status` parsers, each with their own sets of arguments.
+
+### Using Multiple Subparsers
+
+You can add as many subparsers as you like, each corresponding to a different command:
+
+```cpp
+auto& init = git.add_subparser("init");
+init.program_description("Create an empty Git repository or reinitialize an existing one");
+
+auto& add = git.add_subparser("add");
+add.program_description("Add file contents to the index");
+
+auto& commit = git.add_subparser("commit");
+commit.program_description("Record changes to the repository");
+
+auto& status = git.add_subparser("status");
+status.program_description("Show the working tree status");
+
+auto& push = git.add_subparser("push");
+push.program_description("Update remote refs along with associated objects");
+```
+
+All defined subparsers will be included in the parent parser's help message:
+
+```txt
+> ap-git --help
+Program: ap-git (v2.43.0)
+
+  A version control system built with CPP-AP
+
+Commands:
+
+  init   : Create an empty Git repository or reinitialize an existing one
+  add    : Add file contents to the index
+  commit : Record changes to the repository
+  status : Show the working tree status
+  push   : Update remote refs along with associated objects
+
+Optional Arguments:
+
+  --help, -h    : Display the help message
+  --version, -v : Dsiplay program version info
+```
+
+### Parsing Arguments with Subparsers
+
+When parsing command-line arguments, the parent parser will attempt to match the **first command-line token** against the name of one of its subparsers.
+
+- If a match is found, the parser delegates the remaining arguments to the matched subparser.
+- This process repeats **recursively**, so each subparser may also match one of its own subparsers.
+- Parsing stops when no subparser matches the first token of the *current* argument list. At that point, the parser processes its own arguments.
+
+For example:
+
+```cpp
+ap::argument_parser git("ap-git");
+auto& submodule = git.add_subparser("submodule");
+auto& submodule_init = submodule.add_subparser("init");
+```
+
+Running `ap-git submodule init <args>` will result in `<args>` being parsed by the `submodule_init` parser.
+
+### Tracking Parser State
+
+Each parser tracks its state during parsing. The methods described below let you inspect this state:
+
+- `invoked() -> bool` : Returns `true` if the parser’s name appeared on the command line.
+
+  A parser is *invoked* as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.
+
+- `finalized() -> bool` : Returns `true` if the parser has processed its own arguments.
+
+  This is distinct from `invoked()`: a parser can be invoked but not finalized if one of its subparsers handled the arguments instead.
+
+- `resolved_parser() -> ap::argument_parser&` : Returns a reference to the *deepest invoked parser*.
+
+  sIf no subparser was invoked, this simply returns the current parser.
+
+<br />
+
+#### Example: Inspecting Parsing States
+
+```cpp
+// define the parser hierarchy
+ap::argument_parser git("ap-git");
+auto& submodule = git.add_subparser("submodule");
+auto& submodule_init = submodule.add_subparser("init");
+
+// parse arguments
+git.try_parse_args(argc, argv);
+
+// print state for each parser
+std::cout << std::boolalpha;
+
+std::cout << "git            : invoked=" << git.invoked()
+          << ", finalized=" << git.finalized() << '\n';
+
+std::cout << "submodule      : invoked=" << submodule.invoked()
+          << ", finalized=" << submodule.finalized() << '\n';
+
+std::cout << "submodule_init : invoked=" << submodule_init.invoked()
+          << ", finalized=" << submodule_init.finalized() << '\n';
+
+auto& active = git.resolved_parser();
+std::cout << "\nResolved parser : " << active.name() << " (" << active.program_name() << ")\n";
+```
+
+If you run: `./ap-git submodule intit`, you will get the following state:
+
+```txt
+git            : invoked=true, finalized=false
+submodule      : invoked=true, finalized=false
+submodule_init : invoked=true, finalized=true
+
+Resolved parser : init (ap-git submodule init)
+```
 
 ## Examples
 

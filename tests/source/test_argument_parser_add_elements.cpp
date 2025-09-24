@@ -382,7 +382,7 @@ TEST_CASE_FIXTURE(
         std::format(
             "A subparser with the given name () already exists in parser '{}'",
             subparser_name,
-            get_program_name(sut)
+            sut.name()
         )
             .c_str(),
         std::logic_error
