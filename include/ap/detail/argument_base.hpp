@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "argument_descriptor.hpp"
 #include "argument_name.hpp"
+#include "help_builder.hpp"
 
 #include <any>
 #include <iostream>
@@ -55,8 +55,8 @@ public:
 
 protected:
     /// @param verbose The verbosity mode value. If `true` all non-default parameters will be included in the output.
-    /// @return An argument descriptor object for the argument.
-    virtual detail::argument_descriptor desc(const bool verbose) const noexcept = 0;
+    /// @return A help message builder object for the argument.
+    virtual detail::help_builder help_builder(const bool verbose) const noexcept = 0;
 
     /// @brief Mark the argument as used.
     /// @return `true` if the argument accepts further values, `false` otherwise.

@@ -3,8 +3,8 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/detail/argument_descriptor.hpp
- * @brief Defines structures for formatting argument descriptions.
+ * @file ap/detail/help_builder.hpp
+ * @brief Defines structures for creating and formatting help messages.
  */
 
 #pragma once
@@ -28,15 +28,14 @@ struct parameter_descriptor {
     std::string value;
 };
 
-/// @brief A structure used to represent an argument's description.
-// TODO: rename to help_builder or something like that
-class argument_descriptor {
+/// @brief A help message builder class.
+class help_builder {
 public:
     /**
      * @param name The string representation of the argument's name.
      * @param help An optional help message string.
      */
-    argument_descriptor(const std::string& name, const std::optional<std::string>& help)
+    help_builder(const std::string& name, const std::optional<std::string>& help)
     : name(name), help(help) {}
 
     /**

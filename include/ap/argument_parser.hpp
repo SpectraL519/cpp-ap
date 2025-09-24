@@ -1480,21 +1480,21 @@ private:
 
         if (verbose) {
             for (const auto& arg : visible_args)
-                os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
+                os << '\n' << arg->help_builder(verbose).get(this->_indent_width) << '\n';
         }
         else {
-            std::vector<detail::argument_descriptor> descriptors;
+            std::vector<detail::help_builder> descriptors;
             descriptors.reserve(group._arguments.size());
 
             for (const auto& arg : visible_args)
-                descriptors.emplace_back(arg->desc(verbose));
+                descriptors.emplace_back(arg->help_builder(verbose));
 
             std::size_t max_arg_name_length = 0ull;
-            for (const auto& desc : descriptors)
-                max_arg_name_length = std::max(max_arg_name_length, desc.name.length());
+            for (const auto& help_builder : descriptors)
+                max_arg_name_length = std::max(max_arg_name_length, help_builder.name.length());
 
-            for (const auto& desc : descriptors)
-                os << '\n' << desc.get_basic(this->_indent_width, max_arg_name_length);
+            for (const auto& help_builder : descriptors)
+                os << '\n' << help_builder.get_basic(this->_indent_width, max_arg_name_length);
 
             os << '\n';
         }
