@@ -761,7 +761,6 @@ public:
      */
     template <util::c_argument_value_type T = std::string>
     [[nodiscard]] T value(std::string_view arg_name) const {
-        // TODO: check _is_parsed
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
@@ -785,7 +784,6 @@ public:
      */
     template <util::c_argument_value_type T = std::string, std::convertible_to<T> U>
     [[nodiscard]] T value_or(std::string_view arg_name, U&& fallback_value) const {
-        // TODO: check _is_parsed
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
@@ -812,7 +810,6 @@ public:
      */
     template <util::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
-        // TODO: check _is_parsed
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
@@ -834,7 +831,7 @@ public:
      * @todo
      */
     void print_version(std::ostream& os = std::cout) const noexcept {
-        os << this->_program_name << " : version=" << this->_program_version.value_or("unspecified")
+        os << this->_program_name << " : version " << this->_program_version.value_or("unspecified")
            << std::endl;
     }
 
@@ -1028,20 +1025,19 @@ private:
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
     void _parse_args_impl(AIt args_begin, const AIt args_end, parsing_state& state) {
         this->_is_used = true;
-        if (args_begin == args_end) {
-            this->_verify_final_state();
-            return; // noting to parse
-        }
 
-        // try to match a subparser
-        const auto subparser_it = std::ranges::find(
-            this->_subparsers, *args_begin, [](const auto& subparser) { return subparser->_name; }
-        );
-        if (subparser_it != this->_subparsers.end()) {
-            auto& subparser = **subparser_it;
-            state.set_parser(subparser);
-            subparser._parse_args_impl(++args_begin, args_end, state);
-            return;
+        if (args_begin != args_end) {
+            // try to match a subparser
+            const auto subparser_it =
+                std::ranges::find(this->_subparsers, *args_begin, [](const auto& subparser) {
+                    return subparser->_name;
+                });
+            if (subparser_it != this->_subparsers.end()) {
+                auto& subparser = **subparser_it;
+                state.set_parser(subparser);
+                subparser._parse_args_impl(++args_begin, args_end, state);
+                return;
+            }
         }
 
         // process command-line arguments within the current parser
@@ -1523,7 +1519,7 @@ private:
     arg_parser_ptr_vec_t _subparsers;
 
     bool _is_used = false;
-    bool _is_parsed = false; // necessary
+    bool _is_parsed = false; // necessary ???, TODO: check in value getters
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;

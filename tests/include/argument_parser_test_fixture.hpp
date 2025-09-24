@@ -10,6 +10,8 @@ using ap::positional_argument;
 using ap::detail::argument_name;
 using ap::detail::argument_token;
 using ap::util::c_argument_value_type;
+using ap::util::c_forward_iterator_of;
+using ap::util::type_validator;
 
 namespace ap_testing {
 
@@ -64,12 +66,15 @@ struct argument_parser_test_fixture {
     }
 
     [[nodiscard]] std::vector<std::string> init_argv_vec(
-        std::size_t n_positional_args, std::size_t n_optional_args
+        const std::size_t n_positional_args,
+        const std::size_t n_optional_args,
+        const bool with_program_name = true
     ) const {
         std::vector<std::string> argv_vec;
         argv_vec.reserve(static_cast<std::size_t>(get_argc(n_positional_args, n_optional_args)));
 
-        argv_vec.emplace_back("program");
+        if (with_program_name)
+            argv_vec.emplace_back("program");
 
         for (std::size_t i = 0ull; i < n_positional_args; ++i)
             argv_vec.emplace_back(init_arg_value(i));
@@ -182,10 +187,10 @@ struct argument_parser_test_fixture {
         return this->sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)), state);
     }
 
-    void parse_args_impl(const arg_token_vec_t& arg_tokens) {
-        this->state.curr_arg = nullptr;
-        this->state.curr_pos_arg_it = this->sut._positional_args.begin();
-        this->sut._parse_args_impl(arg_tokens, this->state);
+    template <c_forward_iterator_of<std::string, type_validator::convertible> AIt>
+    void parse_args_impl(AIt args_begin, const AIt args_end) {
+        this->state.set_parser(sut);
+        this->sut._parse_args_impl(args_begin, args_end, this->state);
     }
 
     [[nodiscard]] arg_ptr_t get_argument(std::string_view arg_name) const {
@@ -193,7 +198,7 @@ struct argument_parser_test_fixture {
     }
 
     ap::argument_parser sut{program_name};
-    parsing_state state;
+    parsing_state state{sut};
 
     static constexpr std::string_view program_name = "program";
 };

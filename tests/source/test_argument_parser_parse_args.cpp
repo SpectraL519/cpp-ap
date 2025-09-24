@@ -94,10 +94,10 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
-    auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
-    arg_tokens.erase(std::next(arg_tokens.begin(), static_cast<std::ptrdiff_t>(first_opt_arg_idx)));
+    auto argv_vec = init_argv_vec(n_positional_args, n_optional_args, false);
+    argv_vec.erase(std::next(argv_vec.begin(), static_cast<std::ptrdiff_t>(first_opt_arg_idx)));
 
-    CHECK_NOTHROW(parse_args_impl(arg_tokens));
+    CHECK_NOTHROW(parse_args_impl(argv_vec.begin(), argv_vec.end()));
     CHECK_NE(
         std::ranges::find(state.unknown_args, init_arg_value(first_opt_arg_idx)),
         state.unknown_args.end()
@@ -110,9 +110,9 @@ TEST_CASE_FIXTURE(
     "list"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    const auto arg_tokens = init_arg_tokens(n_positional_args, n_optional_args);
+    auto argv_vec = init_argv_vec(n_positional_args, n_optional_args, false);
 
-    CHECK_NOTHROW(parse_args_impl(arg_tokens));
+    CHECK_NOTHROW(parse_args_impl(argv_vec.begin(), argv_vec.end()));
     CHECK(state.unknown_args.empty());
 }
 
