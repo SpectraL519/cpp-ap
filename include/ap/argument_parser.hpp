@@ -170,13 +170,7 @@ public:
     argument_parser(argument_parser&&) = delete;
     argument_parser& operator=(argument_parser&&) = delete;
 
-    argument_parser(const std::string_view name)
-    : _program_name(name),
-      _gr_positional_args(add_group("Positional Arguments")),
-      _gr_optional_args(add_group("Optional Arguments")) {
-        if (util::contains_whitespaces(name))
-            throw invalid_configuration("The program name cannot contain whitespace characters!");
-    }
+    argument_parser(const std::string_view name) : argument_parser(name, "") {}
 
     ~argument_parser() = default;
 
@@ -512,6 +506,17 @@ public:
     }
 
     /**
+     * @brief Adds an subparser with the given name to the parser's configuration.
+     * @param name Name of the subparser.
+     * @return Reference to the added subparser.
+     */
+    argument_parser& add_subparser(const std::string_view name) noexcept {
+        return *this->_subparsers.emplace_back(
+            std::unique_ptr<argument_parser>(new argument_parser(name, this->_program_name))
+        );
+    }
+
+    /**
      * @brief Parses the command-line arguments.
      *
      * Equivalent to:
@@ -533,21 +538,17 @@ public:
      * @brief Parses the command-line arguments.
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_args` function assumes that the program name argument has already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     void parse_args(const AR& argv_rng) {
-        this->_validate_argument_configuration();
-
-        parsing_state state{.curr_arg = nullptr, .curr_pos_arg_it = this->_positional_args.begin()};
-        this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
+        parsing_state state(*this);
+        this->_parse_args_impl(std::ranges::begin(argv_rng), std::ranges::end(argv_rng), state);
 
         if (not state.unknown_args.empty())
             throw parsing_failure::argument_deduction_failure(state.unknown_args);
-
-        this->_verify_final_state();
     }
 
     /**
@@ -576,10 +577,10 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @attention This overload of the `try_parse_args` function assumes that the program name argument has already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     void try_parse_args(const AR& argv_rng) {
         try {
             this->parse_args(argv_rng);
@@ -623,22 +624,14 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_known_args` function assumes that the program name argument already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     std::vector<std::string> parse_known_args(const AR& argv_rng) {
-        this->_validate_argument_configuration();
-
-        parsing_state state{
-            .curr_arg = nullptr,
-            .curr_pos_arg_it = this->_positional_args.begin(),
-            .parse_known_only = true
-        };
-        this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
-
-        this->_verify_final_state();
+        parsing_state state(*this, true);
+        this->_parse_args_impl(std::ranges::begin(argv_rng), std::ranges::end(argv_rng), state);
         return std::move(state.unknown_args);
     }
 
@@ -669,11 +662,11 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @return A vector of unknown argument values.
      * @attention This overload of the `try_parse_known_args` function assumes that the program name argument has already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     std::vector<std::string> try_parse_known_args(const AR& argv_rng) {
         try {
             return this->parse_known_args(argv_rng);
@@ -792,10 +785,8 @@ public:
                << std::string(this->_indent_width, ' ') << this->_program_description.value()
                << '\n';
 
-        for (const auto& group : this->_argument_groups) {
-            std::cout << '\n';
+        for (const auto& group : this->_argument_groups)
             this->_print_group(os, *group, verbose);
-        }
     }
 
     /**
@@ -825,19 +816,45 @@ private:
 
     using arg_group_ptr_t = std::unique_ptr<argument_group>;
     using arg_group_ptr_vec_t = std::vector<arg_group_ptr_t>;
-    // using arg_group_vec_iter_t = typename arg_group_vec_t::iterator;
+
+    using arg_parser_ptr_t = std::unique_ptr<argument_parser>;
+    using arg_parser_ptr_vec_t = std::vector<arg_parser_ptr_t>;
 
     using arg_token_vec_t = std::vector<detail::argument_token>;
+    using arg_token_vec_iter_t = typename arg_token_vec_t::const_iterator;
 
     /// @brief A collection of values used during the parsing process.
     struct parsing_state {
+        parsing_state(argument_parser& parser, const bool parse_known_only = false)
+        : curr_arg(nullptr),
+          curr_pos_arg_it(parser._positional_args.begin()),
+          parse_known_only(parse_known_only) {}
+
+        void set_parser(argument_parser& parser) {
+            this->curr_arg = nullptr;
+            this->curr_pos_arg_it = parser._positional_args.begin();
+        }
+
+        // std::string_view parser_name;
         arg_ptr_t curr_arg; ///< The currently processed argument.
         arg_ptr_vec_iter_t
             curr_pos_arg_it; ///< An iterator pointing to the next positional argument to be processed.
+        const bool
+            parse_known_only; ///< A flag indicating whether only known arguments should be parsed.
         std::vector<std::string> unknown_args = {}; ///< A vector of unknown argument values.
-        const bool parse_known_only =
-            false; ///< A flag indicating whether only known arguments should be parsed.
     };
+
+    argument_parser(const std::string_view name, const std::string_view parent_name)
+    : _name(name),
+      _program_name(std::format("{} {}", parent_name, name)),
+      _gr_positional_args(add_group("Positional Arguments")),
+      _gr_optional_args(add_group("Optional Arguments")) {
+        if (name.empty()) // TODO: add test case
+            throw invalid_configuration("The program name cannot be empty!");
+
+        if (util::contains_whitespaces(name))
+            throw invalid_configuration("The program name cannot contain whitespace characters!");
+    }
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
@@ -931,6 +948,38 @@ private:
     }
 
     /**
+     * @brief Implementation of parsing command-line arguments.
+     * @param arg_tokens The list of command-line argument tokens.
+     * @param state The current parsing state.
+     * @throws ap::invalid_configuration, ap::parsing_failure
+     * TODO: align doc
+     */
+    template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
+    void _parse_args_impl(AIt args_begin, const AIt args_end, parsing_state& state) {
+        if (args_begin == args_end)
+            return; // noting to parse
+
+        // try to match a subparser
+        const auto subparser_it = std::ranges::find(
+            this->_subparsers, *args_begin, [](const auto& subparser) { return subparser->_name; }
+        );
+        if (subparser_it != this->_subparsers.end()) {
+            auto& subparser = **subparser_it;
+            state.set_parser(subparser);
+            subparser._parse_args_impl(++args_begin, args_end, state);
+            return;
+        }
+
+        // process command-line arguments within the current parser
+        this->_validate_argument_configuration();
+        std::ranges::for_each(
+            this->_tokenize(args_begin, args_end, state),
+            std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
+        );
+        this->_verify_final_state();
+    }
+
+    /**
      * @brief Validate whether the definition/configuration of the parser's arguments is correct.
      *
      * What is verified:
@@ -959,7 +1008,7 @@ private:
      * @note `arg_range` must be a `std::ranges::range` with a value type convertible to `std::string`.
      * @return A list of preprocessed command-line argument tokens.
      */
-    template <util::c_range_of<std::string_view, util::type_validator::convertible> AR>
+    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
     [[nodiscard]] arg_token_vec_t _tokenize(const AR& arg_range, const parsing_state& state) {
         arg_token_vec_t toks;
 
@@ -968,6 +1017,23 @@ private:
 
         std::ranges::for_each(
             arg_range,
+            std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(state), std::ref(toks))
+        );
+
+        return toks;
+    }
+
+    // forward_iterator + distance or input_iterator + difference ?
+    template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
+    [[nodiscard]] arg_token_vec_t _tokenize(
+        AIt args_begin, const AIt args_end, const parsing_state& state
+    ) {
+        arg_token_vec_t toks;
+        toks.reserve(std::ranges::distance(args_begin, args_end));
+
+        std::ranges::for_each(
+            args_begin,
+            args_end,
             std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(state), std::ref(toks))
         );
 
@@ -1124,19 +1190,6 @@ private:
         default:
             return tok.value;
         }
-    }
-
-    /**
-     * @brief Implementation of parsing command-line arguments.
-     * @param arg_tokens The list of command-line argument tokens.
-     * @param state The current parsing state.
-     * @throws ap::parsing_failure
-     */
-    void _parse_args_impl(const arg_token_vec_t& arg_tokens, parsing_state& state) {
-        // process argument tokens
-        std::ranges::for_each(
-            arg_tokens, std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
-        );
     }
 
     /**
@@ -1341,7 +1394,7 @@ private:
         if (std::ranges::empty(visible_args))
             return;
 
-        os << group._name << ":";
+        os << '\n' << group._name << ":";
 
         std::vector<std::string> group_attrs;
         if (group._required)
@@ -1375,6 +1428,7 @@ private:
         }
     }
 
+    std::string _name;
     std::string _program_name;
     std::optional<std::string> _program_version;
     std::optional<std::string> _program_description;
@@ -1387,6 +1441,8 @@ private:
     arg_group_ptr_vec_t _argument_groups;
     argument_group& _gr_positional_args;
     argument_group& _gr_optional_args;
+
+    arg_parser_ptr_vec_t _subparsers;
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;

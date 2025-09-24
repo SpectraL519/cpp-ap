@@ -139,4 +139,13 @@ concept c_range_of =
     std::ranges::range<R>
     and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
 
+template <typename R, typename V, type_validator TV = type_validator::same>
+concept c_forward_range_of =
+    std::ranges::range<R>
+    and c_valid_type<std::remove_cvref_t<std::ranges::range_value_t<R>>, V, TV>;
+
+template <typename It, typename V, type_validator TV = type_validator::same>
+concept c_forward_iterator_of =
+    std::input_iterator<It> and c_valid_type<std::iter_value_t<It>, V, TV>;
+
 } // namespace ap::util

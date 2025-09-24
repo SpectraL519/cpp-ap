@@ -134,7 +134,7 @@ parser.program_version("alhpa")
 >
 > - When creating an argument parser instance, you must provide a program name to the constructor.
 >
->   The program name given to the parser cannot contain whitespace characters.
+>   The program name given to the parser cannot be empty and cannot contain whitespace characters.
 >
 > - Additional parameters you can specify for a parser's instance incldue:
 >   - The program's version and description - used in the parser's configuration output (`std::cout << parser`).

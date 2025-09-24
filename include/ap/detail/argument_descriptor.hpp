@@ -29,6 +29,7 @@ struct parameter_descriptor {
 };
 
 /// @brief A structure used to represent an argument's description.
+// TODO: rename to help_builder or something like that
 class argument_descriptor {
 public:
     /**
