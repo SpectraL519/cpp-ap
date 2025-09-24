@@ -861,6 +861,7 @@ public:
                << std::string(this->_indent_width, ' ') << this->_program_description.value()
                << '\n';
 
+        this->_print_subparsers(os);
         for (const auto& group : this->_argument_groups)
             this->_print_group(os, *group, verbose);
     }
@@ -1450,6 +1451,28 @@ private:
         return nullptr;
     }
 
+    void _print_subparsers(std::ostream& os) const noexcept {
+        if (this->_subparsers.empty())
+            return;
+
+        os << "\nSubcommands:\n";
+
+        std::vector<detail::help_builder> builders;
+        builders.reserve(this->_subparsers.size());
+
+        for (const auto& subparser : this->_subparsers)
+            builders.emplace_back(subparser->_name, subparser->_program_description);
+
+        std::size_t max_subparser_name_length = 0ull;
+        for (const auto& bld : builders)
+            max_subparser_name_length = std::max(max_subparser_name_length, bld.name.length());
+
+        for (const auto& bld : builders)
+            os << '\n' << bld.get_basic(this->_indent_width, max_subparser_name_length);
+
+        os << '\n';
+    }
+
     /**
      * @brief Print the given argument list to an output stream.
      * @param os The output stream to print to.
@@ -1483,18 +1506,18 @@ private:
                 os << '\n' << arg->help_builder(verbose).get(this->_indent_width) << '\n';
         }
         else {
-            std::vector<detail::help_builder> descriptors;
-            descriptors.reserve(group._arguments.size());
+            std::vector<detail::help_builder> builders;
+            builders.reserve(group._arguments.size());
 
             for (const auto& arg : visible_args)
-                descriptors.emplace_back(arg->help_builder(verbose));
+                builders.emplace_back(arg->help_builder(verbose));
 
             std::size_t max_arg_name_length = 0ull;
-            for (const auto& help_builder : descriptors)
-                max_arg_name_length = std::max(max_arg_name_length, help_builder.name.length());
+            for (const auto& bld : builders)
+                max_arg_name_length = std::max(max_arg_name_length, bld.name.length());
 
-            for (const auto& help_builder : descriptors)
-                os << '\n' << help_builder.get_basic(this->_indent_width, max_arg_name_length);
+            for (const auto& bld : builders)
+                os << '\n' << bld.get_basic(this->_indent_width, max_arg_name_length);
 
             os << '\n';
         }
