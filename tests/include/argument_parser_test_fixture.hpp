@@ -120,9 +120,7 @@ struct argument_parser_test_fixture {
         typename F = std::function<void(positional_argument<T>&)>>
     void add_positional_args(const std::size_t n, F&& setup_arg = [](positional_argument<T>&) {}) {
         for (std::size_t i = 0ull; i < n; ++i)
-            setup_arg(this->sut.add_positional_argument<T>(
-                init_arg_name_primary(i), init_arg_name_secondary(i)
-            ));
+            setup_arg(this->sut.add_positional_argument<T>(init_arg_name_primary(i)));
     }
 
     template <

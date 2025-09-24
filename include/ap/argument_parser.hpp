@@ -318,34 +318,6 @@ public:
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration.
-     * @tparam T Type of the argument value.
-     * @param primary_name The primary name of the argument.
-     * @param secondary_name The secondary name of the argument.
-     * @return Reference to the added positional argument.
-     * @throws ap::invalid_configuration
-     */
-    template <util::c_argument_value_type T = std::string>
-    positional_argument<T>& add_positional_argument(
-        const std::string_view primary_name, const std::string_view secondary_name
-    ) {
-        this->_verify_arg_name_pattern(primary_name);
-        this->_verify_arg_name_pattern(secondary_name);
-
-        const detail::argument_name arg_name{
-            std::make_optional<std::string>(primary_name),
-            std::make_optional<std::string>(secondary_name)
-        };
-        if (this->_is_arg_name_used(arg_name))
-            throw invalid_configuration::argument_name_used(arg_name);
-
-        auto& new_arg_ptr =
-            this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        this->_gr_positional_args._add_argument(new_arg_ptr);
-        return static_cast<positional_argument<T>&>(*new_arg_ptr);
-    }
-
-    /**
      * @brief Adds an optional argument to the parser's configuration.
      * @tparam T Type of the argument value.
      * @param name The name of the argument.
@@ -1060,7 +1032,6 @@ private:
             std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
         );
         this->_verify_final_state();
-        this->_is_parsed = true;
     }
 
     /**
@@ -1532,15 +1503,12 @@ private:
 
     arg_ptr_vec_t _positional_args;
     arg_ptr_vec_t _optional_args;
-
     arg_group_ptr_vec_t _argument_groups;
     argument_group& _gr_positional_args;
     argument_group& _gr_optional_args;
-
     arg_parser_ptr_vec_t _subparsers;
 
     bool _is_used = false;
-    bool _is_parsed = false; // necessary ???, TODO: check in value getters
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;

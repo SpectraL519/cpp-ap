@@ -20,12 +20,7 @@ struct test_argument_parser_parse_args : public argument_parser_test_fixture {
 
     const std::string invalid_arg_name = "invalid_arg";
 
-    const std::string positional_primary_name = "positional_arg";
-    const std::string positional_secondary_name = "pa";
-
-    const std::optional<std::string> positional_primary_name_opt = positional_primary_name;
-    const std::optional<std::string> positional_secondary_name_opt = positional_secondary_name;
-
+    const std::string positional_name = "positional_arg";
     const std::string optional_primary_name = "optional_arg";
     const std::string optional_secondary_name = "oa";
 
@@ -132,10 +127,12 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
-    for (std::size_t i = 0ull; i < n_positional_args; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK(get_argument(arg_name.primary.value()));
-        CHECK(get_argument(arg_name.secondary.value()));
+    for (std::size_t i = 0ull; i < n_positional_args; ++i)
+        CHECK(get_argument(init_arg_name_primary(i)));
+
+    for (std::size_t i = first_opt_arg_idx; i < n_args_total; ++i) {
+        CHECK(get_argument(init_arg_name_primary(i)));
+        CHECK(get_argument(init_arg_name_secondary(i)));
     }
 }
 
@@ -158,7 +155,8 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::required_argument_not_parsed({init_arg_name(last_pos_arg_idx)}).what(),
+        parsing_failure::required_argument_not_parsed({init_arg_name_primary(last_pos_arg_idx)})
+            .what(),
         parsing_failure
     );
 
@@ -170,16 +168,11 @@ TEST_CASE_FIXTURE(
     "parse_args should throw if a required positional argument is defined after a non-required "
     "posisitonal argument"
 ) {
-    const auto non_required_arg_name = init_arg_name(0ull);
-    sut.add_positional_argument(
-           non_required_arg_name.primary.value(), non_required_arg_name.secondary.value()
-    )
-        .required(false);
+    const auto non_required_arg_name = init_arg_name_primary(0ull);
+    sut.add_positional_argument(non_required_arg_name).required(false);
 
-    const auto required_arg_name = init_arg_name(1ull);
-    sut.add_positional_argument(
-        required_arg_name.primary.value(), required_arg_name.secondary.value()
-    );
+    const auto required_arg_name = init_arg_name_primary(1ull);
+    sut.add_positional_argument(required_arg_name);
 
     const auto argc = get_argc(no_args, no_args);
     auto argv = init_argv(no_args, no_args);
@@ -187,7 +180,7 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
         invalid_configuration::positional::required_after_non_required(
-            required_arg_name, non_required_arg_name
+            {required_arg_name}, {non_required_arg_name}
         )
             .what(),
         invalid_configuration
@@ -603,10 +596,12 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK(sut.has_value(arg_name.primary.value()));
-        CHECK(sut.has_value(arg_name.secondary.value()));
+    for (std::size_t i = 0ull; i < n_positional_args; ++i)
+        CHECK(sut.has_value(init_arg_name_primary(i)));
+
+    for (std::size_t i = first_opt_arg_idx; i < n_args_total; ++i) {
+        CHECK(sut.has_value(init_arg_name_primary(i)));
+        CHECK(sut.has_value(init_arg_name_secondary(i)));
     }
 
     free_argv(argc, argv);
@@ -636,7 +631,7 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args, "count should return the number of argument's flag usage"
 ) {
     // prepare sut
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
+    sut.add_positional_argument(positional_name);
     sut.add_optional_argument(optional_primary_name, optional_secondary_name)
         .nargs(ap::nargs::any());
 
@@ -662,7 +657,7 @@ TEST_CASE_FIXTURE(
     sut.parse_args(argc, argv);
 
     // test count
-    CHECK_EQ(sut.count(positional_primary_name), positional_count);
+    CHECK_EQ(sut.count(positional_name), positional_count);
     CHECK_EQ(sut.count(optional_primary_name), optional_count);
 
     // free argv
@@ -685,10 +680,12 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
-        const auto arg_name = init_arg_name(i);
-        CHECK_THROWS_AS(discard_result(sut.value(arg_name.primary.value())), std::logic_error);
-        CHECK_THROWS_AS(discard_result(sut.value(arg_name.secondary.value())), std::logic_error);
+    for (std::size_t i = 0ull; i < n_positional_args; ++i)
+        CHECK_THROWS_AS(discard_result(sut.value(init_arg_name_primary(i))), std::logic_error);
+
+    for (std::size_t i = first_opt_arg_idx; i < n_args_total; ++i) {
+        CHECK_THROWS_AS(discard_result(sut.value(init_arg_name_primary(i))), std::logic_error);
+        CHECK_THROWS_AS(discard_result(sut.value(init_arg_name_secondary(i))), std::logic_error);
     }
 }
 
@@ -729,7 +726,15 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+    for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+        const auto arg_name = init_arg_name_primary(i);
+        const auto arg_value = init_arg_value(i);
+
+        REQUIRE(sut.has_value(arg_name));
+        CHECK_EQ(sut.value(arg_name), arg_value);
+    }
+
+    for (std::size_t i = first_opt_arg_idx; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
         const auto arg_value = init_arg_value(i);
 
@@ -812,7 +817,15 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_NOTHROW(sut.parse_args(argc, argv));
 
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+    for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+        const auto arg_name = init_arg_name_primary(i);
+        const auto arg_value = init_arg_value(i);
+
+        REQUIRE(sut.has_value(arg_name));
+        CHECK_EQ(sut.value_or(arg_name, empty_str), arg_value);
+    }
+
+    for (std::size_t i = first_opt_arg_idx; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
         const auto arg_value = init_arg_value(i);
 
@@ -856,7 +869,14 @@ TEST_CASE_FIXTURE(
 
     add_arguments<value_type>(n_positional_args, n_optional_args);
 
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+    for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+        const default_value_type fallback_value = 2 * static_cast<default_value_type>(i);
+        CHECK_EQ(
+            sut.value_or<value_type>(init_arg_name_primary(i), fallback_value), fallback_value
+        );
+    }
+
+    for (std::size_t i = first_opt_arg_idx; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
         const default_value_type fallback_value = 2 * static_cast<default_value_type>(i);
 
@@ -876,7 +896,12 @@ TEST_CASE_FIXTURE(
 ) {
     add_arguments(n_positional_args, n_optional_args);
 
-    for (std::size_t i = 0ull; i < n_args_total; ++i) {
+    for (std::size_t i = 0ull; i < n_positional_args; ++i) {
+        const auto fallback_value = init_arg_value(i);
+        CHECK_EQ(sut.value_or(init_arg_name_primary(i), fallback_value), fallback_value);
+    }
+
+    for (std::size_t i = first_opt_arg_idx; i < n_args_total; ++i) {
         const auto arg_name = init_arg_name(i);
         const auto fallback_value = init_arg_value(i);
 
@@ -891,10 +916,8 @@ TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "values() [positional arguments] should return an empty vector if an argument has no values"
 ) {
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
-
-    CHECK(sut.values(positional_primary_name).empty());
-    CHECK(sut.values(positional_secondary_name).empty());
+    sut.add_positional_argument(positional_name);
+    CHECK(sut.values(positional_name).empty());
 }
 
 TEST_CASE_FIXTURE(
@@ -902,7 +925,7 @@ TEST_CASE_FIXTURE(
     "values() [positional arguments] should throw when an argument has values but the given type "
     "is invalid"
 ) {
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name);
+    sut.add_positional_argument(positional_name);
 
     // prepare argc & argv
     const int argc = get_argc(1ull, no_args);
@@ -912,12 +935,7 @@ TEST_CASE_FIXTURE(
     sut.parse_args(argc, argv);
 
     CHECK_THROWS_AS(
-        discard_result(sut.values<invalid_argument_value_type>(positional_primary_name)),
-        ap::type_error
-    );
-    CHECK_THROWS_AS(
-        discard_result(sut.values<invalid_argument_value_type>(positional_secondary_name)),
-        ap::type_error
+        discard_result(sut.values<invalid_argument_value_type>(positional_name)), ap::type_error
     );
 
     free_argv(argc, argv);
@@ -930,8 +948,7 @@ TEST_CASE_FIXTURE(
 ) {
     const std::vector<std::string> default_values{"default_value_1", "default_value_2"};
 
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name)
-        .default_values(default_values);
+    sut.add_positional_argument(positional_name).default_values(default_values);
 
     // prepare argc & argv
     const int argc = get_argc(no_args, no_args);
@@ -940,7 +957,7 @@ TEST_CASE_FIXTURE(
     // parse args
     sut.parse_args(argc, argv);
 
-    const auto& stored_values = sut.values(positional_primary_name);
+    const auto& stored_values = sut.values(positional_name);
 
     REQUIRE_EQ(stored_values.size(), default_values.size());
     CHECK_EQ(stored_values, default_values);
@@ -953,7 +970,7 @@ TEST_CASE_FIXTURE(
     "values() [positional arguments] should return a correct vector of values when there is an "
     "argument with a given name and has parsed values"
 ) {
-    sut.add_positional_argument(positional_primary_name, positional_secondary_name).nargs(any());
+    sut.add_positional_argument(positional_name).nargs(any());
 
     // prepare argc & argv
     const std::size_t n_positional_values = 3ull;
@@ -970,7 +987,7 @@ TEST_CASE_FIXTURE(
     // parse args
     sut.parse_args(argc, argv);
 
-    const auto& stored_values = sut.values(positional_primary_name);
+    const auto& stored_values = sut.values(positional_name);
 
     REQUIRE_EQ(stored_values.size(), positional_arg_values.size());
     CHECK_EQ(stored_values, positional_arg_values);
