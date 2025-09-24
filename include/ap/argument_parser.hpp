@@ -67,6 +67,20 @@ enum class default_argument : std::uint8_t {
     o_help,
 
     /**
+     * @brief An optional argument representing the program's version flag.
+     * Equivalent to:
+     * @code{.cpp}
+     * arg_parser.add_optional_argument<none_type>("version", "v")
+     *           .action<action_type::on_flag>([&arg_parser]() {
+     *               arg_parser.print_version();
+     *               std::exit(EXIT_SUCCESS);
+     *           })
+     *           .help("Dsiplay program version info");
+     * @endcode
+     */
+    o_version,
+
+    /**
      * @brief A positional argument representing multiple input file paths.
      * Equivalent to:
      * @code{.cpp}
@@ -270,21 +284,36 @@ public:
     /**
      * @brief Adds a positional argument to the parser's configuration.
      * @tparam T Type of the argument value.
-     * @param primary_name The primary name of the argument.
+     * @param name The name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
-    positional_argument<T>& add_positional_argument(const std::string_view primary_name) {
-        this->_verify_arg_name_pattern(primary_name);
+    positional_argument<T>& add_positional_argument(const std::string_view name) {
+        return this->add_positional_argument<T>(this->_gr_positional_args, name);
+    }
 
-        const detail::argument_name arg_name(std::make_optional<std::string>(primary_name));
+    /**
+     * @brief Adds a positional argument to the parser's configuration and binds it to the given group.
+     * @tparam T Type of the argument value.
+     * @param primary_name The name of the argument.
+     * @return Reference to the added positional argument.
+     * @throws ap::invalid_configuration
+     */
+    template <util::c_argument_value_type T = std::string>
+    positional_argument<T>& add_positional_argument(
+        argument_group& group, const std::string_view name
+    ) {
+        this->_validate_group(group);
+        this->_verify_arg_name_pattern(name);
+
+        const detail::argument_name arg_name(std::make_optional<std::string>(name));
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
         auto& new_arg_ptr =
             this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        this->_gr_positional_args._add_argument(new_arg_ptr);
+        group._add_argument(new_arg_ptr);
         return static_cast<positional_argument<T>&>(*new_arg_ptr);
     }
 
@@ -586,7 +615,8 @@ public:
             this->parse_args(argv_rng);
         }
         catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ap::error] " << err.what() << std::endl << *this << std::endl;
+            std::cerr << "[ap::error] " << err.what() << std::endl
+                      << this->used_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -672,9 +702,37 @@ public:
             return this->parse_known_args(argv_rng);
         }
         catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ap::error] " << err.what() << std::endl << *this << std::endl;
+            std::cerr << "[ap::error] " << err.what() << std::endl
+                      << this->used_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
+    }
+
+    /**
+     * @todo
+     */
+    [[nodiscard]] bool is_used() const noexcept {
+        return this->_is_used;
+    }
+
+    /**
+     * @todo
+     */
+    [[nodiscard]] argument_parser& used_parser() noexcept {
+        const auto used_subparser_it = std::ranges::find_if(
+            this->_subparsers, [](const auto& subparser) { return subparser->is_used(); }
+        );
+        if (used_subparser_it == this->_subparsers.end())
+            return *this;
+        return (*used_subparser_it)->used_parser();
+    }
+
+    /**
+     * @todo
+     */
+    [[nodiscard]] bool is_used(std::string_view arg_name) const noexcept {
+        const auto arg = this->_get_argument(arg_name);
+        return arg ? arg->is_used() : false;
     }
 
     /**
@@ -703,6 +761,7 @@ public:
      */
     template <util::c_argument_value_type T = std::string>
     [[nodiscard]] T value(std::string_view arg_name) const {
+        // TODO: check _is_parsed
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
@@ -726,6 +785,7 @@ public:
      */
     template <util::c_argument_value_type T = std::string, std::convertible_to<T> U>
     [[nodiscard]] T value_or(std::string_view arg_name, U&& fallback_value) const {
+        // TODO: check _is_parsed
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
@@ -752,6 +812,7 @@ public:
      */
     template <util::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
+        // TODO: check _is_parsed
         const auto arg = this->_get_argument(arg_name);
         if (not arg)
             throw lookup_failure::argument_not_found(arg_name);
@@ -767,6 +828,14 @@ public:
         catch (const std::bad_any_cast&) {
             throw type_error::invalid_value_type<T>(arg->name());
         }
+    }
+
+    /**
+     * @todo
+     */
+    void print_version(std::ostream& os = std::cout) const noexcept {
+        os << this->_program_name << " : version=" << this->_program_version.value_or("unspecified")
+           << std::endl;
     }
 
     /**
@@ -846,7 +915,9 @@ private:
 
     argument_parser(const std::string_view name, const std::string_view parent_name)
     : _name(name),
-      _program_name(std::format("{} {}", parent_name, name)),
+      _program_name(
+          std::format("{}{}{}", parent_name, std::string(not parent_name.empty(), ' '), name)
+      ),
       _gr_positional_args(add_group("Positional Arguments")),
       _gr_optional_args(add_group("Optional Arguments")) {
         if (name.empty()) // TODO: add test case
@@ -956,8 +1027,11 @@ private:
      */
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
     void _parse_args_impl(AIt args_begin, const AIt args_end, parsing_state& state) {
-        if (args_begin == args_end)
+        this->_is_used = true;
+        if (args_begin == args_end) {
+            this->_verify_final_state();
             return; // noting to parse
+        }
 
         // try to match a subparser
         const auto subparser_it = std::ranges::find(
@@ -977,6 +1051,7 @@ private:
             std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
         );
         this->_verify_final_state();
+        this->_is_parsed = true;
     }
 
     /**
@@ -1279,13 +1354,13 @@ private:
      * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
      */
     void _verify_final_state() const {
+        for (const auto& group : this->_argument_groups)
+            this->_verify_group_requirements(*group);
+
         if (not this->_are_required_args_bypassed()) {
             this->_verify_required_args();
             this->_verify_nvalues();
         }
-
-        for (const auto& group : this->_argument_groups)
-            this->_verify_group_requirements(*group);
     }
 
     /**
@@ -1341,6 +1416,9 @@ private:
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
     void _verify_group_requirements(const argument_group& group) const {
+        if (group._arguments.empty())
+            return;
+
         const auto n_used_args = static_cast<std::size_t>(
             std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
         );
@@ -1444,6 +1522,9 @@ private:
 
     arg_parser_ptr_vec_t _subparsers;
 
+    bool _is_used = false;
+    bool _is_parsed = false; // necessary
+
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;
     static constexpr char _flag_prefix_char = '-';
@@ -1476,6 +1557,15 @@ inline void add_default_argument(
         arg_parser.add_optional_argument<none_type>("help", "h")
             .action<action_type::on_flag>(action::print_help(arg_parser, EXIT_SUCCESS))
             .help("Display the help message");
+        break;
+
+    case default_argument::o_version:
+        arg_parser.add_optional_argument<none_type>("version", "v")
+            .action<action_type::on_flag>([&arg_parser]() {
+                arg_parser.print_version();
+                std::exit(EXIT_SUCCESS);
+            })
+            .help("Dsiplay program version info");
         break;
 
     case default_argument::o_input:
