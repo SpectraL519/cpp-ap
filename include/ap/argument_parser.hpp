@@ -539,7 +539,17 @@ public:
      * @param name Name of the subparser.
      * @return Reference to the added subparser.
      */
-    argument_parser& add_subparser(const std::string_view name) noexcept {
+    argument_parser& add_subparser(const std::string_view name) {
+        const auto subparser_it = std::ranges::find(
+            this->_subparsers, name, [](const auto& subparser) { return subparser->_name; }
+        );
+        if (subparser_it != this->_subparsers.end())
+            throw std::logic_error(std::format(
+                "A subparser with the given name () already exists in parser '{}'",
+                (*subparser_it)->_name,
+                this->_program_name
+            ));
+
         return *this->_subparsers.emplace_back(
             std::unique_ptr<argument_parser>(new argument_parser(name, this->_program_name))
         );
@@ -1017,10 +1027,12 @@ private:
 
     /**
      * @brief Implementation of parsing command-line arguments.
-     * @param arg_tokens The list of command-line argument tokens.
+     * @tparam AIt The command-line argument value iterator type.
+     * @note `AIt` must be a `std::forward_iterator` with a value type convertible to `std::string`.
+     * @param args_begin The begin iterator for the command-line argument value range.
+     * @param args_end The end iterator for the command-line argument value range.
      * @param state The current parsing state.
      * @throws ap::invalid_configuration, ap::parsing_failure
-     * TODO: align doc
      */
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
     void _parse_args_impl(AIt args_begin, const AIt args_end, parsing_state& state) {
@@ -1066,6 +1078,7 @@ private:
             }
 
             if (non_required_arg and arg->is_required())
+                // TODO: remove static builder
                 throw invalid_configuration::positional::required_after_non_required(
                     arg->name(), non_required_arg->name()
                 );
@@ -1074,33 +1087,18 @@ private:
 
     /**
      * @brief Converts the command-line arguments into a list of tokens.
-     * @tparam AR The command-line argument value range type.
-     * @param arg_range The command-line argument value range.
-     * @note `arg_range` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @tparam AIt The command-line argument value iterator type.
+     * @note `AIt` must be a `std::forward_iterator` with a value type convertible to `std::string`.
+     * @param args_begin The begin iterator for the command-line argument value range.
+     * @param args_end The end iterator for the command-line argument value range.
      * @return A list of preprocessed command-line argument tokens.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
-    [[nodiscard]] arg_token_vec_t _tokenize(const AR& arg_range, const parsing_state& state) {
-        arg_token_vec_t toks;
-
-        if constexpr (std::ranges::sized_range<AR>)
-            toks.reserve(std::ranges::size(arg_range));
-
-        std::ranges::for_each(
-            arg_range,
-            std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(state), std::ref(toks))
-        );
-
-        return toks;
-    }
-
-    // forward_iterator + distance or input_iterator + difference ?
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
     [[nodiscard]] arg_token_vec_t _tokenize(
         AIt args_begin, const AIt args_end, const parsing_state& state
     ) {
         arg_token_vec_t toks;
-        toks.reserve(std::ranges::distance(args_begin, args_end));
+        toks.reserve(static_cast<std::size_t>(std::ranges::distance(args_begin, args_end)));
 
         std::ranges::for_each(
             args_begin,

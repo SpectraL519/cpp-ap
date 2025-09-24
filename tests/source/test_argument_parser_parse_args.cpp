@@ -1441,3 +1441,33 @@ TEST_CASE_FIXTURE(
 
     free_argv(argc, argv);
 }
+
+// subparsers
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "an argument parser should delegate parsing remaining arguments if the first command-line "
+    "argument matches a subparser's name"
+) {
+    const std::string subparser_name = "subprogram";
+    auto& subparser = sut.add_subparser(subparser_name);
+
+    const std::string pos_arg_name = "positional";
+    const std::string pos_arg_val = "positional-value";
+    const std::string opt_arg_name = "optional";
+    const std::string opt_arg_val = "optional-value";
+
+    subparser.add_positional_argument(pos_arg_name);
+    subparser.add_optional_argument(opt_arg_name);
+
+    const std::vector<std::string> argv_vec{
+        subparser_name, pos_arg_val, std::format("--{}", opt_arg_name), opt_arg_val
+    };
+
+    sut.parse_args(argv_vec);
+
+    REQUIRE(sut.is_used());
+    CHECK(subparser.is_used());
+    CHECK_EQ(subparser.value(pos_arg_name), pos_arg_val);
+    CHECK_EQ(subparser.value(opt_arg_name), opt_arg_val);
+}

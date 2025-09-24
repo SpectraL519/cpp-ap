@@ -170,8 +170,8 @@ struct argument_parser_test_fixture {
     }
 
     // argument_parser private member accessors
-    [[nodiscard]] const std::string& get_program_name() const {
-        return this->sut._program_name;
+    [[nodiscard]] const std::string& get_program_name(const ap::argument_parser& parser) const {
+        return parser._program_name;
     }
 
     [[nodiscard]] const std::optional<std::string>& get_program_description() const {
@@ -184,7 +184,7 @@ struct argument_parser_test_fixture {
 
     // private function callers
     [[nodiscard]] arg_token_vec_t tokenize(int argc, char* argv[]) {
-        return this->sut._tokenize(std::span(argv + 1, static_cast<std::size_t>(argc - 1)), state);
+        return this->sut._tokenize(argv + 1, argv + argc, state);
     }
 
     template <c_forward_iterator_of<std::string, type_validator::convertible> AIt>
