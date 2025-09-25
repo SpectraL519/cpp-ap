@@ -558,7 +558,9 @@ public:
         this->_parse_args_impl(std::ranges::begin(argv_rng), std::ranges::end(argv_rng), state);
 
         if (not state.unknown_args.empty())
-            throw parsing_failure::argument_deduction_failure(state.unknown_args);
+            throw parsing_failure(std::format(
+                "Failed to deduce the argument for values [{}]", util::join(state.unknown_args)
+            ));
     }
 
     /**
@@ -1090,10 +1092,12 @@ private:
             }
 
             if (non_required_arg and arg->is_required())
-                // TODO: remove static builder in v3 release commit
-                throw invalid_configuration::positional::required_after_non_required(
-                    arg->name(), non_required_arg->name()
-                );
+                throw invalid_configuration(std::format(
+                    "Required positional argument [{}] cannot be defined after a non-required "
+                    "positional argument [{}].",
+                    arg->name().str(),
+                    non_required_arg->name().str()
+                ));
         }
     }
 
@@ -1438,8 +1442,9 @@ private:
             return;
 
         if (arg->is_required() and not arg->has_value())
-            throw parsing_failure::required_argument_not_parsed(arg->name());
-
+            throw parsing_failure(
+                std::format("No values parsed for a required argument [{}]", arg->name().str())
+            );
         if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
             throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
     }

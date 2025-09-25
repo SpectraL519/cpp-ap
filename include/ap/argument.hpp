@@ -670,11 +670,15 @@ private:
         }
         else {
             if (not (std::istringstream(str_value) >> value))
-                throw parsing_failure::invalid_value(this->_name, str_value);
+                throw parsing_failure(std::format(
+                    "Cannot parse value `{}` for argument [{}].", str_value, this->_name.str()
+                ));
         }
 
         if (not this->_is_valid_choice(value))
-            throw parsing_failure::invalid_choice(this->_name, str_value);
+            throw parsing_failure(std::format(
+                "Value `{}` is not a valid choice for argument [{}].", str_value, this->_name.str()
+            ));
 
         const auto apply_visitor = action::util::apply_visitor<value_type>{value};
         for (const auto& action : this->_value_actions)

@@ -126,6 +126,17 @@ struct argument_test_fixture {
     [[nodiscard]] bool is_bypass_required_enabled(const argument<ArgT, T>& arg) const {
         return arg.is_bypass_required_enabled();
     }
+
+    // exception message builders
+    std::string invalid_value_msg(const argument_name& arg_name, const std::string& value) const {
+        return std::format("Cannot parse value `{}` for argument [{}].", value, arg_name.str());
+    }
+
+    std::string invalid_choice_msg(const argument_name& arg_name, const std::string& value) const {
+        return std::format(
+            "Value `{}` is not a valid choice for argument [{}].", value, arg_name.str()
+        );
+    }
 };
 
 } // namespace ap_testing

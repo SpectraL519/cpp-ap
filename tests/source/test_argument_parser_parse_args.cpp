@@ -155,8 +155,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::required_argument_not_parsed({init_arg_name_primary(last_pos_arg_idx)})
-            .what(),
+        required_argument_not_parsed_msg({init_arg_name_primary(last_pos_arg_idx)}).c_str(),
         parsing_failure
     );
 
@@ -179,10 +178,13 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        invalid_configuration::positional::required_after_non_required(
-            {required_arg_name}, {non_required_arg_name}
+        std::format(
+            "Required positional argument [{}] cannot be defined after a non-required positional "
+            "argument [{}].",
+            required_arg_name,
+            non_required_arg_name
         )
-            .what(),
+            .c_str(),
         invalid_configuration
     );
 
@@ -206,7 +208,8 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::argument_deduction_failure(unknown_args).what(),
+        std::format("Failed to deduce the argument for values [{}]", ap::util::join(unknown_args))
+            .c_str(),
         parsing_failure
     );
 
@@ -230,7 +233,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::required_argument_not_parsed(required_arg_name).what(),
+        required_argument_not_parsed_msg(required_arg_name).c_str(),
         parsing_failure
     );
 

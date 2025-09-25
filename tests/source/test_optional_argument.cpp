@@ -482,7 +482,7 @@ TEST_CASE_FIXTURE(
     SUBCASE("given string is empty") {
         REQUIRE_THROWS_WITH_AS(
             set_value(sut, empty_str),
-            parsing_failure::invalid_value(arg_name_primary, empty_str).what(),
+            invalid_value_msg(arg_name_primary, empty_str).c_str(),
             parsing_failure
         );
         CHECK_FALSE(has_value(sut));
@@ -490,7 +490,7 @@ TEST_CASE_FIXTURE(
     SUBCASE("given string is non-convertible to value_type") {
         REQUIRE_THROWS_WITH_AS(
             set_value(sut, invalid_value_str),
-            parsing_failure::invalid_value(arg_name_primary, invalid_value_str).what(),
+            invalid_value_msg(arg_name_primary, invalid_value_str).c_str(),
             parsing_failure
         );
         CHECK_FALSE(has_value(sut));
@@ -506,7 +506,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_THROWS_WITH_AS(
         set_value(sut, invalid_choice),
-        parsing_failure::invalid_choice(arg_name_primary, as_string(invalid_choice)).what(),
+        invalid_choice_msg(arg_name_primary, as_string(invalid_choice)).c_str(),
         parsing_failure
     );
     CHECK_FALSE(has_value(sut));
