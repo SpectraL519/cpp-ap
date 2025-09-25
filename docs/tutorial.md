@@ -12,18 +12,20 @@
   - [Boolean Flags](#boolean-flags)
 - [Argument Parameters](#argument-parameters)
   - [Common Parameters](#common-parameters)
-    - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance)
-    - [hidden](#2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description)
-    - [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown)
-    - [supress arg checks](#4-supress_arg_checks---using-a-supressing-argument-results-in-supressing-requirement-checks-for-other-arguments)
-    - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument)
-    - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
-    - [choices](#7-choices---a-list-of-valid-argument-values)
-    - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value)
-    - [default values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
+    - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance) - the text shown in the help message to describe an argument
+    - [hidden](#2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description) - hides the argument from the generated program description and help output
+    - [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown) - marks the argument as mandatory; not using it will cause an error
+    - [supress arg checks](#4-supress_arg_checks---using-a-supressing-argument-results-in-supressing-requirement-checks-for-other-arguments) - if a supressing argument is used, other requirement validation will be skipped for other arguments
+    - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument) - defines how many values an argument can or must accept
+    - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached) - makes the argument consume all following values until its limit is reached
+    - [choices](#7-choices---a-list-of-valid-argument-values) - restricts the valid inputs to a predefined set of values
+    - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value) - allows you to run custom code after the argument’s value is parsed
+    - [default values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed) - specifies fallback values to use if none are provided
   - [Parameters Specific for Optional Arguments](#parameters-specific-for-optional-arguments)
-    - [on-flag actions](#1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag)
-    - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
+    - [on-flag actions](#1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag) - executes custom code immediately when the argument’s flag is present
+    - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line) - automatically assigns a value if an argument flag is used without an explicit value
+
+
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Argument Groups](#argument-groups)
@@ -527,7 +529,7 @@ Actions are represented as functions, which take the argument's value as an argu
   ```cpp
   void is_valid_user_tag(const std::string& tag) {
       if (tag.empty() or tag.front() != '@')
-          throw std::runtime_error(std::format("Invalid user tag: `{}` — must start with '@'", tag));
+          throw std::runtime_error(std::format("Invalid user tag: `{}` - must start with '@'", tag));
   }
 
   parser.add_optional_argument<std::string>("user", "u")
