@@ -1558,13 +1558,13 @@ The following table lists the projects provided in the `cpp-ap-demo` submodule:
 
 | Project | Description |
 | :- | :- |
-| [Power Calculator](/cpp-ap-demo/power_calculator/) | Calculates the value of a $b^e$ expression for the given base and exponents.<br/>**Demonstrates:** The basic usage of positional and optional arguments. |
-| [File Merger](/cpp-ap-demo/file_merger/) | Merges multiple text files into a single output file.<br/>**Demonstrates:** The usage of default arguments. |
-| [Numbers Converter](/cpp-ap-demo/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
-| [Verbosity](/cpp-ap-demo/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
-| [Logging Mode](/cpp-ap-demo/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
-| [Message Logger](/cpp-ap-demo/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
-| [AP-GIT](/cpp-ap-demo/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
+| [Power Calculator](https://github.com/SpectraL519/cpp-ap-demo/tree/master/power_calculator/) | Calculates the value of a $b^e$ expression for the given base and exponents.<br/>**Demonstrates:** The basic usage of positional and optional arguments. |
+| [File Merger](https://github.com/SpectraL519/cpp-ap-demo/tree/master/file_merger/) | Merges multiple text files into a single output file.<br/>**Demonstrates:** The usage of default arguments. |
+| [Numbers Converter](https://github.com/SpectraL519/cpp-ap-demo/tree/master/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
+| [Verbosity](https://github.com/SpectraL519/cpp-ap-demo/tree/master/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
+| [Logging Mode](https://github.com/SpectraL519/cpp-ap-demo/tree/master/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
+| [Message Logger](https://github.com/SpectraL519/cpp-ap-demo/tree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
+| [AP-GIT](https://github.com/SpectraL519/cpp-ap-demo/tree/master/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
 
 <br/>
 <br/>
