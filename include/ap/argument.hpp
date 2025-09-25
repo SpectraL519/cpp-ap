@@ -9,7 +9,7 @@
 #include "action/predefined.hpp"
 #include "action/util/helpers.hpp"
 #include "detail/argument_base.hpp"
-#include "detail/argument_descriptor.hpp"
+#include "detail/help_builder.hpp"
 #include "nargs/range.hpp"
 #include "types.hpp"
 #include "util/concepts.hpp"
@@ -424,41 +424,41 @@ private:
         std::conditional_t<type == argument_type::optional, _T, none_type>;
 
     /**
-     * @brief Creates an descriptor object for the argument.
+     * @brief Creates a help message builder object for the argument.
      * @param verbose The verbosity mode value.
      * @note If the `verbose` parameter is set to `true` all non-default parameters will be included in the output,
      * @note otherwise only the argument's name and help message will be included.
      */
-    [[nodiscard]] detail::argument_descriptor desc(const bool verbose) const noexcept override {
-        detail::argument_descriptor desc(this->_name.str(), this->_help_msg);
+    [[nodiscard]] detail::help_builder help_builder(const bool verbose) const noexcept override {
+        detail::help_builder bld(this->_name.str(), this->_help_msg);
 
         if (not verbose)
-            return desc;
+            return bld;
 
-        desc.params.reserve(6ull);
+        bld.params.reserve(6ull);
         if (this->_required != _default_required)
-            desc.add_param("required", std::format("{}", this->_required));
+            bld.add_param("required", std::format("{}", this->_required));
         if (this->is_bypass_required_enabled())
-            desc.add_param("bypass required", "true");
+            bld.add_param("bypass required", "true");
         if (this->_nargs_range != _default_nargs_range)
-            desc.add_param("nargs", this->_nargs_range);
+            bld.add_param("nargs", this->_nargs_range);
         if constexpr (util::c_writable<value_type>) {
             if (not this->_choices.empty())
-                desc.add_range_param("choices", this->_choices);
+                bld.add_range_param("choices", this->_choices);
             if (not this->_default_values.empty())
-                desc.add_range_param(
+                bld.add_range_param(
                     "default value(s)", util::any_range_cast_view<value_type>(this->_default_values)
                 );
             if constexpr (type == argument_type::optional) {
                 if (not this->_implicit_values.empty())
-                    desc.add_range_param(
+                    bld.add_range_param(
                         "implicit value(s)",
                         util::any_range_cast_view<value_type>(this->_implicit_values)
                     );
             }
         }
 
-        return desc;
+        return bld;
     }
 
     /// @brief Mark the optional argument as used.

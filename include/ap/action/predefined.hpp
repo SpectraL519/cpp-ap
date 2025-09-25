@@ -21,7 +21,7 @@ namespace action {
 
 /**
  * @brief Returns an *on-flag* action which prints the argument parser's help message.
- * @param parser The argument parser the help message of which will be printed.
+ * @param parser Argument parser instance the help message of which will be printed.
  * @param exit_code The exit code with which `std::exit` will be called (if not `std::nullopt`).
  * @param os The output stream to which the help message will be printed.
  */
@@ -33,7 +33,7 @@ inline typename ap::action_type::on_flag::type print_help(
     return [&parser, &os, exit_code]() {
         os << parser << std::endl;
         if (exit_code)
-            std::exit(exit_code.value());
+            std::exit(*exit_code);
     };
 }
 

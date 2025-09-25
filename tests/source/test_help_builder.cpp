@@ -1,10 +1,10 @@
 #include "doctest.h"
 
-#include <ap/detail/argument_descriptor.hpp>
+#include <ap/detail/help_builder.hpp>
 
 #include <cstdint>
 
-using sut_type = ap::detail::argument_descriptor;
+using sut_type = ap::detail::help_builder;
 
 namespace {
 
@@ -16,7 +16,7 @@ constexpr std::size_t align_to = 15ull;
 
 } // namespace
 
-TEST_CASE("argument_descriptor should construct with name and optional help correctly") {
+TEST_CASE("help_builder should construct with name and optional help correctly") {
     sut_type no_help(arg_name, std::nullopt);
     CHECK_EQ(no_help.name, arg_name);
     CHECK_FALSE(no_help.help.has_value());

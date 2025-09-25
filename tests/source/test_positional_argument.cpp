@@ -73,46 +73,47 @@ TEST_CASE_FIXTURE(argument_test_fixture, "help() should return a massage set for
 }
 
 TEST_CASE_FIXTURE(
-    argument_test_fixture, "desc(verbose=false) should return an argument_descriptor with no params"
+    argument_test_fixture,
+    "help_builder(verbose=false) should return an help_builder with no params"
 ) {
     constexpr bool verbose = false;
 
     auto sut = sut_type(arg_name);
 
-    auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str());
-    CHECK_FALSE(desc.help);
-    CHECK(desc.params.empty());
+    auto bld = get_help_builder(sut, verbose);
+    REQUIRE_EQ(bld.name, get_name(sut).str());
+    CHECK_FALSE(bld.help);
+    CHECK(bld.params.empty());
 
     // with a help msg
     sut.help(help_msg);
-    desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str());
-    CHECK(desc.help);
-    CHECK_EQ(desc.help.value(), help_msg);
-    CHECK(desc.params.empty());
+    bld = get_help_builder(sut, verbose);
+    REQUIRE_EQ(bld.name, get_name(sut).str());
+    CHECK(bld.help);
+    CHECK_EQ(bld.help.value(), help_msg);
+    CHECK(bld.params.empty());
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "desc(verbose=true) should return an argument_descriptor with non-default params"
+    "help_builder(verbose=true) should return an help_builder with non-default params"
 ) {
     constexpr bool verbose = true;
 
     auto sut = sut_type(arg_name);
 
-    auto desc = get_desc(sut, verbose);
-    REQUIRE_EQ(desc.name, get_name(sut).str());
-    CHECK_FALSE(desc.help);
-    CHECK(desc.params.empty());
+    auto bld = get_help_builder(sut, verbose);
+    REQUIRE_EQ(bld.name, get_name(sut).str());
+    CHECK_FALSE(bld.help);
+    CHECK(bld.params.empty());
 
     // with a help msg
     sut.help(help_msg);
 
-    desc = get_desc(sut, verbose);
-    REQUIRE(desc.help);
-    CHECK_EQ(desc.help.value(), help_msg);
-    CHECK(desc.params.empty());
+    bld = get_help_builder(sut, verbose);
+    REQUIRE(bld.help);
+    CHECK_EQ(bld.help.value(), help_msg);
+    CHECK(bld.params.empty());
 
     // other parameters
     sut.bypass_required();
@@ -121,30 +122,29 @@ TEST_CASE_FIXTURE(
     sut.default_values(default_value);
 
     // check the descriptor parameters
-    desc = get_desc(sut, verbose);
+    bld = get_help_builder(sut, verbose);
 
     const auto bypass_required_it =
-        std::ranges::find(desc.params, "bypass required", &parameter_descriptor::name);
-    REQUIRE_NE(bypass_required_it, desc.params.end());
+        std::ranges::find(bld.params, "bypass required", &parameter_descriptor::name);
+    REQUIRE_NE(bypass_required_it, bld.params.end());
     CHECK_EQ(bypass_required_it->value, "true");
 
     // automatically set to false with bypass_required
-    const auto required_it =
-        std::ranges::find(desc.params, "required", &parameter_descriptor::name);
-    REQUIRE_NE(required_it, desc.params.end());
+    const auto required_it = std::ranges::find(bld.params, "required", &parameter_descriptor::name);
+    REQUIRE_NE(required_it, bld.params.end());
     CHECK_EQ(required_it->value, "false");
 
-    const auto nargs_it = std::ranges::find(desc.params, "nargs", &parameter_descriptor::name);
-    REQUIRE_NE(nargs_it, desc.params.end());
+    const auto nargs_it = std::ranges::find(bld.params, "nargs", &parameter_descriptor::name);
+    REQUIRE_NE(nargs_it, bld.params.end());
     CHECK_EQ(nargs_it->value, ap::util::as_string(non_default_range));
 
-    const auto choices_it = std::ranges::find(desc.params, "choices", &parameter_descriptor::name);
-    REQUIRE_NE(choices_it, desc.params.end());
+    const auto choices_it = std::ranges::find(bld.params, "choices", &parameter_descriptor::name);
+    REQUIRE_NE(choices_it, bld.params.end());
     CHECK_EQ(choices_it->value, ap::util::join(choices, ", "));
 
     const auto default_value_it =
-        std::ranges::find(desc.params, "default value(s)", &parameter_descriptor::name);
-    REQUIRE_NE(default_value_it, desc.params.end());
+        std::ranges::find(bld.params, "default value(s)", &parameter_descriptor::name);
+    REQUIRE_NE(default_value_it, bld.params.end());
     CHECK_EQ(default_value_it->value, std::to_string(default_value));
 }
 
