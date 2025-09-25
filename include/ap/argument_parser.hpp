@@ -1068,10 +1068,8 @@ private:
 
         // process command-line arguments within the current parser
         this->_validate_argument_configuration();
-        std::ranges::for_each(
-            this->_tokenize(args_begin, args_end, state),
-            std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
-        );
+        for (const auto& tok : this->_tokenize(args_begin, args_end, state))
+            this->_parse_token(tok, state);
         this->_verify_final_state();
         this->_finalized = true;
     }
@@ -1107,6 +1105,7 @@ private:
      * @note `AIt` must be a `std::forward_iterator` with a value type convertible to `std::string`.
      * @param args_begin The begin iterator for the command-line argument value range.
      * @param args_end The end iterator for the command-line argument value range.
+     * @param state The current parsing state.
      * @return A list of preprocessed command-line argument tokens.
      */
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
@@ -1115,23 +1114,20 @@ private:
     ) {
         arg_token_vec_t toks;
         toks.reserve(static_cast<std::size_t>(std::ranges::distance(args_begin, args_end)));
-
-        std::ranges::for_each(
-            args_begin,
-            args_end,
-            std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(state), std::ref(toks))
-        );
-
+        std::ranges::for_each(args_begin, args_end, [&](const auto& arg_value) {
+            this->_tokenize_arg(arg_value, toks, state);
+        });
         return toks;
     }
 
     /**
      * @brief Appends an argument token(s) created from `arg_value` to the `toks` vector.
-     * @param toks The argument token list to which the processed token(s) will be appended.
      * @param arg_value The command-line argument's value to be processed.
+     * @param toks The argument token list to which the processed token(s) will be appended.
+     * @param state The current parsing state.
      */
     void _tokenize_arg(
-        const parsing_state& state, arg_token_vec_t& toks, const std::string_view arg_value
+        const std::string_view arg_value, arg_token_vec_t& toks, const parsing_state& state
     ) {
         detail::argument_token tok{
             .type = this->_deduce_token_type(arg_value), .value = std::string(arg_value)
@@ -1279,29 +1275,29 @@ private:
 
     /**
      * @brief Parse a single command-line argument token.
-     * @param state The current parsing state.
      * @param tok The token to be parsed.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_token(parsing_state& state, const detail::argument_token& tok) {
+    void _parse_token(const detail::argument_token& tok, parsing_state& state) {
         if (state.curr_arg and state.curr_arg->is_greedy()) {
-            this->_set_argument_value(state, tok.value);
+            this->_set_argument_value(tok.value, state);
             return;
         }
 
         if (tok.is_flag_token())
-            this->_parse_flag_token(state, tok);
+            this->_parse_flag_token(tok, state);
         else
-            this->_parse_value_token(state, tok);
+            this->_parse_value_token(tok, state);
     }
 
     /**
      * @brief Parse a single command-line argument *flag* token.
-     * @param state The current parsing state.
      * @param tok The token to be parsed.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_flag_token(parsing_state& state, const detail::argument_token& tok) {
+    void _parse_flag_token(const detail::argument_token& tok, parsing_state& state) {
         if (not tok.is_valid_flag_token()) {
             if (state.parse_known_only) {
                 state.curr_arg.reset();
@@ -1324,11 +1320,11 @@ private:
 
     /**
      * @brief Parse a single command-line argument *value* token.
-     * @param state The current parsing state.
      * @param tok The token to be parsed.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_value_token(parsing_state& state, const detail::argument_token& tok) {
+    void _parse_value_token(const detail::argument_token& tok, parsing_state& state) {
         if (not state.curr_arg) {
             if (state.curr_pos_arg_it == this->_positional_args.end()) {
                 state.unknown_args.emplace_back(tok.value);
@@ -1338,16 +1334,16 @@ private:
             state.curr_arg = *state.curr_pos_arg_it;
         }
 
-        this->_set_argument_value(state, tok.value);
+        this->_set_argument_value(tok.value, state);
     }
 
     /**
      * @brief Set the value for the currently processed argument.
      * @attention This function assumes that the current argument is set (i.e. `state.curr_arg != nullptr`).
-     * @param state The current parsing state.
      * @param value The value to be set for the current argument.
+     * @param state The current parsing state.
      */
-    void _set_argument_value(parsing_state& state, const std::string_view value) noexcept {
+    void _set_argument_value(const std::string_view value, parsing_state& state) noexcept {
         if (state.curr_arg->set_value(std::string(value)))
             return; // argument still accepts values
 
