@@ -67,6 +67,20 @@ enum class default_argument : std::uint8_t {
     o_help,
 
     /**
+     * @brief An optional argument representing the program's version flag.
+     * Equivalent to:
+     * @code{.cpp}
+     * arg_parser.add_optional_argument<none_type>("version", "v")
+     *           .action<action_type::on_flag>([&arg_parser]() {
+     *               arg_parser.print_version();
+     *               std::exit(EXIT_SUCCESS);
+     *           })
+     *           .help("Dsiplay program version info");
+     * @endcode
+     */
+    o_version,
+
+    /**
      * @brief A positional argument representing multiple input file paths.
      * Equivalent to:
      * @code{.cpp}
@@ -170,13 +184,7 @@ public:
     argument_parser(argument_parser&&) = delete;
     argument_parser& operator=(argument_parser&&) = delete;
 
-    argument_parser(const std::string_view name)
-    : _program_name(name),
-      _gr_positional_args(add_group("Positional Arguments")),
-      _gr_optional_args(add_group("Optional Arguments")) {
-        if (util::contains_whitespaces(name))
-            throw invalid_configuration("The program name cannot contain whitespace characters!");
-    }
+    argument_parser(const std::string_view name) : argument_parser(name, "") {}
 
     ~argument_parser() = default;
 
@@ -276,49 +284,36 @@ public:
     /**
      * @brief Adds a positional argument to the parser's configuration.
      * @tparam T Type of the argument value.
-     * @param primary_name The primary name of the argument.
+     * @param name The name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
-    positional_argument<T>& add_positional_argument(const std::string_view primary_name) {
-        this->_verify_arg_name_pattern(primary_name);
-
-        const detail::argument_name arg_name(std::make_optional<std::string>(primary_name));
-        if (this->_is_arg_name_used(arg_name))
-            throw invalid_configuration::argument_name_used(arg_name);
-
-        auto& new_arg_ptr =
-            this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        this->_gr_positional_args._add_argument(new_arg_ptr);
-        return static_cast<positional_argument<T>&>(*new_arg_ptr);
+    positional_argument<T>& add_positional_argument(const std::string_view name) {
+        return this->add_positional_argument<T>(this->_gr_positional_args, name);
     }
 
     /**
-     * @brief Adds a positional argument to the parser's configuration.
+     * @brief Adds a positional argument to the parser's configuration and binds it to the given group.
      * @tparam T Type of the argument value.
-     * @param primary_name The primary name of the argument.
-     * @param secondary_name The secondary name of the argument.
+     * @param primary_name The name of the argument.
      * @return Reference to the added positional argument.
      * @throws ap::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     positional_argument<T>& add_positional_argument(
-        const std::string_view primary_name, const std::string_view secondary_name
+        argument_group& group, const std::string_view name
     ) {
-        this->_verify_arg_name_pattern(primary_name);
-        this->_verify_arg_name_pattern(secondary_name);
+        this->_validate_group(group);
+        this->_verify_arg_name_pattern(name);
 
-        const detail::argument_name arg_name{
-            std::make_optional<std::string>(primary_name),
-            std::make_optional<std::string>(secondary_name)
-        };
+        const detail::argument_name arg_name(std::make_optional<std::string>(name));
         if (this->_is_arg_name_used(arg_name))
             throw invalid_configuration::argument_name_used(arg_name);
 
         auto& new_arg_ptr =
             this->_positional_args.emplace_back(std::make_shared<positional_argument<T>>(arg_name));
-        this->_gr_positional_args._add_argument(new_arg_ptr);
+        group._add_argument(new_arg_ptr);
         return static_cast<positional_argument<T>&>(*new_arg_ptr);
     }
 
@@ -512,6 +507,27 @@ public:
     }
 
     /**
+     * @brief Adds an subparser with the given name to the parser's configuration.
+     * @param name Name of the subparser.
+     * @return Reference to the added subparser.
+     */
+    argument_parser& add_subparser(const std::string_view name) {
+        const auto subparser_it = std::ranges::find(
+            this->_subparsers, name, [](const auto& subparser) { return subparser->_name; }
+        );
+        if (subparser_it != this->_subparsers.end())
+            throw std::logic_error(std::format(
+                "A subparser with the given name () already exists in parser '{}'",
+                (*subparser_it)->_name,
+                this->_program_name
+            ));
+
+        return *this->_subparsers.emplace_back(
+            std::unique_ptr<argument_parser>(new argument_parser(name, this->_program_name))
+        );
+    }
+
+    /**
      * @brief Parses the command-line arguments.
      *
      * Equivalent to:
@@ -529,25 +545,20 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses the command-line arguments.
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_args` function assumes that the program name argument has already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     void parse_args(const AR& argv_rng) {
-        this->_validate_argument_configuration();
-
-        parsing_state state{.curr_arg = nullptr, .curr_pos_arg_it = this->_positional_args.begin()};
-        this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
+        parsing_state state(*this);
+        this->_parse_args_impl(std::ranges::begin(argv_rng), std::ranges::end(argv_rng), state);
 
         if (not state.unknown_args.empty())
             throw parsing_failure::argument_deduction_failure(state.unknown_args);
-
-        this->_verify_final_state();
     }
 
     /**
@@ -567,7 +578,6 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses the command-line arguments and exits on error.
      *
      * Calls `parse_args(argv_rng)` in a try-catch block. If an error is thrown, then its
@@ -576,16 +586,17 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @attention This overload of the `try_parse_args` function assumes that the program name argument has already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     void try_parse_args(const AR& argv_rng) {
         try {
             this->parse_args(argv_rng);
         }
         catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ap::error] " << err.what() << std::endl << *this << std::endl;
+            std::cerr << "[ap::error] " << err.what() << std::endl
+                      << this->resolved_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -613,7 +624,6 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses the known command-line arguments.
      *
      * * An argument is considered "known" if it was defined using the parser's argument declaraion methods:
@@ -623,22 +633,14 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @throws ap::invalid_configuration, ap::parsing_failure
      * @attention This overload of the `parse_known_args` function assumes that the program name argument already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     std::vector<std::string> parse_known_args(const AR& argv_rng) {
-        this->_validate_argument_configuration();
-
-        parsing_state state{
-            .curr_arg = nullptr,
-            .curr_pos_arg_it = this->_positional_args.begin(),
-            .parse_known_only = true
-        };
-        this->_parse_args_impl(this->_tokenize(argv_rng, state), state);
-
-        this->_verify_final_state();
+        parsing_state state(*this, true);
+        this->_parse_args_impl(std::ranges::begin(argv_rng), std::ranges::end(argv_rng), state);
         return std::move(state.unknown_args);
     }
 
@@ -660,7 +662,6 @@ public:
     }
 
     /**
-     * @todo use std::ranges::forward_range
      * @brief Parses known the command-line arguments and exits on error.
      *
      * Calls `parse_known_args(argv_rng)` in a try-catch block. If an error is thrown, then its message
@@ -669,24 +670,86 @@ public:
      *
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
-     * @note `argv_rng` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
      * @return A vector of unknown argument values.
      * @attention This overload of the `try_parse_known_args` function assumes that the program name argument has already been discarded.
      */
-    template <util::c_range_of<std::string, util::type_validator::convertible> AR>
+    template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
     std::vector<std::string> try_parse_known_args(const AR& argv_rng) {
         try {
             return this->parse_known_args(argv_rng);
         }
         catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ap::error] " << err.what() << std::endl << *this << std::endl;
+            std::cerr << "[ap::error] " << err.what() << std::endl
+                      << this->resolved_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
 
+    /// @brief Returns the parser's name.
+    [[nodiscard]] std::string_view name() const noexcept {
+        return this->_name;
+    }
+
     /**
+     * @brief Returns the parser's full program name.
+     *
+     * - For top-level parsers, this is the same as the parser's name.
+     * - For subparsers, the name is prefixed with its parent parser names.
+     *
+     * @example
+     * Top-level parser: `git`
+     * Subparser: `git submodule`
+     * Nested subparser : `git submodule init`
+     */
+    [[nodiscard]] std::string_view program_name() const noexcept {
+        return this->_program_name;
+    }
+
+    /**
+     * @brief Check whether this parser was invoked.
+     * @return `true` if the parser was selected when parsing the command-line arguments, `false` otherwise.
+     * @note A parser is *invoked* as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.
+     */
+    [[nodiscard]] bool invoked() const noexcept {
+        return this->_invoked;
+    }
+
+    /**
+     * @brief Check whether the parser has finalized parsing its own arguments.
+     * @return `true` if parsing was completed for the parser, `false` otherwise.
+     */
+    [[nodiscard]] bool finalized() const noexcept {
+        return this->_finalized;
+    }
+
+    /**
+     * @brief Returns the *deepest invoked parser*.
+     * @return Reference to the finalized parser that ultimately processed the arguments.
+     */
+    [[nodiscard]] argument_parser& resolved_parser() noexcept {
+        const auto used_subparser_it = std::ranges::find_if(
+            this->_subparsers, [](const auto& subparser) { return subparser->_invoked; }
+        );
+        if (used_subparser_it == this->_subparsers.end())
+            return *this;
+        return (*used_subparser_it)->resolved_parser();
+    }
+
+    /**
+     * @brief Check if a specific argument was used in the command-line.
      * @param arg_name The name of the argument.
-     * @return True if the argument has a value, false otherwise.
+     * @return `true` if the argument was used on the command line, `false` otherwise.
+     */
+    [[nodiscard]] bool is_used(std::string_view arg_name) const noexcept {
+        const auto arg = this->_get_argument(arg_name);
+        return arg ? arg->is_used() : false;
+    }
+
+    /**
+     * @brief Check if the given argument has a value.
+     * @param arg_name The name of the argument.
+     * @return `true` if the argument has a value, `false` otherwise.
      */
     [[nodiscard]] bool has_value(std::string_view arg_name) const noexcept {
         const auto arg = this->_get_argument(arg_name);
@@ -694,8 +757,9 @@ public:
     }
 
     /**
+     * @brief Get the given argument's usage count.
      * @param arg_name The name of the argument.
-     * @return The count of times the argument has been used.
+     * @return The number of times the argument has been used.
      */
     [[nodiscard]] std::size_t count(std::string_view arg_name) const noexcept {
         const auto arg = this->_get_argument(arg_name);
@@ -703,6 +767,7 @@ public:
     }
 
     /**
+     * @brief Get the value of the given argument.
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
@@ -724,6 +789,7 @@ public:
     }
 
     /**
+     * @brief Get the value of the given argument, if it has any, or a fallback value, if not.
      * @tparam T Type of the argument value.
      * @tparam U The default value type.
      * @param arg_name The name of the argument.
@@ -752,6 +818,7 @@ public:
     }
 
     /**
+     * @brief Get all values of the given argument.
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
@@ -779,7 +846,7 @@ public:
     /**
      * @brief Prints the argument parser's help message to an output stream.
      * @param verbose The verbosity mode value.
-     * @param os Output stream.
+     * @param os The output stream.
      */
     void print_help(const bool verbose, std::ostream& os = std::cout) const noexcept {
         os << "Program: " << this->_program_name;
@@ -792,10 +859,21 @@ public:
                << std::string(this->_indent_width, ' ') << this->_program_description.value()
                << '\n';
 
-        for (const auto& group : this->_argument_groups) {
-            std::cout << '\n';
+        this->_print_subparsers(os);
+        for (const auto& group : this->_argument_groups)
             this->_print_group(os, *group, verbose);
-        }
+    }
+
+    /**
+     * @brief Prints the argument parser's version info to an output stream.
+     *
+     * If no version was spcified for the parser, `unspecified` will be printed.
+     *
+     * @param os The output stream.
+     */
+    void print_version(std::ostream& os = std::cout) const noexcept {
+        os << this->_program_name << " : version " << this->_program_version.value_or("unspecified")
+           << std::endl;
     }
 
     /**
@@ -804,7 +882,7 @@ public:
      * An `os << parser` operation is equivalent to a `parser.print_help(_verbose, os)` call,
      * where `_verbose` is the inner verbosity mode, which can be set with the @ref verbose function.
      *
-     * @param os Output stream.
+     * @param os The output stream.
      * @param parser The argument parser to print.
      * @return The modified output stream.
      */
@@ -825,19 +903,48 @@ private:
 
     using arg_group_ptr_t = std::unique_ptr<argument_group>;
     using arg_group_ptr_vec_t = std::vector<arg_group_ptr_t>;
-    // using arg_group_vec_iter_t = typename arg_group_vec_t::iterator;
+
+    using arg_parser_ptr_t = std::unique_ptr<argument_parser>;
+    using arg_parser_ptr_vec_t = std::vector<arg_parser_ptr_t>;
 
     using arg_token_vec_t = std::vector<detail::argument_token>;
+    using arg_token_vec_iter_t = typename arg_token_vec_t::const_iterator;
 
     /// @brief A collection of values used during the parsing process.
     struct parsing_state {
+        parsing_state(argument_parser& parser, const bool parse_known_only = false)
+        : curr_arg(nullptr),
+          curr_pos_arg_it(parser._positional_args.begin()),
+          parse_known_only(parse_known_only) {}
+
+        /// @brief Update the parser-specific parameters of the state object.
+        /// @param parser The new parser.
+        void set_parser(argument_parser& parser) {
+            this->curr_arg = nullptr;
+            this->curr_pos_arg_it = parser._positional_args.begin();
+        }
+
         arg_ptr_t curr_arg; ///< The currently processed argument.
         arg_ptr_vec_iter_t
             curr_pos_arg_it; ///< An iterator pointing to the next positional argument to be processed.
+        const bool
+            parse_known_only; ///< A flag indicating whether only known arguments should be parsed.
         std::vector<std::string> unknown_args = {}; ///< A vector of unknown argument values.
-        const bool parse_known_only =
-            false; ///< A flag indicating whether only known arguments should be parsed.
     };
+
+    argument_parser(const std::string_view name, const std::string_view parent_name)
+    : _name(name),
+      _program_name(
+          std::format("{}{}{}", parent_name, std::string(not parent_name.empty(), ' '), name)
+      ),
+      _gr_positional_args(add_group("Positional Arguments")),
+      _gr_optional_args(add_group("Optional Arguments")) {
+        if (name.empty()) // TODO: add test case
+            throw invalid_configuration("The program name cannot be empty!");
+
+        if (util::contains_whitespaces(name))
+            throw invalid_configuration("The program name cannot contain whitespace characters!");
+    }
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
@@ -931,6 +1038,43 @@ private:
     }
 
     /**
+     * @brief Implementation of parsing command-line arguments.
+     * @tparam AIt The command-line argument value iterator type.
+     * @note `AIt` must be a `std::forward_iterator` with a value type convertible to `std::string`.
+     * @param args_begin The begin iterator for the command-line argument value range.
+     * @param args_end The end iterator for the command-line argument value range.
+     * @param state The current parsing state.
+     * @throws ap::invalid_configuration, ap::parsing_failure
+     */
+    template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
+    void _parse_args_impl(AIt args_begin, const AIt args_end, parsing_state& state) {
+        this->_invoked = true;
+
+        if (args_begin != args_end) {
+            // try to match a subparser
+            const auto subparser_it =
+                std::ranges::find(this->_subparsers, *args_begin, [](const auto& subparser) {
+                    return subparser->_name;
+                });
+            if (subparser_it != this->_subparsers.end()) {
+                auto& subparser = **subparser_it;
+                state.set_parser(subparser);
+                subparser._parse_args_impl(++args_begin, args_end, state);
+                return;
+            }
+        }
+
+        // process command-line arguments within the current parser
+        this->_validate_argument_configuration();
+        std::ranges::for_each(
+            this->_tokenize(args_begin, args_end, state),
+            std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
+        );
+        this->_verify_final_state();
+        this->_finalized = true;
+    }
+
+    /**
      * @brief Validate whether the definition/configuration of the parser's arguments is correct.
      *
      * What is verified:
@@ -946,6 +1090,7 @@ private:
             }
 
             if (non_required_arg and arg->is_required())
+                // TODO: remove static builder in v3 release commit
                 throw invalid_configuration::positional::required_after_non_required(
                     arg->name(), non_required_arg->name()
                 );
@@ -954,20 +1099,22 @@ private:
 
     /**
      * @brief Converts the command-line arguments into a list of tokens.
-     * @tparam AR The command-line argument value range type.
-     * @param arg_range The command-line argument value range.
-     * @note `arg_range` must be a `std::ranges::range` with a value type convertible to `std::string`.
+     * @tparam AIt The command-line argument value iterator type.
+     * @note `AIt` must be a `std::forward_iterator` with a value type convertible to `std::string`.
+     * @param args_begin The begin iterator for the command-line argument value range.
+     * @param args_end The end iterator for the command-line argument value range.
      * @return A list of preprocessed command-line argument tokens.
      */
-    template <util::c_range_of<std::string_view, util::type_validator::convertible> AR>
-    [[nodiscard]] arg_token_vec_t _tokenize(const AR& arg_range, const parsing_state& state) {
+    template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
+    [[nodiscard]] arg_token_vec_t _tokenize(
+        AIt args_begin, const AIt args_end, const parsing_state& state
+    ) {
         arg_token_vec_t toks;
-
-        if constexpr (std::ranges::sized_range<AR>)
-            toks.reserve(std::ranges::size(arg_range));
+        toks.reserve(static_cast<std::size_t>(std::ranges::distance(args_begin, args_end)));
 
         std::ranges::for_each(
-            arg_range,
+            args_begin,
+            args_end,
             std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(state), std::ref(toks))
         );
 
@@ -1127,19 +1274,6 @@ private:
     }
 
     /**
-     * @brief Implementation of parsing command-line arguments.
-     * @param arg_tokens The list of command-line argument tokens.
-     * @param state The current parsing state.
-     * @throws ap::parsing_failure
-     */
-    void _parse_args_impl(const arg_token_vec_t& arg_tokens, parsing_state& state) {
-        // process argument tokens
-        std::ranges::for_each(
-            arg_tokens, std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
-        );
-    }
-
-    /**
      * @brief Parse a single command-line argument token.
      * @param state The current parsing state.
      * @param tok The token to be parsed.
@@ -1226,13 +1360,9 @@ private:
      * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
      */
     void _verify_final_state() const {
-        if (not this->_are_required_args_bypassed()) {
-            this->_verify_required_args();
-            this->_verify_nvalues();
-        }
-
+        const bool are_required_args_bypassed = this->_are_required_args_bypassed();
         for (const auto& group : this->_argument_groups)
-            this->_verify_group_requirements(*group);
+            this->_verify_group_requirements(*group, are_required_args_bypassed);
     }
 
     /**
@@ -1253,55 +1383,65 @@ private:
     }
 
     /**
-     * @brief Check if all required positional and optional arguments are used.
-     * @throws ap::parsing_failure
-     */
-    void _verify_required_args() const {
-        // TODO: use std::views::join after the transition to C++23
-        for (const auto& arg : this->_positional_args)
-            if (arg->is_required() and not arg->has_value())
-                throw parsing_failure::required_argument_not_parsed(arg->name());
-
-        for (const auto& arg : this->_optional_args)
-            if (arg->is_required() and not arg->has_value())
-                throw parsing_failure::required_argument_not_parsed(arg->name());
-    }
-
-    /**
-     * @brief Check if the number of argument values is within the specified range.
-     * @throws ap::parsing_failure
-     */
-    void _verify_nvalues() const {
-        // TODO: use std::views::join after the transition to C++23
-        for (const auto& arg : this->_positional_args)
-            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
-
-        for (const auto& arg : this->_optional_args)
-            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
-    }
-
-    /**
      * @brief Verifies whether the requirements of the given argument group are satisfied.
      * @param group The argument group to verify.
+     * @param are_required_args_bypassed A flag indicating whether required argument bypassing is enabled.
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
-    void _verify_group_requirements(const argument_group& group) const {
+    void _verify_group_requirements(
+        const argument_group& group, const bool are_required_args_bypassed
+    ) const {
+        if (group._arguments.empty())
+            return;
+
         const auto n_used_args = static_cast<std::size_t>(
             std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
         );
+
+        if (group._mutually_exclusive) {
+            if (n_used_args > 1ull)
+                throw parsing_failure(std::format(
+                    "At most one argument from the mutually exclusive group '{}' can be used",
+                    group._name
+                ));
+
+            const auto used_arg_it = std::ranges::find_if(group._arguments, [](const auto& arg) {
+                return arg->is_used();
+            });
+
+            if (used_arg_it != group._arguments.end()) {
+                // only the one used argument has to be validated
+                this->_verify_argument_requirements(*used_arg_it, are_required_args_bypassed);
+                return;
+            }
+        }
 
         if (group._required and n_used_args == 0ull)
             throw parsing_failure(std::format(
                 "At least one argument from the required group '{}' must be used", group._name
             ));
 
-        if (group._mutually_exclusive and n_used_args > 1ull)
-            throw parsing_failure(std::format(
-                "At most one argument from the mutually exclusive group '{}' can be used",
-                group._name
-            ));
+        // all arguments in the group have to be validated
+        for (const auto& arg : group._arguments)
+            this->_verify_argument_requirements(arg, are_required_args_bypassed);
+    }
+
+    /**
+     * @brief Verifies whether the requirements of the given argument are satisfied.
+     * @param arg The argument to verify.
+     * @param are_required_args_bypassed A flag indicating whether required argument bypassing is enabled.
+     * @throws ap::parsing_failure if the requirements are not satistied.
+     */
+    void _verify_argument_requirements(const arg_ptr_t& arg, const bool are_required_args_bypassed)
+        const {
+        if (are_required_args_bypassed)
+            return;
+
+        if (arg->is_required() and not arg->has_value())
+            throw parsing_failure::required_argument_not_parsed(arg->name());
+
+        if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
+            throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
     }
 
     /**
@@ -1325,6 +1465,28 @@ private:
         return nullptr;
     }
 
+    void _print_subparsers(std::ostream& os) const noexcept {
+        if (this->_subparsers.empty())
+            return;
+
+        os << "\nCommands:\n";
+
+        std::vector<detail::help_builder> builders;
+        builders.reserve(this->_subparsers.size());
+
+        for (const auto& subparser : this->_subparsers)
+            builders.emplace_back(subparser->_name, subparser->_program_description);
+
+        std::size_t max_subparser_name_length = 0ull;
+        for (const auto& bld : builders)
+            max_subparser_name_length = std::max(max_subparser_name_length, bld.name.length());
+
+        for (const auto& bld : builders)
+            os << '\n' << bld.get_basic(this->_indent_width, max_subparser_name_length);
+
+        os << '\n';
+    }
+
     /**
      * @brief Print the given argument list to an output stream.
      * @param os The output stream to print to.
@@ -1341,7 +1503,7 @@ private:
         if (std::ranges::empty(visible_args))
             return;
 
-        os << group._name << ":";
+        os << '\n' << group._name << ":";
 
         std::vector<std::string> group_attrs;
         if (group._required)
@@ -1355,38 +1517,44 @@ private:
 
         if (verbose) {
             for (const auto& arg : visible_args)
-                os << '\n' << arg->desc(verbose).get(this->_indent_width) << '\n';
+                os << '\n' << arg->help_builder(verbose).get(this->_indent_width) << '\n';
         }
         else {
-            std::vector<detail::argument_descriptor> descriptors;
-            descriptors.reserve(group._arguments.size());
+            std::vector<detail::help_builder> builders;
+            builders.reserve(group._arguments.size());
 
             for (const auto& arg : visible_args)
-                descriptors.emplace_back(arg->desc(verbose));
+                builders.emplace_back(arg->help_builder(verbose));
 
             std::size_t max_arg_name_length = 0ull;
-            for (const auto& desc : descriptors)
-                max_arg_name_length = std::max(max_arg_name_length, desc.name.length());
+            for (const auto& bld : builders)
+                max_arg_name_length = std::max(max_arg_name_length, bld.name.length());
 
-            for (const auto& desc : descriptors)
-                os << '\n' << desc.get_basic(this->_indent_width, max_arg_name_length);
+            for (const auto& bld : builders)
+                os << '\n' << bld.get_basic(this->_indent_width, max_arg_name_length);
 
             os << '\n';
         }
     }
 
-    std::string _program_name;
-    std::optional<std::string> _program_version;
-    std::optional<std::string> _program_description;
-    bool _verbose = false;
-    unknown_policy _unknown_policy = unknown_policy::fail;
+    std::string _name; ///< The name of the parser.
+    std::string
+        _program_name; ///< The name of the program in the format "<parent-parser-names>... <program-name>".
+    std::optional<std::string> _program_version; ///< The version of the program.
+    std::optional<std::string> _program_description; ///< The description of the program.
+    bool _verbose = false; ///< Verbosity flag.
+    unknown_policy _unknown_policy = unknown_policy::fail; ///< Policy for unknown arguments.
 
-    arg_ptr_vec_t _positional_args;
-    arg_ptr_vec_t _optional_args;
+    arg_ptr_vec_t _positional_args; ///< The list of positional arguments.
+    arg_ptr_vec_t _optional_args; ///< The list of optional arguments.
+    arg_group_ptr_vec_t _argument_groups; ///< The list of argument groups.
+    argument_group& _gr_positional_args; ///< The positional argument group.
+    argument_group& _gr_optional_args; ///< The optional argument group.
+    arg_parser_ptr_vec_t _subparsers; ///< The list of subparsers.
 
-    arg_group_ptr_vec_t _argument_groups;
-    argument_group& _gr_positional_args;
-    argument_group& _gr_optional_args;
+    bool _invoked =
+        false; ///< A flag indicating whether the parser has been invoked to parse arguments.
+    bool _finalized = false; ///< A flag indicating whether the parsing process has been finalized.
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;
@@ -1420,6 +1588,15 @@ inline void add_default_argument(
         arg_parser.add_optional_argument<none_type>("help", "h")
             .action<action_type::on_flag>(action::print_help(arg_parser, EXIT_SUCCESS))
             .help("Display the help message");
+        break;
+
+    case default_argument::o_version:
+        arg_parser.add_optional_argument<none_type>("version", "v")
+            .action<action_type::on_flag>([&arg_parser]() {
+                arg_parser.print_version();
+                std::exit(EXIT_SUCCESS);
+            })
+            .help("Dsiplay program version info");
         break;
 
     case default_argument::o_input:

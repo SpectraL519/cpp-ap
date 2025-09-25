@@ -5,8 +5,8 @@
 
 using ap::argument;
 using ap::argument_type;
-using ap::detail::argument_descriptor;
 using ap::detail::argument_name;
+using ap::detail::help_builder;
 using ap::util::as_string;
 using ap::util::c_argument_value_type;
 
@@ -107,9 +107,9 @@ struct argument_test_fixture {
     }
 
     template <argument_type ArgT, c_argument_value_type T>
-    [[nodiscard]] argument_descriptor get_desc(const argument<ArgT, T>& arg, const bool verbose)
+    [[nodiscard]] help_builder get_help_builder(const argument<ArgT, T>& arg, const bool verbose)
         const {
-        return arg.desc(verbose);
+        return arg.help_builder(verbose);
     }
 
     template <argument_type ArgT, c_argument_value_type T>

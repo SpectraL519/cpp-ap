@@ -9,7 +9,7 @@ using ap::argument_parser;
 using ap::default_argument;
 using ap::invalid_configuration;
 
-struct test_argument_parser_add_argument : public argument_parser_test_fixture {
+struct test_argument_parser_add_elements : public argument_parser_test_fixture {
     const char flag_char = '-';
 
     const std::string_view primary_name_1 = "primary_name_1";
@@ -35,7 +35,7 @@ struct test_argument_parser_add_argument : public argument_parser_test_fixture {
 };
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "add_{positional,optional}_argument(primary) should throw if the passed argument name is "
     "invalid"
 ) {
@@ -78,7 +78,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "add_{positional,optional}_argument(primary, secondary) should throw if the primary name is "
     "invalid"
 ) {
@@ -108,21 +108,21 @@ TEST_CASE_FIXTURE(
     CAPTURE(reason);
 
     CHECK_THROWS_WITH_AS(
-        sut.add_positional_argument(primary_name, secondary_name_1),
+        sut.add_positional_argument(primary_name),
         invalid_configuration::invalid_argument_name(primary_name, reason).what(),
         invalid_configuration
     );
 
     CHECK_THROWS_WITH_AS(
-        sut.add_optional_argument(primary_name, secondary_name_1),
+        sut.add_optional_argument(primary_name),
         invalid_configuration::invalid_argument_name(primary_name, reason).what(),
         invalid_configuration
     );
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
-    "add_{positional,optional}_argument(primary, secondary) should throw if the secondary name is "
+    test_argument_parser_add_elements,
+    "add_optional_argument(primary, secondary) should throw if the secondary name is "
     "invalid"
 ) {
     std::string secondary_name, reason;
@@ -151,12 +151,6 @@ TEST_CASE_FIXTURE(
     CAPTURE(reason);
 
     CHECK_THROWS_WITH_AS(
-        sut.add_positional_argument(primary_name_1, secondary_name),
-        invalid_configuration::invalid_argument_name(secondary_name, reason).what(),
-        invalid_configuration
-    );
-
-    CHECK_THROWS_WITH_AS(
         sut.add_optional_argument(primary_name_1, secondary_name),
         invalid_configuration::invalid_argument_name(secondary_name, reason).what(),
         invalid_configuration
@@ -164,36 +158,24 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "add_positional_argument should throw when adding an argument with a previously used name"
 ) {
-    sut.add_positional_argument(primary_name_1, secondary_name_1);
+    sut.add_positional_argument(primary_name_1);
 
-    SUBCASE("adding argument with a unique name") {
-        CHECK_NOTHROW(sut.add_positional_argument(primary_name_2, secondary_name_2));
-    }
+    // adding argument with a unique name
+    CHECK_NOTHROW(sut.add_positional_argument(primary_name_2));
 
-    SUBCASE("adding argument with a previously used primary name") {
-        CHECK_THROWS_WITH_AS(
-            sut.add_positional_argument(primary_name_1, secondary_name_2),
-            invalid_configuration::argument_name_used({primary_name_1_opt, secondary_name_2_opt})
-                .what(),
-            invalid_configuration
-        );
-    }
-
-    SUBCASE("adding argument with a previously used secondary name") {
-        CHECK_THROWS_WITH_AS(
-            sut.add_positional_argument(primary_name_2, secondary_name_1),
-            invalid_configuration::argument_name_used({primary_name_2_opt, secondary_name_1_opt})
-                .what(),
-            invalid_configuration
-        );
-    }
+    // adding argument with a previously used name
+    CHECK_THROWS_WITH_AS(
+        sut.add_positional_argument(primary_name_1),
+        invalid_configuration::argument_name_used({primary_name_1_opt}).what(),
+        invalid_configuration
+    );
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "add_optional_argument should throw when adding an argument with a previously used name"
 ) {
     sut.add_optional_argument(primary_name_1, secondary_name_1);
@@ -226,7 +208,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "add_flag should return an optional argument reference with flag parameters"
 ) {
     const argument_test_fixture arg_fixture;
@@ -253,7 +235,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "add_flag should throw when adding and argument with a previously used name"
 ) {
     sut.add_flag(primary_name_1, secondary_name_1);
@@ -286,7 +268,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "default_arguments should add the specified positional arguments"
 ) {
     sut.default_arguments({default_argument::p_input, default_argument::p_output});
@@ -301,7 +283,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "default_arguments should add the specified optional arguments"
 ) {
     sut.default_arguments(
@@ -343,7 +325,7 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    test_argument_parser_add_argument,
+    test_argument_parser_add_elements,
     "add_optional_argument and add_flag should throw if a group does not belong to the parser"
 ) {
     argument_parser different_parser("different-program");
@@ -383,6 +365,26 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.add_flag(group, primary_name_1, secondary_name_1),
         expected_err_msg.c_str(),
+        std::logic_error
+    );
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_add_elements,
+    "add_subparser should throw if a subparser with the given name already exists"
+) {
+    constexpr std::string_view subparser_name = "subprogram";
+
+    sut.add_subparser(subparser_name);
+
+    CHECK_THROWS_WITH_AS(
+        sut.add_subparser(subparser_name),
+        std::format(
+            "A subparser with the given name () already exists in parser '{}'",
+            subparser_name,
+            sut.name()
+        )
+            .c_str(),
         std::logic_error
     );
 }
