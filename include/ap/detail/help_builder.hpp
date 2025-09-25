@@ -82,7 +82,6 @@ public:
      * @param align_to Optional minimum width for the argument name; if provided, the name will be left-aligned and padded with spaces to this width.
      * @return A basic argument description in the format "<indent><arg-name> : <help-msg>"
      * @note The help message will only be visible in the output if it's not `std::nullopt`
-     * @todo Handle multiline parameter values.
      */
     [[nodiscard]] std::string get_basic(
         const uint8_t indent_width, const std::optional<std::size_t> align_to = std::nullopt

@@ -924,7 +924,6 @@ private:
             this->curr_pos_arg_it = parser._positional_args.begin();
         }
 
-        // std::string_view parser_name;
         arg_ptr_t curr_arg; ///< The currently processed argument.
         arg_ptr_vec_iter_t
             curr_pos_arg_it; ///< An iterator pointing to the next positional argument to be processed.
@@ -1535,22 +1534,24 @@ private:
         }
     }
 
-    std::string _name;
-    std::string _program_name;
-    std::optional<std::string> _program_version;
-    std::optional<std::string> _program_description;
-    bool _verbose = false;
-    unknown_policy _unknown_policy = unknown_policy::fail;
+    std::string _name; ///< The name of the parser.
+    std::string
+        _program_name; ///< The name of the program in the format "<parent-parser-names>... <program-name>".
+    std::optional<std::string> _program_version; ///< The version of the program.
+    std::optional<std::string> _program_description; ///< The description of the program.
+    bool _verbose = false; ///< Verbosity flag.
+    unknown_policy _unknown_policy = unknown_policy::fail; ///< Policy for unknown arguments.
 
-    arg_ptr_vec_t _positional_args;
-    arg_ptr_vec_t _optional_args;
-    arg_group_ptr_vec_t _argument_groups;
-    argument_group& _gr_positional_args;
-    argument_group& _gr_optional_args;
-    arg_parser_ptr_vec_t _subparsers;
+    arg_ptr_vec_t _positional_args; ///< The list of positional arguments.
+    arg_ptr_vec_t _optional_args; ///< The list of optional arguments.
+    arg_group_ptr_vec_t _argument_groups; ///< The list of argument groups.
+    argument_group& _gr_positional_args; ///< The positional argument group.
+    argument_group& _gr_optional_args; ///< The optional argument group.
+    arg_parser_ptr_vec_t _subparsers; ///< The list of subparsers.
 
-    bool _invoked = false;
-    bool _finalized = false;
+    bool _invoked =
+        false; ///< A flag indicating whether the parser has been invoked to parse arguments.
+    bool _finalized = false; ///< A flag indicating whether the parsing process has been finalized.
 
     static constexpr std::uint8_t _primary_flag_prefix_length = 2u;
     static constexpr std::uint8_t _secondary_flag_prefix_length = 1u;
