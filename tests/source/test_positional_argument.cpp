@@ -116,7 +116,7 @@ TEST_CASE_FIXTURE(
     CHECK(bld.params.empty());
 
     // other parameters
-    sut.bypass_required();
+    sut.supress_arg_checks();
     sut.nargs(non_default_range);
     sut.choices(choices);
     sut.default_values(default_value);
@@ -124,12 +124,12 @@ TEST_CASE_FIXTURE(
     // check the descriptor parameters
     bld = get_help_builder(sut, verbose);
 
-    const auto bypass_required_it =
-        std::ranges::find(bld.params, "bypass required", &parameter_descriptor::name);
-    REQUIRE_NE(bypass_required_it, bld.params.end());
-    CHECK_EQ(bypass_required_it->value, "true");
+    const auto supress_arg_checks_it =
+        std::ranges::find(bld.params, "supress arg checks", &parameter_descriptor::name);
+    REQUIRE_NE(supress_arg_checks_it, bld.params.end());
+    CHECK_EQ(supress_arg_checks_it->value, "true");
 
-    // automatically set to false with bypass_required
+    // automatically set to false with supress_arg_checks
     const auto required_it = std::ranges::find(bld.params, "required", &parameter_descriptor::name);
     REQUIRE_NE(required_it, bld.params.end());
     CHECK_EQ(required_it->value, "false");
@@ -179,61 +179,60 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "bypass_required() should return the value set using the `bypass_required` param setter"
+    "supresses_arg_checks() should return the value set using the `supress_arg_checks` param setter"
 ) {
     auto sut = sut_type(arg_name_primary);
 
-    sut.bypass_required(true);
-    CHECK(sut.is_bypass_required_enabled());
+    sut.supress_arg_checks(true);
+    CHECK(sut.supresses_arg_checks());
 
-    sut.bypass_required(false);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    sut.supress_arg_checks(false);
+    CHECK_FALSE(sut.supresses_arg_checks());
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "is_bypass_required_enabled() should return true only if the `required` flag is set to false "
-    "and "
-    "the `bypass_required` flags is set to true"
+    "supresses_arg_checks() should return true only if the `required` flag is set to false "
+    "and the `supress_arg_checks` flags is set to true"
 ) {
     auto sut = sut_type(arg_name_primary);
 
     // disabled
     set_required(sut, false);
-    set_bypass_required(sut, false);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    set_supress_arg_checks(sut, false);
+    CHECK_FALSE(sut.supresses_arg_checks());
 
     set_required(sut, true);
-    set_bypass_required(sut, false);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    set_supress_arg_checks(sut, false);
+    CHECK_FALSE(sut.supresses_arg_checks());
 
     set_required(sut, true);
-    set_bypass_required(sut, true);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    set_supress_arg_checks(sut, true);
+    CHECK_FALSE(sut.supresses_arg_checks());
 
     // enabled
     set_required(sut, false);
-    set_bypass_required(sut, true);
-    CHECK(sut.is_bypass_required_enabled());
+    set_supress_arg_checks(sut, true);
+    CHECK(sut.supresses_arg_checks());
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "required(true) should disable `bypass_required` option and bypass_required(true) should "
+    "required(true) should disable `supress_arg_checks` option and supress_arg_checks(true) should "
     "disable the `required` option"
 ) {
     auto sut = sut_type(arg_name_primary);
 
     REQUIRE(sut.is_required());
-    REQUIRE_FALSE(sut.is_bypass_required_enabled());
+    REQUIRE_FALSE(sut.supresses_arg_checks());
 
-    sut.bypass_required();
-    CHECK(sut.is_bypass_required_enabled());
+    sut.supress_arg_checks();
+    CHECK(sut.supresses_arg_checks());
     CHECK_FALSE(sut.is_required());
 
     sut.required();
     CHECK(sut.is_required());
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    CHECK_FALSE(sut.supresses_arg_checks());
 }
 
 TEST_CASE_FIXTURE(argument_test_fixture, "is_used() should return false by default") {

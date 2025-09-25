@@ -32,13 +32,13 @@ struct argument_test_fixture {
     }
 
     template <argument_type ArgT, c_argument_value_type T>
-    bool set_required(argument<ArgT, T>& arg, const bool r) const {
-        return arg._required = r;
+    bool set_required(argument<ArgT, T>& arg, const bool value) const {
+        return arg._required = value;
     }
 
     template <argument_type ArgT, c_argument_value_type T>
-    bool set_bypass_required(argument<ArgT, T>& arg, const bool br) const {
-        return arg._bypass_required = br;
+    bool set_supress_arg_checks(argument<ArgT, T>& arg, const bool value) const {
+        return arg._supress_arg_checks = value;
     }
 
     template <argument_type ArgT, c_argument_value_type T>

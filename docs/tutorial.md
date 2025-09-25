@@ -15,7 +15,7 @@
     - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance)
     - [hidden](#2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description)
     - [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown)
-    - [bypass required](#4-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line)
+    - [supress arg checks](#4-supress_arg_checks---using-a-supressing-argument-results-in-supressing-requirement-checks-for-other-arguments)
     - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument)
     - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
     - [choices](#7-choices---a-list-of-valid-argument-values)
@@ -319,8 +319,8 @@ Optional arguments:
 >
 > - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
 > - For both positional and optional arguments:
->   - enabling the `required` option disables the `bypass_required` option
->   - disabling the `required` option has no effect on the `bypass_required` option.
+>   - enabling the `required` option disables the `supress_arg_checks` option
+>   - disabling the `required` option has no effect on the `supress_arg_checks` option.
 
 ```cpp
 // example: positional arguments
@@ -377,24 +377,29 @@ Command                                 Result
 
 <br />
 
-#### 4. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
+#### 4. `supress_arg_checks` - Using a supressing argument results in supressing requirement checks for other arguments.
+
+If an argument is defined with the `supress_arg_checks` option enabled and such argument is explicitly used in the command-line, then requirement validation will be supressed/skipped for other arguments. This includes validating whether:
+- a required argument has been parsed
+- the number of values parsed for an argument matches the specified [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument) range.
 
 > [!NOTE]
 >
-> - Both all arguments have the `bypass_required` option disabled.
-> - The default value of the value parameter of the `argument::bypass_required(bool)` method is `true` for all arguments.
+> - All arguments have the `supress_arg_checks` option disabled by default.
+> - The default value of the value parameter of the `argument::supress_arg_checks(bool)` method is `true` for all arguments.
 
 > [!WARNING]
 >
-> For both positional and optional arguments:
-> - enabling the `bypass_required` option disables the `required` option
-> - disabling the `bypass_required` option has no effect on the `required` option.
+> - Enabling the `supress_arg_checks` option has no effect on [argument group](#argument-groups) requirements validation.
+> - For both positional and optional arguments:
+>   - enabling the `supress_arg_checks` option disables the `required` option
+>   - disabling the `supress_arg_checks` option has no effect on the `required` option.
 
 ```cpp
 // example: optional arguments
 parser.add_positional_argument("input");
 parser.add_optional_argument("output", "o").required();
-parser.add_optional_argument("version", "v").bypass_required();
+parser.add_optional_argument("version", "v").supress_arg_checks();
 
 parser.parse_args(argc, argv);
 

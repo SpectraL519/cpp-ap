@@ -117,10 +117,10 @@ public:
         return this->_required;
     }
 
-    /// @return `true` if required argument bypassing is enabled for the argument, `false` otherwise.
-    /// @note Required argument bypassing is enabled only if the argument is not required.
-    [[nodiscard]] bool is_bypass_required_enabled() const noexcept override {
-        return not this->_required and this->_bypass_required;
+    /// @return `true` if required argument checks supressing is enabled for the argument, `false` otherwise.
+    /// @note Argument checks supressing can only be enabled if the argument is not required.
+    [[nodiscard]] bool supresses_arg_checks() const noexcept override {
+        return not this->_required and this->_supress_arg_checks;
     }
 
     /// @return `true` if the argument is greedy, `false` otherwise.
@@ -152,40 +152,40 @@ public:
 
     /**
      * @brief Set the `required` attribute of the argument
-     * @param r The attribute value.
+     * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @attention Setting the `required` attribute to `true` disables the `bypass_required` attribute.
+     * @attention Setting the `required` attribute to `true` disables the `supress_arg_checks` attribute.
      */
-    argument& required(const bool r = true) noexcept {
-        this->_required = r;
+    argument& required(const bool value = true) noexcept {
+        this->_required = value;
         if (this->_required)
-            this->_bypass_required = false;
+            this->_supress_arg_checks = false;
         return *this;
     }
 
     /**
-     * @brief Enable/disable bypassing the `required` attribute for the argument.
-     * @param br The attribute value.
+     * @brief Enable/disable supressing argument checks for other arguments.
+     * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @attention Setting the `bypass_required` option to `true` disables the `required` attribute.
+     * @attention Setting the `supress_arg_checks` attribute to `true` disables the `required` attribute.
      */
-    argument& bypass_required(const bool br = true) noexcept {
-        this->_bypass_required = br;
-        if (this->_bypass_required)
+    argument& supress_arg_checks(const bool value = true) noexcept {
+        this->_supress_arg_checks = value;
+        if (this->_supress_arg_checks)
             this->_required = false;
         return *this;
     }
 
     /**
      * @brief Set the `greedy` attribute of the argument.
-     * @param g The attribute value.
+     * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
      * @note The method is enabled only if `value_type` is not `none_type`.
      */
-    argument& greedy(const bool g = true) noexcept
+    argument& greedy(const bool value = true) noexcept
     requires(not util::c_is_none<value_type>)
     {
-        this->_greedy = g;
+        this->_greedy = value;
         return *this;
     }
 
@@ -438,8 +438,8 @@ private:
         bld.params.reserve(6ull);
         if (this->_required != _default_required)
             bld.add_param("required", std::format("{}", this->_required));
-        if (this->is_bypass_required_enabled())
-            bld.add_param("bypass required", "true");
+        if (this->supresses_arg_checks())
+            bld.add_param("supress arg checks", "true");
         if (this->_nargs_range != _default_nargs_range)
             bld.add_param("nargs", this->_nargs_range);
         if constexpr (util::c_writable<value_type>) {
@@ -704,7 +704,7 @@ private:
         _value_actions; ///< The argument's value actions collection.
 
     bool _required : 1; ///< The argument's `required` attribute value.
-    bool _bypass_required : 1 = false; ///< The argument's `bypass_required` attribute value.
+    bool _supress_arg_checks : 1 = false; ///< The argument's `supress_arg_checks` attribute value.
     bool _greedy : 1 = false; ///< The argument's `greedy` attribute value.
     bool _hidden : 1 = false; ///< The argument's `hidden` attribute value.
 
