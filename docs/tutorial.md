@@ -887,6 +887,12 @@ auto& out_opts = parser.add_group("Output Options")
                        .mutually_exclusive(); // but at most one can be chosen
 ```
 
+> [!IMPORANT]
+>
+> If a group is defined as **mutually exclusive** and an argument from this group is used, then the `required` and `nargs` attribute requirements of other arguments from the group **will NOT be verified**.
+>
+> Consider the example in the section below. Normally the `--output, -o` argument would expect a value to be given in the command-line. However, if the `--print, -p` flag is used, then the `nargs` requirement of the `--output, -o` argument will not be verified, and therefore no exception will be thrown, even though the `nargs` requirement is not satisfied.
+
 ### Complete Example
 
 Below is a small program that demonstrates how to use a mutually exclusive group of required arguments:

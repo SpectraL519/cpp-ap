@@ -1360,13 +1360,9 @@ private:
      * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
      */
     void _verify_final_state() const {
+        const bool are_required_args_bypassed = this->_are_required_args_bypassed();
         for (const auto& group : this->_argument_groups)
-            this->_verify_group_requirements(*group);
-
-        if (not this->_are_required_args_bypassed()) {
-            this->_verify_required_args();
-            this->_verify_nvalues();
-        }
+            this->_verify_group_requirements(*group, are_required_args_bypassed);
     }
 
     /**
@@ -1387,41 +1383,14 @@ private:
     }
 
     /**
-     * @brief Check if all required positional and optional arguments are used.
-     * @throws ap::parsing_failure
-     */
-    void _verify_required_args() const {
-        // TODO: use std::views::join after the transition to C++23
-        for (const auto& arg : this->_positional_args)
-            if (arg->is_required() and not arg->has_value())
-                throw parsing_failure::required_argument_not_parsed(arg->name());
-
-        for (const auto& arg : this->_optional_args)
-            if (arg->is_required() and not arg->has_value())
-                throw parsing_failure::required_argument_not_parsed(arg->name());
-    }
-
-    /**
-     * @brief Check if the number of argument values is within the specified range.
-     * @throws ap::parsing_failure
-     */
-    void _verify_nvalues() const {
-        // TODO: use std::views::join after the transition to C++23
-        for (const auto& arg : this->_positional_args)
-            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
-
-        for (const auto& arg : this->_optional_args)
-            if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
-                throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
-    }
-
-    /**
      * @brief Verifies whether the requirements of the given argument group are satisfied.
      * @param group The argument group to verify.
+     * @param are_required_args_bypassed A flag indicating whether required argument bypassing is enabled.
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
-    void _verify_group_requirements(const argument_group& group) const {
+    void _verify_group_requirements(
+        const argument_group& group, const bool are_required_args_bypassed
+    ) const {
         if (group._arguments.empty())
             return;
 
@@ -1429,16 +1398,50 @@ private:
             std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
         );
 
+        if (group._mutually_exclusive) {
+            if (n_used_args > 1ull)
+                throw parsing_failure(std::format(
+                    "At most one argument from the mutually exclusive group '{}' can be used",
+                    group._name
+                ));
+
+            const auto used_arg_it = std::ranges::find_if(group._arguments, [](const auto& arg) {
+                return arg->is_used();
+            });
+
+            if (used_arg_it != group._arguments.end()) {
+                // only the one used argument has to be validated
+                this->_verify_argument_requirements(*used_arg_it, are_required_args_bypassed);
+                return;
+            }
+        }
+
         if (group._required and n_used_args == 0ull)
             throw parsing_failure(std::format(
                 "At least one argument from the required group '{}' must be used", group._name
             ));
 
-        if (group._mutually_exclusive and n_used_args > 1ull)
-            throw parsing_failure(std::format(
-                "At most one argument from the mutually exclusive group '{}' can be used",
-                group._name
-            ));
+        // all arguments in the group have to be validated
+        for (const auto& arg : group._arguments)
+            this->_verify_argument_requirements(arg, are_required_args_bypassed);
+    }
+
+    /**
+     * @brief Verifies whether the requirements of the given argument are satisfied.
+     * @param arg The argument to verify.
+     * @param are_required_args_bypassed A flag indicating whether required argument bypassing is enabled.
+     * @throws ap::parsing_failure if the requirements are not satistied.
+     */
+    void _verify_argument_requirements(const arg_ptr_t& arg, const bool are_required_args_bypassed)
+        const {
+        if (are_required_args_bypassed)
+            return;
+
+        if (arg->is_required() and not arg->has_value())
+            throw parsing_failure::required_argument_not_parsed(arg->name());
+
+        if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
+            throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
     }
 
     /**
