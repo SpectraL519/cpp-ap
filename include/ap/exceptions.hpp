@@ -37,20 +37,6 @@ struct invalid_configuration : public argument_parser_exception {
     ) noexcept {
         return invalid_configuration(std::format("Given name [{}] already used.", arg_name.str()));
     }
-
-    struct positional {
-        static invalid_configuration required_after_non_required(
-            const detail::argument_name& required_arg_name,
-            const detail::argument_name& non_required_arg_name
-        ) noexcept {
-            return invalid_configuration(std::format(
-                "Required positional argument [{}] cannot be defined after a non-required "
-                "positional argument [{}].",
-                required_arg_name.str(),
-                non_required_arg_name.str()
-            ));
-        }
-    };
 };
 
 /// @brief Exception type used for errors encountered during the argument parsing operation.
@@ -59,42 +45,6 @@ struct parsing_failure : public argument_parser_exception {
 
     static parsing_failure unknown_argument(const std::string_view arg_name) noexcept {
         return parsing_failure(std::format("Unknown argument [{}].", arg_name));
-    }
-
-    static parsing_failure value_already_set(const detail::argument_name& arg_name) noexcept {
-        return parsing_failure(
-            std::format("Value for argument [{}] has already been set.", arg_name.str())
-        );
-    }
-
-    static parsing_failure invalid_value(
-        const detail::argument_name& arg_name, const std::string& value
-    ) noexcept {
-        return parsing_failure(
-            std::format("Cannot parse value `{}` for argument [{}].", value, arg_name.str())
-        );
-    }
-
-    static parsing_failure invalid_choice(
-        const detail::argument_name& arg_name, const std::string& value
-    ) noexcept {
-        return parsing_failure(std::format(
-            "Value `{}` is not a valid choice for argument [{}].", value, arg_name.str()
-        ));
-    }
-
-    static parsing_failure required_argument_not_parsed(const detail::argument_name& arg_name
-    ) noexcept {
-        return parsing_failure(
-            std::format("No values parsed for a required argument [{}]", arg_name.str())
-        );
-    }
-
-    static parsing_failure argument_deduction_failure(const std::vector<std::string>& values
-    ) noexcept {
-        return parsing_failure(
-            std::format("Failed to deduce the argument for values [{}]", util::join(values))
-        );
     }
 
     static parsing_failure invalid_nvalues(

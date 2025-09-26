@@ -558,7 +558,9 @@ public:
         this->_parse_args_impl(std::ranges::begin(argv_rng), std::ranges::end(argv_rng), state);
 
         if (not state.unknown_args.empty())
-            throw parsing_failure::argument_deduction_failure(state.unknown_args);
+            throw parsing_failure(std::format(
+                "Failed to deduce the argument for values [{}]", util::join(state.unknown_args)
+            ));
     }
 
     /**
@@ -939,7 +941,7 @@ private:
       ),
       _gr_positional_args(add_group("Positional Arguments")),
       _gr_optional_args(add_group("Optional Arguments")) {
-        if (name.empty()) // TODO: add test case
+        if (name.empty())
             throw invalid_configuration("The program name cannot be empty!");
 
         if (util::contains_whitespaces(name))
@@ -1066,10 +1068,8 @@ private:
 
         // process command-line arguments within the current parser
         this->_validate_argument_configuration();
-        std::ranges::for_each(
-            this->_tokenize(args_begin, args_end, state),
-            std::bind_front(&argument_parser::_parse_token, this, std::ref(state))
-        );
+        for (const auto& tok : this->_tokenize(args_begin, args_end, state))
+            this->_parse_token(tok, state);
         this->_verify_final_state();
         this->_finalized = true;
     }
@@ -1090,10 +1090,12 @@ private:
             }
 
             if (non_required_arg and arg->is_required())
-                // TODO: remove static builder in v3 release commit
-                throw invalid_configuration::positional::required_after_non_required(
-                    arg->name(), non_required_arg->name()
-                );
+                throw invalid_configuration(std::format(
+                    "Required positional argument [{}] cannot be defined after a non-required "
+                    "positional argument [{}].",
+                    arg->name().str(),
+                    non_required_arg->name().str()
+                ));
         }
     }
 
@@ -1103,6 +1105,7 @@ private:
      * @note `AIt` must be a `std::forward_iterator` with a value type convertible to `std::string`.
      * @param args_begin The begin iterator for the command-line argument value range.
      * @param args_end The end iterator for the command-line argument value range.
+     * @param state The current parsing state.
      * @return A list of preprocessed command-line argument tokens.
      */
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
@@ -1111,23 +1114,20 @@ private:
     ) {
         arg_token_vec_t toks;
         toks.reserve(static_cast<std::size_t>(std::ranges::distance(args_begin, args_end)));
-
-        std::ranges::for_each(
-            args_begin,
-            args_end,
-            std::bind_front(&argument_parser::_tokenize_arg, this, std::ref(state), std::ref(toks))
-        );
-
+        std::ranges::for_each(args_begin, args_end, [&](const auto& arg_value) {
+            this->_tokenize_arg(arg_value, toks, state);
+        });
         return toks;
     }
 
     /**
      * @brief Appends an argument token(s) created from `arg_value` to the `toks` vector.
-     * @param toks The argument token list to which the processed token(s) will be appended.
      * @param arg_value The command-line argument's value to be processed.
+     * @param toks The argument token list to which the processed token(s) will be appended.
+     * @param state The current parsing state.
      */
     void _tokenize_arg(
-        const parsing_state& state, arg_token_vec_t& toks, const std::string_view arg_value
+        const std::string_view arg_value, arg_token_vec_t& toks, const parsing_state& state
     ) {
         detail::argument_token tok{
             .type = this->_deduce_token_type(arg_value), .value = std::string(arg_value)
@@ -1187,7 +1187,7 @@ private:
 
     /**
      * @brief Check if a flag token is valid based on its value.
-     * @attention Sets the `args` member of the token if an argument with the given name (token's value) is present.
+     * @attention Extends the `args` member of the token if an argument with the given name (token's value) is present.
      * @param tok The argument token to validate.
      * @return `true` if the given token represents a valid argument flag.
      */
@@ -1275,29 +1275,29 @@ private:
 
     /**
      * @brief Parse a single command-line argument token.
-     * @param state The current parsing state.
      * @param tok The token to be parsed.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_token(parsing_state& state, const detail::argument_token& tok) {
+    void _parse_token(const detail::argument_token& tok, parsing_state& state) {
         if (state.curr_arg and state.curr_arg->is_greedy()) {
-            this->_set_argument_value(state, tok.value);
+            this->_set_argument_value(tok.value, state);
             return;
         }
 
         if (tok.is_flag_token())
-            this->_parse_flag_token(state, tok);
+            this->_parse_flag_token(tok, state);
         else
-            this->_parse_value_token(state, tok);
+            this->_parse_value_token(tok, state);
     }
 
     /**
      * @brief Parse a single command-line argument *flag* token.
-     * @param state The current parsing state.
      * @param tok The token to be parsed.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_flag_token(parsing_state& state, const detail::argument_token& tok) {
+    void _parse_flag_token(const detail::argument_token& tok, parsing_state& state) {
         if (not tok.is_valid_flag_token()) {
             if (state.parse_known_only) {
                 state.curr_arg.reset();
@@ -1320,11 +1320,11 @@ private:
 
     /**
      * @brief Parse a single command-line argument *value* token.
-     * @param state The current parsing state.
      * @param tok The token to be parsed.
+     * @param state The current parsing state.
      * @throws ap::parsing_failure
      */
-    void _parse_value_token(parsing_state& state, const detail::argument_token& tok) {
+    void _parse_value_token(const detail::argument_token& tok, parsing_state& state) {
         if (not state.curr_arg) {
             if (state.curr_pos_arg_it == this->_positional_args.end()) {
                 state.unknown_args.emplace_back(tok.value);
@@ -1334,16 +1334,16 @@ private:
             state.curr_arg = *state.curr_pos_arg_it;
         }
 
-        this->_set_argument_value(state, tok.value);
+        this->_set_argument_value(tok.value, state);
     }
 
     /**
      * @brief Set the value for the currently processed argument.
      * @attention This function assumes that the current argument is set (i.e. `state.curr_arg != nullptr`).
-     * @param state The current parsing state.
      * @param value The value to be set for the current argument.
+     * @param state The current parsing state.
      */
-    void _set_argument_value(parsing_state& state, const std::string_view value) noexcept {
+    void _set_argument_value(const std::string_view value, parsing_state& state) noexcept {
         if (state.curr_arg->set_value(std::string(value)))
             return; // argument still accepts values
 
@@ -1360,86 +1360,98 @@ private:
      * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
      */
     void _verify_final_state() const {
-        const bool are_required_args_bypassed = this->_are_required_args_bypassed();
+        const auto [supress_group_checks, suppress_arg_checks] = this->_are_checks_suppressed();
         for (const auto& group : this->_argument_groups)
-            this->_verify_group_requirements(*group, are_required_args_bypassed);
+            this->_verify_group_requirements(*group, supress_group_checks, suppress_arg_checks);
     }
 
     /**
-     * @brief Check whether required argument bypassing is enabled
-     * @return true if at least one argument with enabled required argument bypassing is used, false otherwise.
+     * @brief Check whether required argument group checks or argument checks suppressing is enabled.
+     * @return A pair of boolean flags indicating whether suppressing is enabled.
+     * @note The first flag of the returned pair indicates whetehr argument group check suppressing is enabled,
+     * @note while the second flag indicated whether argument check suppressing is enabled.
      */
-    [[nodiscard]] bool _are_required_args_bypassed() const noexcept {
+    [[nodiscard]] std::pair<bool, bool> _are_checks_suppressed() const noexcept {
+        bool suppress_group_checks = false;
+        bool suppress_arg_checks = false;
+
+        auto check_arg = [&](const arg_ptr_t& arg) {
+            if (arg->is_used()) {
+                if (arg->suppresses_group_checks())
+                    suppress_group_checks = true;
+                if (arg->suppresses_arg_checks())
+                    suppress_arg_checks = true;
+            }
+        };
+
         // TODO: use std::views::join after the transition to C++23
-        return std::ranges::any_of(
-                   this->_positional_args,
-                   [](const arg_ptr_t& arg) {
-                       return arg->is_used() and arg->is_bypass_required_enabled();
-                   }
-               )
-            or std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
-                   return arg->is_used() and arg->is_bypass_required_enabled();
-               });
+        std::ranges::for_each(this->_positional_args, check_arg);
+        std::ranges::for_each(this->_optional_args, check_arg);
+        return {suppress_group_checks, suppress_arg_checks};
     }
 
     /**
      * @brief Verifies whether the requirements of the given argument group are satisfied.
      * @param group The argument group to verify.
-     * @param are_required_args_bypassed A flag indicating whether required argument bypassing is enabled.
+     * @param suppress_arg_checks A flag indicating whether argument checks are suppressed.
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
     void _verify_group_requirements(
-        const argument_group& group, const bool are_required_args_bypassed
+        const argument_group& group,
+        const bool suppress_group_checks,
+        const bool suppress_arg_checks
     ) const {
         if (group._arguments.empty())
             return;
 
-        const auto n_used_args = static_cast<std::size_t>(
-            std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
-        );
-
-        if (group._mutually_exclusive) {
-            if (n_used_args > 1ull)
-                throw parsing_failure(std::format(
-                    "At most one argument from the mutually exclusive group '{}' can be used",
-                    group._name
-                ));
-
-            const auto used_arg_it = std::ranges::find_if(group._arguments, [](const auto& arg) {
-                return arg->is_used();
-            });
-
-            if (used_arg_it != group._arguments.end()) {
-                // only the one used argument has to be validated
-                this->_verify_argument_requirements(*used_arg_it, are_required_args_bypassed);
-                return;
-            }
-        }
-
-        if (group._required and n_used_args == 0ull)
-            throw parsing_failure(std::format(
-                "At least one argument from the required group '{}' must be used", group._name
+        if (not suppress_group_checks) {
+            const auto n_used_args = static_cast<std::size_t>(std::ranges::count_if(
+                group._arguments, [](const auto& arg) { return arg->is_used(); }
             ));
+
+            if (group._mutually_exclusive) {
+                if (n_used_args > 1ull)
+                    throw parsing_failure(std::format(
+                        "At most one argument from the mutually exclusive group '{}' can be used",
+                        group._name
+                    ));
+
+                const auto used_arg_it = std::ranges::find_if(
+                    group._arguments, [](const auto& arg) { return arg->is_used(); }
+                );
+
+                if (used_arg_it != group._arguments.end()) {
+                    // only the one used argument has to be validated
+                    this->_verify_argument_requirements(*used_arg_it, suppress_arg_checks);
+                    return;
+                }
+            }
+
+            if (group._required and n_used_args == 0ull)
+                throw parsing_failure(std::format(
+                    "At least one argument from the required group '{}' must be used", group._name
+                ));
+        }
 
         // all arguments in the group have to be validated
         for (const auto& arg : group._arguments)
-            this->_verify_argument_requirements(arg, are_required_args_bypassed);
+            this->_verify_argument_requirements(arg, suppress_arg_checks);
     }
 
     /**
      * @brief Verifies whether the requirements of the given argument are satisfied.
      * @param arg The argument to verify.
-     * @param are_required_args_bypassed A flag indicating whether required argument bypassing is enabled.
+     * @param suppress_arg_checks A flag indicating whether argument checks are suppressed.
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
-    void _verify_argument_requirements(const arg_ptr_t& arg, const bool are_required_args_bypassed)
-        const {
-        if (are_required_args_bypassed)
+    void _verify_argument_requirements(const arg_ptr_t& arg, const bool suppress_arg_checks) const {
+        if (suppress_arg_checks)
             return;
 
         if (arg->is_required() and not arg->has_value())
-            throw parsing_failure::required_argument_not_parsed(arg->name());
-
+            throw parsing_failure(
+                std::format("No values parsed for a required argument [{}]", arg->name().str())
+            );
         if (const auto nv_ord = arg->nvalues_ordering(); not std::is_eq(nv_ord))
             throw parsing_failure::invalid_nvalues(arg->name(), nv_ord);
     }

@@ -32,16 +32,6 @@ struct argument_test_fixture {
     }
 
     template <argument_type ArgT, c_argument_value_type T>
-    bool set_required(argument<ArgT, T>& arg, const bool r) const {
-        return arg._required = r;
-    }
-
-    template <argument_type ArgT, c_argument_value_type T>
-    bool set_bypass_required(argument<ArgT, T>& arg, const bool br) const {
-        return arg._bypass_required = br;
-    }
-
-    template <argument_type ArgT, c_argument_value_type T>
     bool set_value(argument<ArgT, T>& arg, const T& value) const {
         return set_value(arg, as_string(value));
     }
@@ -125,6 +115,17 @@ struct argument_test_fixture {
     template <argument_type ArgT, c_argument_value_type T>
     [[nodiscard]] bool is_bypass_required_enabled(const argument<ArgT, T>& arg) const {
         return arg.is_bypass_required_enabled();
+    }
+
+    // exception message builders
+    std::string invalid_value_msg(const argument_name& arg_name, const std::string& value) const {
+        return std::format("Cannot parse value `{}` for argument [{}].", value, arg_name.str());
+    }
+
+    std::string invalid_choice_msg(const argument_name& arg_name, const std::string& value) const {
+        return std::format(
+            "Value `{}` is not a valid choice for argument [{}].", value, arg_name.str()
+        );
     }
 };
 

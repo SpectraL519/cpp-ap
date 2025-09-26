@@ -129,7 +129,9 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(required_it->value, "true");
 
     // other parameters
-    sut.bypass_required();
+    sut.required(false); // required for argument check suppressing
+    sut.suppress_arg_checks();
+    sut.suppress_group_checks();
     sut.nargs(non_default_range);
     sut.choices(choices);
     sut.default_values(default_value);
@@ -138,10 +140,15 @@ TEST_CASE_FIXTURE(
     // check the descriptor parameters
     bld = get_help_builder(sut, verbose);
 
-    const auto bypass_required_it =
-        std::ranges::find(bld.params, "bypass required", &parameter_descriptor::name);
-    REQUIRE_NE(bypass_required_it, bld.params.end());
-    CHECK_EQ(bypass_required_it->value, "true");
+    const auto suppress_arg_checks_it =
+        std::ranges::find(bld.params, "suppress arg checks", &parameter_descriptor::name);
+    REQUIRE_NE(suppress_arg_checks_it, bld.params.end());
+    CHECK_EQ(suppress_arg_checks_it->value, "true");
+
+    const auto suppress_group_checks_it =
+        std::ranges::find(bld.params, "suppress group checks", &parameter_descriptor::name);
+    REQUIRE_NE(suppress_group_checks_it, bld.params.end());
+    CHECK_EQ(suppress_group_checks_it->value, "true");
 
     const auto nargs_it = std::ranges::find(bld.params, "nargs", &parameter_descriptor::name);
     REQUIRE_NE(nargs_it, bld.params.end());
@@ -192,66 +199,79 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    argument_test_fixture,
-    "bypass_required() should return the value set using the `bypass_required` param setter"
+    argument_test_fixture, "required(true) should throw if an argument is supressing"
 ) {
-    auto sut = sut_type(arg_name_primary);
+    auto sut = sut_type(arg_name);
+    sut.required(false);
 
-    sut.bypass_required(true);
-    CHECK(sut.is_bypass_required_enabled());
+    SUBCASE("suppressing argument checks") {
+        sut.suppress_arg_checks();
+    }
+    SUBCASE("suppressing argument group checks") {
+        sut.suppress_group_checks();
+    }
+    SUBCASE("suppressing all checks") {
+        sut.suppress_arg_checks();
+        sut.suppress_group_checks();
+    }
 
-    sut.bypass_required(false);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    CAPTURE(sut);
+
+    CHECK_THROWS_WITH_AS(
+        sut.required(true),
+        std::format("A suppressing argument [{}] cannot be required!", arg_name.str()).c_str(),
+        ap::invalid_configuration
+    );
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "is_bypass_required_enabled() should return true only if the `required` flag is set to false "
-    "and "
-    "the `bypass_required` flags is set to true"
+    "suppress_arg_checks() should return the value set using the `suppress_arg_checks` param "
+    "setter if the argument is not required"
 ) {
-    auto sut = sut_type(arg_name_primary);
+    auto sut = sut_type(arg_name);
 
-    // disabled
-    set_required(sut, false);
-    set_bypass_required(sut, false);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    sut.required(true);
+    CHECK_THROWS_WITH_AS(
+        sut.suppress_arg_checks(true),
+        std::format("A required argument [{}] cannot suppress argument checks!", arg_name.str())
+            .c_str(),
+        ap::invalid_configuration
+    );
 
-    set_required(sut, true);
-    set_bypass_required(sut, false);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    sut.required(false);
 
-    set_required(sut, true);
-    set_bypass_required(sut, true);
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    sut.suppress_arg_checks(true);
+    CHECK(sut.suppresses_arg_checks());
 
-    // enabled
-    set_required(sut, false);
-    set_bypass_required(sut, true);
-    CHECK(sut.is_bypass_required_enabled());
+    sut.suppress_arg_checks(false);
+    CHECK_FALSE(sut.suppresses_arg_checks());
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "required(true) should disable `bypass_required` option and bypass_required(true) should "
-    "disable the `required` option"
+    "suppresses_group_checks() should return the value set using the `suppress_group_checks` param "
+    "setter if the argument is not required"
 ) {
-    auto sut = sut_type(arg_name_primary);
+    auto sut = sut_type(arg_name);
 
-    REQUIRE_FALSE(sut.is_required());
-    REQUIRE_FALSE(sut.is_bypass_required_enabled());
+    sut.required(true);
+    CHECK_THROWS_WITH_AS(
+        sut.suppress_group_checks(true),
+        std::format(
+            "A required argument [{}] cannot suppress argument group checks!", arg_name.str()
+        )
+            .c_str(),
+        ap::invalid_configuration
+    );
 
-    sut.bypass_required();
-    CHECK(sut.is_bypass_required_enabled());
-    CHECK_FALSE(sut.is_required());
+    sut.required(false);
 
-    sut.required();
-    CHECK(sut.is_required());
-    CHECK_FALSE(sut.is_bypass_required_enabled());
+    sut.suppress_group_checks(true);
+    CHECK(sut.suppresses_group_checks());
 
-    sut.bypass_required();
-    CHECK(sut.is_bypass_required_enabled());
-    CHECK_FALSE(sut.is_required());
+    sut.suppress_group_checks(false);
+    CHECK_FALSE(sut.suppresses_group_checks());
 }
 
 TEST_CASE_FIXTURE(argument_test_fixture, "is_used() should return false by default") {
@@ -482,7 +502,7 @@ TEST_CASE_FIXTURE(
     SUBCASE("given string is empty") {
         REQUIRE_THROWS_WITH_AS(
             set_value(sut, empty_str),
-            parsing_failure::invalid_value(arg_name_primary, empty_str).what(),
+            invalid_value_msg(arg_name_primary, empty_str).c_str(),
             parsing_failure
         );
         CHECK_FALSE(has_value(sut));
@@ -490,7 +510,7 @@ TEST_CASE_FIXTURE(
     SUBCASE("given string is non-convertible to value_type") {
         REQUIRE_THROWS_WITH_AS(
             set_value(sut, invalid_value_str),
-            parsing_failure::invalid_value(arg_name_primary, invalid_value_str).what(),
+            invalid_value_msg(arg_name_primary, invalid_value_str).c_str(),
             parsing_failure
         );
         CHECK_FALSE(has_value(sut));
@@ -506,7 +526,7 @@ TEST_CASE_FIXTURE(
 
     REQUIRE_THROWS_WITH_AS(
         set_value(sut, invalid_choice),
-        parsing_failure::invalid_choice(arg_name_primary, as_string(invalid_choice)).what(),
+        invalid_choice_msg(arg_name_primary, as_string(invalid_choice)).c_str(),
         parsing_failure
     );
     CHECK_FALSE(has_value(sut));

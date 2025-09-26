@@ -155,8 +155,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::required_argument_not_parsed({init_arg_name_primary(last_pos_arg_idx)})
-            .what(),
+        required_argument_not_parsed_msg({init_arg_name_primary(last_pos_arg_idx)}).c_str(),
         parsing_failure
     );
 
@@ -179,10 +178,13 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        invalid_configuration::positional::required_after_non_required(
-            {required_arg_name}, {non_required_arg_name}
+        std::format(
+            "Required positional argument [{}] cannot be defined after a non-required positional "
+            "argument [{}].",
+            required_arg_name,
+            non_required_arg_name
         )
-            .what(),
+            .c_str(),
         invalid_configuration
     );
 
@@ -206,7 +208,8 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::argument_deduction_failure(unknown_args).what(),
+        std::format("Failed to deduce the argument for values [{}]", ap::util::join(unknown_args))
+            .c_str(),
         parsing_failure
     );
 
@@ -230,7 +233,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        parsing_failure::required_argument_not_parsed(required_arg_name).what(),
+        required_argument_not_parsed_msg(required_arg_name).c_str(),
         parsing_failure
     );
 
@@ -366,12 +369,13 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should not throw if there is a positional argument which has the bypass_required "
+    "parse_args should not throw if there is a positional argument which has the "
+    "suppress_arg_checks "
     "option enabled and is used"
 ) {
     const std::size_t n_positional_args = 1ull;
     const auto bypass_required_arg_name = init_arg_name(n_positional_args - 1ull).primary.value();
-    sut.add_positional_argument(bypass_required_arg_name).bypass_required();
+    sut.add_positional_argument(bypass_required_arg_name).required(false).suppress_arg_checks();
     const std::string bypass_required_arg_value = "bypass_required_arg_value";
 
     for (std::size_t i = 0ull; i < n_optional_args; ++i)
@@ -389,7 +393,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should not throw if there is an optional argument which has the bypass_required "
+    "parse_args should not throw if there is an optional argument which has the "
+    "suppress_arg_checks "
     "option enabled and is used"
 ) {
     add_arguments(n_positional_args, n_optional_args);
@@ -400,7 +405,7 @@ TEST_CASE_FIXTURE(
     )
         .default_values(false)
         .implicit_values(true)
-        .bypass_required();
+        .suppress_arg_checks();
 
     std::string arg_flag;
 
@@ -1457,6 +1462,28 @@ TEST_CASE_FIXTURE(
     CHECK(sut.count(init_arg_name_primary(used_arg_idx)));
 
     free_argv(argc, argv);
+}
+
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should not throw when the group requirements are not satisfied but a group check "
+    "suppressing argument is used"
+) {
+    const std::string suppressing_arg_name = "suppress";
+    sut.add_flag(suppressing_arg_name).suppress_group_checks();
+
+    const std::string req_me_gr_name = "Required & Mutually Exclusive Group";
+    auto& req_me_gr = sut.add_group(req_me_gr_name).mutually_exclusive();
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        sut.add_optional_argument(req_me_gr, init_arg_name_primary(i));
+
+    std::vector<std::string> argv_vec{std::format("--{}", suppressing_arg_name)};
+
+    REQUIRE_NOTHROW(sut.parse_args(argv_vec));
+    CHECK(sut.value<bool>(suppressing_arg_name));
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        CHECK_FALSE(sut.is_used(init_arg_name_primary(i)));
 }
 
 // subparsers

@@ -17,7 +17,10 @@ namespace ap::nargs {
 
 using count_type = std::size_t;
 
+/// @brief The minimum bound for the `nargs::range` class.
 constexpr count_type min_bound = std::numeric_limits<count_type>::min();
+
+/// @brief The maximum bound for the `nargs::range` class.
 constexpr count_type max_bound = std::numeric_limits<count_type>::max();
 
 /// @brief Argument's number of values managing class.

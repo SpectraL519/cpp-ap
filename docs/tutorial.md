@@ -12,18 +12,18 @@
   - [Boolean Flags](#boolean-flags)
 - [Argument Parameters](#argument-parameters)
   - [Common Parameters](#common-parameters)
-    - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance)
-    - [hidden](#2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description)
-    - [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown)
-    - [bypass required](#4-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line)
-    - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument)
-    - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
-    - [choices](#7-choices---a-list-of-valid-argument-values)
-    - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value)
-    - [default values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed)
+    - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance) - the text shown in the help message to describe an argument
+    - [hidden](#2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description) - hides the argument from the generated program description and help output
+    - [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown) - marks the argument as mandatory; not using it will cause an error
+    - [suppress arg checks](#4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments) - if a suppressing argument is used, other requirement validation will be skipped for other arguments
+    - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument) - defines how many values an argument can or must accept
+    - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached) - makes the argument consume all following values until its limit is reached
+    - [choices](#7-choices---a-list-of-valid-argument-values) - restricts the valid inputs to a predefined set of values
+    - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value) - allows you to run custom code after the argument’s value is parsed
+    - [default values](#9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed) - specifies fallback values to use if none are provided
   - [Parameters Specific for Optional Arguments](#parameters-specific-for-optional-arguments)
-    - [on-flag actions](#1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag)
-    - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line)
+    - [on-flag actions](#1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag) - executes custom code immediately when the argument’s flag is present
+    - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line) - automatically assigns a value if an argument flag is used without an explicit value
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Argument Groups](#argument-groups)
@@ -31,6 +31,7 @@
   - [Adding Arguments to Groups](#adding-arguments-to-groups)
   - [Group Attributes](#group-attributes)
   - [Complete Example](#complete-example)
+  - [Suppressing Argument Group Checks](#suppressing-argument-group-checks)
 - [Parsing Arguments](#parsing-arguments)
   - [Basic Argument Parsing Rules](#basic-argument-parsing-rules)
   - [Compound Arguments](#compound-arguments)
@@ -222,7 +223,7 @@ parser.add_optional_argument("n", ap::n_secondary);
 >
 > - The default value type of any argument is `std::string`.
 > - If the argument's value type is `ap::none_type`, the argument will not accept any values and therefore no value-related parameters can be set for such argument. This includes:
->   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a)
+>   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument)
 >   - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
 >   - [choices](#7-choices---a-list-of-valid-argument-values)
 >   - [value actions](#8-value-actions---functions-that-are-called-after-parsing-an-arguments-value)
@@ -318,9 +319,7 @@ Optional arguments:
 > [!WARNING]
 >
 > - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
-> - For both positional and optional arguments:
->   - enabling the `required` option disables the `bypass_required` option
->   - disabling the `required` option has no effect on the `bypass_required` option.
+> - If an argument is suppressing (see [suppress arg checks](#4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments) and [Suppressing Argument Group Checks](#suppressing-argument-group-checks)), then it cannot be required (an exception will be thrown).
 
 ```cpp
 // example: positional arguments
@@ -377,24 +376,27 @@ Command                                 Result
 
 <br />
 
-#### 4. `bypass_required` - If this option is set for an argument, the `required` option for other arguments will be discarded if the bypassing argument is used in the command-line.
+#### 4. `suppress_arg_checks` - Using a suppressing argument results in suppressing requirement checks for other arguments.
+
+If an argument is defined with the `suppress_arg_checks` option enabled and such argument is explicitly used in the command-line, then requirement validation will be suppressed/skipped for other arguments. This includes validating whether:
+- a required argument has been parsed
+- the number of values parsed for an argument matches the specified [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument) range.
 
 > [!NOTE]
 >
-> - Both all arguments have the `bypass_required` option disabled.
-> - The default value of the value parameter of the `argument::bypass_required(bool)` method is `true` for all arguments.
+> - All arguments have the `suppress_arg_checks` option disabled by default.
+> - The default value of the value parameter of the `argument::suppress_arg_checks(bool)` method is `true` for all arguments.
 
 > [!WARNING]
 >
-> For both positional and optional arguments:
-> - enabling the `bypass_required` option disables the `required` option
-> - disabling the `bypass_required` option has no effect on the `required` option.
+> - Enabling the `suppress_arg_checks` option has no effect on [argument group](#argument-groups) requirements validation.
+> - Enabling argument checks suppressing is not possible for required arguments (an exception will be thrown).
 
 ```cpp
 // example: optional arguments
 parser.add_positional_argument("input");
 parser.add_optional_argument("output", "o").required();
-parser.add_optional_argument("version", "v").bypass_required();
+parser.add_optional_argument("version", "v").suppress_arg_checks();
 
 parser.parse_args(argc, argv);
 
@@ -522,7 +524,7 @@ Actions are represented as functions, which take the argument's value as an argu
   ```cpp
   void is_valid_user_tag(const std::string& tag) {
       if (tag.empty() or tag.front() != '@')
-          throw std::runtime_error(std::format("Invalid user tag: `{}` — must start with '@'", tag));
+          throw std::runtime_error(std::format("Invalid user tag: `{}` - must start with '@'", tag));
   }
 
   parser.add_optional_argument<std::string>("user", "u")
@@ -933,6 +935,26 @@ Output Options: (required, mutually exclusive)
   --output, -o : Print output to a given file
   --print, -p  : Print output to the console
 ```
+
+### Suppressing Argument Group Checks
+
+Similarly to [suppressing argument checks](#4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments), an argument can suppress the requirement checks of argument groups:
+
+```c++
+argument.suppress_group_checks();
+```
+
+If such argument is used the requirement checks associated with the [group attributes](#group-attributes) will not be validated.
+
+> [!NOTE]
+>
+> - All arguments have the `suppress_group_checks` option disabled by default.
+> - The default value of the value parameter of the `argument::suppress_group_checks(bool)` method is `true` for all arguments.
+
+> [!WARNING]
+>
+> - Enabling the `suppress_group_checks` option has no effect on argument requirements validation.
+> - Enabling argument group checks suppressing is not possible for required arguments (an exception will be thrown).
 
 <br/>
 <br/>

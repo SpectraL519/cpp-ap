@@ -117,10 +117,14 @@ public:
         return this->_required;
     }
 
-    /// @return `true` if required argument bypassing is enabled for the argument, `false` otherwise.
-    /// @note Required argument bypassing is enabled only if the argument is not required.
-    [[nodiscard]] bool is_bypass_required_enabled() const noexcept override {
-        return not this->_required and this->_bypass_required;
+    /// @return `true` if argument checks suppressing is enabled for the argument, `false` otherwise.
+    [[nodiscard]] bool suppresses_arg_checks() const noexcept override {
+        return this->_suppress_arg_checks;
+    }
+
+    /// @return `true` if argument group checks suppressing is enabled for the argument, `false` otherwise.
+    [[nodiscard]] bool suppresses_group_checks() const noexcept override {
+        return this->_suppress_group_checks;
     }
 
     /// @return `true` if the argument is greedy, `false` otherwise.
@@ -152,40 +156,62 @@ public:
 
     /**
      * @brief Set the `required` attribute of the argument
-     * @param r The attribute value.
+     * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @attention Setting the `required` attribute to `true` disables the `bypass_required` attribute.
+     * @throws ap::invalid_configuration if the argument is configured to suppress argument/group checks.
      */
-    argument& required(const bool r = true) noexcept {
-        this->_required = r;
-        if (this->_required)
-            this->_bypass_required = false;
+    argument& required(const bool value = true) {
+        if (value and (this->_suppress_arg_checks or this->_suppress_group_checks))
+            throw invalid_configuration(
+                std::format("A suppressing argument [{}] cannot be required!", this->_name.str())
+            );
+
+        this->_required = value;
         return *this;
     }
 
     /**
-     * @brief Enable/disable bypassing the `required` attribute for the argument.
-     * @param br The attribute value.
+     * @brief Enable/disable suppressing argument checks for other arguments.
+     * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @attention Setting the `bypass_required` option to `true` disables the `required` attribute.
+     * @throws ap::invalid_configuration if the argument is configured to be required.
      */
-    argument& bypass_required(const bool br = true) noexcept {
-        this->_bypass_required = br;
-        if (this->_bypass_required)
-            this->_required = false;
+    argument& suppress_arg_checks(const bool value = true) {
+        if (value and this->_required)
+            throw invalid_configuration(std::format(
+                "A required argument [{}] cannot suppress argument checks!", this->_name.str()
+            ));
+
+        this->_suppress_arg_checks = value;
+        return *this;
+    }
+
+    /**
+     * @brief Enable/disable suppressing argument group checks.
+     * @param value The attribute value (default: `true`).
+     * @return Reference to the argument instance.
+     * @throws ap::invalid_configuration if the argument is configured to be required.
+     */
+    argument& suppress_group_checks(const bool value = true) {
+        if (value and this->_required)
+            throw invalid_configuration(std::format(
+                "A required argument [{}] cannot suppress argument group checks!", this->_name.str()
+            ));
+
+        this->_suppress_group_checks = value;
         return *this;
     }
 
     /**
      * @brief Set the `greedy` attribute of the argument.
-     * @param g The attribute value.
+     * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
      * @note The method is enabled only if `value_type` is not `none_type`.
      */
-    argument& greedy(const bool g = true) noexcept
+    argument& greedy(const bool value = true) noexcept
     requires(not util::c_is_none<value_type>)
     {
-        this->_greedy = g;
+        this->_greedy = value;
         return *this;
     }
 
@@ -438,8 +464,10 @@ private:
         bld.params.reserve(6ull);
         if (this->_required != _default_required)
             bld.add_param("required", std::format("{}", this->_required));
-        if (this->is_bypass_required_enabled())
-            bld.add_param("bypass required", "true");
+        if (this->_suppress_arg_checks)
+            bld.add_param("suppress arg checks", "true");
+        if (this->_suppress_group_checks)
+            bld.add_param("suppress group checks", "true");
         if (this->_nargs_range != _default_nargs_range)
             bld.add_param("nargs", this->_nargs_range);
         if constexpr (util::c_writable<value_type>) {
@@ -546,12 +574,19 @@ private:
         return this->_values_impl();
     }
 
+    /// @return Reference to the vector of parsed values for the argument.
+    /// @note For none-type arguments, the method always returns an empty vector.
     [[nodiscard]] const std::vector<std::any>& _values_impl() const noexcept
     requires(util::c_is_none<value_type>)
     {
         return this->_values;
     }
 
+    /**
+     * @return Reference to the vector of parsed values for the argument.
+     * @note If no parsed values are available, the method attempts to return the predefined values (default/implicit).
+     * @note The method is enabled only if `value_type` is not `none_type`.
+     */
     [[nodiscard]] const std::vector<std::any>& _values_impl() const noexcept
     requires(not util::c_is_none<value_type>)
     {
@@ -670,11 +705,15 @@ private:
         }
         else {
             if (not (std::istringstream(str_value) >> value))
-                throw parsing_failure::invalid_value(this->_name, str_value);
+                throw parsing_failure(std::format(
+                    "Cannot parse value `{}` for argument [{}].", str_value, this->_name.str()
+                ));
         }
 
         if (not this->_is_valid_choice(value))
-            throw parsing_failure::invalid_choice(this->_name, str_value);
+            throw parsing_failure(std::format(
+                "Value `{}` is not a valid choice for argument [{}].", str_value, this->_name.str()
+            ));
 
         const auto apply_visitor = action::util::apply_visitor<value_type>{value};
         for (const auto& action : this->_value_actions)
@@ -700,7 +739,10 @@ private:
         _value_actions; ///< The argument's value actions collection.
 
     bool _required : 1; ///< The argument's `required` attribute value.
-    bool _bypass_required : 1 = false; ///< The argument's `bypass_required` attribute value.
+    bool _suppress_arg_checks : 1 =
+        false; ///< The argument's `suppress_arg_checks` attribute value.
+    bool _suppress_group_checks : 1 =
+        false; ///< The argument's `suppress_group_checks` attribute value.
     bool _greedy : 1 = false; ///< The argument's `greedy` attribute value.
     bool _hidden : 1 = false; ///< The argument's `hidden` attribute value.
 

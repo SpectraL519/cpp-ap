@@ -45,8 +45,11 @@ public:
     /// @return `true` if the argument is required, `false` otherwise.
     virtual bool is_required() const noexcept = 0;
 
-    /// @return `true` if the argument is allowed to bypass the required check, `false` otherwise.
-    virtual bool is_bypass_required_enabled() const noexcept = 0;
+    /// @return `true` if argument checks suppressing is enabled for the argument, `false` otherwise.
+    virtual bool suppresses_arg_checks() const noexcept = 0;
+
+    /// @return `true` if argument group checks suppressing is enabled for the argument, `false` otherwise.
+    virtual bool suppresses_group_checks() const noexcept = 0;
 
     /// @return `true` if the argument is greedy, `false` otherwise.
     virtual bool is_greedy() const noexcept = 0;
