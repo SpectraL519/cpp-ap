@@ -129,7 +129,8 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(required_it->value, "true");
 
     // other parameters
-    sut.supress_arg_checks();
+    sut.required(false); // required for argument check suppressing
+    sut.suppress_arg_checks();
     sut.nargs(non_default_range);
     sut.choices(choices);
     sut.default_values(default_value);
@@ -138,10 +139,10 @@ TEST_CASE_FIXTURE(
     // check the descriptor parameters
     bld = get_help_builder(sut, verbose);
 
-    const auto supress_arg_checks_it =
-        std::ranges::find(bld.params, "supress arg checks", &parameter_descriptor::name);
-    REQUIRE_NE(supress_arg_checks_it, bld.params.end());
-    CHECK_EQ(supress_arg_checks_it->value, "true");
+    const auto suppress_arg_checks_it =
+        std::ranges::find(bld.params, "suppress arg checks", &parameter_descriptor::name);
+    REQUIRE_NE(suppress_arg_checks_it, bld.params.end());
+    CHECK_EQ(suppress_arg_checks_it->value, "true");
 
     const auto nargs_it = std::ranges::find(bld.params, "nargs", &parameter_descriptor::name);
     REQUIRE_NE(nargs_it, bld.params.end());
@@ -192,66 +193,79 @@ TEST_CASE_FIXTURE(
 }
 
 TEST_CASE_FIXTURE(
-    argument_test_fixture,
-    "supress_arg_checks() should return the value set using the `supress_arg_checks` param setter"
+    argument_test_fixture, "required(true) should throw if an argument is supressing"
 ) {
-    auto sut = sut_type(arg_name_primary);
+    auto sut = sut_type(arg_name);
+    sut.required(false);
 
-    sut.supress_arg_checks(true);
-    CHECK(sut.supresses_arg_checks());
+    SUBCASE("suppressing argument checks") {
+        sut.suppress_arg_checks();
+    }
+    SUBCASE("suppressing argument group checks") {
+        sut.suppress_group_checks();
+    }
+    SUBCASE("suppressing all checks") {
+        sut.suppress_arg_checks();
+        sut.suppress_group_checks();
+    }
 
-    sut.supress_arg_checks(false);
-    CHECK_FALSE(sut.supresses_arg_checks());
+    CAPTURE(sut);
+
+    CHECK_THROWS_WITH_AS(
+        sut.required(true),
+        std::format("A suppressing argument [{}] cannot be required!", arg_name.str()).c_str(),
+        ap::invalid_configuration
+    );
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "supresses_arg_checks() should return true only if the `required` flag is set to false "
-    "and "
-    "the `supress_arg_checks` flags is set to true"
+    "suppress_arg_checks() should return the value set using the `suppress_arg_checks` param "
+    "setter if the argument is not required"
 ) {
-    auto sut = sut_type(arg_name_primary);
+    auto sut = sut_type(arg_name);
 
-    // disabled
-    set_required(sut, false);
-    set_supress_arg_checks(sut, false);
-    CHECK_FALSE(sut.supresses_arg_checks());
+    sut.required(true);
+    CHECK_THROWS_WITH_AS(
+        sut.suppress_arg_checks(true),
+        std::format("A required argument [{}] cannot suppress argument checks!", arg_name.str())
+            .c_str(),
+        ap::invalid_configuration
+    );
 
-    set_required(sut, true);
-    set_supress_arg_checks(sut, false);
-    CHECK_FALSE(sut.supresses_arg_checks());
+    sut.required(false);
 
-    set_required(sut, true);
-    set_supress_arg_checks(sut, true);
-    CHECK_FALSE(sut.supresses_arg_checks());
+    sut.suppress_arg_checks(true);
+    CHECK(sut.suppresses_arg_checks());
 
-    // enabled
-    set_required(sut, false);
-    set_supress_arg_checks(sut, true);
-    CHECK(sut.supresses_arg_checks());
+    sut.suppress_arg_checks(false);
+    CHECK_FALSE(sut.suppresses_arg_checks());
 }
 
 TEST_CASE_FIXTURE(
     argument_test_fixture,
-    "required(true) should disable `supress_arg_checks` option and supress_arg_checks(true) should "
-    "disable the `required` option"
+    "suppresses_group_checks() should return the value set using the `suppress_group_checks` param "
+    "setter if the argument is not required"
 ) {
-    auto sut = sut_type(arg_name_primary);
+    auto sut = sut_type(arg_name);
 
-    REQUIRE_FALSE(sut.is_required());
-    REQUIRE_FALSE(sut.supresses_arg_checks());
+    sut.required(true);
+    CHECK_THROWS_WITH_AS(
+        sut.suppress_group_checks(true),
+        std::format(
+            "A required argument [{}] cannot suppress argument group checks!", arg_name.str()
+        )
+            .c_str(),
+        ap::invalid_configuration
+    );
 
-    sut.supress_arg_checks();
-    CHECK(sut.supresses_arg_checks());
-    CHECK_FALSE(sut.is_required());
+    sut.required(false);
 
-    sut.required();
-    CHECK(sut.is_required());
-    CHECK_FALSE(sut.supresses_arg_checks());
+    sut.suppress_group_checks(true);
+    CHECK(sut.suppresses_group_checks());
 
-    sut.supress_arg_checks();
-    CHECK(sut.supresses_arg_checks());
-    CHECK_FALSE(sut.is_required());
+    sut.suppress_group_checks(false);
+    CHECK_FALSE(sut.suppresses_group_checks());
 }
 
 TEST_CASE_FIXTURE(argument_test_fixture, "is_used() should return false by default") {

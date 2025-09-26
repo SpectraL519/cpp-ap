@@ -117,10 +117,14 @@ public:
         return this->_required;
     }
 
-    /// @return `true` if required argument checks supressing is enabled for the argument, `false` otherwise.
-    /// @note Argument checks supressing can only be enabled if the argument is not required.
-    [[nodiscard]] bool supresses_arg_checks() const noexcept override {
-        return not this->_required and this->_supress_arg_checks;
+    /// @return `true` if argument checks suppressing is enabled for the argument, `false` otherwise.
+    [[nodiscard]] bool suppresses_arg_checks() const noexcept override {
+        return this->_suppress_arg_checks;
+    }
+
+    /// @return `true` if argument group checks suppressing is enabled for the argument, `false` otherwise.
+    [[nodiscard]] bool suppresses_group_checks() const noexcept override {
+        return this->_suppress_group_checks;
     }
 
     /// @return `true` if the argument is greedy, `false` otherwise.
@@ -154,25 +158,44 @@ public:
      * @brief Set the `required` attribute of the argument
      * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @attention Setting the `required` attribute to `true` disables the `supress_arg_checks` attribute.
      */
-    argument& required(const bool value = true) noexcept {
+    argument& required(const bool value = true) {
+        if (value and (this->_suppress_arg_checks or this->_suppress_group_checks))
+            throw invalid_configuration(
+                std::format("A suppressing argument [{}] cannot be required!", this->_name.str())
+            );
+
         this->_required = value;
-        if (this->_required)
-            this->_supress_arg_checks = false;
         return *this;
     }
 
     /**
-     * @brief Enable/disable supressing argument checks for other arguments.
+     * @brief Enable/disable suppressing argument checks for other arguments.
      * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @attention Setting the `supress_arg_checks` attribute to `true` disables the `required` attribute.
      */
-    argument& supress_arg_checks(const bool value = true) noexcept {
-        this->_supress_arg_checks = value;
-        if (this->_supress_arg_checks)
-            this->_required = false;
+    argument& suppress_arg_checks(const bool value = true) {
+        if (value and this->_required)
+            throw invalid_configuration(std::format(
+                "A required argument [{}] cannot suppress argument checks!", this->_name.str()
+            ));
+
+        this->_suppress_arg_checks = value;
+        return *this;
+    }
+
+    /**
+     * @brief Enable/disable suppressing argument group checks.
+     * @param value The attribute value (default: `true`).
+     * @return Reference to the argument instance.
+     */
+    argument& suppress_group_checks(const bool value = true) {
+        if (value and this->_required)
+            throw invalid_configuration(std::format(
+                "A required argument [{}] cannot suppress argument group checks!", this->_name.str()
+            ));
+
+        this->_suppress_group_checks = value;
         return *this;
     }
 
@@ -438,8 +461,8 @@ private:
         bld.params.reserve(6ull);
         if (this->_required != _default_required)
             bld.add_param("required", std::format("{}", this->_required));
-        if (this->supresses_arg_checks())
-            bld.add_param("supress arg checks", "true");
+        if (this->suppresses_arg_checks())
+            bld.add_param("suppress arg checks", "true");
         if (this->_nargs_range != _default_nargs_range)
             bld.add_param("nargs", this->_nargs_range);
         if constexpr (util::c_writable<value_type>) {
@@ -704,7 +727,10 @@ private:
         _value_actions; ///< The argument's value actions collection.
 
     bool _required : 1; ///< The argument's `required` attribute value.
-    bool _supress_arg_checks : 1 = false; ///< The argument's `supress_arg_checks` attribute value.
+    bool _suppress_arg_checks : 1 =
+        false; ///< The argument's `suppress_arg_checks` attribute value.
+    bool _suppress_group_checks : 1 =
+        false; ///< The argument's `suppress_group_checks` attribute value.
     bool _greedy : 1 = false; ///< The argument's `greedy` attribute value.
     bool _hidden : 1 = false; ///< The argument's `hidden` attribute value.
 

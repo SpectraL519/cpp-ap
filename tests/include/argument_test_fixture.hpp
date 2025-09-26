@@ -32,16 +32,6 @@ struct argument_test_fixture {
     }
 
     template <argument_type ArgT, c_argument_value_type T>
-    bool set_required(argument<ArgT, T>& arg, const bool value) const {
-        return arg._required = value;
-    }
-
-    template <argument_type ArgT, c_argument_value_type T>
-    bool set_supress_arg_checks(argument<ArgT, T>& arg, const bool value) const {
-        return arg._supress_arg_checks = value;
-    }
-
-    template <argument_type ArgT, c_argument_value_type T>
     bool set_value(argument<ArgT, T>& arg, const T& value) const {
         return set_value(arg, as_string(value));
     }

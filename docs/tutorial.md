@@ -15,7 +15,7 @@
     - [help](#1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance) - the text shown in the help message to describe an argument
     - [hidden](#2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description) - hides the argument from the generated program description and help output
     - [required](#3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown) - marks the argument as mandatory; not using it will cause an error
-    - [supress arg checks](#4-supress_arg_checks---using-a-supressing-argument-results-in-supressing-requirement-checks-for-other-arguments) - if a supressing argument is used, other requirement validation will be skipped for other arguments
+    - [suppress arg checks](#4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments) - if a suppressing argument is used, other requirement validation will be skipped for other arguments
     - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument) - defines how many values an argument can or must accept
     - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached) - makes the argument consume all following values until its limit is reached
     - [choices](#7-choices---a-list-of-valid-argument-values) - restricts the valid inputs to a predefined set of values
@@ -24,8 +24,6 @@
   - [Parameters Specific for Optional Arguments](#parameters-specific-for-optional-arguments)
     - [on-flag actions](#1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag) - executes custom code immediately when the argument’s flag is present
     - [implicit values](#2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line) - automatically assigns a value if an argument flag is used without an explicit value
-
-
 - [Predefined Parameter Values](#predefined-parameter-values)
 - [Default Arguments](#default-arguments)
 - [Argument Groups](#argument-groups)
@@ -321,8 +319,8 @@ Optional arguments:
 >
 > - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
 > - For both positional and optional arguments:
->   - enabling the `required` option disables the `supress_arg_checks` option
->   - disabling the `required` option has no effect on the `supress_arg_checks` option.
+>   - enabling the `required` option disables the `suppress_arg_checks` option
+>   - disabling the `required` option has no effect on the `suppress_arg_checks` option.
 
 ```cpp
 // example: positional arguments
@@ -379,29 +377,29 @@ Command                                 Result
 
 <br />
 
-#### 4. `supress_arg_checks` - Using a supressing argument results in supressing requirement checks for other arguments.
+#### 4. `suppress_arg_checks` - Using a suppressing argument results in suppressing requirement checks for other arguments.
 
-If an argument is defined with the `supress_arg_checks` option enabled and such argument is explicitly used in the command-line, then requirement validation will be supressed/skipped for other arguments. This includes validating whether:
+If an argument is defined with the `suppress_arg_checks` option enabled and such argument is explicitly used in the command-line, then requirement validation will be suppressed/skipped for other arguments. This includes validating whether:
 - a required argument has been parsed
 - the number of values parsed for an argument matches the specified [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument) range.
 
 > [!NOTE]
 >
-> - All arguments have the `supress_arg_checks` option disabled by default.
-> - The default value of the value parameter of the `argument::supress_arg_checks(bool)` method is `true` for all arguments.
+> - All arguments have the `suppress_arg_checks` option disabled by default.
+> - The default value of the value parameter of the `argument::suppress_arg_checks(bool)` method is `true` for all arguments.
 
 > [!WARNING]
 >
-> - Enabling the `supress_arg_checks` option has no effect on [argument group](#argument-groups) requirements validation.
+> - Enabling the `suppress_arg_checks` option has no effect on [argument group](#argument-groups) requirements validation.
 > - For both positional and optional arguments:
->   - enabling the `supress_arg_checks` option disables the `required` option
->   - disabling the `supress_arg_checks` option has no effect on the `required` option.
+>   - enabling the `suppress_arg_checks` option disables the `required` option
+>   - disabling the `suppress_arg_checks` option has no effect on the `required` option.
 
 ```cpp
 // example: optional arguments
 parser.add_positional_argument("input");
 parser.add_optional_argument("output", "o").required();
-parser.add_optional_argument("version", "v").supress_arg_checks();
+parser.add_optional_argument("version", "v").suppress_arg_checks();
 
 parser.parse_args(argc, argv);
 

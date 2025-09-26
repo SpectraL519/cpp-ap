@@ -370,12 +370,12 @@ TEST_CASE_FIXTURE(
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
     "parse_args should not throw if there is a positional argument which has the "
-    "supress_arg_checks "
+    "suppress_arg_checks "
     "option enabled and is used"
 ) {
     const std::size_t n_positional_args = 1ull;
     const auto bypass_required_arg_name = init_arg_name(n_positional_args - 1ull).primary.value();
-    sut.add_positional_argument(bypass_required_arg_name).supress_arg_checks();
+    sut.add_positional_argument(bypass_required_arg_name).required(false).suppress_arg_checks();
     const std::string bypass_required_arg_value = "bypass_required_arg_value";
 
     for (std::size_t i = 0ull; i < n_optional_args; ++i)
@@ -393,7 +393,8 @@ TEST_CASE_FIXTURE(
 
 TEST_CASE_FIXTURE(
     test_argument_parser_parse_args,
-    "parse_args should not throw if there is an optional argument which has the supress_arg_checks "
+    "parse_args should not throw if there is an optional argument which has the "
+    "suppress_arg_checks "
     "option enabled and is used"
 ) {
     add_arguments(n_positional_args, n_optional_args);
@@ -404,7 +405,7 @@ TEST_CASE_FIXTURE(
     )
         .default_values(false)
         .implicit_values(true)
-        .supress_arg_checks();
+        .suppress_arg_checks();
 
     std::string arg_flag;
 

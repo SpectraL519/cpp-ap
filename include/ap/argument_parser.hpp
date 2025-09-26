@@ -1360,35 +1360,35 @@ private:
      * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
      */
     void _verify_final_state() const {
-        const bool supress_arg_checks = this->_are_arg_checks_supressed();
+        const bool suppress_arg_checks = this->_are_arg_checks_suppressed();
         for (const auto& group : this->_argument_groups)
-            this->_verify_group_requirements(*group, supress_arg_checks);
+            this->_verify_group_requirements(*group, suppress_arg_checks);
     }
 
     /**
      * @brief Check whether required argument bypassing is enabled
      * @return true if at least one argument with enabled required argument bypassing is used, false otherwise.
      */
-    [[nodiscard]] bool _are_arg_checks_supressed() const noexcept {
+    [[nodiscard]] bool _are_arg_checks_suppressed() const noexcept {
         // TODO: use std::views::join after the transition to C++23
         return std::ranges::any_of(
                    this->_positional_args,
                    [](const arg_ptr_t& arg) {
-                       return arg->is_used() and arg->supresses_arg_checks();
+                       return arg->is_used() and arg->suppresses_arg_checks();
                    }
                )
             or std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
-                   return arg->is_used() and arg->supresses_arg_checks();
+                   return arg->is_used() and arg->suppresses_arg_checks();
                });
     }
 
     /**
      * @brief Verifies whether the requirements of the given argument group are satisfied.
      * @param group The argument group to verify.
-     * @param supress_arg_checks A flag indicating whether argument checks are suppressed.
+     * @param suppress_arg_checks A flag indicating whether argument checks are suppressed.
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
-    void _verify_group_requirements(const argument_group& group, const bool supress_arg_checks)
+    void _verify_group_requirements(const argument_group& group, const bool suppress_arg_checks)
         const {
         if (group._arguments.empty())
             return;
@@ -1410,7 +1410,7 @@ private:
 
             if (used_arg_it != group._arguments.end()) {
                 // only the one used argument has to be validated
-                this->_verify_argument_requirements(*used_arg_it, supress_arg_checks);
+                this->_verify_argument_requirements(*used_arg_it, suppress_arg_checks);
                 return;
             }
         }
@@ -1422,17 +1422,17 @@ private:
 
         // all arguments in the group have to be validated
         for (const auto& arg : group._arguments)
-            this->_verify_argument_requirements(arg, supress_arg_checks);
+            this->_verify_argument_requirements(arg, suppress_arg_checks);
     }
 
     /**
      * @brief Verifies whether the requirements of the given argument are satisfied.
      * @param arg The argument to verify.
-     * @param supress_arg_checks A flag indicating whether argument checks are suppressed.
+     * @param suppress_arg_checks A flag indicating whether argument checks are suppressed.
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
-    void _verify_argument_requirements(const arg_ptr_t& arg, const bool supress_arg_checks) const {
-        if (supress_arg_checks)
+    void _verify_argument_requirements(const arg_ptr_t& arg, const bool suppress_arg_checks) const {
+        if (suppress_arg_checks)
             return;
 
         if (arg->is_required() and not arg->has_value())
