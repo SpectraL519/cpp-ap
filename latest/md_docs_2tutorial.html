@@ -849,13 +849,16 @@ Default Arguments</h1>
 </p>
 <h1><a class="anchor" id="argument-groups"></a>
 Argument Groups</h1>
-<p>Argument groups provide a way to organize related optional arguments into logical sections. They make the command-line interface easier to read in help messages, and can enforce rules such as <b>mutual exclusivity</b> or <b>required usage</b>.</p>
+<p>Argument groups provide a way to organize related arguments into logical sections and enforce group-wise requirements.</p>
 <p>By default, every parser comes with two predefined groups:</p>
 <ul>
 <li><b>Positional Arguments</b> – contains all arguments added via <code>add_positional_argument</code>.</li>
 <li><b>Optional Arguments</b> – contains all arguments added via <code>add_optional_argument</code> or <code>add_flag</code> without explicitly specifying an argument group.</li>
 </ul>
-<p>User-defined groups can only contain optional arguments (including flags). This allows you to structure your command-line interface into meaningful sections such as "Input Options", "Output Options", or "Debug Settings".</p>
+<blockquote class="doxtable">
+<p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
+<p>All predefined arguments are bound to one of the predefined groups. </p>
+</blockquote>
 <h2><a class="anchor" id="creating-new-groups"></a>
 Creating New Groups</h2>
 <p>A new group can be created by calling the <code>add_group</code> method of an argument parser:</p>
