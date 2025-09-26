@@ -1360,26 +1360,34 @@ private:
      * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
      */
     void _verify_final_state() const {
-        const bool suppress_arg_checks = this->_are_arg_checks_suppressed();
+        const auto [supress_group_checks, suppress_arg_checks] = this->_are_checks_suppressed();
         for (const auto& group : this->_argument_groups)
-            this->_verify_group_requirements(*group, suppress_arg_checks);
+            this->_verify_group_requirements(*group, supress_group_checks, suppress_arg_checks);
     }
 
     /**
-     * @brief Check whether required argument bypassing is enabled
-     * @return true if at least one argument with enabled required argument bypassing is used, false otherwise.
+     * @brief Check whether required argument group checks or argument checks suppressing is enabled.
+     * @return A pair of boolean flags indicating whether suppressing is enabled.
+     * @note The first flag of the returned pair indicates whetehr argument group check suppressing is enabled,
+     * @note while the second flag indicated whether argument check suppressing is enabled.
      */
-    [[nodiscard]] bool _are_arg_checks_suppressed() const noexcept {
+    [[nodiscard]] std::pair<bool, bool> _are_checks_suppressed() const noexcept {
         // TODO: use std::views::join after the transition to C++23
-        return std::ranges::any_of(
-                   this->_positional_args,
-                   [](const arg_ptr_t& arg) {
-                       return arg->is_used() and arg->suppresses_arg_checks();
-                   }
-               )
-            or std::ranges::any_of(this->_optional_args, [](const arg_ptr_t& arg) {
-                   return arg->is_used() and arg->suppresses_arg_checks();
-               });
+        bool suppress_group_checks = false;
+        bool suppress_arg_checks = false;
+
+        auto check_arg = [&](const arg_ptr_t& arg) {
+            if (arg->is_used()) {
+                if (arg->suppresses_group_checks())
+                    suppress_group_checks = true;
+                if (arg->suppresses_arg_checks())
+                    suppress_arg_checks = true;
+            }
+        };
+
+        std::ranges::for_each(this->_positional_args, check_arg);
+        std::ranges::for_each(this->_optional_args, check_arg);
+        return {suppress_group_checks, suppress_arg_checks};
     }
 
     /**
@@ -1388,37 +1396,42 @@ private:
      * @param suppress_arg_checks A flag indicating whether argument checks are suppressed.
      * @throws ap::parsing_failure if the requirements are not satistied.
      */
-    void _verify_group_requirements(const argument_group& group, const bool suppress_arg_checks)
-        const {
+    void _verify_group_requirements(
+        const argument_group& group,
+        const bool suppress_group_checks,
+        const bool suppress_arg_checks
+    ) const {
         if (group._arguments.empty())
             return;
 
-        const auto n_used_args = static_cast<std::size_t>(
-            std::ranges::count_if(group._arguments, [](const auto& arg) { return arg->is_used(); })
-        );
-
-        if (group._mutually_exclusive) {
-            if (n_used_args > 1ull)
-                throw parsing_failure(std::format(
-                    "At most one argument from the mutually exclusive group '{}' can be used",
-                    group._name
-                ));
-
-            const auto used_arg_it = std::ranges::find_if(group._arguments, [](const auto& arg) {
-                return arg->is_used();
-            });
-
-            if (used_arg_it != group._arguments.end()) {
-                // only the one used argument has to be validated
-                this->_verify_argument_requirements(*used_arg_it, suppress_arg_checks);
-                return;
-            }
-        }
-
-        if (group._required and n_used_args == 0ull)
-            throw parsing_failure(std::format(
-                "At least one argument from the required group '{}' must be used", group._name
+        if (not suppress_group_checks) {
+            const auto n_used_args = static_cast<std::size_t>(std::ranges::count_if(
+                group._arguments, [](const auto& arg) { return arg->is_used(); }
             ));
+
+            if (group._mutually_exclusive) {
+                if (n_used_args > 1ull)
+                    throw parsing_failure(std::format(
+                        "At most one argument from the mutually exclusive group '{}' can be used",
+                        group._name
+                    ));
+
+                const auto used_arg_it = std::ranges::find_if(
+                    group._arguments, [](const auto& arg) { return arg->is_used(); }
+                );
+
+                if (used_arg_it != group._arguments.end()) {
+                    // only the one used argument has to be validated
+                    this->_verify_argument_requirements(*used_arg_it, suppress_arg_checks);
+                    return;
+                }
+            }
+
+            if (group._required and n_used_args == 0ull)
+                throw parsing_failure(std::format(
+                    "At least one argument from the required group '{}' must be used", group._name
+                ));
+        }
 
         // all arguments in the group have to be validated
         for (const auto& arg : group._arguments)

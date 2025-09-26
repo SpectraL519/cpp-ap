@@ -1464,6 +1464,28 @@ TEST_CASE_FIXTURE(
     free_argv(argc, argv);
 }
 
+TEST_CASE_FIXTURE(
+    test_argument_parser_parse_args,
+    "parse_args should not throw when the group requirements are not satisfied but a group check "
+    "suppressing argument is used"
+) {
+    const std::string suppressing_arg_name = "suppress";
+    sut.add_flag(suppressing_arg_name).suppress_group_checks();
+
+    const std::string req_me_gr_name = "Required & Mutually Exclusive Group";
+    auto& req_me_gr = sut.add_group(req_me_gr_name).mutually_exclusive();
+
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        sut.add_optional_argument(req_me_gr, init_arg_name_primary(i));
+
+    std::vector<std::string> argv_vec{std::format("--{}", suppressing_arg_name)};
+
+    REQUIRE_NOTHROW(sut.parse_args(argv_vec));
+    CHECK(sut.value<bool>(suppressing_arg_name));
+    for (std::size_t i = 0ull; i < n_optional_args; ++i)
+        CHECK_FALSE(sut.is_used(init_arg_name_primary(i)));
+}
+
 // subparsers
 
 TEST_CASE_FIXTURE(

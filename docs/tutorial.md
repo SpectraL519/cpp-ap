@@ -318,9 +318,7 @@ Optional arguments:
 > [!WARNING]
 >
 > - If a positional argument is defined as non-required, then no required positional argument can be defined after (only other non-required positional arguments and optional arguments will be allowed).
-> - For both positional and optional arguments:
->   - enabling the `required` option disables the `suppress_arg_checks` option
->   - disabling the `required` option has no effect on the `suppress_arg_checks` option.
+> - If an argument is suppressing (see [suppress arg checks](#4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments) and [Suppressing Argument Group Checks](#suppressing-argument-group-checks)), then it cannot be required (an exception will be thrown).
 
 ```cpp
 // example: positional arguments
@@ -391,9 +389,7 @@ If an argument is defined with the `suppress_arg_checks` option enabled and such
 > [!WARNING]
 >
 > - Enabling the `suppress_arg_checks` option has no effect on [argument group](#argument-groups) requirements validation.
-> - For both positional and optional arguments:
->   - enabling the `suppress_arg_checks` option disables the `required` option
->   - disabling the `suppress_arg_checks` option has no effect on the `required` option.
+> - Enabling argument checks suppressing is not possible for required arguments (an exception will be thrown).
 
 ```cpp
 // example: optional arguments
@@ -938,6 +934,26 @@ Output Options: (required, mutually exclusive)
   --output, -o : Print output to a given file
   --print, -p  : Print output to the console
 ```
+
+### Suppressing Argument Group Checks
+
+Similarly to [suppressing argument checks](#4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments), an argument can suppress the requirement checks of argument groups:
+
+```c++
+argument.suppress_group_checks();
+```
+
+If such argument is used the requirement checks associated with the [group attributes](#group-attributes) will not be validated.
+
+> [!NOTE]
+>
+> - All arguments have the `suppress_group_checks` option disabled by default.
+> - The default value of the value parameter of the `argument::suppress_group_checks(bool)` method is `true` for all arguments.
+
+> [!WARNING]
+>
+> - Enabling the `suppress_group_checks` option has no effect on argument requirements validation.
+> - Enabling argument group checks suppressing is not possible for required arguments (an exception will be thrown).
 
 <br/>
 <br/>
