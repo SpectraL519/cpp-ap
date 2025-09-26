@@ -191,6 +191,11 @@ struct argument_parser_test_fixture {
         return this->sut._get_argument(arg_name);
     }
 
+    // exception message builders
+    std::string required_argument_not_parsed_msg(const argument_name& arg_name) const {
+        return std::format("No values parsed for a required argument [{}]", arg_name.str());
+    }
+
     ap::argument_parser sut{program_name};
     parsing_state state{sut};
 

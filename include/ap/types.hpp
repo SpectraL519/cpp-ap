@@ -21,7 +21,7 @@ struct none_type {};
 
 /// @brief A helper structure used to represent a program's version.
 struct version {
-    std::uint32_t major = 1u; ///< The major version number.
+    std::uint32_t major = 0u; ///< The major version number.
     std::uint32_t minor = 0u; ///< The minor version number.
     std::uint32_t patch = 0u; ///< The patch number.
 

@@ -12,6 +12,12 @@ struct test_argument_parser_info : public argument_parser_test_fixture {
     const std::string test_str_version = "alpha";
 };
 
+TEST_CASE("argument_parser() should throw if the name is empty") {
+    CHECK_THROWS_WITH_AS(
+        argument_parser(""), "The program name cannot be empty!", invalid_configuration
+    );
+}
+
 TEST_CASE("argument_parser() should throw if the name contains whitespaces") {
     CHECK_THROWS_WITH_AS(
         argument_parser("invalid name"),

@@ -34,7 +34,7 @@ Command-line argument parser for C++20
 
 > [!NOTE]
 >
-> [v1.0](https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
+> [v1.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v1.0) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
 >
 > Faculty: *W04N - Faculty of Information and Communication Technology*
 >
@@ -62,6 +62,11 @@ Command-line argument parser for C++20
     - [Parameters Specific for Optional Arguments](/docs/tutorial.md#parameters-specific-for-optional-arguments)
   - [Default Arguments](/docs/tutorial.md#default-arguments)
   - [Argument Groups](/docs/tutorial.md#argument-groups)
+    - [Creating New Groups](/docs/tutorial.md#creating-new-groups)
+    - [Adding Arguments to Groups](/docs/tutorial.md#adding-arguments-to-groups)
+    - [Group Attributes](/docs/tutorial.md#group-attributes)
+    - [Complete Example](/docs/tutorial.md#complete-example)
+    - [Suppressing Argument Group Checks](/docs/tutorial.md#suppressing-argument-group-checks)
   - [Parsing Arguments](/docs/tutorial.md#parsing-arguments)
     - [Basic Argument Parsing Rules](/docs/tutorial.md#basic-argument-parsing-rules)
     - [Compound Arguments](/docs/tutorial.md#compound-arguments)
@@ -72,6 +77,7 @@ Command-line argument parser for C++20
     - [Using Multiple Subparsers](/docs/tutorial.md#using-multiple-subparsers)
     - [Parsing Arguments with Subparsers](/docs/tutorial.md#parsing-arguments-with-subparsers)
     - [Tracking Parser State](/docs/tutorial.md#tracking-parser-state)
+    - [Suppressing Argument Group Checks](/docs/tutorial.md#suppressing-argument-group-checks)
   - [Examples](/docs/tutorial.md#examples)
   - [Common Utility](/docs/tutorial.md#common-utility)
 - [Dev notes](/docs/dev_notes.md#dev-notes)
