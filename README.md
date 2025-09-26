@@ -34,7 +34,7 @@ Command-line argument parser for C++20
 
 > [!NOTE]
 >
-> [v1.0](https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
+> [v1.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v1.0) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
 >
 > Faculty: *W04N - Faculty of Information and Communication Technology*
 >
