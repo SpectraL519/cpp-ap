@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -95,65 +95,87 @@ $(document).ready(function(){initNavTree('functions__.html',''); initResizable()
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a id="index__5F" name="index__5F"></a>- _ -</h3><ul>
-<li>_accepts_further_values()&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a43b10a97908e067eab7034a771924939">ap::argument::optional&lt; T &gt;</a></li>
-<li>_are_required_args_bypassed()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#af879fbfd21dda9e142b3419211eb3634">ap::argument_parser</a></li>
-<li>_build_token()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a14d331641f73e1ec4fe382ec73ad7d6e">ap::argument_parser</a></li>
-<li>_bypass_required&#160;:&#160;<a class="el" href="classap_1_1detail_1_1argument__base.html#a5adf5895f5fcbfb44c3b7a7237301c04">ap::detail::argument_base</a></li>
-<li>_choices&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#afb1ba74561b78240a211f5d3c61c21b3">ap::argument::optional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument_1_1positional.html#af36170c1a796953a6793536192bd9024">ap::argument::positional&lt; T &gt;</a></li>
-<li>_count&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a2db42a09c46bca75ae246e4df669eab1">ap::argument::optional&lt; T &gt;</a></li>
-<li>_default_bound&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#ac1ef9be716d005e7ddc9369b9e495d8a">ap::nargs::range</a></li>
-<li>_default_value&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#aee58bc0f5640c4fb7c564465c13c00a6">ap::argument::optional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument_1_1positional.html#a6ab5cbd0e8fc19019b59d036f25fdf57">ap::argument::positional&lt; T &gt;</a></li>
-<li>_find_opt_arg()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a54f18ff26af01520ed854550eca5b80c">ap::argument_parser</a></li>
-<li>_flag_actions&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#ae540d5beb7bf6e3d70fadfe6652b989a">ap::argument::optional&lt; T &gt;</a></li>
+<li>_accepts_further_values()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a6a1b7709154fc899155ac141530e5c63">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_add_argument()&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#a77550463d4e24c45c700dbd16ee47692">ap::argument_group</a></li>
+<li>_are_checks_suppressed()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a2df9670073092344ef5db8f26dddb171">ap::argument_parser</a></li>
+<li>_argument_groups&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a251d6552164e62b02d9b69cc012a6eba">ap::argument_parser</a></li>
+<li>_arguments&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#a0a77d72f7a1156f7cc5c5eb3057b5a73">ap::argument_group</a></li>
+<li>_choices&#160;:&#160;<a class="el" href="classap_1_1argument.html#adee0c4c4c0d59dd9840dd1353ea34215">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_count&#160;:&#160;<a class="el" href="classap_1_1argument.html#ad954e600d052ce19da51494c68f550b0">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_deduce_token_type()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ae5feebec21dd2caec00091c559877c66">ap::argument_parser</a></li>
+<li>_default_nargs_range&#160;:&#160;<a class="el" href="classap_1_1argument.html#aad9073125bd3862d94deded2ccaf98be">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_default_nargs_range_actual&#160;:&#160;<a class="el" href="classap_1_1argument.html#ab98ceb4fe98fa29697d02e8105ad2ce7">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_default_required&#160;:&#160;<a class="el" href="classap_1_1argument.html#ad93c10032a3c1eb1e1c3b505f3fe948f">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_default_values&#160;:&#160;<a class="el" href="classap_1_1argument.html#a961f86fd3e88d8b099d66c88ca015f34">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_finalized&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ae6246fb9b3e3ad3dc340c5d62ba99187">ap::argument_parser</a></li>
+<li>_find_opt_arg()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ac20fd4e099dbba4bc493add171ff498d">ap::argument_parser</a></li>
+<li>_flag_actions&#160;:&#160;<a class="el" href="classap_1_1argument.html#a6a88412f0b614d1e5fa774830b859646">ap::argument&lt; ArgT, T &gt;</a></li>
 <li>_flag_prefix&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#aa5594f80789a68b6cec58c51b9f4f41e">ap::argument_parser</a></li>
 <li>_flag_prefix_char&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a647d786ca71e8c0e067b6ee0abf4d8ee">ap::argument_parser</a></li>
-<li>_get_argument()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ab70ec2053836cd1cb9bbd772b556cf59">ap::argument_parser</a></li>
-<li>_get_multi_line()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a43843d960fc7fa6ec6f059b104a6dc1e">ap::detail::argument_descriptor</a></li>
-<li>_get_single_line()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1argument__descriptor.html#aa92be769506871a62db24ba83b611b00">ap::detail::argument_descriptor</a></li>
-<li>_has_predefined_value()&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#ab8d9db25c6ddcd1652e054c8ee702c7d">ap::argument::optional&lt; T &gt;</a></li>
-<li>_help_msg&#160;:&#160;<a class="el" href="classap_1_1detail_1_1argument__base.html#ae7218b75388847e468b1356bd2439e8c">ap::detail::argument_base</a></li>
-<li>_hidden&#160;:&#160;<a class="el" href="classap_1_1detail_1_1argument__base.html#a39bb3a51d7623b04aaed278b625e9d64">ap::detail::argument_base</a></li>
-<li>_implicit_value&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a31fc7e25008ed33e99122db574e248b4">ap::argument::optional&lt; T &gt;</a></li>
-<li>_indent_width&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a17a8581c498413a90a14e9f6e8e763b7">ap::argument_parser</a></li>
+<li>_get_argument()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a71d77bd693e7da4f8e0e26d15f8dc6b0">ap::argument_parser</a></li>
+<li>_get_multi_line()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1help__builder.html#a8188afef1669fcb0c9981f78e25dc2ac">ap::detail::help_builder</a></li>
+<li>_get_single_line()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1help__builder.html#af69dcee39276b6980631dd8a445f0e76">ap::detail::help_builder</a></li>
+<li>_gr_optional_args&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a6e573d27d5ec7e3f33a98c6bb60dab42">ap::argument_parser</a></li>
+<li>_gr_positional_args&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#afc2c6398ca8cd4d9f6df9a6fbb8453cc">ap::argument_parser</a></li>
+<li>_greedy&#160;:&#160;<a class="el" href="classap_1_1argument.html#a17e72666ed58f5fef4d131543bd80951">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_has_predefined_values_impl()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a7b1f16b22beb022b861c420cd53993bb">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_help_msg&#160;:&#160;<a class="el" href="classap_1_1argument.html#a86326d5512dfcbbb773e3989ca1c81a6">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_hidden&#160;:&#160;<a class="el" href="classap_1_1argument.html#a90b323e539ed7830dc79a1c18eaad58e">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_implicit_values&#160;:&#160;<a class="el" href="classap_1_1argument.html#a43d9c3fed743192d1468782c76f5de56">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_indent_width&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a1d134f1714a2b1480508b6e748091169">ap::argument_parser</a></li>
+<li>_invoked&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a5c67616eb67573fe5e4993d52bbc3c31">ap::argument_parser</a></li>
 <li>_is_arg_name_used()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a49448d60848a29668e153e0f8a783e1a">ap::argument_parser</a></li>
-<li>_lower_bound&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#a09f45e42fbf3217a281e5b7de61a38b6">ap::nargs::range</a></li>
-<li>_name&#160;:&#160;<a class="el" href="classap_1_1detail_1_1argument__base.html#a2c1c24f01fb2f873ee4310eb51c1a924">ap::detail::argument_base</a></li>
+<li>_is_valid_choice()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a3e289671c46975a6ed61acd2e45b5c10">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_lower_bound&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#af26567ee5040646996f0a8c7ec7e5305">ap::nargs::range</a></li>
+<li>_mutually_exclusive&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#a9f5fb07a44591d510b9296e9424e86cd">ap::argument_group</a></li>
+<li>_name&#160;:&#160;<a class="el" href="classap_1_1argument.html#a4bc064397683d12f810ba4ddabb66391">ap::argument&lt; ArgT, T &gt;</a>, <a class="el" href="classap_1_1argument__group.html#a13612914f527c6f7667589bc2cdaa945">ap::argument_group</a>, <a class="el" href="classap_1_1argument__parser.html#a3e67e222f551dae5ddc7f1f893901504">ap::argument_parser</a></li>
 <li>_name_match_predicate()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#aa77c62a2718509fa6a0a60a787f455b0">ap::argument_parser</a></li>
-<li>_nargs_range&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a71afa0936f8862af8108b730e53871b9">ap::argument::optional&lt; T &gt;</a></li>
-<li>_optional_args&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a976b3ecbd342f58db826d4104860aac4">ap::argument_parser</a></li>
-<li>_parse_args_impl()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a7cbd4c2c0accb67acb9a8532030e13ce">ap::argument_parser</a></li>
-<li>_parse_optional_args()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#af422cd5d7a529e4ab98e3a9543b65b7b">ap::argument_parser</a></li>
-<li>_parse_positional_args()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#abffc0271ca2974fbd3f49040731116f3">ap::argument_parser</a></li>
-<li>_positional_args&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#afd2b3e63f699ecc63daee66172b42a9c">ap::argument_parser</a></li>
-<li>_predefined_value()&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a4c7b1954dac92f11d519478c7abe88dd">ap::argument::optional&lt; T &gt;</a></li>
-<li>_primary_flag_prefix_length&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#add17f188e0a19243042719e8b2beb941">ap::argument_parser</a></li>
-<li>_print()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#af1e8399035527876aff0abef4a51c833">ap::argument_parser</a></li>
+<li>_nargs_range&#160;:&#160;<a class="el" href="classap_1_1argument.html#a71b09a6fe5e2963d851eb89df3775b8a">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_optional_args&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a256553985a9ea60baa89b52dbd7d9d41">ap::argument_parser</a></li>
+<li>_parse_args_impl()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a6711564208cfd3a74f3facc6ddc236a8">ap::argument_parser</a></li>
+<li>_parse_flag_token()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a18d104bdbb36a0e6c317caacc2d76621">ap::argument_parser</a></li>
+<li>_parse_token()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a3dad1ff9e3020bbe329c4f8c013af491">ap::argument_parser</a></li>
+<li>_parse_value_token()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a8564df63a4807824b4288c760dc6ad26">ap::argument_parser</a></li>
+<li>_parser&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#a77ad5309eb361e4cb330d96650c26e7c">ap::argument_group</a></li>
+<li>_positional_args&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a53b67bf744ad91112c982cf34c92761d">ap::argument_parser</a></li>
+<li>_predefined_values()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a1b63455d06c9ef883b3ef508fe4396e0">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_primary_flag_prefix_length&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a95445cb18f5171e37685ee78a1e02e88">ap::argument_parser</a></li>
+<li>_print_group()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a9504744cd653ae6f3435bfd49c89d09b">ap::argument_parser</a></li>
+<li>_print_subparsers()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ae528f46895ea1929a2c1f771e8b75a16">ap::argument_parser</a></li>
 <li>_program_description&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a2c4852b45eedd1dea8ce8207325e9592">ap::argument_parser</a></li>
-<li>_program_name&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a9bfc9edd69afe0c9d4e63848fcfddf7a">ap::argument_parser</a></li>
+<li>_program_name&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a00c683330e89b216496a5b3521a14396">ap::argument_parser</a></li>
 <li>_program_version&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#aeeaa827f238b018b9d3072f041c2eb90">ap::argument_parser</a></li>
-<li>_required&#160;:&#160;<a class="el" href="classap_1_1detail_1_1argument__base.html#a731038fe58bf6fd6054d01b63e2973bf">ap::detail::argument_base</a></li>
-<li>_secondary_flag_prefix_length&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a872eb42963ca9920282b6ed38bb792b6">ap::argument_parser</a></li>
-<li>_tokenize()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#adfe3e6b4d363f90cb3b1b68e3f12d369">ap::argument_parser</a></li>
-<li>_tokenize_arg()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#acf8ee161bfa4aa5db485d699131914d7">ap::argument_parser</a></li>
-<li>_try_split_compound_flag()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a7d5cd5529991c242a0ba5758fde9bde7">ap::argument_parser</a></li>
-<li>_unstripped_token_value()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a364fdebc65fbc92e35451f199c4c816b">ap::argument_parser</a></li>
-<li>_upper_bound&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#a6acfdb6e93a7ae9759ae3ed6b8a9d366">ap::nargs::range</a></li>
+<li>_required&#160;:&#160;<a class="el" href="classap_1_1argument.html#a4806257f905f3870e37b839245efb5a4">ap::argument&lt; ArgT, T &gt;</a>, <a class="el" href="classap_1_1argument__group.html#ad5dff0547afd18af2f0b41bb9590042d">ap::argument_group</a></li>
+<li>_secondary_flag_prefix_length&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ae6dcfbf0dfd3614e46ffa891a9adf073">ap::argument_parser</a></li>
+<li>_set_argument_value()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a8a4260f3355d7b970192861f49471f76">ap::argument_parser</a></li>
+<li>_set_value_impl()&#160;:&#160;<a class="el" href="classap_1_1argument.html#af4fac7b254877f44a2a3809a6e6336b9">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_strip_flag_prefix()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a633f51286b8c904dd46f9d9cff34121d">ap::argument_parser</a></li>
+<li>_subparsers&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a5626fb4f8db70a18556b2ad6314c4f60">ap::argument_parser</a></li>
+<li>_suppress_arg_checks&#160;:&#160;<a class="el" href="classap_1_1argument.html#ad68906f8013dd98eadc119038cbb558a">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_suppress_group_checks&#160;:&#160;<a class="el" href="classap_1_1argument.html#ac2b35ab9f27963a55fad7244f902b52c">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_tokenize()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a2952dc0009d0280cedfdcd64dc126af2">ap::argument_parser</a></li>
+<li>_tokenize_arg()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ae93cc3bb29dca0cb742cb3c537a532e4">ap::argument_parser</a></li>
+<li>_unknown_policy&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#aab84c574c983712850fc1dc41a1d6c5c">ap::argument_parser</a></li>
+<li>_upper_bound&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#ab1b9551e3494a0da24789daa6643e7d1">ap::nargs::range</a></li>
 <li>_validate_argument_configuration()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a6531766b117589c67bb49994199ce4dd">ap::argument_parser</a></li>
+<li>_validate_compound_flag_token()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ada96a4ca37d9d69202522d0d7ad96a6b">ap::argument_parser</a></li>
 <li>_validate_flag_token()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a2c9cfd87ec2593729090b8e53fb17c28">ap::argument_parser</a></li>
-<li>_value&#160;:&#160;<a class="el" href="classap_1_1argument_1_1positional.html#a01d0f14d91492f50d71532fa49a9f197">ap::argument::positional&lt; T &gt;</a></li>
-<li>_value_actions&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a1b74d3dae7be4cd345538c0f95aa672f">ap::argument::optional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument_1_1positional.html#a8af0a6311cfc581ac2795fbcce5b7dce">ap::argument::positional&lt; T &gt;</a></li>
-<li>_values&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a662814cc6ee38376f960a10c613e2a34">ap::argument::optional&lt; T &gt;</a></li>
+<li>_validate_group()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a13b07a0743939b405c41a13cb90b9ede">ap::argument_parser</a></li>
+<li>_value_actions&#160;:&#160;<a class="el" href="classap_1_1argument.html#a8bf8e648292649befa5bef4023fe0f2c">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_values&#160;:&#160;<a class="el" href="classap_1_1argument.html#a0367d9edcd5b8e6542e2995c521cfdd7">ap::argument&lt; ArgT, T &gt;</a></li>
+<li>_values_impl()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a22bd8ac0a1eed9abd7880202e13149b3">ap::argument&lt; ArgT, T &gt;</a></li>
 <li>_verbose&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a6da3ccd56bd10bc9d554cb2b168c0180">ap::argument_parser</a></li>
 <li>_verify_arg_name_pattern()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a3d201dfeb3727445a63a464b2ab40c41">ap::argument_parser</a></li>
-<li>_verify_nvalues()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a21bbbe4067fdf61e602d8bbea5e14854">ap::argument_parser</a></li>
-<li>_verify_required_args()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#accd597f9c84d89bc2970f7ab9a5864ed">ap::argument_parser</a></li>
+<li>_verify_argument_requirements()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a46c20492b0629c1c5a284d5ad45fd80b">ap::argument_parser</a></li>
+<li>_verify_final_state()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a6b6ecba1e28bc31f5c57a3012b016aee">ap::argument_parser</a></li>
+<li>_verify_group_requirements()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a1118198a272ef11ab732741212340fa4">ap::argument_parser</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

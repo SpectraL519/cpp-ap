@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['5_20tt_20default_5fvalue_20tt_20the_20default_20value_20for_20an_20argument_20which_20will_20be_20used_20if_20no_20values_20for_20this_20argument_20are_20parsed_0',['5. &lt;tt&gt;default_value&lt;/tt&gt; - The default value for an argument which will be used if no values for this argument are parsed',['../md_docs_2tutorial.html#autotoc_md5-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed',1,'']]]
+  ['5_20tt_20nargs_20tt_20sets_20the_20allowed_20number_20of_20values_20to_20be_20parsed_20for_20an_20argument_0',['5. &lt;tt&gt;nargs&lt;/tt&gt; - Sets the allowed number of values to be parsed for an argument.',['../md_docs_2tutorial.html#autotoc_md5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument',1,'']]]
 ];

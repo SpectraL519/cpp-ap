@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['default_5fdelimiter_0',['default_delimiter',['../classap_1_1detail_1_1argument__descriptor.html#a07d4b54c9bf23b665fbe95ed94d16491',1,'ap::detail::argument_descriptor']]]
+  ['curr_5farg_0',['curr_arg',['../structap_1_1argument__parser_1_1parsing__state.html#aa3adc7134915ce4c0f4220502bd7ace9',1,'ap::argument_parser::parsing_state']]],
+  ['curr_5fpos_5farg_5fit_1',['curr_pos_arg_it',['../structap_1_1argument__parser_1_1parsing__state.html#a96a2bb1f4a3f103b546ef7383d86f134',1,'ap::argument_parser::parsing_state']]]
 ];

@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('structap_1_1version.html',''); initRes
 <p>A helper structure used to represent a program's version.  
  <a href="structap_1_1version.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="version_8hpp_source.html">version.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="types_8hpp_source.html">types.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -114,13 +114,13 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a912f2bd1464859dfe16cc65c1351903a" id="r_a912f2bd1464859dfe16cc65c1351903a"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1version.html#a912f2bd1464859dfe16cc65c1351903a">major</a></td></tr>
+<tr class="memitem:a912f2bd1464859dfe16cc65c1351903a" id="r_a912f2bd1464859dfe16cc65c1351903a"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1version.html#a912f2bd1464859dfe16cc65c1351903a">major</a> = 0u</td></tr>
 <tr class="memdesc:a912f2bd1464859dfe16cc65c1351903a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The major version number.  <br /></td></tr>
 <tr class="separator:a912f2bd1464859dfe16cc65c1351903a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91a2d18ea45abe8b1d2b7fe6f86c5911" id="r_a91a2d18ea45abe8b1d2b7fe6f86c5911"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1version.html#a91a2d18ea45abe8b1d2b7fe6f86c5911">minor</a></td></tr>
+<tr class="memitem:a91a2d18ea45abe8b1d2b7fe6f86c5911" id="r_a91a2d18ea45abe8b1d2b7fe6f86c5911"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1version.html#a91a2d18ea45abe8b1d2b7fe6f86c5911">minor</a> = 0u</td></tr>
 <tr class="memdesc:a91a2d18ea45abe8b1d2b7fe6f86c5911"><td class="mdescLeft">&#160;</td><td class="mdescRight">The minor version number.  <br /></td></tr>
 <tr class="separator:a91a2d18ea45abe8b1d2b7fe6f86c5911"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add9bd39441e2ba8597d2cb96edc9ef53" id="r_add9bd39441e2ba8597d2cb96edc9ef53"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1version.html#add9bd39441e2ba8597d2cb96edc9ef53">patch</a></td></tr>
+<tr class="memitem:add9bd39441e2ba8597d2cb96edc9ef53" id="r_add9bd39441e2ba8597d2cb96edc9ef53"><td class="memItemLeft" align="right" valign="top">std::uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1version.html#add9bd39441e2ba8597d2cb96edc9ef53">patch</a> = 0u</td></tr>
 <tr class="memdesc:add9bd39441e2ba8597d2cb96edc9ef53"><td class="mdescLeft">&#160;</td><td class="mdescRight">The patch number.  <br /></td></tr>
 <tr class="separator:add9bd39441e2ba8597d2cb96edc9ef53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -133,7 +133,7 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A helper structure used to represent a program's version. </p>
 
-<p class="definition">Definition at line <a class="el" href="version_8hpp_source.html#l00013">13</a> of file <a class="el" href="version_8hpp_source.html">version.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="types_8hpp_source.html#l00023">23</a> of file <a class="el" href="types_8hpp_source.html">types.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1c43ed924bc3243b09678bc748303b71" name="a1c43ed924bc3243b09678bc748303b71"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c43ed924bc3243b09678bc748303b71">&#9670;&#160;</a></span>str()</h2>
@@ -160,7 +160,7 @@ Friends</h2></td></tr>
 
 <p>Converts the structure into a string in the <code>v{major}.{minor}.{path}</code> format. </p>
 
-<p class="definition">Definition at line <a class="el" href="version_8hpp_source.html#l00019">19</a> of file <a class="el" href="version_8hpp_source.html">version.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="types_8hpp_source.html#l00029">29</a> of file <a class="el" href="types_8hpp_source.html">types.hpp</a>.</p>
 
 </div>
 </div>
@@ -201,7 +201,7 @@ Friends</h2></td></tr>
 
 <p>The stream insertion operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="version_8hpp_source.html#l00024">24</a> of file <a class="el" href="version_8hpp_source.html">version.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="types_8hpp_source.html#l00034">34</a> of file <a class="el" href="types_8hpp_source.html">types.hpp</a>.</p>
 
 </div>
 </div>
@@ -213,14 +213,14 @@ Friends</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::uint32_t ap::version::major</td>
+          <td class="memname">std::uint32_t ap::version::major = 0u</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>The major version number. </p>
 
-<p class="definition">Definition at line <a class="el" href="version_8hpp_source.html#l00014">14</a> of file <a class="el" href="version_8hpp_source.html">version.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="types_8hpp_source.html#l00024">24</a> of file <a class="el" href="types_8hpp_source.html">types.hpp</a>.</p>
 
 </div>
 </div>
@@ -231,14 +231,14 @@ Friends</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::uint32_t ap::version::minor</td>
+          <td class="memname">std::uint32_t ap::version::minor = 0u</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>The minor version number. </p>
 
-<p class="definition">Definition at line <a class="el" href="version_8hpp_source.html#l00015">15</a> of file <a class="el" href="version_8hpp_source.html">version.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="types_8hpp_source.html#l00025">25</a> of file <a class="el" href="types_8hpp_source.html">types.hpp</a>.</p>
 
 </div>
 </div>
@@ -249,19 +249,19 @@ Friends</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::uint32_t ap::version::patch</td>
+          <td class="memname">std::uint32_t ap::version::patch = 0u</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>The patch number. </p>
 
-<p class="definition">Definition at line <a class="el" href="version_8hpp_source.html#l00016">16</a> of file <a class="el" href="version_8hpp_source.html">version.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="types_8hpp_source.html#l00026">26</a> of file <a class="el" href="types_8hpp_source.html">types.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/ap/<a class="el" href="version_8hpp_source.html">version.hpp</a></li>
+<li>include/ap/<a class="el" href="types_8hpp_source.html">types.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -269,7 +269,7 @@ Friends</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="structap_1_1version.html">version</a></li>
-    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

@@ -48,36 +48,64 @@ var NAVTREE =
         [ "Downloading the Library", "md_docs_2tutorial.html#downloading-the-library", null ]
       ] ],
       [ "The Parser Class", "md_docs_2tutorial.html#the-parser-class", null ],
-      [ "Adding Arguments", "md_docs_2tutorial.html#adding-arguments", null ],
+      [ "Adding Arguments", "md_docs_2tutorial.html#adding-arguments", [
+        [ "Syntax", "md_docs_2tutorial.html#syntax", null ],
+        [ "Names", "md_docs_2tutorial.html#names", null ],
+        [ "Value Types", "md_docs_2tutorial.html#value-types", null ],
+        [ "Boolean Flags", "md_docs_2tutorial.html#boolean-flags", null ]
+      ] ],
       [ "Argument Parameters", "md_docs_2tutorial.html#argument-parameters", [
         [ "Common Parameters", "md_docs_2tutorial.html#common-parameters", [
           [ "1. <tt>help</tt> - The argument's description which will be printed when printing the parser class instance.", "md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance", null ],
           [ "2. <tt>hidden</tt> - If this option is set for an argument, then it will not be included in the program description.", "md_docs_2tutorial.html#autotoc_md2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description", null ],
           [ "3. <tt>required</tt> - If this option is set for an argument and it's value is not passed in the command-line, an exception will be thrown.", "md_docs_2tutorial.html#autotoc_md3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown", null ],
-          [ "4. <tt>bypass_required</tt> - If this option is set for an argument, the <tt>required</tt> option for other arguments will be discarded if the bypassing argument is used in the command-line.", "md_docs_2tutorial.html#autotoc_md4-bypass_required---if-this-option-is-set-for-an-argument-the-required-option-for-other-arguments-will-be-discarded-if-the-bypassing-argument-is-used-in-the-command-line", null ],
-          [ "5. <tt>default_value</tt> - The default value for an argument which will be used if no values for this argument are parsed", "md_docs_2tutorial.html#autotoc_md5-default_value---the-default-value-for-an-argument-which-will-be-used-if-no-values-for-this-argument-are-parsed", null ],
-          [ "6. <tt>choices</tt> - A list of valid argument values.", "md_docs_2tutorial.html#autotoc_md6-choices---a-list-of-valid-argument-values", null ],
-          [ "7. Value actions - Function performed after parsing an argument's value.", "md_docs_2tutorial.html#autotoc_md7-value-actions---function-performed-after-parsing-an-arguments-value", null ]
+          [ "4. <tt>suppress_arg_checks</tt> - Using a suppressing argument results in suppressing requirement checks for other arguments.", "md_docs_2tutorial.html#autotoc_md4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments", null ],
+          [ "5. <tt>nargs</tt> - Sets the allowed number of values to be parsed for an argument.", "md_docs_2tutorial.html#autotoc_md5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument", null ],
+          [ "6. <tt>greedy</tt> - If this option is set, the argument will consume ALL command-line values until it's upper nargs bound is reached.", "md_docs_2tutorial.html#autotoc_md6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached", null ],
+          [ "7. <tt>choices</tt> - A list of valid argument values.", "md_docs_2tutorial.html#autotoc_md7-choices---a-list-of-valid-argument-values", null ],
+          [ "8. value actions - Functions that are called after parsing an argument's value.", "md_docs_2tutorial.html#autotoc_md8-value-actions---functions-that-are-called-after-parsing-an-arguments-value", null ],
+          [ "9. <tt>default_values</tt> - A list of values which will be used if no values for an argument have been parsed", "md_docs_2tutorial.html#autotoc_md9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed", null ]
         ] ],
         [ "Parameters Specific for Optional Arguments", "md_docs_2tutorial.html#parameters-specific-for-optional-arguments", [
-          [ "1. <tt>nargs</tt> - Sets the allowed number of values to be parsed for an argument. This can be set as a:", "md_docs_2tutorial.html#autotoc_md1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a", null ],
-          [ "2. <tt>implicit_value</tt> - A value which will be set for an argument if only it's flag is parsed from the command-line but no values follow.", "md_docs_2tutorial.html#autotoc_md2-implicit_value---a-value-which-will-be-set-for-an-argument-if-only-its-flag-is-parsed-from-the-command-line-but-no-values-follow", null ],
-          [ "4. On-flag actions - For optional arguments, apart from value actions, you can specify on-flag actions which are executed immediately after parsing an argument's flag.", "md_docs_2tutorial.html#autotoc_md4-on-flag-actions---for-optional-arguments-apart-from-value-actions-you-can-specify-on-flag-actions-which-are-executed-immediately-after-parsing-an-arguments-flag", null ]
+          [ "1. on-flag actions - Functions that are called immediately after parsing an argument's flag.", "md_docs_2tutorial.html#autotoc_md1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag", null ],
+          [ "2. <tt>implicit_values</tt> - A list of values which will be set for an argument if only its flag but no values are parsed from the command-line.", "md_docs_2tutorial.html#autotoc_md2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line", null ]
         ] ]
       ] ],
       [ "Predefined Parameter Values", "md_docs_2tutorial.html#predefined-parameter-values", [
         [ "Actions", "md_docs_2tutorial.html#actions", null ]
       ] ],
       [ "Default Arguments", "md_docs_2tutorial.html#default-arguments", null ],
+      [ "Argument Groups", "md_docs_2tutorial.html#argument-groups", [
+        [ "Creating New Groups", "md_docs_2tutorial.html#creating-new-groups", null ],
+        [ "Adding Arguments to Groups", "md_docs_2tutorial.html#adding-arguments-to-groups", null ],
+        [ "Group Attributes", "md_docs_2tutorial.html#group-attributes", null ],
+        [ "Complete Example", "md_docs_2tutorial.html#complete-example", null ],
+        [ "Suppressing Argument Group Checks", "md_docs_2tutorial.html#suppressing-argument-group-checks", null ]
+      ] ],
       [ "Parsing Arguments", "md_docs_2tutorial.html#parsing-arguments", [
-        [ "Argument Parsing Rules", "md_docs_2tutorial.html#argument-parsing-rules", null ],
+        [ "Basic Argument Parsing Rules", "md_docs_2tutorial.html#basic-argument-parsing-rules", [
+          [ "1. Optional arguments are parsed only with a flag", "md_docs_2tutorial.html#autotoc_md1-optional-arguments-are-parsed-only-with-a-flag", null ],
+          [ "2. Positional arguments are parsed in the order of definition", "md_docs_2tutorial.html#autotoc_md2-positional-arguments-are-parsed-in-the-order-of-definition", null ],
+          [ "3. Positional arguments consume free values", "md_docs_2tutorial.html#autotoc_md3-positional-arguments-consume-free-values", null ],
+          [ "4. Unknown Argument Flag Handling", "md_docs_2tutorial.html#autotoc_md4-unknown-argument-flag-handling", null ]
+        ] ],
         [ "Compound Arguments", "md_docs_2tutorial.html#compound-arguments", null ],
         [ "Parsing Known Arguments", "md_docs_2tutorial.html#parsing-known-arguments", null ]
       ] ],
       [ "Retrieving Argument Values", "md_docs_2tutorial.html#retrieving-argument-values", null ],
-      [ "Examples", "md_docs_2tutorial.html#examples", null ]
+      [ "Subparsers", "md_docs_2tutorial.html#subparsers", [
+        [ "Creating Subparsers", "md_docs_2tutorial.html#creating-subparsers", null ],
+        [ "Using Multiple Subparsers", "md_docs_2tutorial.html#using-multiple-subparsers", null ],
+        [ "Parsing Arguments with Subparsers", "md_docs_2tutorial.html#parsing-arguments-with-subparsers", null ],
+        [ "Tracking Parser State", "md_docs_2tutorial.html#tracking-parser-state", [
+          [ "Example: Inspecting Parsing States", "md_docs_2tutorial.html#example-inspecting-parsing-states", null ]
+        ] ]
+      ] ],
+      [ "Examples", "md_docs_2tutorial.html#examples", null ],
+      [ "Common Utility", "md_docs_2tutorial.html#common-utility", null ]
     ] ],
     [ "Todo List", "todo.html", null ],
+    [ "Topics", "topics.html", "topics" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -104,16 +132,17 @@ var NAVTREE =
     ] ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ]
-    ] ]
+    ] ],
+    [ "Examples", "examples.html", "examples" ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"annotated.html",
-"classap_1_1argument__parser.html#a872eb42963ca9920282b6ed38bb792b6",
-"functions_l.html",
-"structap_1_1invalid__configuration_1_1positional.html"
+"_2home_2runner_2work_2cpp-ap_2cpp-ap_2include_2ap_2argument_parser_8hpp-example.html",
+"classap_1_1argument__parser.html#a18d104bdbb36a0e6c317caacc2d76621",
+"classap_1_1detail_1_1help__builder.html#abda4fafd5cd6c8244969a9be23c82195",
+"range_8hpp.html#ad4747cf38240752e92c1bd53f5f13a56"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

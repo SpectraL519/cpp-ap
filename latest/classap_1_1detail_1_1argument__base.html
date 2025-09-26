@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -95,7 +95,6 @@ $(document).ready(function(){initNavTree('classap_1_1detail_1_1argument__base.ht
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classap_1_1detail_1_1argument__base-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ap::detail::argument_base Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
@@ -112,8 +111,7 @@ Inheritance diagram for ap::detail::argument_base:</div>
  <div class="center">
   <img src="classap_1_1detail_1_1argument__base.png" usemap="#ap::detail::argument_5Fbase_map" alt=""/>
   <map id="ap::detail::argument_5Fbase_map" name="ap::detail::argument_5Fbase_map">
-<area href="classap_1_1argument_1_1optional.html" title="The optioanl argument class." alt="ap::argument::optional&lt; T &gt;" shape="rect" coords="0,56,174,80"/>
-<area href="classap_1_1argument_1_1positional.html" title="The positional argument class." alt="ap::argument::positional&lt; T &gt;" shape="rect" coords="184,56,358,80"/>
+<area href="classap_1_1argument.html" title="Represents a command-line argument, either positional or optional." alt="ap::argument&lt; ArgT, T &gt;" shape="rect" coords="0,56,154,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -121,23 +119,29 @@ Inheritance diagram for ap::detail::argument_base:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a957b1ad218bf86f20fa5308793401ddb" id="r_a957b1ad218bf86f20fa5308793401ddb"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a957b1ad218bf86f20fa5308793401ddb">~argument_base</a> ()=default</td></tr>
 <tr class="separator:a957b1ad218bf86f20fa5308793401ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d9d65bb992482c986463cdc0e2f7839" id="r_a6d9d65bb992482c986463cdc0e2f7839"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a6d9d65bb992482c986463cdc0e2f7839">is_positional</a> () const noexcept=0</td></tr>
+<tr class="separator:a6d9d65bb992482c986463cdc0e2f7839"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55b0548d26fb98e8a4fb41fcbb1ddc9d" id="r_a55b0548d26fb98e8a4fb41fcbb1ddc9d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a55b0548d26fb98e8a4fb41fcbb1ddc9d">is_optional</a> () const noexcept=0</td></tr>
+<tr class="separator:a55b0548d26fb98e8a4fb41fcbb1ddc9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab45213d3aacad2fb9979b6239b699870" id="r_ab45213d3aacad2fb9979b6239b699870"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ab45213d3aacad2fb9979b6239b699870">name</a> () const noexcept=0</td></tr>
+<tr class="separator:ab45213d3aacad2fb9979b6239b699870"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58906704a159d8e5b93f0b14c240aa3a" id="r_a58906704a159d8e5b93f0b14c240aa3a"><td class="memItemLeft" align="right" valign="top">virtual const std::optional&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a58906704a159d8e5b93f0b14c240aa3a">help</a> () const noexcept=0</td></tr>
+<tr class="separator:a58906704a159d8e5b93f0b14c240aa3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd90452b3eafc69fb4ed31d7cf1910cb" id="r_afd90452b3eafc69fb4ed31d7cf1910cb"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#afd90452b3eafc69fb4ed31d7cf1910cb">is_hidden</a> () const noexcept=0</td></tr>
+<tr class="separator:afd90452b3eafc69fb4ed31d7cf1910cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2a61a60e03eb678bbb24c261076baaa" id="r_ab2a61a60e03eb678bbb24c261076baaa"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ab2a61a60e03eb678bbb24c261076baaa">is_required</a> () const noexcept=0</td></tr>
+<tr class="separator:ab2a61a60e03eb678bbb24c261076baaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af287503d1f6c1c1ddf15d0c857b368b0" id="r_af287503d1f6c1c1ddf15d0c857b368b0"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#af287503d1f6c1c1ddf15d0c857b368b0">suppresses_arg_checks</a> () const noexcept=0</td></tr>
+<tr class="separator:af287503d1f6c1c1ddf15d0c857b368b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a30c9cb509f90fdd2d27916448ff1b1" id="r_a1a30c9cb509f90fdd2d27916448ff1b1"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a1a30c9cb509f90fdd2d27916448ff1b1">suppresses_group_checks</a> () const noexcept=0</td></tr>
+<tr class="separator:a1a30c9cb509f90fdd2d27916448ff1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7360874c8afb6cf0dd81e5174a85fe68" id="r_a7360874c8afb6cf0dd81e5174a85fe68"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a7360874c8afb6cf0dd81e5174a85fe68">is_greedy</a> () const noexcept=0</td></tr>
+<tr class="separator:a7360874c8afb6cf0dd81e5174a85fe68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:afc5a437d701d15ee0e838ac6085ab893" id="r_afc5a437d701d15ee0e838ac6085ab893"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#afc5a437d701d15ee0e838ac6085ab893">argument_base</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;<a class="el" href="classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f">name</a>, const bool required=false)</td></tr>
-<tr class="separator:afc5a437d701d15ee0e838ac6085ab893"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76bcb06030370fc7aa4098785cd4074f" id="r_a76bcb06030370fc7aa4098785cd4074f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structap_1_1detail_1_1argument__name.html">ap::detail::argument_name</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a76bcb06030370fc7aa4098785cd4074f">name</a> () const noexcept</td></tr>
-<tr class="separator:a76bcb06030370fc7aa4098785cd4074f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1524b68c9cf9a7cd22400d7013b4ec9" id="r_ac1524b68c9cf9a7cd22400d7013b4ec9"><td class="memItemLeft" align="right" valign="top">const std::optional&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ac1524b68c9cf9a7cd22400d7013b4ec9">help</a> () const noexcept</td></tr>
-<tr class="separator:ac1524b68c9cf9a7cd22400d7013b4ec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a545d421800cbae2968be28befe895e41" id="r_a545d421800cbae2968be28befe895e41"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a545d421800cbae2968be28befe895e41">is_hidden</a> () const noexcept</td></tr>
-<tr class="separator:a545d421800cbae2968be28befe895e41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ad463f1cc48791cfcc50374433d11a6" id="r_a3ad463f1cc48791cfcc50374433d11a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a3ad463f1cc48791cfcc50374433d11a6">is_required</a> () const noexcept</td></tr>
-<tr class="separator:a3ad463f1cc48791cfcc50374433d11a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95de6f34fbad86c4eff854b243764141" id="r_a95de6f34fbad86c4eff854b243764141"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a95de6f34fbad86c4eff854b243764141">bypass_required_enabled</a> () const noexcept</td></tr>
-<tr class="separator:a95de6f34fbad86c4eff854b243764141"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0571c2cc2c358b5d83408c15bc84cf9" id="r_ae0571c2cc2c358b5d83408c15bc84cf9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classap_1_1detail_1_1argument__descriptor.html">detail::argument_descriptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ae0571c2cc2c358b5d83408c15bc84cf9">desc</a> (const bool verbose) const noexcept=0</td></tr>
-<tr class="separator:ae0571c2cc2c358b5d83408c15bc84cf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac82bcfe9e2f1c590f7772e48bc5aa3ad" id="r_ac82bcfe9e2f1c590f7772e48bc5aa3ad"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classap_1_1detail_1_1help__builder.html">detail::help_builder</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ac82bcfe9e2f1c590f7772e48bc5aa3ad">help_builder</a> (const bool verbose) const noexcept=0</td></tr>
+<tr class="separator:ac82bcfe9e2f1c590f7772e48bc5aa3ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebb8ac9d4a60fe042daa8b54b4f6de28" id="r_aebb8ac9d4a60fe042daa8b54b4f6de28"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#aebb8ac9d4a60fe042daa8b54b4f6de28">mark_used</a> ()=0</td></tr>
 <tr class="memdesc:aebb8ac9d4a60fe042daa8b54b4f6de28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark the argument as used.  <br /></td></tr>
 <tr class="separator:aebb8ac9d4a60fe042daa8b54b4f6de28"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -152,25 +156,14 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a10825056535c3408a912c009c91c86d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae84bd6fb3e9606ff913edd0fddf7fba5" id="r_ae84bd6fb3e9606ff913edd0fddf7fba5"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ae84bd6fb3e9606ff913edd0fddf7fba5">has_parsed_values</a> () const noexcept=0</td></tr>
 <tr class="separator:ae84bd6fb3e9606ff913edd0fddf7fba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ec03d6ad02a389986dc316d1183b7e7" id="r_a3ec03d6ad02a389986dc316d1183b7e7"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a3ec03d6ad02a389986dc316d1183b7e7">has_predefined_values</a> () const noexcept=0</td></tr>
+<tr class="separator:a3ec03d6ad02a389986dc316d1183b7e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20479ca0a1a18ca3c1fc6ee54ce8352e" id="r_a20479ca0a1a18ca3c1fc6ee54ce8352e"><td class="memItemLeft" align="right" valign="top">virtual std::weak_ordering&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a20479ca0a1a18ca3c1fc6ee54ce8352e">nvalues_ordering</a> () const noexcept=0</td></tr>
 <tr class="separator:a20479ca0a1a18ca3c1fc6ee54ce8352e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66137a69a06d000e2b7a677a28f6b842" id="r_a66137a69a06d000e2b7a677a28f6b842"><td class="memItemLeft" align="right" valign="top">virtual const std::any &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a66137a69a06d000e2b7a677a28f6b842">value</a> () const =0</td></tr>
 <tr class="separator:a66137a69a06d000e2b7a677a28f6b842"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbcc2eaf1cfc00f1aaf62208d1a99d95" id="r_abbcc2eaf1cfc00f1aaf62208d1a99d95"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; std::any &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#abbcc2eaf1cfc00f1aaf62208d1a99d95">values</a> () const =0</td></tr>
 <tr class="separator:abbcc2eaf1cfc00f1aaf62208d1a99d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a2c1c24f01fb2f873ee4310eb51c1a924" id="r_a2c1c24f01fb2f873ee4310eb51c1a924"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structap_1_1detail_1_1argument__name.html">ap::detail::argument_name</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a2c1c24f01fb2f873ee4310eb51c1a924">_name</a></td></tr>
-<tr class="separator:a2c1c24f01fb2f873ee4310eb51c1a924"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7218b75388847e468b1356bd2439e8c" id="r_ae7218b75388847e468b1356bd2439e8c"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#ae7218b75388847e468b1356bd2439e8c">_help_msg</a></td></tr>
-<tr class="separator:ae7218b75388847e468b1356bd2439e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a731038fe58bf6fd6054d01b63e2973bf" id="r_a731038fe58bf6fd6054d01b63e2973bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a731038fe58bf6fd6054d01b63e2973bf">_required</a>: 1</td></tr>
-<tr class="separator:a731038fe58bf6fd6054d01b63e2973bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5adf5895f5fcbfb44c3b7a7237301c04" id="r_a5adf5895f5fcbfb44c3b7a7237301c04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a5adf5895f5fcbfb44c3b7a7237301c04">_bypass_required</a>: 1 = false</td></tr>
-<tr class="separator:a5adf5895f5fcbfb44c3b7a7237301c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39bb3a51d7623b04aaed278b625e9d64" id="r_a39bb3a51d7623b04aaed278b625e9d64"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classap_1_1detail_1_1argument__base.html#a39bb3a51d7623b04aaed278b625e9d64">_hidden</a>: 1 = false</td></tr>
-<tr class="separator:a39bb3a51d7623b04aaed278b625e9d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -207,74 +200,7 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="afc5a437d701d15ee0e838ac6085ab893" name="afc5a437d701d15ee0e838ac6085ab893"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc5a437d701d15ee0e838ac6085ab893">&#9670;&#160;</a></span>argument_base()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">ap::detail::argument_base::argument_base </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp;&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>required</em> = <code>false</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00033">33</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a95de6f34fbad86c4eff854b243764141" name="a95de6f34fbad86c4eff854b243764141"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95de6f34fbad86c4eff854b243764141">&#9670;&#160;</a></span>bypass_required_enabled()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ap::detail::argument_base::bypass_required_enabled </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if required argument bypassing is enabled for the argument, <code>false</code> otherwise. </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Required argument bypassing is enabled only when both <code>required</code> and <code>bypass_required</code> flags are set to <code>true</code>. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00060">60</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
 <a id="a43fff665c9ed0098adf83cb6b3074b75" name="a43fff665c9ed0098adf83cb6b3074b75"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a43fff665c9ed0098adf83cb6b3074b75">&#9670;&#160;</a></span>count()</h2>
 
@@ -299,42 +225,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The number of times an argument has been used. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#ab93b92d4e3edc1dbe0bb91d32078207c">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#ad84a7be5a54335bdaa21771a3198b837">ap::argument::positional&lt; T &gt;</a>.</p>
-
-</div>
-</div>
-<a id="ae0571c2cc2c358b5d83408c15bc84cf9" name="ae0571c2cc2c358b5d83408c15bc84cf9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0571c2cc2c358b5d83408c15bc84cf9">&#9670;&#160;</a></span>desc()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="classap_1_1detail_1_1argument__descriptor.html">detail::argument_descriptor</a> ap::detail::argument_base::desc </td>
-          <td>(</td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>verbose</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">verbose</td><td>The verbosity mode value. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>An argument descriptor object for the argument. </dd></dl>
-
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a2c9a62dfe1e18db9d558573bc88a6217">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a72cb4de9238c1865b95c8c2c1b0cfd12">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#aa62c74618fbed6450a50fa83ae48e7a5">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -362,7 +253,35 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument has parsed values., <code>false</code> otherwise. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a8dd3f30d0d710e8f369dec0c7fe469e9">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#af0da1f0eb732d2d2319645add4caaf05">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a5db0858d60218e68d63069c5b5c6e512">ap::argument&lt; ArgT, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a3ec03d6ad02a389986dc316d1183b7e7" name="a3ec03d6ad02a389986dc316d1183b7e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ec03d6ad02a389986dc316d1183b7e7">&#9670;&#160;</a></span>has_predefined_values()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ap::detail::argument_base::has_predefined_values </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument has predefined values, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument.html#aaecefcc916588fe9e881e5214c76bdfd">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -390,12 +309,12 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument has a value, <code>false</code> otherwise. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a24d17bdd0197d40592e587db45f417b7">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#ade37218d52652aa0eff946338c31dab0">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a47741feaaa3f47fce3f0b4ccc440cff7">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
-<a id="ac1524b68c9cf9a7cd22400d7013b4ec9" name="ac1524b68c9cf9a7cd22400d7013b4ec9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1524b68c9cf9a7cd22400d7013b4ec9">&#9670;&#160;</a></span>help()</h2>
+<a id="a58906704a159d8e5b93f0b14c240aa3a" name="a58906704a159d8e5b93f0b14c240aa3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58906704a159d8e5b93f0b14c240aa3a">&#9670;&#160;</a></span>help()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -404,7 +323,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::optional&lt; std::string &gt; &amp; ap::detail::argument_base::help </td>
+          <td class="memname">virtual const std::optional&lt; std::string &gt; &amp; ap::detail::argument_base::help </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -412,18 +331,18 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Optional help message for the positional argument. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns the argument's help message. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00042">42</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a8126a96b1e7881a853ae2a46ea5dcc62">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
-<a id="a545d421800cbae2968be28befe895e41" name="a545d421800cbae2968be28befe895e41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a545d421800cbae2968be28befe895e41">&#9670;&#160;</a></span>is_hidden()</h2>
+<a id="ac82bcfe9e2f1c590f7772e48bc5aa3ad" name="ac82bcfe9e2f1c590f7772e48bc5aa3ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac82bcfe9e2f1c590f7772e48bc5aa3ad">&#9670;&#160;</a></span>help_builder()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -432,26 +351,33 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool ap::detail::argument_base::is_hidden </td>
+          <td class="memname">virtual <a class="el" href="classap_1_1detail_1_1help__builder.html">detail::help_builder</a> ap::detail::argument_base::help_builder </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>verbose</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is hidden, <code>false</code> otherwise </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">verbose</td><td>The verbosity mode value. If <code>true</code> all non-default parameters will be included in the output. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A help message builder object for the argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00047">47</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#adbf8b2a448d802d83fbc6f72c3e89c26">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
-<a id="a3ad463f1cc48791cfcc50374433d11a6" name="a3ad463f1cc48791cfcc50374433d11a6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ad463f1cc48791cfcc50374433d11a6">&#9670;&#160;</a></span>is_required()</h2>
+<a id="a7360874c8afb6cf0dd81e5174a85fe68" name="a7360874c8afb6cf0dd81e5174a85fe68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7360874c8afb6cf0dd81e5174a85fe68">&#9670;&#160;</a></span>is_greedy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -460,7 +386,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool ap::detail::argument_base::is_required </td>
+          <td class="memname">virtual bool ap::detail::argument_base::is_greedy </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -468,13 +394,125 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is required, <code>false</code> otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is greedy, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00052">52</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a277637f9dcbe5abb1d860bca262902cd">ap::argument&lt; ArgT, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="afd90452b3eafc69fb4ed31d7cf1910cb" name="afd90452b3eafc69fb4ed31d7cf1910cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd90452b3eafc69fb4ed31d7cf1910cb">&#9670;&#160;</a></span>is_hidden()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ap::detail::argument_base::is_hidden </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is hidden from help output, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument.html#aa3900da9385584843f07781a2c8b0da0">ap::argument&lt; ArgT, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a55b0548d26fb98e8a4fb41fcbb1ddc9d" name="a55b0548d26fb98e8a4fb41fcbb1ddc9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55b0548d26fb98e8a4fb41fcbb1ddc9d">&#9670;&#160;</a></span>is_optional()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ap::detail::argument_base::is_optional </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is an optional argument instance, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a80a2b1362ddffcd6751c348f3e327692">ap::argument&lt; ArgT, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a6d9d65bb992482c986463cdc0e2f7839" name="a6d9d65bb992482c986463cdc0e2f7839"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d9d65bb992482c986463cdc0e2f7839">&#9670;&#160;</a></span>is_positional()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ap::detail::argument_base::is_positional </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is a positional argument instance, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a567dbcb1a68095cfa97106ea0d145881">ap::argument&lt; ArgT, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ab2a61a60e03eb678bbb24c261076baaa" name="ab2a61a60e03eb678bbb24c261076baaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2a61a60e03eb678bbb24c261076baaa">&#9670;&#160;</a></span>is_required()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ap::detail::argument_base::is_required </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument is required, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a45beba536e1fc5e655e6c7f0b8acae46">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -502,7 +540,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument has been used, <code>false</code> otherwise. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a528cd0c64485513bcfc61086085da41c">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a5ad17ad09fb86821bc156b673fc2d92f">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a71d9b1d1d7e7ecd95a2498ae9f3bb9a2">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -532,12 +570,12 @@ Friends</h2></td></tr>
 <p>Mark the argument as used. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument accepts further values, <code>false</code> otherwise. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a72e665a7542b2b0fb38d08516676c7d8">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a60db6b82c45857d1a0a2eac2c0e8910a">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a30860258ef567fb7137531f8a031376a">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
-<a id="a76bcb06030370fc7aa4098785cd4074f" name="a76bcb06030370fc7aa4098785cd4074f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76bcb06030370fc7aa4098785cd4074f">&#9670;&#160;</a></span>name()</h2>
+<a id="ab45213d3aacad2fb9979b6239b699870" name="ab45213d3aacad2fb9979b6239b699870"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab45213d3aacad2fb9979b6239b699870">&#9670;&#160;</a></span>name()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -546,7 +584,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="structap_1_1detail_1_1argument__name.html">ap::detail::argument_name</a> &amp; ap::detail::argument_base::name </td>
+          <td class="memname">virtual const <a class="el" href="structap_1_1detail_1_1argument__name.html">argument_name</a> &amp; ap::detail::argument_base::name </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -554,13 +592,13 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Reference the name of the positional argument. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns the argument's name. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00037">37</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#ae7aeef6a51aca259eab0d0780bdcdc7b">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -588,7 +626,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The ordering relationship of argument range. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a0ea435f121baf556031706aaf7e871fa">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a3190a24c0949742d64b2feb64de3dd4b">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a528f7315d501e3e90ff41e48844bad3b">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -625,7 +663,63 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the argument accepts further values, <code>false</code> otherwise. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a25ae85a7a210d441629cf41e92047ca1">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a0010f5d5dbc21db4685ee5334a588b60">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#ae4f4415f25d0e49b2e8cb5c2f9ed91af">ap::argument&lt; ArgT, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="af287503d1f6c1c1ddf15d0c857b368b0" name="af287503d1f6c1c1ddf15d0c857b368b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af287503d1f6c1c1ddf15d0c857b368b0">&#9670;&#160;</a></span>suppresses_arg_checks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ap::detail::argument_base::suppresses_arg_checks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if argument checks suppressing is enabled for the argument, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a7c7a071858e659edd673aa7e7f12c4f0">ap::argument&lt; ArgT, T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1a30c9cb509f90fdd2d27916448ff1b1" name="a1a30c9cb509f90fdd2d27916448ff1b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a30c9cb509f90fdd2d27916448ff1b1">&#9670;&#160;</a></span>suppresses_group_checks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ap::detail::argument_base::suppresses_group_checks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if argument group checks suppressing is enabled for the argument, <code>false</code> otherwise. </dd></dl>
+
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a0a61ff35aa857b1151ee381ae2d19b7b">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -653,7 +747,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Reference to the stored value of the argument. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a74937820758f6fec317db3552d0af547">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#ab28bc3bc4950494b62208b79b232318b">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a34831e91cbee03ae0ca458b789db48bb">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -681,7 +775,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Reference to the vector of parsed values of the argument. </dd></dl>
 
-<p>Implemented in <a class="el" href="classap_1_1argument_1_1optional.html#a0691cc95c9d0ab9d3004b6f939bbc88b">ap::argument::optional&lt; T &gt;</a>, and <a class="el" href="classap_1_1argument_1_1positional.html#a7fed8df5b0a32f24420b998ffbc21a64">ap::argument::positional&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classap_1_1argument.html#a9d03270ff89065441b365f52ed214a9a">ap::argument&lt; ArgT, T &gt;</a>.</p>
 
 </div>
 </div>
@@ -706,128 +800,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00030">30</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a5adf5895f5fcbfb44c3b7a7237301c04" name="a5adf5895f5fcbfb44c3b7a7237301c04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5adf5895f5fcbfb44c3b7a7237301c04">&#9670;&#160;</a></span>_bypass_required</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ap::detail::argument_base::_bypass_required</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00108">108</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ae7218b75388847e468b1356bd2439e8c" name="ae7218b75388847e468b1356bd2439e8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7218b75388847e468b1356bd2439e8c">&#9670;&#160;</a></span>_help_msg</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::optional&lt;std::string&gt; ap::detail::argument_base::_help_msg</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00105">105</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a39bb3a51d7623b04aaed278b625e9d64" name="a39bb3a51d7623b04aaed278b625e9d64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39bb3a51d7623b04aaed278b625e9d64">&#9670;&#160;</a></span>_hidden</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ap::detail::argument_base::_hidden</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00109">109</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a2c1c24f01fb2f873ee4310eb51c1a924" name="a2c1c24f01fb2f873ee4310eb51c1a924"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c1c24f01fb2f873ee4310eb51c1a924">&#9670;&#160;</a></span>_name</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="structap_1_1detail_1_1argument__name.html">ap::detail::argument_name</a> ap::detail::argument_base::_name</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00104">104</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a731038fe58bf6fd6054d01b63e2973bf" name="a731038fe58bf6fd6054d01b63e2973bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a731038fe58bf6fd6054d01b63e2973bf">&#9670;&#160;</a></span>_required</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ap::detail::argument_base::_required</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00107">107</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__base_8hpp_source.html#l00057">57</a> of file <a class="el" href="argument__base_8hpp_source.html">argument_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -840,7 +813,7 @@ Friends</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="namespaceap_1_1detail.html">detail</a></li><li class="navelem"><a class="el" href="classap_1_1detail_1_1argument__base.html">argument_base</a></li>
-    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_3a_3aap_3a_3aargument_5fparser_0',['::ap::argument_parser',['../classap_1_1argument_1_1optional.html#a0b52bbe6b10568d9ee2e916c4b4c351e',1,'ap::argument::optional::argument_parser'],['../classap_1_1argument_1_1positional.html#a0b52bbe6b10568d9ee2e916c4b4c351e',1,'ap::argument::positional::argument_parser'],['../classap_1_1detail_1_1argument__base.html#a0b52bbe6b10568d9ee2e916c4b4c351e',1,'ap::detail::argument_base::argument_parser']]]
+  ['8_20value_20actions_20functions_20that_20are_20called_20after_20parsing_20an_20argument_20s_20value_0',['8. value actions - Functions that are called after parsing an argument&apos;s value.',['../md_docs_2tutorial.html#autotoc_md8-value-actions---functions-that-are-called-after-parsing-an-arguments-value',1,'']]]
 ];

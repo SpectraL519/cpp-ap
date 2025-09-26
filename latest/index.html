@@ -28,7 +28,7 @@
 <tbody>
 <tr id="projectrow">
 <td id="projectalign">
-<div id="projectname">CPP-AP<span id="projectnumber"> 2.7.0</span>
+<div id="projectname">CPP-AP<span id="projectnumber"> 3.0.0</span>
 </div>
 <div id="projectbrief">Command-line argument parser for C++20</div>
 </td>
@@ -99,7 +99,7 @@ Overview</h2>
 <p><code>CPP-AP</code> is a lightweight and feature-rich command-line argument parsing library for the C++20 and newer standards, designed as an alternative to <code>boost::program_options</code>. It offers a modern and intuitive interface allowing for straightforward argument configuration and parsing.</p>
 <blockquote class="doxtable">
 <p>‍<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
-<p><a href="https://github.com/SpectraL519/cpp-ap/commit/9a9e5360766b732f322ae2efe3cf5ec5f9268eef">v1.0</a> of the library has been developed for the <em>Team Programming</em> course at the <em>Wrocław University of Science and Technology</em>.</p>
+<p><a href="https://github.com/SpectraL519/cpp-ap/releases/tag/v1.0">v1.0</a> of the library has been developed for the <em>Team Programming</em> course at the <em>Wrocław University of Science and Technology</em>.</p>
 <p>Faculty: <em>W04N - Faculty of Information and Communication Technology</em></p>
 <p>Field of study: <em>Algorithmic Computer Science</em></p>
 <p>The project has received the 1st place at the 2024 CreatiWITy competition organized by the faculty. The article in Polish can be found on the <a href="https://wit.pwr.edu.pl/aktualnosci/oto-laureaci-konkursu-creatiwity-273.html">faculty website</a>. Please note that this is not a technical article :) </p>
@@ -117,17 +117,44 @@ Related Pages</h2>
 </ul>
 </li>
 <li><a href="md_docs_2tutorial.html#the-parser-class">The Parser Class</a></li>
-<li><a href="md_docs_2tutorial.html#adding-arguments">Adding Arguments</a></li>
-<li><a href="md_docs_2tutorial.html#argument-parameters">Argument Parameters</a></li>
+<li><a href="md_docs_2tutorial.html#adding-arguments">Adding Arguments</a><ul>
+<li><a href="md_docs_2tutorial.html#syntax">Syntax</a></li>
+<li><a href="md_docs_2tutorial.html#names">Names</a></li>
+<li><a href="md_docs_2tutorial.html#value-types">Value Types</a></li>
+<li><a href="md_docs_2tutorial.html#boolean-flags">Boolean Flags</a></li>
+</ul>
+</li>
+<li><a href="md_docs_2tutorial.html#argument-parameters">Argument Parameters</a><ul>
+<li><a href="md_docs_2tutorial.html#common-parameters">Common Parameters</a></li>
+<li><a href="md_docs_2tutorial.html#parameters-specific-for-optional-arguments">Parameters Specific for Optional Arguments</a></li>
+</ul>
+</li>
 <li><a href="md_docs_2tutorial.html#default-arguments">Default Arguments</a></li>
+<li><a href="md_docs_2tutorial.html#argument-groups">Argument Groups</a><ul>
+<li><a href="md_docs_2tutorial.html#creating-new-groups">Creating New Groups</a></li>
+<li><a href="md_docs_2tutorial.html#adding-arguments-to-groups">Adding Arguments to Groups</a></li>
+<li><a href="md_docs_2tutorial.html#group-attributes">Group Attributes</a></li>
+<li><a href="md_docs_2tutorial.html#complete-example">Complete Example</a></li>
+<li><a href="md_docs_2tutorial.html#suppressing-argument-group-checks">Suppressing Argument Group Checks</a></li>
+</ul>
+</li>
 <li><a href="md_docs_2tutorial.html#parsing-arguments">Parsing Arguments</a><ul>
-<li><a href="md_docs_2tutorial.html#argument-parsing-rules">Argument Parsing Rules</a></li>
+<li><a href="md_docs_2tutorial.html#basic-argument-parsing-rules">Basic Argument Parsing Rules</a></li>
 <li><a href="md_docs_2tutorial.html#compound-arguments">Compound Arguments</a></li>
 <li><a href="md_docs_2tutorial.html#parsing-known-arguments">Parsing Known Arguments</a></li>
 </ul>
 </li>
 <li><a href="md_docs_2tutorial.html#retrieving-argument-values">Retrieving Argument Values</a></li>
+<li><a href="md_docs_2tutorial.html#subparsers">Subparsers</a><ul>
+<li><a href="md_docs_2tutorial.html#creating-subparsers">Creating Subparsers</a></li>
+<li><a href="md_docs_2tutorial.html#using-multiple-subparsers">Using Multiple Subparsers</a></li>
+<li><a href="md_docs_2tutorial.html#parsing-arguments-with-subparsers">Parsing Arguments with Subparsers</a></li>
+<li><a href="md_docs_2tutorial.html#tracking-parser-state">Tracking Parser State</a></li>
+<li><a href="md_docs_2tutorial.html#suppressing-argument-group-checks">Suppressing Argument Group Checks</a></li>
+</ul>
+</li>
 <li><a href="md_docs_2tutorial.html#examples">Examples</a></li>
+<li><a href="md_docs_2tutorial.html#common-utility">Common Utility</a></li>
 </ul>
 </li>
 <li><a href="md_docs_2dev__notes.html#dev-notes">Dev notes</a><ul>
@@ -162,7 +189,7 @@ License</h2>
 <!-- start footer part -->
 <div class="navpath" id="nav-path"><!-- id is needed for treeview function! -->
 <ul>
-<li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img alt="doxygen" class="footer" height="31" src="doxygen.svg" width="104"/></a> 1.9.8 </li>
+<li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img alt="doxygen" class="footer" height="31" src="doxygen.svg" width="104"/></a> 1.9.8 </li>
 </ul>
 </div>
 </body>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flag_5fchar_0',['flag_char',['../structap_1_1detail_1_1argument__name.html#a2fed035abf1d7553f5e47857b78abcd7',1,'ap::detail::argument_name']]]
+  ['default_5fdelimiter_0',['default_delimiter',['../classap_1_1detail_1_1help__builder.html#a58f40f426c31f96554ef24a157bba921',1,'ap::detail::help_builder']]]
 ];

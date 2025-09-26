@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['params_0',['params',['../classap_1_1detail_1_1argument__descriptor.html#aa46f1077f5715356c27deacae2e61e8d',1,'ap::detail::argument_descriptor']]],
-  ['patch_1',['patch',['../structap_1_1version.html#add9bd39441e2ba8597d2cb96edc9ef53',1,'ap::version']]],
-  ['primary_2',['primary',['../structap_1_1detail_1_1argument__name.html#ab359de24adc3ca558b21d760ccd6c7cc',1,'ap::detail::argument_name']]]
+  ['name_0',['name',['../structap_1_1detail_1_1parameter__descriptor.html#aaf266cc6e89e80212cf53696e27de02d',1,'ap::detail::parameter_descriptor::name'],['../classap_1_1detail_1_1help__builder.html#ac49b7821d2ae9f022790ef7d1df77730',1,'ap::detail::help_builder::name']]]
 ];

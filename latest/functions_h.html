@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -95,18 +95,21 @@ $(document).ready(function(){initNavTree('functions_h.html',''); initResizable()
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a id="index_h" name="index_h"></a>- h -</h3><ul>
-<li>handle_help_action()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ab4ab3440a777fb52e4c123611024bc5b">ap::argument_parser</a></li>
-<li>has_parsed_values()&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a8dd3f30d0d710e8f369dec0c7fe469e9">ap::argument::optional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument_1_1positional.html#af0da1f0eb732d2d2319645add4caaf05">ap::argument::positional&lt; T &gt;</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#ae84bd6fb3e9606ff913edd0fddf7fba5">ap::detail::argument_base</a></li>
-<li>has_value()&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a24d17bdd0197d40592e587db45f417b7">ap::argument::optional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument_1_1positional.html#ade37218d52652aa0eff946338c31dab0">ap::argument::positional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">ap::argument_parser</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#a10825056535c3408a912c009c91c86d5">ap::detail::argument_base</a></li>
-<li>help()&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#a13e689c1e84e0ae9461de8695e8d6787">ap::argument::optional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument_1_1positional.html#a7ff81e429badff84c4e39fe9ca323918">ap::argument::positional&lt; T &gt;</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#ac1524b68c9cf9a7cd22400d7013b4ec9">ap::detail::argument_base</a>, <a class="el" href="classap_1_1detail_1_1argument__descriptor.html#a4e44e831487baed6afd868ba0bb312ae">ap::detail::argument_descriptor</a></li>
-<li>hidden()&#160;:&#160;<a class="el" href="classap_1_1argument_1_1optional.html#ae1809e76090679ea989e6de35b89a0af">ap::argument::optional&lt; T &gt;</a>, <a class="el" href="classap_1_1argument_1_1positional.html#a86500dfec5e90d6ac183a950e02133ed">ap::argument::positional&lt; T &gt;</a></li>
+<li>has_explicit_lower_bound()&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#a8aaa30061a6273320b4c8e0c2f12c80e">ap::nargs::range</a></li>
+<li>has_explicit_upper_bound()&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#ad554dc4608b71b255fb255b26ddf7cde">ap::nargs::range</a></li>
+<li>has_parsed_values()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a5db0858d60218e68d63069c5b5c6e512">ap::argument&lt; ArgT, T &gt;</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#ae84bd6fb3e9606ff913edd0fddf7fba5">ap::detail::argument_base</a></li>
+<li>has_predefined_values()&#160;:&#160;<a class="el" href="classap_1_1argument.html#aaecefcc916588fe9e881e5214c76bdfd">ap::argument&lt; ArgT, T &gt;</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#a3ec03d6ad02a389986dc316d1183b7e7">ap::detail::argument_base</a></li>
+<li>has_value()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a47741feaaa3f47fce3f0b4ccc440cff7">ap::argument&lt; ArgT, T &gt;</a>, <a class="el" href="classap_1_1argument__parser.html#a6c2a8328773c498294fafd746ce4a364">ap::argument_parser</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#a10825056535c3408a912c009c91c86d5">ap::detail::argument_base</a></li>
+<li>help()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a8126a96b1e7881a853ae2a46ea5dcc62">ap::argument&lt; ArgT, T &gt;</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#a58906704a159d8e5b93f0b14c240aa3a">ap::detail::argument_base</a>, <a class="el" href="classap_1_1detail_1_1help__builder.html#a6b1c99a3832d5859d3d18310d1601e78">ap::detail::help_builder</a></li>
+<li>help_builder()&#160;:&#160;<a class="el" href="classap_1_1argument.html#adbf8b2a448d802d83fbc6f72c3e89c26">ap::argument&lt; ArgT, T &gt;</a>, <a class="el" href="classap_1_1detail_1_1argument__base.html#ac82bcfe9e2f1c590f7772e48bc5aa3ad">ap::detail::argument_base</a>, <a class="el" href="classap_1_1detail_1_1help__builder.html#a2207b880569dc8ece014634e8f18e883">ap::detail::help_builder</a></li>
+<li>hidden()&#160;:&#160;<a class="el" href="classap_1_1argument.html#af184b14847ec55263e083e21fec5bca4">ap::argument&lt; ArgT, T &gt;</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

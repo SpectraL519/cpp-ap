@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['arg_0',['arg',['../structap_1_1detail_1_1argument__token.html#a897be82010d80e45767ae72c017adace',1,'ap::detail::argument_token']]]
+  ['args_0',['args',['../structap_1_1detail_1_1argument__token.html#a043c2f1ed0aa807e4730618a5810bb65',1,'ap::detail::argument_token']]]
 ];

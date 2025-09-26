@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['major_0',['major',['../structap_1_1version.html#a912f2bd1464859dfe16cc65c1351903a',1,'ap::version']]],
-  ['minor_1',['minor',['../structap_1_1version.html#a91a2d18ea45abe8b1d2b7fe6f86c5911',1,'ap::version']]]
+  ['is_5fvalid_5ftype_5fv_0',['is_valid_type_v',['../group__util.html#ga7978aba50bc619cc1b100d7b8ad0bd6c',1,'ap::util']]]
 ];

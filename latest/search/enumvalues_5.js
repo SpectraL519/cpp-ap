@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['output_0',['output',['../namespaceap_1_1argument.html#a286f72b3fda327176045593cc03035f3a78e6221f6393d1356681db398f14ce6d',1,'ap::argument::output'],['../namespaceap_1_1argument.html#ae33bebaf42333b6e30800f977e22ad41a78e6221f6393d1356681db398f14ce6d',1,'ap::argument::output']]]
+  ['n_5fprimary_0',['n_primary',['../namespaceap_1_1detail.html#aca3840ec8dde0f0e0dcf2dc4f42bf218af9977027e35d0052c62c1e26e00b7d13',1,'ap::detail']]],
+  ['n_5fsecondary_1',['n_secondary',['../namespaceap_1_1detail.html#aca3840ec8dde0f0e0dcf2dc4f42bf218acea61f9e13585d906e14d77960bc70f1',1,'ap::detail']]]
 ];

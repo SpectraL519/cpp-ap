@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -94,7 +94,9 @@ $(document).ready(function(){initNavTree('namespaceap_1_1nargs.html',''); initRe
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">ap::nargs Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -105,27 +107,58 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Argument's number of values managing class.  <a href="classap_1_1nargs_1_1range.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ac76e699bbd08ac059614baede9203a54" id="r_ac76e699bbd08ac059614baede9203a54"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a> = std::size_t</td></tr>
+<tr class="separator:ac76e699bbd08ac059614baede9203a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad343253fc902a3f16b82a41f224e3788" id="r_ad343253fc902a3f16b82a41f224e3788"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#ad343253fc902a3f16b82a41f224e3788">at_least</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a> n) noexcept</td></tr>
-<tr class="memdesc:ad343253fc902a3f16b82a41f224e3788"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [n, inf].  <br /></td></tr>
-<tr class="separator:ad343253fc902a3f16b82a41f224e3788"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65d4d5df036937ee7c8b144088aefc19" id="r_a65d4d5df036937ee7c8b144088aefc19"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a65d4d5df036937ee7c8b144088aefc19">more_than</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a> n) noexcept</td></tr>
-<tr class="memdesc:a65d4d5df036937ee7c8b144088aefc19"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [n + 1, inf].  <br /></td></tr>
-<tr class="separator:a65d4d5df036937ee7c8b144088aefc19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85fd0002d7e46fe37637e9811caa2f42" id="r_a85fd0002d7e46fe37637e9811caa2f42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a85fd0002d7e46fe37637e9811caa2f42">less_than</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a> n) noexcept</td></tr>
-<tr class="memdesc:a85fd0002d7e46fe37637e9811caa2f42"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, n - 1].  <br /></td></tr>
-<tr class="separator:a85fd0002d7e46fe37637e9811caa2f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b74f9695b39c5af6673716cdef369a1" id="r_a0b74f9695b39c5af6673716cdef369a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a0b74f9695b39c5af6673716cdef369a1">up_to</a> (const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a> n) noexcept</td></tr>
-<tr class="memdesc:a0b74f9695b39c5af6673716cdef369a1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, n].  <br /></td></tr>
-<tr class="separator:a0b74f9695b39c5af6673716cdef369a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6809359a8f003c4d636330352e66be47" id="r_a6809359a8f003c4d636330352e66be47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a6809359a8f003c4d636330352e66be47">any</a> () noexcept</td></tr>
-<tr class="memdesc:a6809359a8f003c4d636330352e66be47"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, inf].  <br /></td></tr>
-<tr class="separator:a6809359a8f003c4d636330352e66be47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a044186c0633fcdb3d7b7a1039dbc9e8a" id="r_a044186c0633fcdb3d7b7a1039dbc9e8a"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a044186c0633fcdb3d7b7a1039dbc9e8a">at_least</a> (const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a> n) noexcept</td></tr>
+<tr class="memdesc:a044186c0633fcdb3d7b7a1039dbc9e8a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [n, inf).  <br /></td></tr>
+<tr class="separator:a044186c0633fcdb3d7b7a1039dbc9e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8f2aa515675408697d2fa1cc6e6858a" id="r_ad8f2aa515675408697d2fa1cc6e6858a"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#ad8f2aa515675408697d2fa1cc6e6858a">more_than</a> (const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a> n) noexcept</td></tr>
+<tr class="memdesc:ad8f2aa515675408697d2fa1cc6e6858a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [n + 1, inf).  <br /></td></tr>
+<tr class="separator:ad8f2aa515675408697d2fa1cc6e6858a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20f6317ecd6ecdd89a3d436a42e104e2" id="r_a20f6317ecd6ecdd89a3d436a42e104e2"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a20f6317ecd6ecdd89a3d436a42e104e2">less_than</a> (const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a> n) noexcept</td></tr>
+<tr class="memdesc:a20f6317ecd6ecdd89a3d436a42e104e2"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, n - 1].  <br /></td></tr>
+<tr class="separator:a20f6317ecd6ecdd89a3d436a42e104e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c9a7809a9c4f985be48dd2466bed076" id="r_a3c9a7809a9c4f985be48dd2466bed076"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a3c9a7809a9c4f985be48dd2466bed076">up_to</a> (const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a> n) noexcept</td></tr>
+<tr class="memdesc:a3c9a7809a9c4f985be48dd2466bed076"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, n].  <br /></td></tr>
+<tr class="separator:a3c9a7809a9c4f985be48dd2466bed076"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c02ed5b148d6c1d8a520a95eb744c73" id="r_a5c02ed5b148d6c1d8a520a95eb744c73"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a5c02ed5b148d6c1d8a520a95eb744c73">any</a> () noexcept</td></tr>
+<tr class="memdesc:a5c02ed5b148d6c1d8a520a95eb744c73"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>range</code> class builder function. Creates a range [0, inf].  <br /></td></tr>
+<tr class="separator:a5c02ed5b148d6c1d8a520a95eb744c73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a00f11458a3bb2b3dab88c25afb79c389" id="r_a00f11458a3bb2b3dab88c25afb79c389"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#a00f11458a3bb2b3dab88c25afb79c389">min_bound</a> = std::numeric_limits&lt;<a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&gt;::min()</td></tr>
+<tr class="memdesc:a00f11458a3bb2b3dab88c25afb79c389"><td class="mdescLeft">&#160;</td><td class="mdescRight">The minimum bound for the <code><a class="el" href="classap_1_1nargs_1_1range.html" title="Argument&#39;s number of values managing class.">nargs::range</a></code> class.  <br /></td></tr>
+<tr class="separator:a00f11458a3bb2b3dab88c25afb79c389"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4747cf38240752e92c1bd53f5f13a56" id="r_ad4747cf38240752e92c1bd53f5f13a56"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceap_1_1nargs.html#ad4747cf38240752e92c1bd53f5f13a56">max_bound</a> = std::numeric_limits&lt;<a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&gt;::max()</td></tr>
+<tr class="memdesc:ad4747cf38240752e92c1bd53f5f13a56"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum bound for the <code><a class="el" href="classap_1_1nargs_1_1range.html" title="Argument&#39;s number of values managing class.">nargs::range</a></code> class.  <br /></td></tr>
+<tr class="separator:ad4747cf38240752e92c1bd53f5f13a56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ac76e699bbd08ac059614baede9203a54" name="ac76e699bbd08ac059614baede9203a54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac76e699bbd08ac059614baede9203a54">&#9670;&#160;</a></span>count_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">ap::nargs::count_type</a> = typedef std::size_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00018">18</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a6809359a8f003c4d636330352e66be47" name="a6809359a8f003c4d636330352e66be47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6809359a8f003c4d636330352e66be47">&#9670;&#160;</a></span>any()</h2>
+<a id="a5c02ed5b148d6c1d8a520a95eb744c73" name="a5c02ed5b148d6c1d8a520a95eb744c73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c02ed5b148d6c1d8a520a95eb744c73">&#9670;&#160;</a></span>any()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -134,7 +167,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::any </td>
+          <td class="memname">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::any </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -142,7 +175,7 @@ Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -150,12 +183,12 @@ Functions</h2></td></tr>
 <p><code>range</code> class builder function. Creates a range [0, inf]. </p>
 <dl class="section return"><dt>Returns</dt><dd>Built <code>range</code> class instance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00170">170</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00163">163</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="ad343253fc902a3f16b82a41f224e3788" name="ad343253fc902a3f16b82a41f224e3788"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad343253fc902a3f16b82a41f224e3788">&#9670;&#160;</a></span>at_least()</h2>
+<a id="a044186c0633fcdb3d7b7a1039dbc9e8a" name="a044186c0633fcdb3d7b7a1039dbc9e8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a044186c0633fcdb3d7b7a1039dbc9e8a">&#9670;&#160;</a></span>at_least()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -164,21 +197,21 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::at_least </td>
+          <td class="memname">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::at_least </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p><code>range</code> class builder function. Creates a range [n, inf]. </p>
+<p><code>range</code> class builder function. Creates a range [n, inf). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">n</td><td>The lower bound. </td></tr>
@@ -186,13 +219,15 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Built <code>range</code> class instance. </dd></dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_2home_2runner_2work_2cpp-ap_2cpp-ap_2include_2ap_2argument_parser_8hpp-example.html#a123">/home/runner/work/cpp-ap/cpp-ap/include/ap/argument_parser.hpp</a>.</dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00135">135</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00128">128</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a85fd0002d7e46fe37637e9811caa2f42" name="a85fd0002d7e46fe37637e9811caa2f42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85fd0002d7e46fe37637e9811caa2f42">&#9670;&#160;</a></span>less_than()</h2>
+<a id="a20f6317ecd6ecdd89a3d436a42e104e2" name="a20f6317ecd6ecdd89a3d436a42e104e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20f6317ecd6ecdd89a3d436a42e104e2">&#9670;&#160;</a></span>less_than()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,16 +236,16 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::less_than </td>
+          <td class="memname">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::less_than </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -224,12 +259,12 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Built <code>range</code> class instance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00153">153</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00146">146</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a65d4d5df036937ee7c8b144088aefc19" name="a65d4d5df036937ee7c8b144088aefc19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65d4d5df036937ee7c8b144088aefc19">&#9670;&#160;</a></span>more_than()</h2>
+<a id="ad8f2aa515675408697d2fa1cc6e6858a" name="ad8f2aa515675408697d2fa1cc6e6858a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8f2aa515675408697d2fa1cc6e6858a">&#9670;&#160;</a></span>more_than()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -238,21 +273,21 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::more_than </td>
+          <td class="memname">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::more_than </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p><code>range</code> class builder function. Creates a range [n + 1, inf]. </p>
+<p><code>range</code> class builder function. Creates a range [n + 1, inf). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">n</td><td>The lower bound. </td></tr>
@@ -261,12 +296,12 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Built <code>range</code> class instance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00144">144</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00137">137</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a0b74f9695b39c5af6673716cdef369a1" name="a0b74f9695b39c5af6673716cdef369a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b74f9695b39c5af6673716cdef369a1">&#9670;&#160;</a></span>up_to()</h2>
+<a id="a3c9a7809a9c4f985be48dd2466bed076" name="a3c9a7809a9c4f985be48dd2466bed076"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c9a7809a9c4f985be48dd2466bed076">&#9670;&#160;</a></span>up_to()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -275,16 +310,16 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::up_to </td>
+          <td class="memname">constexpr <a class="el" href="classap_1_1nargs_1_1range.html">range</a> ap::nargs::up_to </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classap_1_1nargs_1_1range.html#a524ad6272562bcaaabc7897ef8ba1f4d">range::count_type</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -298,7 +333,60 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Built <code>range</code> class instance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00162">162</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00155">155</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ad4747cf38240752e92c1bd53f5f13a56" name="ad4747cf38240752e92c1bd53f5f13a56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4747cf38240752e92c1bd53f5f13a56">&#9670;&#160;</a></span>max_bound</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a> ap::nargs::max_bound = std::numeric_limits&lt;<a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&gt;::max()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The maximum bound for the <code><a class="el" href="classap_1_1nargs_1_1range.html" title="Argument&#39;s number of values managing class.">nargs::range</a></code> class. </p>
+
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00024">24</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a00f11458a3bb2b3dab88c25afb79c389" name="a00f11458a3bb2b3dab88c25afb79c389"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00f11458a3bb2b3dab88c25afb79c389">&#9670;&#160;</a></span>min_bound</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a> ap::nargs::min_bound = std::numeric_limits&lt;<a class="el" href="namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54">count_type</a>&gt;::min()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The minimum bound for the <code><a class="el" href="classap_1_1nargs_1_1range.html" title="Argument&#39;s number of values managing class.">nargs::range</a></code> class. </p>
+
+<p class="definition">Definition at line <a class="el" href="range_8hpp_source.html#l00021">21</a> of file <a class="el" href="range_8hpp_source.html">range.hpp</a>.</p>
 
 </div>
 </div>
@@ -308,7 +396,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="namespaceap_1_1nargs.html">nargs</a></li>
-    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

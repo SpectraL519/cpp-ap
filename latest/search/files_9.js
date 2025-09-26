@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['tutorial_2emd_0',['tutorial.md',['../tutorial_8md.html',1,'']]],
-  ['typing_5futility_2ehpp_1',['typing_utility.hpp',['../typing__utility_8hpp.html',1,'']]]
+  ['string_2ehpp_0',['string.hpp',['../string_8hpp.html',1,'']]]
 ];

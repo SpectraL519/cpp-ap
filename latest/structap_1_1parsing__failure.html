@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;2.7.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -126,23 +126,13 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a739e89bbe013597b99547033a317d5d9" id="r_a739e89bbe013597b99547033a317d5d9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1parsing__failure.html#a739e89bbe013597b99547033a317d5d9">unknown_argument</a> (const std::string_view arg_name) noexcept</td></tr>
 <tr class="separator:a739e89bbe013597b99547033a317d5d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc45e5f47c008ecaf429bc2e9e2e938d" id="r_afc45e5f47c008ecaf429bc2e9e2e938d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1parsing__failure.html#afc45e5f47c008ecaf429bc2e9e2e938d">value_already_set</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;arg_name) noexcept</td></tr>
-<tr class="separator:afc45e5f47c008ecaf429bc2e9e2e938d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ade42ae38b73512b712dd6a84344f29" id="r_a3ade42ae38b73512b712dd6a84344f29"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1parsing__failure.html#a3ade42ae38b73512b712dd6a84344f29">invalid_value</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;arg_name, const std::string &amp;value) noexcept</td></tr>
-<tr class="separator:a3ade42ae38b73512b712dd6a84344f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e8da668584dd459755e999ed06be223" id="r_a9e8da668584dd459755e999ed06be223"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1parsing__failure.html#a9e8da668584dd459755e999ed06be223">invalid_choice</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;arg_name, const std::string &amp;value) noexcept</td></tr>
-<tr class="separator:a9e8da668584dd459755e999ed06be223"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f40f59b38209b9546342defb90336a0" id="r_a8f40f59b38209b9546342defb90336a0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1parsing__failure.html#a8f40f59b38209b9546342defb90336a0">required_argument_not_parsed</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;arg_name) noexcept</td></tr>
-<tr class="separator:a8f40f59b38209b9546342defb90336a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeef0fdd262e1809d020de005c2e24e91" id="r_aeef0fdd262e1809d020de005c2e24e91"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1parsing__failure.html#aeef0fdd262e1809d020de005c2e24e91">argument_deduction_failure</a> (const std::vector&lt; std::string &gt; &amp;values) noexcept</td></tr>
-<tr class="separator:aeef0fdd262e1809d020de005c2e24e91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a660f96f30bbb16b99f5c93281fecf22d" id="r_a660f96f30bbb16b99f5c93281fecf22d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structap_1_1parsing__failure.html#a660f96f30bbb16b99f5c93281fecf22d">invalid_nvalues</a> (const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;arg_name, const std::weak_ordering ordering) noexcept</td></tr>
 <tr class="separator:a660f96f30bbb16b99f5c93281fecf22d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Exception type used for errors encountered during the argument parsing operation. </p>
 
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00057">57</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00043">43</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad5dca1d03f3a11eb3a913bf013dcd36f" name="ad5dca1d03f3a11eb3a913bf013dcd36f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad5dca1d03f3a11eb3a913bf013dcd36f">&#9670;&#160;</a></span>parsing_failure()</h2>
@@ -168,77 +158,11 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00058">58</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00044">44</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aeef0fdd262e1809d020de005c2e24e91" name="aeef0fdd262e1809d020de005c2e24e91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeef0fdd262e1809d020de005c2e24e91">&#9670;&#160;</a></span>argument_deduction_failure()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a> ap::parsing_failure::argument_deduction_failure </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
-          <td class="paramname"><em>values</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00093">93</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a9e8da668584dd459755e999ed06be223" name="a9e8da668584dd459755e999ed06be223"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e8da668584dd459755e999ed06be223">&#9670;&#160;</a></span>invalid_choice()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a> ap::parsing_failure::invalid_choice </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;&#160;</td>
-          <td class="paramname"><em>arg_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00078">78</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
-
-</div>
-</div>
 <a id="a660f96f30bbb16b99f5c93281fecf22d" name="a660f96f30bbb16b99f5c93281fecf22d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a660f96f30bbb16b99f5c93281fecf22d">&#9670;&#160;</a></span>invalid_nvalues()</h2>
 
@@ -272,74 +196,10 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_2home_2runner_2work_2cpp-ap_2cpp-ap_2include_2ap_2argument_parser_8hpp-example.html#a120">/home/runner/work/cpp-ap/cpp-ap/include/ap/argument_parser.hpp</a>.</dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00100">100</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a3ade42ae38b73512b712dd6a84344f29" name="a3ade42ae38b73512b712dd6a84344f29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ade42ae38b73512b712dd6a84344f29">&#9670;&#160;</a></span>invalid_value()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a> ap::parsing_failure::invalid_value </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;&#160;</td>
-          <td class="paramname"><em>arg_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00070">70</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a8f40f59b38209b9546342defb90336a0" name="a8f40f59b38209b9546342defb90336a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f40f59b38209b9546342defb90336a0">&#9670;&#160;</a></span>required_argument_not_parsed()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a> ap::parsing_failure::required_argument_not_parsed </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;&#160;</td>
-          <td class="paramname"><em>arg_name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00086">86</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00050">50</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
 
 </div>
 </div>
@@ -366,36 +226,10 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="_2home_2runner_2work_2cpp-ap_2cpp-ap_2include_2ap_2argument_parser_8hpp-example.html#a100">/home/runner/work/cpp-ap/cpp-ap/include/ap/argument_parser.hpp</a>.</dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00060">60</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="afc45e5f47c008ecaf429bc2e9e2e938d" name="afc45e5f47c008ecaf429bc2e9e2e938d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc45e5f47c008ecaf429bc2e9e2e938d">&#9670;&#160;</a></span>value_already_set()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a> ap::parsing_failure::value_already_set </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structap_1_1detail_1_1argument__name.html">detail::argument_name</a> &amp;&#160;</td>
-          <td class="paramname"><em>arg_name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00064">64</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="exceptions_8hpp_source.html#l00046">46</a> of file <a class="el" href="exceptions_8hpp_source.html">exceptions.hpp</a>.</p>
 
 </div>
 </div>
@@ -408,7 +242,7 @@ Static Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceap.html">ap</a></li><li class="navelem"><a class="el" href="structap_1_1parsing__failure.html">parsing_failure</a></li>
-    <li class="footer">Generated on Sat Sep 6 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
