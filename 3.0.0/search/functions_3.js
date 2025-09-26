@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['default_5farguments_0',['default_arguments',['../classap_1_1argument__parser.html#a8fa4cf833f0f3f377acb2973c9d68449',1,'ap::argument_parser::default_arguments(const AR &amp;arg_discriminators) noexcept'],['../classap_1_1argument__parser.html#ad07b684fbdfcab31a1ece66001acd717',1,'ap::argument_parser::default_arguments(const std::initializer_list&lt; default_argument &gt; &amp;arg_discriminators) noexcept'],['../classap_1_1argument__parser.html#ae409f40998ee5f1c7d2a93f04e8baaee',1,'ap::argument_parser::default_arguments(const std::same_as&lt; default_argument &gt; auto... arg_discriminators) noexcept']]],
+  ['default_5fvalues_1',['default_values',['../classap_1_1argument.html#a356a47ee728c00b6b0c213dda1ff00d4',1,'ap::argument::default_values(const CR &amp;values) noexcept'],['../classap_1_1argument.html#a71e649e6ac9884bd0ec4063bc439d7cb',1,'ap::argument::default_values(std::initializer_list&lt; value_type &gt; values) noexcept'],['../classap_1_1argument.html#aee136fd40ea40b8c707c817422ca668f',1,'ap::argument::default_values(const std::convertible_to&lt; value_type &gt; auto &amp;... values) noexcept']]]
+];
