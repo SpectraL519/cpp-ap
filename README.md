@@ -72,6 +72,7 @@ Command-line argument parser for C++20
     - [Using Multiple Subparsers](/docs/tutorial.md#using-multiple-subparsers)
     - [Parsing Arguments with Subparsers](/docs/tutorial.md#parsing-arguments-with-subparsers)
     - [Tracking Parser State](/docs/tutorial.md#tracking-parser-state)
+    - [Suppressing Argument Group Checks](/docs/tutorial.md#suppressing-argument-group-checks)
   - [Examples](/docs/tutorial.md#examples)
   - [Common Utility](/docs/tutorial.md#common-utility)
 - [Dev notes](/docs/dev_notes.md#dev-notes)

@@ -99,6 +99,7 @@ TEST_CASE_FIXTURE(
     // other parameters
     sut.required(false);
     sut.suppress_arg_checks();
+    sut.suppress_group_checks();
     sut.nargs(non_default_range);
     sut.choices(choices);
     sut.default_values(default_value);
@@ -106,15 +107,19 @@ TEST_CASE_FIXTURE(
     // check the descriptor parameters
     bld = get_help_builder(sut, verbose);
 
+    const auto required_it = std::ranges::find(bld.params, "required", &parameter_descriptor::name);
+    REQUIRE_NE(required_it, bld.params.end());
+    CHECK_EQ(required_it->value, "false");
+
     const auto suppress_arg_checks_it =
         std::ranges::find(bld.params, "suppress arg checks", &parameter_descriptor::name);
     REQUIRE_NE(suppress_arg_checks_it, bld.params.end());
     CHECK_EQ(suppress_arg_checks_it->value, "true");
 
-    // automatically set to false with suppress_arg_checks
-    const auto required_it = std::ranges::find(bld.params, "required", &parameter_descriptor::name);
-    REQUIRE_NE(required_it, bld.params.end());
-    CHECK_EQ(required_it->value, "false");
+    const auto suppress_group_checks_it =
+        std::ranges::find(bld.params, "suppress group checks", &parameter_descriptor::name);
+    REQUIRE_NE(suppress_group_checks_it, bld.params.end());
+    CHECK_EQ(suppress_group_checks_it->value, "true");
 
     const auto nargs_it = std::ranges::find(bld.params, "nargs", &parameter_descriptor::name);
     REQUIRE_NE(nargs_it, bld.params.end());

@@ -31,6 +31,7 @@
   - [Adding Arguments to Groups](#adding-arguments-to-groups)
   - [Group Attributes](#group-attributes)
   - [Complete Example](#complete-example)
+  - [Suppressing Argument Group Checks](#suppressing-argument-group-checks)
 - [Parsing Arguments](#parsing-arguments)
   - [Basic Argument Parsing Rules](#basic-argument-parsing-rules)
   - [Compound Arguments](#compound-arguments)

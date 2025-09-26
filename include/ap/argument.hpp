@@ -461,8 +461,10 @@ private:
         bld.params.reserve(6ull);
         if (this->_required != _default_required)
             bld.add_param("required", std::format("{}", this->_required));
-        if (this->suppresses_arg_checks())
+        if (this->_suppress_arg_checks)
             bld.add_param("suppress arg checks", "true");
+        if (this->_suppress_group_checks)
+            bld.add_param("suppress group checks", "true");
         if (this->_nargs_range != _default_nargs_range)
             bld.add_param("nargs", this->_nargs_range);
         if constexpr (util::c_writable<value_type>) {
