@@ -636,7 +636,7 @@ void print_debug_info() noexcept {
     std::exit(EXIT_SUCCESS);
 };
 
-parser.add_optional_argument("--debug-info")
+parser.add_optional_argument("debug-info")
       .action<ap::action_type::on_flag>(print_debug_info);
 ```
 
@@ -794,6 +794,18 @@ parser.default_arguments(<args>);
   parser.add_optional_argument<ap::none_type>("help", "h")
         .action<action_type::on_flag>(ap::action::print_help(parser, EXIT_SUCCESS))
         .help("Display the help message");
+  ```
+
+- `o_version`:
+
+  ```cpp
+  // equivalent to:
+  parser.add_optional_argument<none_type>("version", "v")
+        .action<action_type::on_flag>([&parser]() {
+            arg_parser.print_version();
+            std::exit(EXIT_SUCCESS);
+        })
+        .help("Dsiplay program version info");
   ```
 
 - `o_input` and `o_multi_input`:

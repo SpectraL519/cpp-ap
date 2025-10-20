@@ -1,5 +1,7 @@
 # editor files
 .vscode/
+.zed/
+.cache/
 
 # build files
 *build*/
