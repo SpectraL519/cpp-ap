@@ -123,7 +123,7 @@ cc_binary(
 
 ### Downloading the Library
 
-If you do not use CMake you can dowload the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
+If you do not use CMake you can download the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
 
 <br/>
 <br/>
@@ -135,7 +135,7 @@ To use the argument parser in your code you need to use the `ap::argument_parser
 
 ```cpp
 ap::argument_parser parser("program");
-parser.program_version("alhpa")
+parser.program_version("alpha")
       .program_description("Description of the program")
       .verbose();
 ```
@@ -146,7 +146,7 @@ parser.program_version("alhpa")
 >
 >   The program name given to the parser cannot be empty and cannot contain whitespace characters.
 >
-> - Additional parameters you can specify for a parser's instance incldue:
+> - Additional parameters you can specify for a parser's instance include:
 >   - The program's version and description - used in the parser's configuration output (`std::cout << parser`).
 >   - Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
 >   - [Arguments](#adding-arguments) - specify the values/options accepted by the program.
@@ -232,7 +232,7 @@ parser.add_optional_argument("n", ap::n_secondary);
 
 ### Boolean Flags
 
-Flags are essentialy optional arguments with a boolean value type.
+Flags are essentially optional arguments with a boolean value type.
 
 ```cpp
 parser.add_flag("enable_some_option", "eso").help("enables option: some option");
@@ -328,7 +328,7 @@ parser.add_positional_argument("output").required(false);
 
 parser.parse_args(argc, argv);
 
-// input is guaranteed to have a value if parsing was successfull
+// input is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 if (parser.has_value("output")) {
@@ -354,7 +354,7 @@ parser.add_optional_argument("output", "o");
 
 parser.parse_args(argc, argv);
 
-// `input` is guaranteed to have a value if parsing was successfull
+// `input` is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 if (parser.has_value("output")) {
@@ -574,7 +574,7 @@ parser.add_positional_argument("output").default_values("output.txt");
 
 parser.parse_args(argc, argv);
 
-// `input` is guaranteed to have a value if parsing was successfull
+// `input` is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 // `output` is guaranteed to have a value even if one was not specified in the command-line
@@ -596,7 +596,7 @@ parser.add_optional_argument("output", "o").default_values("output.txt");
 
 parser.parse_args(argc, argv);
 
-// `input` is guaranteed to have a value if parsing was successfull
+// `input` is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 // `output` is guaranteed to have a value even if one was not specified in the command-line
@@ -805,7 +805,7 @@ parser.default_arguments(<args>);
             arg_parser.print_version();
             std::exit(EXIT_SUCCESS);
         })
-        .help("Dsiplay program version info");
+        .help("Display program version info");
   ```
 
 - `o_input` and `o_multi_input`:
@@ -835,7 +835,7 @@ parser.default_arguments(<args>);
         .nargs(1)
         .help("Output file path");
 
-  // multi_otput - equivalent to:
+  // multi_output - equivalent to:
   parser.add_optional_argument("output", "o")
         .required()
         .nargs(ap::nargs::at_least(1))
@@ -902,7 +902,7 @@ auto& out_opts = parser.add_group("Output Options")
                        .mutually_exclusive(); // but at most one can be chosen
 ```
 
-> [!IMPORANT]
+> [!IMPORTANT]
 >
 > If a group is defined as **mutually exclusive** and an argument from this group is used, then the `required` and `nargs` attribute requirements of other arguments from the group **will NOT be verified**.
 >
@@ -1163,7 +1163,7 @@ optional: opt-value
 
 A command-line argument beginning with a flag prefix (`--` or `-`) that doesn't match any of the specified optional arguments or a compound of optional arguments (only for short flags) is considered **unknown** or **unrecognized**.
 
-By default an argument parser will throw an exception if an unkown argument flag is encountered.
+By default an argument parser will throw an exception if an unknown argument flag is encountered.
 
 This behavior can be modified using the `unknown_arguments_policy` method of the `argument_parser` class, which sets the policy for handling unknown argument flags.
 
@@ -1232,7 +1232,7 @@ The available policies are:
 
 > [!IMPORTANT]
 >
-> - The unkown argument flags handling polciy only affects the parser's behaviour when calling the `parse_args` or `try_parse_args` methods.
+> - The unknown argument flags handling policy only affects the parser's behaviour when calling the `parse_args` or `try_parse_args` methods.
 > - When parsing known args with `parse_known_args` or `try_parse_known_args` all unknown arguments (flags and values) are collected and returned as the parsing result, ignoring the specified policy for handling unknown arguments.
 >
 > Consider a similar example as above with only the argument parsing function changed:
@@ -1291,7 +1291,7 @@ Numbers: 1, 2, 3
 
 ### Parsing Known Arguments
 
-If you wish to handle only the specified command-line arguments and leave all unkown/unrecognized arguments, you can use the `parse_known_args` method.
+If you wish to handle only the specified command-line arguments and leave all unknown/unrecognized arguments, you can use the `parse_known_args` method.
 
 This method behaves similarly to `parse_args()` (see [Parsing Arguments](#parsing-arguments)), however it does not throw an error if unknown arguments are detected. Instead it returnes all the unknown arguments detected during parsing as a `std::vector<std::string>`.
 
@@ -1337,12 +1337,12 @@ parser.add_optional_argument("recognized", "r")
 const auto unknown_args = parser.parse_known_args(argc, argv);
 
 std::cout << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
-          << "unkown = " << ap::util::join(unknown_args) << std::endl;
+          << "unknown = " << ap::util::join(unknown_args) << std::endl;
 
 /* Example execution:
 > ./program value0 --recognized value1 value2 value3 --unrecognized value
 recognized = value1, value2
-unkown = value0, value3, --unrecognized, value
+unknown = value0, value3, --unrecognized, value
 ```
 
 Now all the values, that caused an exception for the `parse_args` example, are collected and returned as the result of argument parsing.
@@ -1353,7 +1353,7 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 >
 > ```cpp
 > parser.add_positional_argument("positional")
->       .help("A positinal argument");
+>       .help("A positional argument");
 > parser.add_optional_argument("recognized", "r")
 >       .nargs(ap::nargs::any())
 >       .help("A recognized optional argument");
@@ -1362,18 +1362,18 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 >
 > std::cout << "positional = " << parser.value("positional") << std::endl
 >           << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
->           << "unkown = " << ap::util::join(unknown_args) << std::endl;
+>           << "unknown = " << ap::util::join(unknown_args) << std::endl;
 >
 > /* Example execution:
 > > ./program --recognized value1 value2 value3 --unrecognized value4 value5 --recognized value6
 > positional = value4
 > recognized = value1, value2, value3, value6
-> unkown = --unrecognized, value5
+> unknown = --unrecognized, value5
 >
 > > ./program value0 --recognized value1 value2 value3 --unrecognized value4 --recognized value5
 > positional = value0
 > recognized = value1, value2, value3, value5
-> unkown = --unrecognized, value4
+> unknown = --unrecognized, value4
 > ```
 >
 > Here `value` is treated either as the `positional` argument's value or as an unknown argument (depending on the input arguments) even though the `recognized` optional argument still accepts values and only after the `--recognized` argument flag is encountered the parser continues collecting values for this argument.
@@ -1404,13 +1404,13 @@ You can retrieve the argument's value(s) with:
 
 2. Returns the given argument's value or the specified fallback value if the argument has no values.
 
-    - If the argument has a value (parsed or predefind), the behavior is the same as in case **(1)**.
+    - If the argument has a value (parsed or predefined), the behavior is the same as in case **(1)**.
     - If the argument has no values, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deduced type of `fallback_value`).
 
 3. Returns a vector of the given argument's values.
 
     - If the argument has any values (parsed or predefined), they will be returned as a `std::vector<value_type>`.
-    - If th argument has no values an empty vector will be returned.
+    - If the argument has no values an empty vector will be returned.
 
 > [!NOTE]
 >
@@ -1498,7 +1498,7 @@ Commands:
 Optional Arguments:
 
   --help, -h    : Display the help message
-  --version, -v : Dsiplay program version info
+  --version, -v : Display program version info
 ```
 
 ### Parsing Arguments with Subparsers
@@ -1564,7 +1564,7 @@ auto& active = git.resolved_parser();
 std::cout << "\nResolved parser : " << active.name() << " (" << active.program_name() << ")\n";
 ```
 
-If you run: `./ap-git submodule intit`, you will get the following state:
+If you run: `./ap-git submodule init`, you will get the following state:
 
 ```txt
 git            : invoked=true, finalized=false
