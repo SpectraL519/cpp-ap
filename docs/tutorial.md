@@ -123,7 +123,7 @@ cc_binary(
 
 ### Downloading the Library
 
-If you do not use CMake you can download the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
+If you do not use CMake, you can download the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
 
 <br/>
 <br/>
@@ -144,9 +144,9 @@ parser.program_version("alpha")
 >
 > - When creating an argument parser instance, you must provide a program name to the constructor.
 >
->   The program name given to the parser cannot be empty and cannot contain whitespace characters.
+>   The program name given to the parser cannot be empty and must not contain whitespace characters.
 >
-> - Additional parameters you can specify for a parser's instance include:
+> - Additional parameters you can specify for a parser instance include:
 >   - The program's version and description - used in the parser's configuration output (`std::cout << parser`).
 >   - Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
 >   - [Arguments](#adding-arguments) - specify the values/options accepted by the program.
@@ -468,7 +468,7 @@ The `nargs` parameter can be set as:
 > [!TIP]
 >
 > - Enabling the `greedy` option for an argument only makes sense for arguments with string-like value types.
-> - If no explicit `nargs` bound is set for a greedy argument, once it starts being parsed, it will consume all remaining command-line arguments.
+> - If no explicit `nargs` bound is set for a greedy argument, once parsing of such argument begins, it will consume all remaining command-line arguments.
 
 Consider a simple example:
 
@@ -495,7 +495,7 @@ Here the program execution should look something like this:
 Executing: remove-comments module.py -v --type py
 ```
 
-Notice that even though the `-v` and `--type` command-line arguments have flag prefixes and are not defined in the program, they are not treated as unknown arguments (and therefore no exception is thrown) because the `--args` argument is marked as `greedy` and it consumes these command-line arguments as its values.
+Notice that even though the `-v` and `--type` command-line arguments have flag prefixes and are not defined by the program, they are not treated as unknown arguments (and therefore no exception is thrown) because the `--args` argument is marked as `greedy` and it consumes these command-line arguments as its values.
 
 <br />
 
@@ -957,7 +957,7 @@ Similarly to [suppressing argument checks](#4-suppress_arg_checks---using-a-supp
 argument.suppress_group_checks();
 ```
 
-If such argument is used the requirement checks associated with the [group attributes](#group-attributes) will not be validated.
+If such argument is used, the requirement checks associated with the [group attributes](#group-attributes) will not be validated.
 
 > [!NOTE]
 >
@@ -989,7 +989,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!TIP]
 >
-> The `parse_args` function may throw an `ap::argument_parser_exception` if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` methods, which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see [Subparsers](#subparsers)), and exit with a failure status.
+> The `parse_args` function may throw an `ap::argument_parser_exception` if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` method which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see [Subparsers](#subparsers)), and exit with a failure status.
 >
 > Internally, This is equivalent to:
 >
@@ -1155,7 +1155,7 @@ optional: opt-value
 
 > [!TIP]
 >
-> Because of the optional arguments accept an arbitrary number of arguments by default, it is a good practice to set the [nargs](#1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a) parameter for optional arguments (where it makes sense).
+> Because optional arguments accept an arbitrary number of arguments by default, it is a good practice to set the [nargs](#1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a) parameter for optional arguments (where it makes sense).
 
 <br />
 
@@ -1349,7 +1349,7 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 
 > [!IMPORTANT]
 >
-> If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument will be reset. That means that any value following an unrecognized flag will be used to parse positional arguments or treated as an unknown argument as well (if there are no unparsed positional arguments). Let's consider an example:
+> If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument is reset. That means that any value following an unrecognized flag will be used to parse positional arguments or treated as an unknown argument as well (if there are no unparsed positional arguments). Let's consider an example:
 >
 > ```cpp
 > parser.add_positional_argument("positional")
@@ -1437,7 +1437,7 @@ Subparsers allow you to build **hierarchical command-line interfaces**, where a 
 auto& subparser = parser.add_subparser("subprogram");
 ```
 
-Each subparser is a separate instance of `ap::argument_parser` and therefore it can have it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.
+Each subparser is a separate instance of `ap::argument_parser` and therefore it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.
 
 For example:
 
@@ -1525,11 +1525,11 @@ Each parser tracks its state during parsing. The methods described below let you
 
 - `invoked() -> bool` : Returns `true` if the parser’s name appeared on the command line.
 
-  A parser is *invoked* as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.
+  A parser becomes *invoked* as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.
 
 - `finalized() -> bool` : Returns `true` if the parser has processed its own arguments.
 
-  This is distinct from `invoked()`: a parser can be invoked but not finalized if one of its subparsers handled the arguments instead.
+  This is distinct from `invoked()`: a parser can be *invoked* but not *finalized* if one of its subparsers handled the arguments instead.
 
 - `resolved_parser() -> ap::argument_parser&` : Returns a reference to the *deepest invoked parser*.
 
@@ -1607,4 +1607,4 @@ The following table lists the projects provided in the `cpp-ap-demo` submodule:
 
 ## Common Utility
 
-The CPP-AP library provides some additional utility, the descriptions of which can be found on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).
+The CPP-AP library provides additional utilities, described on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).
