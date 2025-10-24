@@ -863,7 +863,8 @@ public:
 
         this->_print_subparsers(os);
         for (const auto& group : this->_argument_groups)
-            this->_print_group(os, *group, verbose);
+            if (not group._hidden)
+                this->_print_group(os, *group, verbose);
     }
 
     /**
@@ -1515,16 +1516,17 @@ private:
         if (std::ranges::empty(visible_args))
             return;
 
-        os << '\n' << group._name << ":";
+        os << '\n' << group._name << ':';
 
-        std::vector<std::string> group_attrs;
+        std::vector<std::string_view> group_attrs;
+        if (group._description.has_value())
+            group_attrs.emplace_back(group._description.value());
         if (group._required)
             group_attrs.emplace_back("required");
         if (group._mutually_exclusive)
             group_attrs.emplace_back("mutually exclusive");
         if (not group_attrs.empty())
             os << " (" << util::join(group_attrs) << ')';
-
         os << '\n';
 
         if (verbose) {

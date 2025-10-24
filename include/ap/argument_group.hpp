@@ -42,6 +42,16 @@ class argument_group {
 public:
     argument_group() = delete;
 
+    argument_group& description(std::string_view desc) noexcept {
+        this->_description = desc;
+        return *this;
+    }
+
+    argument_group& hidden(const bool h = true) noexcept {
+        this->_hidden = h;
+        return *this;
+    }
+
     /**
      * @brief Set the `required` attribute of the group.
      *
@@ -89,7 +99,7 @@ private:
 
     /// Construct a new argument group with the given name.
     argument_group(argument_parser& parser, const std::string_view name)
-    : _parser(&parser), _name(name) {}
+    : _parser(&parser), _name(name), _description(std::nullopt) {}
 
     /// Add a new argument to this group (called internally by parser).
     void _add_argument(arg_ptr_t arg) noexcept {
@@ -98,8 +108,10 @@ private:
 
     argument_parser* _parser; ///< Pointer to the owning parser.
     std::string _name; ///< Name of the group (used in help output).
+    std::optional<std::string> _description; ///< Description of the group (used in help output).
     arg_ptr_vec_t _arguments; ///< A list of arguments that belong to this group.
 
+    bool _hidden : 1 = false; ///< The hidden attribute value (default: false).
     bool _required : 1 = false; ///< The required attribute value (default: false).
     bool _mutually_exclusive : 1 =
         false; ///< The mutually exclusive attribute value (default: false).
