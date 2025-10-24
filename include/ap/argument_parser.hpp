@@ -863,8 +863,7 @@ public:
 
         this->_print_subparsers(os);
         for (const auto& group : this->_argument_groups)
-            if (not group._hidden)
-                this->_print_group(os, *group, verbose);
+            this->_print_group(os, *group, verbose);
     }
 
     /**
@@ -1509,6 +1508,9 @@ private:
      */
     void _print_group(std::ostream& os, const argument_group& group, const bool verbose)
         const noexcept {
+        if (group._hidden)
+            return;
+
         auto visible_args = std::views::filter(group._arguments, [](const auto& arg) {
             return not arg->is_hidden();
         });
@@ -1519,8 +1521,6 @@ private:
         os << '\n' << group._name << ':';
 
         std::vector<std::string_view> group_attrs;
-        if (group._description.has_value())
-            group_attrs.emplace_back(group._description.value());
         if (group._required)
             group_attrs.emplace_back("required");
         if (group._mutually_exclusive)
