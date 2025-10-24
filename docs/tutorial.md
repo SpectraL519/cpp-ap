@@ -105,7 +105,7 @@ git_repository(
 ```
 
 > [!IMPORTANT]
-> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) DO NOT support building with Bazel.
+> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) do not support building with Bazel.
 
 And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
 
@@ -123,7 +123,7 @@ cc_binary(
 
 ### Downloading the Library
 
-If you do not use CMake you can dowload the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
+If you do not use CMake, you can download the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
 
 <br/>
 <br/>
@@ -135,7 +135,7 @@ To use the argument parser in your code you need to use the `ap::argument_parser
 
 ```cpp
 ap::argument_parser parser("program");
-parser.program_version("alhpa")
+parser.program_version("alpha")
       .program_description("Description of the program")
       .verbose();
 ```
@@ -144,9 +144,9 @@ parser.program_version("alhpa")
 >
 > - When creating an argument parser instance, you must provide a program name to the constructor.
 >
->   The program name given to the parser cannot be empty and cannot contain whitespace characters.
+>   The program name given to the parser cannot be empty and must not contain whitespace characters.
 >
-> - Additional parameters you can specify for a parser's instance incldue:
+> - Additional parameters you can specify for a parser instance include:
 >   - The program's version and description - used in the parser's configuration output (`std::cout << parser`).
 >   - Verbosity mode - `false` by default; if set to `true` the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.
 >   - [Arguments](#adding-arguments) - specify the values/options accepted by the program.
@@ -232,7 +232,7 @@ parser.add_optional_argument("n", ap::n_secondary);
 
 ### Boolean Flags
 
-Flags are essentialy optional arguments with a boolean value type.
+Flags are essentially optional arguments with a boolean value type.
 
 ```cpp
 parser.add_flag("enable_some_option", "eso").help("enables option: some option");
@@ -328,7 +328,7 @@ parser.add_positional_argument("output").required(false);
 
 parser.parse_args(argc, argv);
 
-// input is guaranteed to have a value if parsing was successfull
+// input is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 if (parser.has_value("output")) {
@@ -354,7 +354,7 @@ parser.add_optional_argument("output", "o");
 
 parser.parse_args(argc, argv);
 
-// `input` is guaranteed to have a value if parsing was successfull
+// `input` is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 if (parser.has_value("output")) {
@@ -468,7 +468,7 @@ The `nargs` parameter can be set as:
 > [!TIP]
 >
 > - Enabling the `greedy` option for an argument only makes sense for arguments with string-like value types.
-> - If no explicit `nargs` bound is set for a greedy argument, once it starts being parsed, it will consume all remaining command-line arguments.
+> - If no explicit `nargs` bound is set for a greedy argument, once parsing of such argument begins, it will consume all remaining command-line arguments.
 
 Consider a simple example:
 
@@ -495,7 +495,7 @@ Here the program execution should look something like this:
 Executing: remove-comments module.py -v --type py
 ```
 
-Notice that even though the `-v` and `--type` command-line arguments have flag prefixes and are not defined in the program, they are not treated as unknown arguments (and therefore no exception is thrown) because the `--args` argument is marked as `greedy` and it consumes these command-line arguments as its values.
+Notice that even though the `-v` and `--type` command-line arguments have flag prefixes and are not defined by the program, they are not treated as unknown arguments (and therefore no exception is thrown) because the `--args` argument is marked as `greedy` and it consumes these command-line arguments as its values.
 
 <br />
 
@@ -574,7 +574,7 @@ parser.add_positional_argument("output").default_values("output.txt");
 
 parser.parse_args(argc, argv);
 
-// `input` is guaranteed to have a value if parsing was successfull
+// `input` is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 // `output` is guaranteed to have a value even if one was not specified in the command-line
@@ -596,7 +596,7 @@ parser.add_optional_argument("output", "o").default_values("output.txt");
 
 parser.parse_args(argc, argv);
 
-// `input` is guaranteed to have a value if parsing was successfull
+// `input` is guaranteed to have a value if parsing was successful
 const auto data = read_data(parser.value("input"));
 
 // `output` is guaranteed to have a value even if one was not specified in the command-line
@@ -636,7 +636,7 @@ void print_debug_info() noexcept {
     std::exit(EXIT_SUCCESS);
 };
 
-parser.add_optional_argument("--debug-info")
+parser.add_optional_argument("debug-info")
       .action<ap::action_type::on_flag>(print_debug_info);
 ```
 
@@ -730,7 +730,7 @@ Command                       Result
 
   ```cpp
   template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept
+  ap::action::util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept;
   ```
 
 - `leq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -739,7 +739,7 @@ Command                       Result
 
   ```cpp
   template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept
+  ap::action::util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept;
   ```
 
 - `within` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -750,7 +750,7 @@ Command                       Result
   template <ap::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
   ap::action::util::callable_type<ap::action_type::observe, T> within(
       const T lower_bound, const T upper_bound
-  ) noexcept
+  ) noexcept;
   ```
 
 <br/>
@@ -796,6 +796,18 @@ parser.default_arguments(<args>);
         .help("Display the help message");
   ```
 
+- `o_version`:
+
+  ```cpp
+  // equivalent to:
+  parser.add_optional_argument<none_type>("version", "v")
+        .action<action_type::on_flag>([&parser]() {
+            parser.print_version();
+            std::exit(EXIT_SUCCESS);
+        })
+        .help("Display program version info");
+  ```
+
 - `o_input` and `o_multi_input`:
 
   ```cpp
@@ -823,7 +835,7 @@ parser.default_arguments(<args>);
         .nargs(1)
         .help("Output file path");
 
-  // multi_otput - equivalent to:
+  // multi_output - equivalent to:
   parser.add_optional_argument("output", "o")
         .required()
         .nargs(ap::nargs::at_least(1))
@@ -890,7 +902,7 @@ auto& out_opts = parser.add_group("Output Options")
                        .mutually_exclusive(); // but at most one can be chosen
 ```
 
-> [!IMPORANT]
+> [!IMPORTANT]
 >
 > If a group is defined as **mutually exclusive** and an argument from this group is used, then the `required` and `nargs` attribute requirements of other arguments from the group **will NOT be verified**.
 >
@@ -945,7 +957,7 @@ Similarly to [suppressing argument checks](#4-suppress_arg_checks---using-a-supp
 argument.suppress_group_checks();
 ```
 
-If such argument is used the requirement checks associated with the [group attributes](#group-attributes) will not be validated.
+If such argument is used, the requirement checks associated with the [group attributes](#group-attributes) will not be validated.
 
 > [!NOTE]
 >
@@ -977,7 +989,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!TIP]
 >
-> The `parse_args` function may throw an `ap::argument_parser_exception` if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` methods, which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see [Subparsers](#subparsers)), and exit with a failure status.
+> The `parse_args` function may throw an `ap::argument_parser_exception` if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` method which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see [Subparsers](#subparsers)), and exit with a failure status.
 >
 > Internally, This is equivalent to:
 >
@@ -1143,7 +1155,7 @@ optional: opt-value
 
 > [!TIP]
 >
-> Because of the optional arguments accept an arbitrary number of arguments by default, it is a good practice to set the [nargs](#1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a) parameter for optional arguments (where it makes sense).
+> Because optional arguments accept an arbitrary number of arguments by default, it is a good practice to set the [nargs](#1-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument-this-can-be-set-as-a) parameter for optional arguments (where it makes sense).
 
 <br />
 
@@ -1151,7 +1163,7 @@ optional: opt-value
 
 A command-line argument beginning with a flag prefix (`--` or `-`) that doesn't match any of the specified optional arguments or a compound of optional arguments (only for short flags) is considered **unknown** or **unrecognized**.
 
-By default an argument parser will throw an exception if an unkown argument flag is encountered.
+By default an argument parser will throw an exception if an unknown argument flag is encountered.
 
 This behavior can be modified using the `unknown_arguments_policy` method of the `argument_parser` class, which sets the policy for handling unknown argument flags.
 
@@ -1220,7 +1232,7 @@ The available policies are:
 
 > [!IMPORTANT]
 >
-> - The unkown argument flags handling polciy only affects the parser's behaviour when calling the `parse_args` or `try_parse_args` methods.
+> - The unknown argument flags handling policy only affects the parser's behaviour when calling the `parse_args` or `try_parse_args` methods.
 > - When parsing known args with `parse_known_args` or `try_parse_known_args` all unknown arguments (flags and values) are collected and returned as the parsing result, ignoring the specified policy for handling unknown arguments.
 >
 > Consider a similar example as above with only the argument parsing function changed:
@@ -1279,7 +1291,7 @@ Numbers: 1, 2, 3
 
 ### Parsing Known Arguments
 
-If you wish to handle only the specified command-line arguments and leave all unkown/unrecognized arguments, you can use the `parse_known_args` method.
+If you wish to handle only the specified command-line arguments and leave all unknown/unrecognized arguments, you can use the `parse_known_args` method.
 
 This method behaves similarly to `parse_args()` (see [Parsing Arguments](#parsing-arguments)), however it does not throw an error if unknown arguments are detected. Instead it returnes all the unknown arguments detected during parsing as a `std::vector<std::string>`.
 
@@ -1325,23 +1337,23 @@ parser.add_optional_argument("recognized", "r")
 const auto unknown_args = parser.parse_known_args(argc, argv);
 
 std::cout << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
-          << "unkown = " << ap::util::join(unknown_args) << std::endl;
+          << "unknown = " << ap::util::join(unknown_args) << std::endl;
 
 /* Example execution:
 > ./program value0 --recognized value1 value2 value3 --unrecognized value
 recognized = value1, value2
-unkown = value0, value3, --unrecognized, value
+unknown = value0, value3, --unrecognized, value
 ```
 
 Now all the values, that caused an exception for the `parse_args` example, are collected and returned as the result of argument parsing.
 
 > [!IMPORTANT]
 >
-> If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument will be reset. That means that any value following an unrecognized flag will be used to parse positional arguments or treated as an unknown argument as well (if there are no unparsed positional arguments). Let's consider an example:
+> If a parser encounters an unrecognized argument flag during *known* args parsing, then the flag will be collected and the currently processed optional argument is reset. That means that any value following an unrecognized flag will be used to parse positional arguments or treated as an unknown argument as well (if there are no unparsed positional arguments). Let's consider an example:
 >
 > ```cpp
 > parser.add_positional_argument("positional")
->       .help("A positinal argument");
+>       .help("A positional argument");
 > parser.add_optional_argument("recognized", "r")
 >       .nargs(ap::nargs::any())
 >       .help("A recognized optional argument");
@@ -1350,18 +1362,18 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 >
 > std::cout << "positional = " << parser.value("positional") << std::endl
 >           << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
->           << "unkown = " << ap::util::join(unknown_args) << std::endl;
+>           << "unknown = " << ap::util::join(unknown_args) << std::endl;
 >
 > /* Example execution:
 > > ./program --recognized value1 value2 value3 --unrecognized value4 value5 --recognized value6
 > positional = value4
 > recognized = value1, value2, value3, value6
-> unkown = --unrecognized, value5
+> unknown = --unrecognized, value5
 >
 > > ./program value0 --recognized value1 value2 value3 --unrecognized value4 --recognized value5
 > positional = value0
 > recognized = value1, value2, value3, value5
-> unkown = --unrecognized, value4
+> unknown = --unrecognized, value4
 > ```
 >
 > Here `value` is treated either as the `positional` argument's value or as an unknown argument (depending on the input arguments) even though the `recognized` optional argument still accepts values and only after the `--recognized` argument flag is encountered the parser continues collecting values for this argument.
@@ -1392,13 +1404,13 @@ You can retrieve the argument's value(s) with:
 
 2. Returns the given argument's value or the specified fallback value if the argument has no values.
 
-    - If the argument has a value (parsed or predefind), the behavior is the same as in case **(1)**.
+    - If the argument has a value (parsed or predefined), the behavior is the same as in case **(1)**.
     - If the argument has no values, this will return `value_type{std::forward<U>(fallback_value)}` (where `U` is the deduced type of `fallback_value`).
 
 3. Returns a vector of the given argument's values.
 
     - If the argument has any values (parsed or predefined), they will be returned as a `std::vector<value_type>`.
-    - If th argument has no values an empty vector will be returned.
+    - If the argument has no values an empty vector will be returned.
 
 > [!NOTE]
 >
@@ -1425,7 +1437,7 @@ Subparsers allow you to build **hierarchical command-line interfaces**, where a 
 auto& subparser = parser.add_subparser("subprogram");
 ```
 
-Each subparser is a separate instance of `ap::argument_parser` and therefore it can have it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.
+Each subparser is a separate instance of `ap::argument_parser` and therefore it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.
 
 For example:
 
@@ -1486,7 +1498,7 @@ Commands:
 Optional Arguments:
 
   --help, -h    : Display the help message
-  --version, -v : Dsiplay program version info
+  --version, -v : Display program version info
 ```
 
 ### Parsing Arguments with Subparsers
@@ -1513,15 +1525,15 @@ Each parser tracks its state during parsing. The methods described below let you
 
 - `invoked() -> bool` : Returns `true` if the parser’s name appeared on the command line.
 
-  A parser is *invoked* as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.
+  A parser becomes *invoked* as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.
 
 - `finalized() -> bool` : Returns `true` if the parser has processed its own arguments.
 
-  This is distinct from `invoked()`: a parser can be invoked but not finalized if one of its subparsers handled the arguments instead.
+  This is distinct from `invoked()`: a parser can be *invoked* but not *finalized* if one of its subparsers handled the arguments instead.
 
 - `resolved_parser() -> ap::argument_parser&` : Returns a reference to the *deepest invoked parser*.
 
-  sIf no subparser was invoked, this simply returns the current parser.
+  If no subparser was invoked, this simply returns the current parser.
 
 <br />
 
@@ -1552,7 +1564,7 @@ auto& active = git.resolved_parser();
 std::cout << "\nResolved parser : " << active.name() << " (" << active.program_name() << ")\n";
 ```
 
-If you run: `./ap-git submodule intit`, you will get the following state:
+If you run: `./ap-git submodule init`, you will get the following state:
 
 ```txt
 git            : invoked=true, finalized=false
@@ -1586,7 +1598,7 @@ The following table lists the projects provided in the `cpp-ap-demo` submodule:
 | [Numbers Converter](https://github.com/SpectraL519/cpp-ap-demo/tree/master/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
 | [Verbosity](https://github.com/SpectraL519/cpp-ap-demo/tree/master/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
 | [Logging Mode](https://github.com/SpectraL519/cpp-ap-demo/tree/master/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
-| [Message Logger](https://github.com/SpectraL519/cpp-ap-demo/tree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
+| [Message Logger](https://github.com/SpectraL519/cpp-ap-demo/arg_parsertree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
 | [AP-GIT](https://github.com/SpectraL519/cpp-ap-demo/tree/master/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
 
 <br/>
@@ -1595,4 +1607,4 @@ The following table lists the projects provided in the `cpp-ap-demo` submodule:
 
 ## Common Utility
 
-The CPP-AP library provides some additional utility, the descriptions of which can be found on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).
+The CPP-AP library provides additional utilities, described on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).

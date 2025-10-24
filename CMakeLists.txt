@@ -7,11 +7,13 @@ else()
 endif()
 
 project(cpp-ap
-    VERSION 3.0.0
+    VERSION 3.0.1
     DESCRIPTION "Command-line argument parser for C++20"
     HOMEPAGE_URL "https://github.com/SpectraL519/cpp-ap"
     LANGUAGES CXX
 )
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Options
 option(BUILD_TESTS "Build project tests" OFF)
