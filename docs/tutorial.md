@@ -105,7 +105,7 @@ git_repository(
 ```
 
 > [!IMPORTANT]
-> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) DO NOT support building with Bazel.
+> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) do not support building with Bazel.
 
 And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
 
@@ -730,7 +730,7 @@ Command                       Result
 
   ```cpp
   template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept
+  ap::action::util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept;
   ```
 
 - `leq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -739,7 +739,7 @@ Command                       Result
 
   ```cpp
   template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept
+  ap::action::util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept;
   ```
 
 - `within` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -750,7 +750,7 @@ Command                       Result
   template <ap::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
   ap::action::util::callable_type<ap::action_type::observe, T> within(
       const T lower_bound, const T upper_bound
-  ) noexcept
+  ) noexcept;
   ```
 
 <br/>
@@ -802,7 +802,7 @@ parser.default_arguments(<args>);
   // equivalent to:
   parser.add_optional_argument<none_type>("version", "v")
         .action<action_type::on_flag>([&parser]() {
-            arg_parser.print_version();
+            parser.print_version();
             std::exit(EXIT_SUCCESS);
         })
         .help("Display program version info");
@@ -1533,7 +1533,7 @@ Each parser tracks its state during parsing. The methods described below let you
 
 - `resolved_parser() -> ap::argument_parser&` : Returns a reference to the *deepest invoked parser*.
 
-  sIf no subparser was invoked, this simply returns the current parser.
+  If no subparser was invoked, this simply returns the current parser.
 
 <br />
 
@@ -1598,7 +1598,7 @@ The following table lists the projects provided in the `cpp-ap-demo` submodule:
 | [Numbers Converter](https://github.com/SpectraL519/cpp-ap-demo/tree/master/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
 | [Verbosity](https://github.com/SpectraL519/cpp-ap-demo/tree/master/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
 | [Logging Mode](https://github.com/SpectraL519/cpp-ap-demo/tree/master/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
-| [Message Logger](https://github.com/SpectraL519/cpp-ap-demo/tree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
+| [Message Logger](https://github.com/SpectraL519/cpp-ap-demo/arg_parsertree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
 | [AP-GIT](https://github.com/SpectraL519/cpp-ap-demo/tree/master/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
 
 <br/>
