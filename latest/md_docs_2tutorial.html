@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.0</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.1</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -207,7 +207,7 @@ Bazel Build System</h2>
 <div class="line">    tag = &quot;&lt;version-name&gt;&quot; # here you can declare the desired CPP-AP version</div>
 <div class="line">)</div>
 </div><!-- fragment --><blockquote class="doxtable">
-<p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span> CPP-AP versions older than <a href="https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0">2.5.0</a> DO NOT support building with Bazel. </p>
+<p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span> CPP-AP versions older than <a href="https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0">2.5.0</a> do not support building with Bazel. </p>
 </blockquote>
 <p>And then add the <code>"@cpp-ap//:cpp-ap"</code> dependency for the target you want to use <code>CPP-AP</code> for by adding it to the <code>deps</code> list. For instance:</p>
 <div class="fragment"><div class="line"># BUILD.bazel</div>
@@ -221,7 +221,7 @@ Bazel Build System</h2>
 <div class="line">)</div>
 </div><!-- fragment --><h2><a class="anchor" id="downloading-the-library"></a>
 Downloading the Library</h2>
-<p>If you do not use CMake you can dowload the desired <a href="https://github.com/SpectraL519/cpp-ap/releases">library release</a>, extract it in a desired directory and simply add <code>&lt;cpp-ap-dir&gt;/include</code> to the include directories of your project.</p>
+<p>If you do not use CMake, you can download the desired <a href="https://github.com/SpectraL519/cpp-ap/releases">library release</a>, extract it in a desired directory and simply add <code>&lt;cpp-ap-dir&gt;/include</code> to the include directories of your project.</p>
 <p><br  />
  <br  />
  <br  />
@@ -230,7 +230,7 @@ Downloading the Library</h2>
 The Parser Class</h1>
 <p>To use the argument parser in your code you need to use the <code><a class="el" href="classap_1_1argument__parser.html" title="The main argument parser class.">ap::argument_parser</a></code> class.</p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classap_1_1argument__parser.html">ap::argument_parser</a> parser(<span class="stringliteral">&quot;program&quot;</span>);</div>
-<div class="line">parser.program_version(<span class="stringliteral">&quot;alhpa&quot;</span>)</div>
+<div class="line">parser.program_version(<span class="stringliteral">&quot;alpha&quot;</span>)</div>
 <div class="line">      .program_description(<span class="stringliteral">&quot;Description of the program&quot;</span>)</div>
 <div class="line">      .verbose();</div>
 <div class="ttc" id="aclassap_1_1argument__parser_html"><div class="ttname"><a href="classap_1_1argument__parser.html">ap::argument_parser</a></div><div class="ttdoc">The main argument parser class.</div><div class="ttdef"><b>Definition</b> <a href="argument__parser_8hpp_source.html#l00179">argument_parser.hpp:179</a></div></div>
@@ -238,9 +238,9 @@ The Parser Class</h1>
 <p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span></p>
 <ul>
 <li><p class="startli">When creating an argument parser instance, you must provide a program name to the constructor.</p>
-<p class="startli">The program name given to the parser cannot be empty and cannot contain whitespace characters.</p>
+<p class="startli">The program name given to the parser cannot be empty and must not contain whitespace characters.</p>
 </li>
-<li>Additional parameters you can specify for a parser's instance incldue:<ul>
+<li>Additional parameters you can specify for a parser instance include:<ul>
 <li>The program's version and description - used in the parser's configuration output (<code>std::cout &lt;&lt; parser</code>).</li>
 <li>Verbosity mode - <code>false</code> by default; if set to <code>true</code> the parser's configuration output will include more detailed info about arguments' parameters in addition to their names and help messages.</li>
 <li><a class="el" href="md_docs_2tutorial.html#adding-arguments">Arguments</a> - specify the values/options accepted by the program.</li>
@@ -324,7 +324,7 @@ Value Types</h2>
 </blockquote>
 <h2><a class="anchor" id="boolean-flags"></a>
 Boolean Flags</h2>
-<p>Flags are essentialy optional arguments with a boolean value type.</p>
+<p>Flags are essentially optional arguments with a boolean value type.</p>
 <div class="fragment"><div class="line">parser.add_flag(<span class="stringliteral">&quot;enable_some_option&quot;</span>, <span class="stringliteral">&quot;eso&quot;</span>).help(<span class="stringliteral">&quot;enables option: some option&quot;</span>);</div>
 <div class="line"><span class="comment">/* equivalent to:</span></div>
 <div class="line"><span class="comment">parser.add_optional_argument&lt;bool&gt;(&quot;enable_some_option&quot;, &quot;eso&quot;)</span></div>
@@ -407,7 +407,7 @@ Common Parameters</h2>
 <div class="line"> </div>
 <div class="line">parser.parse_args(argc, argv);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// input is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="comment">// input is guaranteed to have a value if parsing was successful</span></div>
 <div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.value(<span class="stringliteral">&quot;input&quot;</span>));</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">if</span> (parser.has_value(<span class="stringliteral">&quot;output&quot;</span>)) {</div>
@@ -430,7 +430,7 @@ Common Parameters</h2>
 <div class="line"> </div>
 <div class="line">parser.parse_args(argc, argv);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successful</span></div>
 <div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.value(<span class="stringliteral">&quot;input&quot;</span>));</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">if</span> (parser.has_value(<span class="stringliteral">&quot;output&quot;</span>)) {</div>
@@ -540,7 +540,7 @@ Common Parameters</h2>
 <p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
 <ul>
 <li>Enabling the <code>greedy</code> option for an argument only makes sense for arguments with string-like value types.</li>
-<li>If no explicit <code>nargs</code> bound is set for a greedy argument, once it starts being parsed, it will consume all remaining command-line arguments. </li>
+<li>If no explicit <code>nargs</code> bound is set for a greedy argument, once parsing of such argument begins, it will consume all remaining command-line arguments. </li>
 </ul>
 </blockquote>
 <p>Consider a simple example:</p>
@@ -562,7 +562,7 @@ Common Parameters</h2>
 </div><!-- fragment --><p>Here the program execution should look something like this:</p>
 <div class="fragment"><div class="line">&gt; ./run-script remove-comments --args <span class="keyword">module</span>.py -v --type py</div>
 <div class="line">Executing: remove-comments module.py -v --type py</div>
-</div><!-- fragment --><p>Notice that even though the <code>-v</code> and <code>--type</code> command-line arguments have flag prefixes and are not defined in the program, they are not treated as unknown arguments (and therefore no exception is thrown) because the <code>--args</code> argument is marked as <code>greedy</code> and it consumes these command-line arguments as its values.</p>
+</div><!-- fragment --><p>Notice that even though the <code>-v</code> and <code>--type</code> command-line arguments have flag prefixes and are not defined by the program, they are not treated as unknown arguments (and therefore no exception is thrown) because the <code>--args</code> argument is marked as <code>greedy</code> and it consumes these command-line arguments as its values.</p>
 <p><br  />
 </p>
 <h3><a class="anchor" id="autotoc_md7-choices---a-list-of-valid-argument-values"></a>
@@ -633,7 +633,7 @@ Common Parameters</h2>
 <div class="line"> </div>
 <div class="line">parser.parse_args(argc, argv);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successful</span></div>
 <div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.value(<span class="stringliteral">&quot;input&quot;</span>));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// `output` is guaranteed to have a value even if one was not specified in the command-line</span></div>
@@ -652,7 +652,7 @@ Common Parameters</h2>
 <div class="line"> </div>
 <div class="line">parser.parse_args(argc, argv);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successfull</span></div>
+<div class="line"><span class="comment">// `input` is guaranteed to have a value if parsing was successful</span></div>
 <div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> data = read_data(parser.value(<span class="stringliteral">&quot;input&quot;</span>));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// `output` is guaranteed to have a value even if one was not specified in the command-line</span></div>
@@ -689,7 +689,7 @@ Parameters Specific for Optional Arguments</h2>
 <div class="line">    std::exit(EXIT_SUCCESS);</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line">parser.add_optional_argument(<span class="stringliteral">&quot;--debug-info&quot;</span>)</div>
+<div class="line">parser.add_optional_argument(<span class="stringliteral">&quot;debug-info&quot;</span>)</div>
 <div class="line">      .action&lt;<a class="code hl_struct" href="structap_1_1action__type_1_1on__flag.html">ap::action_type::on_flag</a>&gt;(print_debug_info);</div>
 <div class="ttc" id="astructap_1_1action__type_1_1on__flag_html"><div class="ttname"><a href="structap_1_1action__type_1_1on__flag.html">ap::action_type::on_flag</a></div><div class="ttdoc">An on-flag action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00059">types.hpp:59</a></div></div>
 </div><!-- fragment --><p>Here the <code>print_debug_info</code> function will be called right after parsing the <code>--debug-info</code> flag and the program will exit, even if there are more arguments after this flag.</p>
@@ -763,19 +763,19 @@ Actions</h2>
 <li><p class="startli"><code>lt</code> | observe (value type: <a href="https://en.cppreference.com/w/cpp/types/is_arithmetic">arithmetic</a>)</p>
 <p class="startli">Validates that the value is strictly less than <code>upper_bound</code>.</p>
 <div class="fragment"><div class="line"><span class="keyword">template</span> &lt;ap::util::c_arithmetic T&gt;</div>
-<div class="line"><a class="code hl_typedef" href="group__util.html#gabbe48ae9c9dbd3c12128353d76a3468f">ap::action::util::callable_type&lt;ap::action_type::observe, T&gt;</a> lt(<span class="keyword">const</span> T upper_bound) <span class="keyword">noexcept</span></div>
+<div class="line"><a class="code hl_typedef" href="group__util.html#gabbe48ae9c9dbd3c12128353d76a3468f">ap::action::util::callable_type&lt;ap::action_type::observe, T&gt;</a> lt(<span class="keyword">const</span> T upper_bound) <span class="keyword">noexcept</span>;</div>
 </div><!-- fragment --></li>
 <li><p class="startli"><code>leq</code> | observe (value type: <a href="https://en.cppreference.com/w/cpp/types/is_arithmetic">arithmetic</a>)</p>
 <p class="startli">Validates that the value is less than or equal to <code>upper_bound</code>.</p>
 <div class="fragment"><div class="line"><span class="keyword">template</span> &lt;ap::util::c_arithmetic T&gt;</div>
-<div class="line"><a class="code hl_typedef" href="group__util.html#gabbe48ae9c9dbd3c12128353d76a3468f">ap::action::util::callable_type&lt;ap::action_type::observe, T&gt;</a> leq(<span class="keyword">const</span> T upper_bound) <span class="keyword">noexcept</span></div>
+<div class="line"><a class="code hl_typedef" href="group__util.html#gabbe48ae9c9dbd3c12128353d76a3468f">ap::action::util::callable_type&lt;ap::action_type::observe, T&gt;</a> leq(<span class="keyword">const</span> T upper_bound) <span class="keyword">noexcept</span>;</div>
 </div><!-- fragment --></li>
 <li><p class="startli"><code>within</code> | observe (value type: <a href="https://en.cppreference.com/w/cpp/types/is_arithmetic">arithmetic</a>)</p>
 <p class="startli">Checks if the value is within the given interval. Bound inclusivity is customizable using template parameters.</p>
 <div class="fragment"><div class="line"><span class="keyword">template</span> &lt;ap::util::c_arithmetic T, <span class="keywordtype">bool</span> LeftInclusive = true, <span class="keywordtype">bool</span> RightInclusive = true&gt;</div>
 <div class="line"><a class="code hl_typedef" href="group__util.html#gabbe48ae9c9dbd3c12128353d76a3468f">ap::action::util::callable_type&lt;ap::action_type::observe, T&gt;</a> within(</div>
 <div class="line">    <span class="keyword">const</span> T lower_bound, <span class="keyword">const</span> T upper_bound</div>
-<div class="line">) <span class="keyword">noexcept</span></div>
+<div class="line">) <span class="keyword">noexcept</span>;</div>
 </div><!-- fragment --></li>
 </ul>
 <p><br  />
@@ -813,6 +813,15 @@ Default Arguments</h1>
 <div class="ttc" id="anamespaceap_1_1action_html_a34ab44ba899e3bc6ebf51b1206470dd1"><div class="ttname"><a href="namespaceap_1_1action.html#a34ab44ba899e3bc6ebf51b1206470dd1">ap::action::print_help</a></div><div class="ttdeci">ap::action_type::on_flag::type print_help(const argument_parser &amp;parser, const std::optional&lt; int &gt; exit_code=std::nullopt, std::ostream &amp;os=std::cout) noexcept</div><div class="ttdoc">Returns an on-flag action which prints the argument parser's help message.</div><div class="ttdef"><b>Definition</b> <a href="predefined_8hpp_source.html#l00028">predefined.hpp:28</a></div></div>
 <div class="ttc" id="astructap_1_1none__type_html"><div class="ttname"><a href="structap_1_1none__type.html">ap::none_type</a></div><div class="ttdoc">A type representing the absence of a value. This type is used for arguments that should not store any...</div><div class="ttdef"><b>Definition</b> <a href="types_8hpp_source.html#l00020">types.hpp:20</a></div></div>
 </div><!-- fragment --></li>
+<li><p class="startli"><code>o_version</code>:</p>
+<div class="fragment"><div class="line"><span class="comment">// equivalent to:</span></div>
+<div class="line">parser.add_optional_argument&lt;none_type&gt;(<span class="stringliteral">&quot;version&quot;</span>, <span class="stringliteral">&quot;v&quot;</span>)</div>
+<div class="line">      .action&lt;action_type::on_flag&gt;([&amp;parser]() {</div>
+<div class="line">          parser.print_version();</div>
+<div class="line">          std::exit(EXIT_SUCCESS);</div>
+<div class="line">      })</div>
+<div class="line">      .help(<span class="stringliteral">&quot;Display program version info&quot;</span>);</div>
+</div><!-- fragment --></li>
 <li><p class="startli"><code>o_input</code> and <code>o_multi_input</code>:</p>
 <div class="fragment"><div class="line"><span class="comment">// input - equivalent to:</span></div>
 <div class="line">parser.add_optional_argument(<span class="stringliteral">&quot;input&quot;</span>, <span class="stringliteral">&quot;i&quot;</span>)</div>
@@ -836,7 +845,7 @@ Default Arguments</h1>
 <div class="line">      .nargs(1)</div>
 <div class="line">      .help(<span class="stringliteral">&quot;Output file path&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// multi_otput - equivalent to:</span></div>
+<div class="line"><span class="comment">// multi_output - equivalent to:</span></div>
 <div class="line">parser.add_optional_argument(<span class="stringliteral">&quot;output&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>)</div>
 <div class="line">      .required()</div>
 <div class="line">      .nargs(<a class="code hl_function" href="namespaceap_1_1nargs.html#a044186c0633fcdb3d7b7a1039dbc9e8a">ap::nargs::at_least</a>(1))</div>
@@ -890,7 +899,7 @@ Group Attributes</h2>
 <div class="line">                       .required()            <span class="comment">// at least one option is required</span></div>
 <div class="line">                       .mutually_exclusive(); <span class="comment">// but at most one can be chosen</span></div>
 </div><!-- fragment --><blockquote class="doxtable">
-<p>&zwj;[!IMPORANT]</p>
+<p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span></p>
 <p>If a group is defined as <b>mutually exclusive</b> and an argument from this group is used, then the <code>required</code> and <code>nargs</code> attribute requirements of other arguments from the group <b>will NOT be verified</b>.</p>
 <p>Consider the example in the section below. Normally the <code>--output, -o</code> argument would expect a value to be given in the command-line. However, if the <code>--print, -p</code> flag is used, then the <code>nargs</code> requirement of the <code>--output, -o</code> argument will not be verified, and therefore no exception will be thrown, even though the <code>nargs</code> requirement is not satisfied. </p>
 </blockquote>
@@ -933,7 +942,7 @@ Suppressing Argument Group Checks</h2>
 <p>Similarly to <a class="el" href="md_docs_2tutorial.html#autotoc_md4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments">suppressing argument checks</a>, an argument can suppress the requirement checks of argument groups:</p>
 <div class="fragment"><div class="line"> ++</div>
 <div class="line">argument.suppress_group_checks();</div>
-</div><!-- fragment --><p>If such argument is used the requirement checks associated with the <a class="el" href="md_docs_2tutorial.html#group-attributes">group attributes</a> will not be validated.</p>
+</div><!-- fragment --><p>If such argument is used, the requirement checks associated with the <a class="el" href="md_docs_2tutorial.html#group-attributes">group attributes</a> will not be validated.</p>
 <blockquote class="doxtable">
 <p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
 <ul>
@@ -963,7 +972,7 @@ Parsing Arguments</h1>
 </div><!-- fragment --> </blockquote>
 <blockquote class="doxtable">
 <p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
-<p>The <code>parse_args</code> function may throw an <code><a class="el" href="structap_1_1argument__parser__exception.html" title="Base type for the argument parser functionality errors/exceptions.">ap::argument_parser_exception</a></code> if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the <code>argument_parser</code> class provides a <code>try_parse_args</code> methods, which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see <a class="el" href="md_docs_2tutorial.html#subparsers">Subparsers</a>), and exit with a failure status.</p>
+<p>The <code>parse_args</code> function may throw an <code><a class="el" href="structap_1_1argument__parser__exception.html" title="Base type for the argument parser functionality errors/exceptions.">ap::argument_parser_exception</a></code> if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the <code>argument_parser</code> class provides a <code>try_parse_args</code> method which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see <a class="el" href="md_docs_2tutorial.html#subparsers">Subparsers</a>), and exit with a failure status.</p>
 <p>Internally, This is equivalent to:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">try</span> {</div>
 <div class="line">    parser.parse_args(...);</div>
@@ -1103,14 +1112,14 @@ Basic Argument Parsing Rules</h2>
 <div class="line"><span class="comment">optional: opt-value</span></div>
 </div><!-- fragment --><blockquote class="doxtable">
 <p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span></p>
-<p>Because of the optional arguments accept an arbitrary number of arguments by default, it is a good practice to set the nargs parameter for optional arguments (where it makes sense). </p>
+<p>Because optional arguments accept an arbitrary number of arguments by default, it is a good practice to set the nargs parameter for optional arguments (where it makes sense). </p>
 </blockquote>
 <p><br  />
 </p>
 <h3><a class="anchor" id="autotoc_md4-unknown-argument-flag-handling"></a>
 4. Unknown Argument Flag Handling</h3>
 <p>A command-line argument beginning with a flag prefix (<code>--</code> or <code>-</code>) that doesn't match any of the specified optional arguments or a compound of optional arguments (only for short flags) is considered <b>unknown</b> or <b>unrecognized</b>.</p>
-<p>By default an argument parser will throw an exception if an unkown argument flag is encountered.</p>
+<p>By default an argument parser will throw an exception if an unknown argument flag is encountered.</p>
 <p>This behavior can be modified using the <code>unknown_arguments_policy</code> method of the <code>argument_parser</code> class, which sets the policy for handling unknown argument flags.</p>
 <p><b>Example:</b></p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="argument__parser_8hpp.html">ap/argument_parser.hpp</a>&gt;</span></div>
@@ -1163,7 +1172,7 @@ Basic Argument Parsing Rules</h2>
 <blockquote class="doxtable">
 <p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span></p>
 <ul>
-<li>The unkown argument flags handling polciy only affects the parser's behaviour when calling the <code>parse_args</code> or <code>try_parse_args</code> methods.</li>
+<li>The unknown argument flags handling policy only affects the parser's behaviour when calling the <code>parse_args</code> or <code>try_parse_args</code> methods.</li>
 <li>When parsing known args with <code>parse_known_args</code> or <code>try_parse_known_args</code> all unknown arguments (flags and values) are collected and returned as the parsing result, ignoring the specified policy for handling unknown arguments.</li>
 </ul>
 <p>Consider a similar example as above with only the argument parsing function changed: </p><div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> unknown_args = parser.try_parse_known_args(argc, argv);</div>
@@ -1213,7 +1222,7 @@ Compound Arguments</h2>
 </p>
 <h2><a class="anchor" id="parsing-known-arguments"></a>
 Parsing Known Arguments</h2>
-<p>If you wish to handle only the specified command-line arguments and leave all unkown/unrecognized arguments, you can use the <code>parse_known_args</code> method.</p>
+<p>If you wish to handle only the specified command-line arguments and leave all unknown/unrecognized arguments, you can use the <code>parse_known_args</code> method.</p>
 <p>This method behaves similarly to <code>parse_args()</code> (see <a class="el" href="md_docs_2tutorial.html#parsing-arguments">Parsing Arguments</a>), however it does not throw an error if unknown arguments are detected. Instead it returnes all the unknown arguments detected during parsing as a <code>std::vector&lt;std::string&gt;</code>.</p>
 <p>Consider a simple example:</p>
 <div class="fragment"><div class="line">parser.add_optional_argument(<span class="stringliteral">&quot;recognized&quot;</span>, <span class="stringliteral">&quot;r&quot;</span>)</div>
@@ -1251,18 +1260,18 @@ Parsing Known Arguments</h2>
 <div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> unknown_args = parser.parse_known_args(argc, argv);</div>
 <div class="line"> </div>
 <div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;recognized = &quot;</span> &lt;&lt; <a class="code hl_function" href="group__util.html#ga40445f18de1dd15fcaca8ba56ba6f63a">ap::util::join</a>(parser.values(<span class="stringliteral">&quot;recognized&quot;</span>)) &lt;&lt; std::endl</div>
-<div class="line">          &lt;&lt; <span class="stringliteral">&quot;unkown = &quot;</span> &lt;&lt; <a class="code hl_function" href="group__util.html#ga40445f18de1dd15fcaca8ba56ba6f63a">ap::util::join</a>(unknown_args) &lt;&lt; std::endl;</div>
+<div class="line">          &lt;&lt; <span class="stringliteral">&quot;unknown = &quot;</span> &lt;&lt; <a class="code hl_function" href="group__util.html#ga40445f18de1dd15fcaca8ba56ba6f63a">ap::util::join</a>(unknown_args) &lt;&lt; std::endl;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Example execution:</span></div>
 <div class="line"><span class="comment">&gt; ./program value0 --recognized value1 value2 value3 --unrecognized value</span></div>
 <div class="line"><span class="comment">recognized = value1, value2</span></div>
-<div class="line"><span class="comment">unkown = value0, value3, --unrecognized, value</span></div>
+<div class="line"><span class="comment">unknown = value0, value3, --unrecognized, value</span></div>
 </div><!-- fragment --><p>Now all the values, that caused an exception for the <code>parse_args</code> example, are collected and returned as the result of argument parsing.</p>
 <blockquote class="doxtable">
 <p>&zwj;<span style="color: #d63384; font-weight: bold; font-size: 1.1em;"><i class="fa fa-exclamation-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Important:</span></p>
-<p>If a parser encounters an unrecognized argument flag during <em>known</em> args parsing, then the flag will be collected and the currently processed optional argument will be reset. That means that any value following an unrecognized flag will be used to parse positional arguments or treated as an unknown argument as well (if there are no unparsed positional arguments). Let's consider an example:</p>
+<p>If a parser encounters an unrecognized argument flag during <em>known</em> args parsing, then the flag will be collected and the currently processed optional argument is reset. That means that any value following an unrecognized flag will be used to parse positional arguments or treated as an unknown argument as well (if there are no unparsed positional arguments). Let's consider an example:</p>
 <div class="fragment"><div class="line">parser.add_positional_argument(<span class="stringliteral">&quot;positional&quot;</span>)</div>
-<div class="line">      .help(<span class="stringliteral">&quot;A positinal argument&quot;</span>);</div>
+<div class="line">      .help(<span class="stringliteral">&quot;A positional argument&quot;</span>);</div>
 <div class="line">parser.add_optional_argument(<span class="stringliteral">&quot;recognized&quot;</span>, <span class="stringliteral">&quot;r&quot;</span>)</div>
 <div class="line">      .nargs(<a class="code hl_function" href="namespaceap_1_1nargs.html#a5c02ed5b148d6c1d8a520a95eb744c73">ap::nargs::any</a>())</div>
 <div class="line">      .help(<span class="stringliteral">&quot;A recognized optional argument&quot;</span>);</div>
@@ -1271,18 +1280,18 @@ Parsing Known Arguments</h2>
 <div class="line"> </div>
 <div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;positional = &quot;</span> &lt;&lt; parser.value(<span class="stringliteral">&quot;positional&quot;</span>) &lt;&lt; std::endl</div>
 <div class="line">          &lt;&lt; <span class="stringliteral">&quot;recognized = &quot;</span> &lt;&lt; <a class="code hl_function" href="group__util.html#ga40445f18de1dd15fcaca8ba56ba6f63a">ap::util::join</a>(parser.values(<span class="stringliteral">&quot;recognized&quot;</span>)) &lt;&lt; std::endl</div>
-<div class="line">          &lt;&lt; <span class="stringliteral">&quot;unkown = &quot;</span> &lt;&lt; <a class="code hl_function" href="group__util.html#ga40445f18de1dd15fcaca8ba56ba6f63a">ap::util::join</a>(unknown_args) &lt;&lt; std::endl;</div>
+<div class="line">          &lt;&lt; <span class="stringliteral">&quot;unknown = &quot;</span> &lt;&lt; <a class="code hl_function" href="group__util.html#ga40445f18de1dd15fcaca8ba56ba6f63a">ap::util::join</a>(unknown_args) &lt;&lt; std::endl;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Example execution:</span></div>
 <div class="line"><span class="comment">&lt;blockquote&gt;&amp;zwj;./program --recognized value1 value2 value3 --unrecognized value4 value5 --recognized value6</span></div>
 <div class="line"><span class="comment">&lt;/blockquote&gt;positional = value4</span></div>
 <div class="line"><span class="comment">recognized = value1, value2, value3, value6</span></div>
-<div class="line"><span class="comment">unkown = --unrecognized, value5</span></div>
+<div class="line"><span class="comment">unknown = --unrecognized, value5</span></div>
 <div class="line"><span class="comment"></span> </div>
 <div class="line"><span class="comment">&lt;blockquote&gt;&amp;zwj;./program value0 --recognized value1 value2 value3 --unrecognized value4 --recognized value5</span></div>
 <div class="line"><span class="comment">&lt;/blockquote&gt;positional = value0</span></div>
 <div class="line"><span class="comment">recognized = value1, value2, value3, value5</span></div>
-<div class="line"><span class="comment">unkown = --unrecognized, value4</span></div>
+<div class="line"><span class="comment">unknown = --unrecognized, value4</span></div>
 </div><!-- fragment --><p>Here <code>value</code> is treated either as the <code>positional</code> argument's value or as an unknown argument (depending on the input arguments) even though the <code>recognized</code> optional argument still accepts values and only after the <code>--recognized</code> argument flag is encountered the parser continues collecting values for this argument. </p>
 </blockquote>
 <blockquote class="doxtable">
@@ -1307,13 +1316,13 @@ Retrieving Argument Values</h1>
 </ul>
 </li>
 <li>Returns the given argument's value or the specified fallback value if the argument has no values.<ul>
-<li>If the argument has a value (parsed or predefind), the behavior is the same as in case **(1)**.</li>
+<li>If the argument has a value (parsed or predefined), the behavior is the same as in case **(1)**.</li>
 <li>If the argument has no values, this will return <code>value_type{std::forward&lt;U&gt;(fallback_value)}</code> (where <code>U</code> is the deduced type of <code>fallback_value</code>).</li>
 </ul>
 </li>
 <li>Returns a vector of the given argument's values.<ul>
 <li>If the argument has any values (parsed or predefined), they will be returned as a <code>std::vector&lt;value_type&gt;</code>.</li>
-<li>If th argument has no values an empty vector will be returned.</li>
+<li>If the argument has no values an empty vector will be returned.</li>
 </ul>
 </li>
 </ol>
@@ -1339,7 +1348,7 @@ Subparsers</h1>
 <h2><a class="anchor" id="creating-subparsers"></a>
 Creating Subparsers</h2>
 <div class="fragment"><div class="line"><span class="keyword">auto</span>&amp; subparser = parser.add_subparser(<span class="stringliteral">&quot;subprogram&quot;</span>);</div>
-</div><!-- fragment --><p>Each subparser is a separate instance of <code><a class="el" href="classap_1_1argument__parser.html" title="The main argument parser class.">ap::argument_parser</a></code> and therefore it can have it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.</p>
+</div><!-- fragment --><p>Each subparser is a separate instance of <code><a class="el" href="classap_1_1argument__parser.html" title="The main argument parser class.">ap::argument_parser</a></code> and therefore it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.</p>
 <p>For example:</p>
 <div class="fragment"><div class="line"><span class="comment">// top-level parser</span></div>
 <div class="line"><a class="code hl_class" href="classap_1_1argument__parser.html">ap::argument_parser</a> git(<span class="stringliteral">&quot;ap-git&quot;</span>);</div>
@@ -1389,7 +1398,7 @@ Using Multiple Subparsers</h2>
 <div class="line">Optional Arguments:</div>
 <div class="line"> </div>
 <div class="line">  --help, -h    : Display the help message</div>
-<div class="line">  --version, -v : Dsiplay program version info</div>
+<div class="line">  --version, -v : Display program version info</div>
 </div><!-- fragment --><h2><a class="anchor" id="parsing-arguments-with-subparsers"></a>
 Parsing Arguments with Subparsers</h2>
 <p>When parsing command-line arguments, the parent parser will attempt to match the <b>first command-line token</b> against the name of one of its subparsers.</p>
@@ -1408,13 +1417,13 @@ Tracking Parser State</h2>
 <p>Each parser tracks its state during parsing. The methods described below let you inspect this state:</p>
 <ul>
 <li><p class="startli"><code>invoked() -&gt; bool</code> : Returns <code>true</code> if the parser’s name appeared on the command line.</p>
-<p class="startli">A parser is <em>invoked</em> as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.</p>
+<p class="startli">A parser becomes <em>invoked</em> as soon as the parser is selected during parsing, even if parsing is later delegated to one of its subparsers.</p>
 </li>
 <li><p class="startli"><code>finalized() -&gt; bool</code> : Returns <code>true</code> if the parser has processed its own arguments.</p>
-<p class="startli">This is distinct from <code>invoked()</code>: a parser can be invoked but not finalized if one of its subparsers handled the arguments instead.</p>
+<p class="startli">This is distinct from <code>invoked()</code>: a parser can be <em>invoked</em> but not <em>finalized</em> if one of its subparsers handled the arguments instead.</p>
 </li>
 <li><p class="startli"><code>resolved_parser() -&gt; <a class="el" href="classap_1_1argument__parser.html" title="The main argument parser class.">ap::argument_parser</a>&amp;</code> : Returns a reference to the <em>deepest invoked parser</em>.</p>
-<p class="startli">sIf no subparser was invoked, this simply returns the current parser.</p>
+<p class="startli">If no subparser was invoked, this simply returns the current parser.</p>
 </li>
 </ul>
 <p><br  />
@@ -1443,7 +1452,7 @@ Example: Inspecting Parsing States</h3>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span>&amp; active = git.resolved_parser();</div>
 <div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;\nResolved parser : &quot;</span> &lt;&lt; active.name() &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; active.program_name() &lt;&lt; <span class="stringliteral">&quot;)\n&quot;</span>;</div>
-</div><!-- fragment --><p>If you run: <code>./ap-git submodule intit</code>, you will get the following state:</p>
+</div><!-- fragment --><p>If you run: <code>./ap-git submodule init</code>, you will get the following state:</p>
 <div class="fragment"><div class="line">git            : invoked=<span class="keyword">true</span>, finalized=<span class="keyword">false</span></div>
 <div class="line">submodule      : invoked=<span class="keyword">true</span>, finalized=<span class="keyword">false</span></div>
 <div class="line">submodule_init : invoked=<span class="keyword">true</span>, finalized=<span class="keyword">true</span></div>
@@ -1478,7 +1487,7 @@ Examples</h1>
 <td class="markdownTableBodyLeft"><a href="https://github.com/SpectraL519/cpp-ap-demo/tree/master/logging_mode/">Logging Mode</a>   </td><td class="markdownTableBodyLeft">Logs a message depending on the selected logging mode (<code>quiet</code>, <code>normal</code>, <code>verbose</code>).<br  />
 <b>Demonstrates:</b> The usage of custom argument value types (like enums).    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft"><a href="https://github.com/SpectraL519/cpp-ap-demo/tree/master/message_logger/">Message Logger</a>   </td><td class="markdownTableBodyLeft">Outputs a message to a file, console, or not at all.<br  />
+<td class="markdownTableBodyLeft"><a href="https://github.com/SpectraL519/cpp-ap-demo/arg_parsertree/master/message_logger/">Message Logger</a>   </td><td class="markdownTableBodyLeft">Outputs a message to a file, console, or not at all.<br  />
 <b>Demonstrates:</b> The usage of argument groups.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft"><a href="https://github.com/SpectraL519/cpp-ap-demo/tree/master/ap_git/">AP-GIT</a>   </td><td class="markdownTableBodyLeft">A minimal Git CLI clone with subcommands (<code>init</code>, <code>add</code>, <code>commit</code>, <code>status</code>, <code>push</code>).<br  />
@@ -1490,14 +1499,14 @@ Examples</h1>
 </p>
 <h1><a class="anchor" id="common-utility"></a>
 Common Utility</h1>
-<p>The CPP-AP library provides some additional utility, the descriptions of which can be found on the <a href="https://spectral519.github.io/cpp-ap/latest/group__util.html">Utility topic page</a>. </p>
+<p>The CPP-AP library provides additional utilities, described on the <a href="https://spectral519.github.io/cpp-ap/latest/group__util.html">Utility topic page</a>. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Sep 26 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Fri Oct 24 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>
