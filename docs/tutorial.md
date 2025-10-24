@@ -908,6 +908,15 @@ auto& out_opts = parser.add_group("Output Options")
 >
 > Consider the example in the section below. Normally the `--output, -o` argument would expect a value to be given in the command-line. However, if the `--print, -p` flag is used, then the `nargs` requirement of the `--output, -o` argument will not be verified, and therefore no exception will be thrown, even though the `nargs` requirement is not satisfied.
 
+Additionally, argument groups can be marked `hidden` - a hidden group will not be visible in the parser's help output (even if it has visible arguments).
+
+```cpp
+auto& hidden_opts = parser.add_group("Hidden Options").hidden();
+parser.add_optional_argument("visible").help("A visible arg");
+```
+
+In the example above, neither the `Hidden Options` group nor the `visible` arg will be visible in the parser's help output.
+
 ### Complete Example
 
 Below is a small program that demonstrates how to use a mutually exclusive group of required arguments:
