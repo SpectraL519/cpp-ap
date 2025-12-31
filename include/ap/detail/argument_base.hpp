@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "argument_name.hpp"
-#include "help_builder.hpp"
+#include "ap/detail/argument_name.hpp"
+#include "ap/detail/help_builder.hpp"
 
 #include <any>
 #include <iostream>
