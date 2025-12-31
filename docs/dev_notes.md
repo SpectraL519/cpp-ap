@@ -2,34 +2,30 @@
 
 <br />
 
-## Building and testing
+## Building and Testing
 
 > [!NOTE]
 >
 > The project uses [doctest](https://github.com/doctest/doctest) framework for unit testing, however it is already installed in the [tests/external](/tests/external/) directory, so there is no need to install it sepparately.
 
-### Build the testing executable
+### Build the Testing Executable
 
 ```shell
 cmake -B build -DBUILD_TESTS=ON
-cmake --build build/ # -j <njobs>
+cmake --build build/ # -j<njobs>
 ```
 
-This will build each test file as a separate executable in the `build/tests/` directory.
+This will build a `run_uts` executable executable in the `build/tests/` directory.
 
-### Run the tests
+### Runing the Tests
 
-You can run tests from each test file separately with:
+To run the project's unit tests, simply run the testing executable:
 
 ```shell
-./build/tests/<test-name>
+./build/tests/run_uts
 ```
 
-To execute all tests at once run:
-
-```shell
-ctest --test-dir build/tests/ # -V (to capture output from each test executable)
-```
+<!-- TODO: add test suites and use full include paths in implementation -->
 
 <br />
 <br />
