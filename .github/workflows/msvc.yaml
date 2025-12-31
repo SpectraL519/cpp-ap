@@ -2,7 +2,7 @@ name: MSVC
 on:
   push:
     branches:
-      - '*'
+      - "*"
     paths:
       - .github/workflows/msvc.yaml
       - include/**
