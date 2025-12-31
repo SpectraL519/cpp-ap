@@ -33,5 +33,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ctest --test-dir build_msvc/tests -V -C Debug
+          ./build_msvc/tests/run_uts
         shell: powershell

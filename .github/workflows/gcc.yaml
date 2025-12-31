@@ -36,4 +36,4 @@ jobs:
 
       - name: Run tests
         run: |
-          ctest --test-dir build_gcc/tests/ -V
+          ./build_gcc/tests/run_uts
