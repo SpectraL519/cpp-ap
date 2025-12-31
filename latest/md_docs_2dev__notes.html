@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.1.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -98,23 +98,24 @@ $(document).ready(function(){initNavTree('md_docs_2dev__notes.html',''); initRes
 <div class="textblock"><p><a class="anchor" id="dev-notes"></a> <br  />
 </p>
 <h1><a class="anchor" id="building-and-testing"></a>
-Building and testing</h1>
+Building and Testing</h1>
 <blockquote class="doxtable">
 <p>&zwj;<span style="color: #1e90ff; font-weight: bold; font-size: 1.1em;"><i class="fa fa-info-circle" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Note:</span></p>
 <p>The project uses <a href="https://github.com/doctest/doctest">doctest</a> framework for unit testing, however it is already installed in the <a href="/tests/external/">tests/external</a> directory, so there is no need to install it sepparately. </p>
 </blockquote>
 <h2><a class="anchor" id="build-the-testing-executable"></a>
-Build the testing executable</h2>
+Build the Testing Executable</h2>
 <div class="fragment"><div class="line">cmake -B build -DBUILD_TESTS=ON</div>
-<div class="line">cmake --build build/ # -j &lt;njobs&gt;</div>
-</div><!-- fragment --><p>This will build each test file as a separate executable in the <code>build/tests/</code> directory.</p>
-<h2><a class="anchor" id="run-the-tests"></a>
-Run the tests</h2>
-<p>You can run tests from each test file separately with:</p>
-<div class="fragment"><div class="line">./build/tests/&lt;test-name&gt;</div>
-</div><!-- fragment --><p>To execute all tests at once run:</p>
-<div class="fragment"><div class="line">ctest --test-dir build/tests/ # -V (to capture output from each test executable)</div>
-</div><!-- fragment --><p><br  />
+<div class="line">cmake --build build/ # -j&lt;njobs&gt;</div>
+</div><!-- fragment --><p>This will build a <code>run_uts</code> executable executable in the <code>build/tests/</code> directory.</p>
+<h2><a class="anchor" id="runing-the-tests"></a>
+Runing the Tests</h2>
+<p>To run the project's unit tests, simply run the testing executable:</p>
+<div class="fragment"><div class="line">./build/tests/run_uts</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>&zwj;<span style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fa fa-lightbulb-o" style="margin-right: 6px; vertical-align: middle; font-size: 1.3em; position: relative; top: -0.08em;"></i> Tip:</span> Each test file defines its unique test suite with the same name as the test file. To run tests within such test suite, execute: </p><div class="fragment"><div class="line">./build/tests/run_uts -ts=&lt;test-suite-name&gt;</div>
+</div><!-- fragment --> </blockquote>
+<p><br  />
  <br  />
 </p>
 <h1><a class="anchor" id="formatting"></a>
@@ -166,7 +167,7 @@ Generating the Documentation</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 24 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Wed Dec 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

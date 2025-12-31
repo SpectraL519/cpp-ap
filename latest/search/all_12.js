@@ -12,6 +12,6 @@ var searchData=
   ['help_5fbuilder_9',['help_builder',['../classap_1_1detail_1_1help__builder.html',1,'ap::detail::help_builder'],['../classap_1_1argument.html#adbf8b2a448d802d83fbc6f72c3e89c26',1,'ap::argument::help_builder()'],['../classap_1_1detail_1_1argument__base.html#ac82bcfe9e2f1c590f7772e48bc5aa3ad',1,'ap::detail::argument_base::help_builder()'],['../classap_1_1detail_1_1help__builder.html#a2207b880569dc8ece014634e8f18e883',1,'ap::detail::help_builder::help_builder()']]],
   ['help_5fbuilder_2ehpp_10',['help_builder.hpp',['../help__builder_8hpp.html',1,'']]],
   ['helpers_2ehpp_11',['helpers.hpp',['../helpers_8hpp.html',1,'']]],
-  ['hidden_12',['hidden',['../classap_1_1argument.html#af184b14847ec55263e083e21fec5bca4',1,'ap::argument']]],
+  ['hidden_12',['hidden',['../classap_1_1argument.html#af184b14847ec55263e083e21fec5bca4',1,'ap::argument::hidden()'],['../classap_1_1argument__group.html#a3a18c8033b216e98af8036d6ca0d29f1',1,'ap::argument_group::hidden()']]],
   ['hidden_20tt_20if_20this_20option_20is_20set_20for_20an_20argument_20then_20it_20will_20not_20be_20included_20in_20the_20program_20description_13',['2. &lt;tt&gt;hidden&lt;/tt&gt; - If this option is set for an argument, then it will not be included in the program description.',['../md_docs_2tutorial.html#autotoc_md2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description',1,'']]]
 ];

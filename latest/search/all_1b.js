@@ -13,5 +13,5 @@ var searchData=
   ['results_20in_20suppressing_20requirement_20checks_20for_20other_20arguments_10',['4. &lt;tt&gt;suppress_arg_checks&lt;/tt&gt; - Using a suppressing argument results in suppressing requirement checks for other arguments.',['../md_docs_2tutorial.html#autotoc_md4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments',1,'']]],
   ['retrieving_20argument_20values_11',['Retrieving Argument Values',['../md_docs_2tutorial.html#retrieving-argument-values',1,'']]],
   ['rules_12',['Basic Argument Parsing Rules',['../md_docs_2tutorial.html#basic-argument-parsing-rules',1,'']]],
-  ['run_20the_20tests_13',['Run the tests',['../md_docs_2dev__notes.html#run-the-tests',1,'']]]
+  ['runing_20the_20tests_13',['Runing the Tests',['../md_docs_2dev__notes.html#runing-the-tests',1,'']]]
 ];

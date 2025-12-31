@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.0.1</span>
+   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.1.0</span>
    </div>
    <div id="projectbrief">Command-line argument parser for C++20</div>
   </td>
@@ -903,6 +903,10 @@ Group Attributes</h2>
 <p>If a group is defined as <b>mutually exclusive</b> and an argument from this group is used, then the <code>required</code> and <code>nargs</code> attribute requirements of other arguments from the group <b>will NOT be verified</b>.</p>
 <p>Consider the example in the section below. Normally the <code>--output, -o</code> argument would expect a value to be given in the command-line. However, if the <code>--print, -p</code> flag is used, then the <code>nargs</code> requirement of the <code>--output, -o</code> argument will not be verified, and therefore no exception will be thrown, even though the <code>nargs</code> requirement is not satisfied. </p>
 </blockquote>
+<p>Additionally, argument groups can be marked <code>hidden</code> - a hidden group will not be visible in the parser's help output (even if it has visible arguments).</p>
+<div class="fragment"><div class="line"><span class="keyword">auto</span>&amp; hidden_opts = parser.add_group(<span class="stringliteral">&quot;Hidden Options&quot;</span>).hidden();</div>
+<div class="line">parser.add_optional_argument(<span class="stringliteral">&quot;visible&quot;</span>).help(<span class="stringliteral">&quot;A visible arg&quot;</span>);</div>
+</div><!-- fragment --><p>In the example above, neither the <code>Hidden Options</code> group nor the <code>visible</code> arg will be visible in the parser's help output.</p>
 <h2><a class="anchor" id="complete-example"></a>
 Complete Example</h2>
 <p>Below is a small program that demonstrates how to use a mutually exclusive group of required arguments:</p>
@@ -1506,7 +1510,7 @@ Common Utility</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Oct 24 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Wed Dec 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

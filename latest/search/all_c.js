@@ -12,7 +12,7 @@ var searchData=
   ['boolean_20flags_9',['Boolean Flags',['../md_docs_2tutorial.html#boolean-flags',1,'']]],
   ['bound_20is_20reached_10',['6. &lt;tt&gt;greedy&lt;/tt&gt; - If this option is set, the argument will consume ALL command-line values until it&apos;s upper nargs bound is reached.',['../md_docs_2tutorial.html#autotoc_md6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached',1,'']]],
   ['build_20system_11',['Bazel Build System',['../md_docs_2tutorial.html#bazel-build-system',1,'']]],
-  ['build_20the_20testing_20executable_12',['Build the testing executable',['../md_docs_2dev__notes.html#build-the-testing-executable',1,'']]],
-  ['building_20and_20testing_13',['Building and testing',['../md_docs_2dev__notes.html#building-and-testing',1,'']]],
+  ['build_20the_20testing_20executable_12',['Build the Testing Executable',['../md_docs_2dev__notes.html#build-the-testing-executable',1,'']]],
+  ['building_20and_20testing_13',['Building and Testing',['../md_docs_2dev__notes.html#building-and-testing',1,'']]],
   ['but_20no_20values_20are_20parsed_20from_20the_20command_20line_14',['2. &lt;tt&gt;implicit_values&lt;/tt&gt; - A list of values which will be set for an argument if only its flag but no values are parsed from the command-line.',['../md_docs_2tutorial.html#autotoc_md2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line',1,'']]]
 ];

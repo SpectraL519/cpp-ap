@@ -31,9 +31,9 @@ var NAVTREE =
       [ "Related Pages", "index.html#related-pages", null ],
       [ "Compiler Compatibilty", "index.html#compiler-compatibilty", null ],
       [ "License", "index.html#license", null ],
-      [ "Building and testing", "md_docs_2dev__notes.html#building-and-testing", [
-        [ "Build the testing executable", "md_docs_2dev__notes.html#build-the-testing-executable", null ],
-        [ "Run the tests", "md_docs_2dev__notes.html#run-the-tests", null ]
+      [ "Building and Testing", "md_docs_2dev__notes.html#building-and-testing", [
+        [ "Build the Testing Executable", "md_docs_2dev__notes.html#build-the-testing-executable", null ],
+        [ "Runing the Tests", "md_docs_2dev__notes.html#runing-the-tests", null ]
       ] ],
       [ "Formatting", "md_docs_2dev__notes.html#formatting", null ],
       [ "Documentation", "md_docs_2dev__notes.html#documentation", [
@@ -123,7 +123,7 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", null ],
+        [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
@@ -140,9 +140,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_2home_2runner_2work_2cpp-ap_2cpp-ap_2include_2ap_2argument_parser_8hpp-example.html",
-"classap_1_1argument__parser.html#a18d104bdbb36a0e6c317caacc2d76621",
-"classap_1_1detail_1_1help__builder.html#abda4fafd5cd6c8244969a9be23c82195",
-"range_8hpp.html#ad4747cf38240752e92c1bd53f5f13a56"
+"classap_1_1argument__parser.html#a13b07a0743939b405c41a13cb90b9ede",
+"classap_1_1detail_1_1help__builder.html#a8188afef1669fcb0c9981f78e25dc2ac",
+"namespacemembers_enum.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
