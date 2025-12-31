@@ -6,6 +6,8 @@
 
 using namespace ap::nargs;
 
+TEST_SUITE_BEGIN("test_nargs_range");
+
 namespace {
 
 constexpr count_type exact_bound = 1ull;
@@ -149,3 +151,5 @@ TEST_CASE("range builders should return correct range objects") {
         CHECK(std::is_eq(max_bound <=> sut));
     }
 }
+
+TEST_SUITE_END(); // test_nargs_range

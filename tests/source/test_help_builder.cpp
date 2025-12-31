@@ -4,6 +4,8 @@
 
 #include <cstdint>
 
+TEST_SUITE_BEGIN("test_help_builder");
+
 using sut_type = ap::detail::help_builder;
 
 namespace {
@@ -155,3 +157,5 @@ TEST_CASE("get should fall back to multiline output if string is too wide") {
 
     CHECK_EQ(sut.get(indent_width, max_line_width), expected.str());
 }
+
+TEST_SUITE_END(); // test_help_builder

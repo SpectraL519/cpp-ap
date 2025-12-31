@@ -25,7 +25,11 @@ To run the project's unit tests, simply run the testing executable:
 ./build/tests/run_uts
 ```
 
-<!-- TODO: add test suites and use full include paths in implementation -->
+> [!TIP]
+> Each test file defines its unique test suite with the same name as the test file. To run tests within such test suite, execute:
+> ```shell
+> ./build/tests/run_uts -ts=<test-suite-name>
+> ```
 
 <br />
 <br />

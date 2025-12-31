@@ -8,6 +8,8 @@ using ap::invalid_configuration;
 using ap::parsing_failure;
 using ap::unknown_policy;
 
+TEST_SUITE_BEGIN("test_argument_parser_parse_args");
+
 struct test_argument_parser_parse_args : public argument_parser_test_fixture {
     const std::string_view test_program_name = "test program name";
 
@@ -1519,3 +1521,5 @@ TEST_CASE_FIXTURE(
     CHECK_EQ(subparser.value(pos_arg_name), pos_arg_val);
     CHECK_EQ(subparser.value(opt_arg_name), opt_arg_val);
 }
+
+TEST_SUITE_END(); // test_argument_parser_parse_args;

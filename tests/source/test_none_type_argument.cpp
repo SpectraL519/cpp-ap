@@ -3,6 +3,8 @@
 
 using namespace ap_testing;
 
+TEST_SUITE_BEGIN("test_none_type_argument");
+
 using ap::optional_argument;
 using ap::parsing_failure;
 using ap::detail::argument_name;
@@ -47,3 +49,5 @@ TEST_CASE_FIXTURE(
         parsing_failure
     );
 }
+
+TEST_SUITE_END(); // test_none_type_argument
