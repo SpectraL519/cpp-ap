@@ -91,7 +91,7 @@ jobs:
             "branch=$branch" >> $env:GITHUB_OUTPUT
           }
 
-      - name: Build cpp-ap-demo (CMake)
+      - name: Build cpp-ap-demo (with CMake)
         run: |
           cd cpp-ap-demo
           cmake -B build_cmake -DAP_TAG=${{ steps.branch-name.outputs.branch }}
@@ -104,7 +104,7 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
 
-      - name: Build cpp-ap-demo (Bazel)
+      - name: Build cpp-ap-demo (with Bazel)
         run: |
           cd cpp-ap-demo
           $BRANCH="${{ steps.branch-name.outputs.branch }}"
