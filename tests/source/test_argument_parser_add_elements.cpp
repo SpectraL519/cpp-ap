@@ -9,6 +9,8 @@ using ap::argument_parser;
 using ap::default_argument;
 using ap::invalid_configuration;
 
+TEST_SUITE_BEGIN("test_argument_parser_add_elements");
+
 struct test_argument_parser_add_elements : public argument_parser_test_fixture {
     const char flag_char = '-';
 
@@ -392,3 +394,5 @@ TEST_CASE_FIXTURE(
         std::logic_error
     );
 }
+
+TEST_SUITE_END(); // test_argument_parser_add_elements

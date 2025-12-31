@@ -6,9 +6,10 @@
 
 #pragma once
 
-#include "argument_base.hpp"
+#include "ap/detail/argument_base.hpp"
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 

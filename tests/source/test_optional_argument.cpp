@@ -11,6 +11,8 @@ using ap::parsing_failure;
 using ap::detail::argument_name;
 using ap::detail::parameter_descriptor;
 
+TEST_SUITE_BEGIN("test_optional_argument");
+
 namespace {
 
 constexpr char flag_char = '-';
@@ -634,3 +636,5 @@ TEST_CASE_FIXTURE(
     set_value_force(sut, invalid_choice);
     CHECK(std::is_gt(nvalues_ordering(sut)));
 }
+
+TEST_SUITE_END(); // test_optional_argument

@@ -6,6 +6,8 @@ using namespace ap_testing;
 using ap::argument_parser;
 using ap::invalid_configuration;
 
+TEST_SUITE_BEGIN("test_argument_parser_info");
+
 struct test_argument_parser_info : public argument_parser_test_fixture {
     const std::string test_description = "test program description";
     const ap::version test_version{1u, 2u, 3u};
@@ -91,3 +93,5 @@ TEST_CASE_FIXTURE(
     REQUIRE(stored_program_description);
     CHECK_EQ(stored_program_description.value(), test_description);
 }
+
+TEST_SUITE_END(); // test_argument_parser_info

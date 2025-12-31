@@ -2,7 +2,7 @@ name: GCC
 on:
   push:
     branches:
-      - '*'
+      - "*"
     paths:
       - .github/workflows/gcc.yaml
       - include/**
@@ -23,7 +23,7 @@ jobs:
 
       - name: Prepare
         env:
-          CC:  gcc-13
+          CC: gcc-13
           CXX: g++-13
         run: |
           cmake -B build_gcc -DBUILD_TESTS=ON -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
@@ -36,4 +36,4 @@ jobs:
 
       - name: Run tests
         run: |
-          ctest --test-dir build_gcc/tests/ -V
+          ./build_gcc/tests/run_uts

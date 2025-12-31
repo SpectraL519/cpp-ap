@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "argument.hpp"
-#include "argument_group.hpp"
-#include "detail/argument_token.hpp"
-#include "types.hpp"
+#include "ap/argument.hpp"
+#include "ap/argument_group.hpp"
+#include "ap/detail/argument_token.hpp"
+#include "ap/types.hpp"
 
 #include <algorithm>
 #include <format>
@@ -1508,6 +1508,9 @@ private:
      */
     void _print_group(std::ostream& os, const argument_group& group, const bool verbose)
         const noexcept {
+        if (group._hidden)
+            return;
+
         auto visible_args = std::views::filter(group._arguments, [](const auto& arg) {
             return not arg->is_hidden();
         });
@@ -1515,16 +1518,15 @@ private:
         if (std::ranges::empty(visible_args))
             return;
 
-        os << '\n' << group._name << ":";
+        os << '\n' << group._name << ':';
 
-        std::vector<std::string> group_attrs;
+        std::vector<std::string_view> group_attrs;
         if (group._required)
             group_attrs.emplace_back("required");
         if (group._mutually_exclusive)
             group_attrs.emplace_back("mutually exclusive");
         if (not group_attrs.empty())
             os << " (" << util::join(group_attrs) << ')';
-
         os << '\n';
 
         if (verbose) {

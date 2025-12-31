@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "detail/argument_base.hpp"
+#include "ap/detail/argument_base.hpp"
 
 #include <memory>
 
@@ -41,6 +41,20 @@ namespace ap {
 class argument_group {
 public:
     argument_group() = delete;
+
+    /**
+     * @brief Set the `hidden` attribute of the group.
+     *
+     * - If set to true, the group will be hidden from the help output.
+     * - Groups are NOT hidden by default.
+     *
+     * @param h The value to set for the attribute (default: true).
+     * @return Reference to the group instance.
+     */
+    argument_group& hidden(const bool h = true) noexcept {
+        this->_hidden = h;
+        return *this;
+    }
 
     /**
      * @brief Set the `required` attribute of the group.
@@ -100,6 +114,7 @@ private:
     std::string _name; ///< Name of the group (used in help output).
     arg_ptr_vec_t _arguments; ///< A list of arguments that belong to this group.
 
+    bool _hidden : 1 = false; ///< The hidden attribute value (default: false).
     bool _required : 1 = false; ///< The required attribute value (default: false).
     bool _mutually_exclusive : 1 =
         false; ///< The mutually exclusive attribute value (default: false).

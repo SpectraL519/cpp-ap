@@ -8,6 +8,8 @@
 
 using namespace ap::util;
 
+TEST_SUITE_BEGIN("test_string_utility");
+
 namespace {
 
 constexpr std::string_view delimiter = ",";
@@ -57,3 +59,5 @@ TEST_CASE("join should return a proper range representation for a multi element 
     std::vector<int> range = {1, 2, 3};
     CHECK_EQ(join(range, delimiter), "1,2,3");
 }
+
+TEST_SUITE_END(); // test_string_utility

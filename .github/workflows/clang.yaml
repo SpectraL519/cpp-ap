@@ -2,7 +2,7 @@ name: Clang
 on:
   push:
     branches:
-      - '*'
+      - "*"
     paths:
       - .github/workflows/clang.yaml
       - include/**
@@ -23,17 +23,17 @@ jobs:
 
       - name: Prepare
         env:
-          CC:  clang-17
+          CC: clang-17
           CXX: clang++-17
         run: |
           cmake -B build_clang -DBUILD_TESTS=ON -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
         continue-on-error: false
 
-      - name: Build tests
+      - name: Build and Run tests
         run: |
-          cmake --build build_clang/ -j 4
+          cmake --build build_clang/ -j4
         continue-on-error: false
 
       - name: Run tests
         run: |
-          ctest --test-dir build_clang/tests/ -V
+          ./build_clang/tests/run_uts

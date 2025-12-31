@@ -6,6 +6,8 @@
 
 using namespace ap::detail;
 
+TEST_SUITE_BEGIN("test_argument_name");
+
 namespace {
 
 constexpr std::string_view primary_1 = "primary_1";
@@ -171,3 +173,5 @@ TEST_CASE("operator<< should push correct data to the output stream") {
 
     REQUIRE_EQ(ss.str(), expected_ss.str());
 }
+
+TEST_SUITE_END(); // test_argument_name

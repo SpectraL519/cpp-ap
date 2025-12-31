@@ -2,7 +2,7 @@ name: MSVC
 on:
   push:
     branches:
-      - '*'
+      - "*"
     paths:
       - .github/workflows/msvc.yaml
       - include/**
@@ -33,5 +33,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ctest --test-dir build_msvc/tests -V -C Debug
+          ./build_msvc/tests/Debug/run_uts.exe
         shell: powershell

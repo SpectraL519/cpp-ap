@@ -9,6 +9,8 @@ using ap::optional_argument;
 using ap::detail::argument_base;
 using ap::detail::argument_name;
 
+TEST_SUITE_BEGIN("test_argument_token");
+
 namespace {
 
 const std::string token_value_1 = "tok-val-1";
@@ -60,3 +62,5 @@ TEST_CASE("is_valid_flag_token should return true if the token is a flag token a
     CHECK(sut_type{t_flag_primary, "", {arg_ptr}}.is_valid_flag_token());
     CHECK(sut_type{t_flag_secondary, "", {arg_ptr}}.is_valid_flag_token());
 }
+
+TEST_SUITE_END(); // test_argument_token
