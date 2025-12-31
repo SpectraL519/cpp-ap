@@ -33,5 +33,5 @@ jobs:
 
       - name: Run tests
         run: |
-          tree /f
+          ./build_msvc/tests/Debug/run_uts.exe
         shell: powershell
