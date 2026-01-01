@@ -43,9 +43,12 @@ jobs:
           fi
 
       - name: Build cpp-argon-demo (CMake)
+        env:
+          CC: gcc-14
+          CXX: g++-14
         run: |
           cd cpp-argon-demo
-          cmake -B build_cmake -DARGON_TAG=${{ steps.branch-name.outputs.branch }}
+          cmake -B build_cmake -DARGON_TAG=${{ steps.branch-name.outputs.branch }} -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC
           cmake --build build_cmake/ -j 4
 
       - name: Setup Bazel
