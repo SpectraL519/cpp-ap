@@ -29,8 +29,17 @@
 
 `CPP-ARGON` is a lightweight and feature-rich command-line argument parsing library for the C++20 and newer standards, designed as an alternative to `boost::program_options`. It offers a modern and intuitive interface allowing for straightforward argument configuration and parsing.
 
-> [!IMPORTANT]
-> Versions of the library up to prior to `v4.0.0` were developed under the name `CPP-AP` instead of `CPP-ARGON`.
+> [!CAUTION]
+> Versions of the `CPP-ARGON` library up to prior to `v4.0.0` were developed under the name `CPP-AP`.
+>
+> **Legacy Support:** The deprecated URLs (`https://github.com/SpectraL519/cpp-ap` and `.../cpp-ap-demo`) automatically redirect to the new locations, and build targets defined in previous versions remain fully functional.
+>
+> **Action Required:**
+> - **Repositories:** We highly recommend updating your remote references and submodules to the new canonical URLs:
+>   - Library: https://github.com/SpectraL519/cpp-argon
+>   - Demo: https://github.com/SpectraL519/cpp-argon-demo
+> - **Documentation:** The old documentation URL (`.../cpp-ap/<version>/`) is **no longer active**. Please use the new address:
+>   - https://spectral519.github.io/cpp-argon/latest/
 
 > [!NOTE]
 >

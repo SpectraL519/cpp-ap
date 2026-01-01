@@ -105,7 +105,7 @@ git_repository(
 ```
 
 > [!IMPORTANT]
-> CPP-ARGON versions older than [2.5.0](https://github.com/SpectraL519/cpp-argon/releases/tag/v2.5.0) do not support building with Bazel.
+> CPP-ARGON (CPP-AP) versions older than [2.5.0](https://github.com/SpectraL519/cpp-argon/releases/tag/v2.5.0) do not support building with Bazel.
 
 And then add the `"@cpp-argon//:cpp-argon"` dependency for the target you want to use `CPP-ARGON` for by adding it to the `deps` list. For instance:
 
