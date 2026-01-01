@@ -7,13 +7,11 @@ from pathlib import Path
 from common import find_files
 
 LICENCE_INFO = [
-    "// Copyright (c) 2023-2025 Jakub Musiał",
+    "// Copyright (c) 2023-2026 Jakub Musiał",
     "// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).",
     "// Licensed under the MIT License. See the LICENSE file in the project root for full license information.",
 ]
 
-class DefaultParameters:
-    search_paths: list[str] = ["include", "source"]
 
 class DefaultParameters:
     search_paths: list[str] = ["include", "source"]
@@ -90,10 +88,9 @@ def check_licence(expected_licence: Iterable[str], files: set[Path]) -> int:
             ]
             correct_licence = all(matching_lines)
             if not correct_licence:
-                missing_info = any(matching_lines)
-                if missing_info:
+                if any(matching_lines):
                     _set_return_code(ReturnCode.invalid_licence)
-                    errors.append(f"[error] Incomplete license info in file `{file}`")
+                    errors.append(f"[error] Incorrect license info in file `{file}`")
                 else:
                     _set_return_code(ReturnCode.missing_licence)
                     errors.append(f"[error] Missing license info in file `{file}`")
@@ -116,6 +113,8 @@ def main(
     search_paths: Iterable[str],
     file_patterns: Iterable[str],
     exclude_paths: Iterable[str],
+):
+    files_to_check = find_files(search_paths, file_patterns, exclude_paths)
     sys.exit(check_licence(LICENCE_INFO, files_to_check))
 
 
