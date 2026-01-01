@@ -1,0 +1,16 @@
+var searchData=
+[
+  ['default_20arguments_0',['Default Arguments',['../md_docs_2tutorial.html#default-arguments',1,'']]],
+  ['default_5fargument_1',['default_argument',['../namespaceargon.html#a958295d6fc5c8ff8b1da658b1dde6778',1,'argon']]],
+  ['default_5farguments_2',['default_arguments',['../classargon_1_1argument__parser.html#a3d6f63224ed07e853e3b86c0df024c6c',1,'argon::argument_parser::default_arguments(const AR &amp;arg_discriminators) noexcept'],['../classargon_1_1argument__parser.html#a673235d5d1688d8089a5dbb7ea618e8a',1,'argon::argument_parser::default_arguments(const std::initializer_list&lt; default_argument &gt; &amp;arg_discriminators) noexcept'],['../classargon_1_1argument__parser.html#adf0231ef611a6a87bbc069e35fe12759',1,'argon::argument_parser::default_arguments(const std::same_as&lt; default_argument &gt; auto... arg_discriminators) noexcept']]],
+  ['default_5fdelimiter_3',['default_delimiter',['../classargon_1_1detail_1_1help__builder.html#ac42c03a7011063ede7b473fe91e778fb',1,'argon::detail::help_builder']]],
+  ['default_5fvalues_4',['default_values',['../classargon_1_1argument.html#af3aae68c8cac270df2e91606cf193882',1,'argon::argument::default_values(const CR &amp;values) noexcept'],['../classargon_1_1argument.html#ac044ada651eb8b15f57993e730b1f3e8',1,'argon::argument::default_values(std::initializer_list&lt; value_type &gt; values) noexcept'],['../classargon_1_1argument.html#a4df68e54218250431b48a6bcf41c56e3',1,'argon::argument::default_values(const std::convertible_to&lt; value_type &gt; auto &amp;... values) noexcept']]],
+  ['default_5fvalues_20tt_20a_20list_20of_20values_20which_20will_20be_20used_20if_20no_20values_20for_20an_20argument_20have_20been_20parsed_5',['9. &lt;tt&gt;default_values&lt;/tt&gt; - A list of values which will be used if no values for an argument have been parsed',['../md_docs_2tutorial.html#autotoc_md9-default_values---a-list-of-values-which-will-be-used-if-no-values-for-an-argument-have-been-parsed',1,'']]],
+  ['definition_6',['2. Positional arguments are parsed in the order of definition',['../md_docs_2tutorial.html#autotoc_md2-positional-arguments-are-parsed-in-the-order-of-definition',1,'']]],
+  ['description_7',['2. &lt;tt&gt;hidden&lt;/tt&gt; - If this option is set for an argument, then it will not be included in the program description.',['../md_docs_2tutorial.html#autotoc_md2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description',1,'']]],
+  ['description_20which_20will_20be_20printed_20when_20printing_20the_20parser_20class_20instance_8',['1. &lt;tt&gt;help&lt;/tt&gt; - The argument&apos;s description which will be printed when printing the parser class instance.',['../md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance',1,'']]],
+  ['dev_20notes_9',['Dev Notes',['../md_docs_2dev__notes.html',1,'']]],
+  ['dev_5fnotes_2emd_10',['dev_notes.md',['../dev__notes_8md.html',1,'']]],
+  ['documentation_11',['documentation',['../md_docs_2dev__notes.html#documentation',1,'Documentation'],['../md_docs_2dev__notes.html#generating-the-documentation',1,'Generating the Documentation']]],
+  ['downloading_20the_20library_12',['Downloading the Library',['../md_docs_2tutorial.html#downloading-the-library',1,'']]]
+];
