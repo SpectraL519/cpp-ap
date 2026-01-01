@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['finalized_0',['finalized',['../classap_1_1argument__parser.html#a1c90e697c25e256fdceab4da70417930',1,'ap::argument_parser']]]
+  ['finalized_0',['finalized',['../classargon_1_1argument__parser.html#ab4a24710bc9c115330ee47ea027e9b79',1,'argon::argument_parser']]]
 ];

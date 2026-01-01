@@ -1,8 +1,8 @@
 var argument__name_8hpp =
 [
-    [ "ap::detail::argument_name", "structap_1_1detail_1_1argument__name.html", "structap_1_1detail_1_1argument__name" ],
-    [ "argument_name_discriminator", "argument__name_8hpp.html#aca3840ec8dde0f0e0dcf2dc4f42bf218", [
-      [ "n_primary", "argument__name_8hpp.html#aca3840ec8dde0f0e0dcf2dc4f42bf218af9977027e35d0052c62c1e26e00b7d13", null ],
-      [ "n_secondary", "argument__name_8hpp.html#aca3840ec8dde0f0e0dcf2dc4f42bf218acea61f9e13585d906e14d77960bc70f1", null ]
+    [ "argon::detail::argument_name", "structargon_1_1detail_1_1argument__name.html", "structargon_1_1detail_1_1argument__name" ],
+    [ "argument_name_discriminator", "argument__name_8hpp.html#aed57495e22a26096a60668500c8881ab", [
+      [ "n_primary", "argument__name_8hpp.html#aed57495e22a26096a60668500c8881abaf9977027e35d0052c62c1e26e00b7d13", null ],
+      [ "n_secondary", "argument__name_8hpp.html#aed57495e22a26096a60668500c8881abacea61f9e13585d906e14d77960bc70f1", null ]
     ] ]
 ];

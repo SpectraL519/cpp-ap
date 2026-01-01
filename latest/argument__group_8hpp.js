@@ -1,4 +1,4 @@
 var argument__group_8hpp =
 [
-    [ "ap::argument_group", "classap_1_1argument__group.html", "classap_1_1argument__group" ]
+    [ "argon::argument_group", "classargon_1_1argument__group.html", "classargon_1_1argument__group" ]
 ];

@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['fail_0',['fail',['../namespaceap.html#aa6605fc7a014ef0026216c4165063cf0ae11185b6e35c1b767174dc988aa0f179',1,'ap']]],
-  ['finalized_1',['finalized',['../classap_1_1argument__parser.html#a1c90e697c25e256fdceab4da70417930',1,'ap::argument_parser']]],
+  ['fail_0',['fail',['../namespaceargon.html#ab8f65b0dfa4b37b711459d07c5aed420ae11185b6e35c1b767174dc988aa0f179',1,'argon']]],
+  ['finalized_1',['finalized',['../classargon_1_1argument__parser.html#ab4a24710bc9c115330ee47ea027e9b79',1,'argon::argument_parser']]],
   ['flag_2',['1. Optional arguments are parsed only with a flag',['../md_docs_2tutorial.html#autotoc_md1-optional-arguments-are-parsed-only-with-a-flag',1,'']]],
   ['flag_20actions_20functions_20that_20are_20called_20immediately_20after_20parsing_20an_20argument_20s_20flag_3',['1. on-flag actions - Functions that are called immediately after parsing an argument&apos;s flag.',['../md_docs_2tutorial.html#autotoc_md1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag',1,'']]],
   ['flag_20but_20no_20values_20are_20parsed_20from_20the_20command_20line_4',['2. &lt;tt&gt;implicit_values&lt;/tt&gt; - A list of values which will be set for an argument if only its flag but no values are parsed from the command-line.',['../md_docs_2tutorial.html#autotoc_md2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line',1,'']]],
   ['flag_20handling_5',['4. Unknown Argument Flag Handling',['../md_docs_2tutorial.html#autotoc_md4-unknown-argument-flag-handling',1,'']]],
-  ['flag_5faction_5ftype_6',['flag_action_type',['../classap_1_1argument.html#a9880a676492a03e94b96fe3739d36b66',1,'ap::argument']]],
-  ['flag_5fchar_7',['flag_char',['../structap_1_1detail_1_1argument__name.html#a2fed035abf1d7553f5e47857b78abcd7',1,'ap::detail::argument_name']]],
+  ['flag_5faction_5ftype_6',['flag_action_type',['../classargon_1_1argument.html#a637055f44b03d266828a9263b974a902',1,'argon::argument']]],
+  ['flag_5fchar_7',['flag_char',['../structargon_1_1detail_1_1argument__name.html#a48c6c5bfb83474819fa1726a6a7a820b',1,'argon::detail::argument_name']]],
   ['flags_8',['Boolean Flags',['../md_docs_2tutorial.html#boolean-flags',1,'']]],
   ['for_20an_20argument_9',['5. &lt;tt&gt;nargs&lt;/tt&gt; - Sets the allowed number of values to be parsed for an argument.',['../md_docs_2tutorial.html#autotoc_md5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument',1,'']]],
   ['for_20an_20argument_20and_20it_20s_20value_20is_20not_20passed_20in_20the_20command_20line_20an_20exception_20will_20be_20thrown_10',['3. &lt;tt&gt;required&lt;/tt&gt; - If this option is set for an argument and it&apos;s value is not passed in the command-line, an exception will be thrown.',['../md_docs_2tutorial.html#autotoc_md3-required---if-this-option-is-set-for-an-argument-and-its-value-is-not-passed-in-the-command-line-an-exception-will-be-thrown',1,'']]],

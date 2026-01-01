@@ -1,38 +1,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=11"/>
-<meta name="generator" content="Doxygen 1.9.8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CPP-AP: Class Members</title>
+<meta content="text/xhtml;charset=utf-8" http-equiv="Content-Type"/>
+<meta content="IE=11" http-equiv="X-UA-Compatible"/>
+<meta content="Doxygen 1.9.8" name="generator"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>CPP-ARGON: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
+<script src="jquery.js" type="text/javascript"></script>
+<script src="dynsections.js" type="text/javascript"></script>
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
+<script src="resize.js" type="text/javascript"></script>
+<script src="navtreedata.js" type="text/javascript"></script>
+<script src="navtree.js" type="text/javascript"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="search/searchdata.js"></script>
-<script type="text/javascript" src="search/search.js"></script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<script src="search/searchdata.js" type="text/javascript"></script>
+<script src="search/search.js" type="text/javascript"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-ext-stylesheet.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr id="projectrow">
-  <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.1.0</span>
-   </div>
-   <div id="projectbrief">Command-line argument parser for C++20</div>
-  </td>
- </tr>
- </tbody>
+<table cellpadding="0" cellspacing="0">
+<tbody>
+<tr id="projectrow">
+<td id="projectlogo"><img alt="Logo" src="cpp-argon-hex.png"/></td>
+<td id="projectalign">
+<div id="projectname">CPP-ARGON<span id="projectnumber"> 4.0.0</span>
+</div>
+<div id="projectbrief">Command-Line Argument Parser for C++20</div>
+</td>
+</tr>
+</tbody>
 </table>
 </div>
 <!-- end header part -->
@@ -42,8 +44,8 @@
 var searchBox = new SearchBox("searchBox", "search/",'.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
+<script src="menudata.js" type="text/javascript"></script>
+<script src="menu.js" type="text/javascript"></script>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
 $(function() {
@@ -54,15 +56,14 @@ $(function() {
 </script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
+<div class="ui-resizable side-nav-resizable" id="side-nav">
+<div id="nav-tree">
+<div id="nav-tree-contents">
+<div class="sync" id="nav-sync"></div>
+</div>
+</div>
+<div class="ui-resizable-handle" id="splitbar" style="-moz-user-select:none;">
+</div>
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
@@ -71,12 +72,8 @@ $(document).ready(function(){initNavTree('functions_a.html',''); initResizable()
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
-<div id="MSearchSelectWindow"
-     onmouseover="return searchBox.OnSearchSelectShow()"
-     onmouseout="return searchBox.OnSearchSelectHide()"
-     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<div id="MSearchSelectWindow" onkeydown="return searchBox.OnSearchSelectKey(event)" onmouseout="return searchBox.OnSearchSelectHide()" onmouseover="return searchBox.OnSearchSelectShow()">
 </div>
-
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
 <div id="MSearchResults">
@@ -90,46 +87,44 @@ $(document).ready(function(){initNavTree('functions_a.html',''); initResizable()
 </div>
 </div>
 </div>
-
 <div class="contents">
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
-
 <h3><a id="index_a" name="index_a"></a>- a -</h3><ul>
-<li>action()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a03173a73c59da27a72a126d90006d479">ap::argument&lt; ArgT, T &gt;</a></li>
-<li>add_flag()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a63c2a11a2b297802938c3afd02348c7f">ap::argument_parser</a></li>
-<li>add_group()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a779de8940fa647a80625f3c99532676b">ap::argument_parser</a></li>
-<li>add_optional_argument()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a0287484c3c7a4d17161705f25eb86582">ap::argument_parser</a></li>
-<li>add_param()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1help__builder.html#a3b844f5d3ab9d42a510ec2b4688697ff">ap::detail::help_builder</a></li>
-<li>add_positional_argument()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a6f2ea06fd12c483df80ddb9962973a91">ap::argument_parser</a></li>
-<li>add_range_param()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1help__builder.html#a1a0caf125be73d778f5aa16f1701c107">ap::detail::help_builder</a></li>
-<li>add_subparser()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#acb9e5cedf89256c6787efd02068f6a8f">ap::argument_parser</a></li>
-<li>any&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#aef4bde679c6a05f6b4407d48ef44cca2">ap::nargs::range</a></li>
-<li>arg_group_ptr_t&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a50646c049154cc74601ddc3140ee9466">ap::argument_parser</a></li>
-<li>arg_group_ptr_vec_t&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a9cea13865536b2b01798b36d9d8c2e74">ap::argument_parser</a></li>
-<li>arg_parser_ptr_t&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a9a491de7f606503e161be94868e21247">ap::argument_parser</a></li>
-<li>arg_parser_ptr_vec_t&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#aa882aed5bfcb3d52e9ecb5087d35c34d">ap::argument_parser</a></li>
-<li>arg_ptr_t&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#a006700188ca9c015af3657215c28a4ae">ap::argument_group</a>, <a class="el" href="classap_1_1argument__parser.html#a22da768909ea22fcf8df569261b5a1ca">ap::argument_parser</a>, <a class="el" href="structap_1_1detail_1_1argument__token.html#a4366630e05b750336a8cc7f03f5f86b4">ap::detail::argument_token</a></li>
-<li>arg_ptr_vec_iter_t&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#aa668748de00cda5590b49b046fc0e9d0">ap::argument_parser</a></li>
-<li>arg_ptr_vec_t&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#afd596a7a16ec6777095c540ff222baf8">ap::argument_group</a>, <a class="el" href="classap_1_1argument__parser.html#a0092ecf7f71b5e648e30ea681b9dc3e0">ap::argument_parser</a>, <a class="el" href="structap_1_1detail_1_1argument__token.html#a0011eb64a1978ccf06714033e95ef9eb">ap::detail::argument_token</a></li>
-<li>arg_token_vec_iter_t&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#ad74b848b5718e35bec06b2dc977027a9">ap::argument_parser</a></li>
-<li>arg_token_vec_t&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#abebe2fb563db011d742584eca917d805">ap::argument_parser</a></li>
-<li>args&#160;:&#160;<a class="el" href="structap_1_1detail_1_1argument__token.html#a043c2f1ed0aa807e4730618a5810bb65">ap::detail::argument_token</a></li>
-<li>argument()&#160;:&#160;<a class="el" href="classap_1_1argument.html#ac8e51858b2c210735153de46cc3326c6">ap::argument&lt; ArgT, T &gt;</a></li>
-<li>argument_group()&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#ac34010af48fe1542b99c27c2634bae4e">ap::argument_group</a></li>
-<li>argument_name()&#160;:&#160;<a class="el" href="structap_1_1detail_1_1argument__name.html#af25e596a662b97dbd22c9be40c737a37">ap::detail::argument_name</a></li>
-<li>argument_name_used()&#160;:&#160;<a class="el" href="structap_1_1invalid__configuration.html#a31c519de8abba22ce6041a7a20c5a554">ap::invalid_configuration</a></li>
-<li>argument_not_found()&#160;:&#160;<a class="el" href="structap_1_1lookup__failure.html#aa2107660da4e9522a2516989ec27bd35">ap::lookup_failure</a></li>
-<li>argument_parser&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#a48c24326493dd6f87ebc97197d58d586">ap::argument_group</a>, <a class="el" href="classap_1_1argument__parser.html#a3c08f3d1cd9dbd713971195f8ee16a9f">ap::argument_parser</a></li>
-<li>argument_parser_exception()&#160;:&#160;<a class="el" href="structap_1_1argument__parser__exception.html#ad61a9fae23353fd4d1093001eb1405f9">ap::argument_parser_exception</a></li>
-<li>at_least&#160;:&#160;<a class="el" href="classap_1_1nargs_1_1range.html#a984f505668fb45a8a3b3761c28322226">ap::nargs::range</a></li>
+<li>action() : <a class="el" href="classargon_1_1argument.html#a970a62fd12815d4b2dcec68cedab3051">argon::argument&lt; ArgT, T &gt;</a></li>
+<li>add_flag() : <a class="el" href="classargon_1_1argument__parser.html#ae1485941a594a217b8e2c99a0a9d958d">argon::argument_parser</a></li>
+<li>add_group() : <a class="el" href="classargon_1_1argument__parser.html#a036ccde9f5346b019bbbb77ac21223e5">argon::argument_parser</a></li>
+<li>add_optional_argument() : <a class="el" href="classargon_1_1argument__parser.html#a59ebbccfb5893fc32cff7c652f38fab3">argon::argument_parser</a></li>
+<li>add_param() : <a class="el" href="classargon_1_1detail_1_1help__builder.html#aeae7034ea8b80dab7c7e67424b06b0db">argon::detail::help_builder</a></li>
+<li>add_positional_argument() : <a class="el" href="classargon_1_1argument__parser.html#a2de2a6c0d869e8b6c206a44684578184">argon::argument_parser</a></li>
+<li>add_range_param() : <a class="el" href="classargon_1_1detail_1_1help__builder.html#a215ceb7facb7bae7346fc28714d6fd5c">argon::detail::help_builder</a></li>
+<li>add_subparser() : <a class="el" href="classargon_1_1argument__parser.html#a82c7d2fef8a548a1da5491d07886c801">argon::argument_parser</a></li>
+<li>any : <a class="el" href="classargon_1_1nargs_1_1range.html#aef4bde679c6a05f6b4407d48ef44cca2">argon::nargs::range</a></li>
+<li>arg_group_ptr_t : <a class="el" href="classargon_1_1argument__parser.html#aea00d07f3e47609a6b4daa0e8264841e">argon::argument_parser</a></li>
+<li>arg_group_ptr_vec_t : <a class="el" href="classargon_1_1argument__parser.html#a117d57a28cb5295b8e527ded6fa1a006">argon::argument_parser</a></li>
+<li>arg_parser_ptr_t : <a class="el" href="classargon_1_1argument__parser.html#af44b23b6426d4b9abd1d765684d45a2e">argon::argument_parser</a></li>
+<li>arg_parser_ptr_vec_t : <a class="el" href="classargon_1_1argument__parser.html#a9ead8418503ec22c92e6c5fb35711e50">argon::argument_parser</a></li>
+<li>arg_ptr_t : <a class="el" href="classargon_1_1argument__group.html#ac54cfa6a2614436ccb805bee229455d2">argon::argument_group</a>, <a class="el" href="classargon_1_1argument__parser.html#afaac325524e370853e2c752109b919ff">argon::argument_parser</a>, <a class="el" href="structargon_1_1detail_1_1argument__token.html#a17d779cd7b1c0957d6d6c280936c925d">argon::detail::argument_token</a></li>
+<li>arg_ptr_vec_iter_t : <a class="el" href="classargon_1_1argument__parser.html#a5c906c77532f0914611a681f4ed5597c">argon::argument_parser</a></li>
+<li>arg_ptr_vec_t : <a class="el" href="classargon_1_1argument__group.html#a0bcade9cdf1d6136348bc0b9707c1c4a">argon::argument_group</a>, <a class="el" href="classargon_1_1argument__parser.html#a1d88aa960ba9c65e63718e2a3a8d1656">argon::argument_parser</a>, <a class="el" href="structargon_1_1detail_1_1argument__token.html#a3528a3b5a900fd4a0e83d8d9f1dbc4a0">argon::detail::argument_token</a></li>
+<li>arg_token_vec_iter_t : <a class="el" href="classargon_1_1argument__parser.html#a29de53b8f6431597e27c27baed086189">argon::argument_parser</a></li>
+<li>arg_token_vec_t : <a class="el" href="classargon_1_1argument__parser.html#a01901f48ad59cc8ad1f90896ae2dd1c0">argon::argument_parser</a></li>
+<li>args : <a class="el" href="structargon_1_1detail_1_1argument__token.html#a4e78f724e926b23f99e5e32463a60527">argon::detail::argument_token</a></li>
+<li>argument() : <a class="el" href="classargon_1_1argument.html#a894b6b454399d6c43b533d6abd290b74">argon::argument&lt; ArgT, T &gt;</a></li>
+<li>argument_group() : <a class="el" href="classargon_1_1argument__group.html#a4b790ef4a6bf762a4f0abcce58c5ca78">argon::argument_group</a></li>
+<li>argument_name() : <a class="el" href="structargon_1_1detail_1_1argument__name.html#a647ceb346df4d2145baec75c58eb754a">argon::detail::argument_name</a></li>
+<li>argument_name_used() : <a class="el" href="structargon_1_1invalid__configuration.html#ac714a0d52a599b6b0b288d8c09f69ecc">argon::invalid_configuration</a></li>
+<li>argument_not_found() : <a class="el" href="structargon_1_1lookup__failure.html#a79821199ffaab10bd8499500963ae3c8">argon::lookup_failure</a></li>
+<li>argument_parser : <a class="el" href="classargon_1_1argument__group.html#a48c24326493dd6f87ebc97197d58d586">argon::argument_group</a>, <a class="el" href="classargon_1_1argument__parser.html#ad7f33cef1210ccd6a99fc1c3b1756e2a">argon::argument_parser</a></li>
+<li>argument_parser_exception() : <a class="el" href="structargon_1_1argument__parser__exception.html#a60ed9fa2b68d8a156506d75f6f271f08">argon::argument_parser_exception</a></li>
+<li>at_least : <a class="el" href="classargon_1_1nargs_1_1range.html#a984f505668fb45a8a3b3761c28322226">argon::nargs::range</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated on Wed Dec 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
-  </ul>
+<div class="navpath" id="nav-path"><!-- id is needed for treeview function! -->
+<ul>
+<li class="footer">Generated on Thu Jan 1 2026 for CPP-ARGON by <a href="https://www.doxygen.org/index.html"><img alt="doxygen" class="footer" height="31" src="doxygen.svg" width="104"/></a> 1.9.8 </li>
+</ul>
 </div>
 </body>
 </html>

@@ -1,38 +1,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=11"/>
-<meta name="generator" content="Doxygen 1.9.8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CPP-AP: Class Members - Functions</title>
+<meta content="text/xhtml;charset=utf-8" http-equiv="Content-Type"/>
+<meta content="IE=11" http-equiv="X-UA-Compatible"/>
+<meta content="Doxygen 1.9.8" name="generator"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>CPP-ARGON: Class Members - Functions</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
+<script src="jquery.js" type="text/javascript"></script>
+<script src="dynsections.js" type="text/javascript"></script>
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
+<script src="resize.js" type="text/javascript"></script>
+<script src="navtreedata.js" type="text/javascript"></script>
+<script src="navtree.js" type="text/javascript"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="search/searchdata.js"></script>
-<script type="text/javascript" src="search/search.js"></script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<script src="search/searchdata.js" type="text/javascript"></script>
+<script src="search/search.js" type="text/javascript"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-ext-stylesheet.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr id="projectrow">
-  <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.1.0</span>
-   </div>
-   <div id="projectbrief">Command-line argument parser for C++20</div>
-  </td>
- </tr>
- </tbody>
+<table cellpadding="0" cellspacing="0">
+<tbody>
+<tr id="projectrow">
+<td id="projectlogo"><img alt="Logo" src="cpp-argon-hex.png"/></td>
+<td id="projectalign">
+<div id="projectname">CPP-ARGON<span id="projectnumber"> 4.0.0</span>
+</div>
+<div id="projectbrief">Command-Line Argument Parser for C++20</div>
+</td>
+</tr>
+</tbody>
 </table>
 </div>
 <!-- end header part -->
@@ -42,8 +44,8 @@
 var searchBox = new SearchBox("searchBox", "search/",'.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
+<script src="menudata.js" type="text/javascript"></script>
+<script src="menu.js" type="text/javascript"></script>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
 $(function() {
@@ -54,15 +56,14 @@ $(function() {
 </script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
+<div class="ui-resizable side-nav-resizable" id="side-nav">
+<div id="nav-tree">
+<div id="nav-tree-contents">
+<div class="sync" id="nav-sync"></div>
+</div>
+</div>
+<div class="ui-resizable-handle" id="splitbar" style="-moz-user-select:none;">
+</div>
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
@@ -71,12 +72,8 @@ $(document).ready(function(){initNavTree('functions_func_a.html',''); initResiza
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
-<div id="MSearchSelectWindow"
-     onmouseover="return searchBox.OnSearchSelectShow()"
-     onmouseout="return searchBox.OnSearchSelectHide()"
-     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<div id="MSearchSelectWindow" onkeydown="return searchBox.OnSearchSelectKey(event)" onmouseout="return searchBox.OnSearchSelectHide()" onmouseover="return searchBox.OnSearchSelectShow()">
 </div>
-
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
 <div id="MSearchResults">
@@ -90,34 +87,32 @@ $(document).ready(function(){initNavTree('functions_func_a.html',''); initResiza
 </div>
 </div>
 </div>
-
 <div class="contents">
 <div class="textblock">Here is a list of all functions with links to the classes they belong to:</div>
-
 <h3><a id="index_a" name="index_a"></a>- a -</h3><ul>
-<li>action()&#160;:&#160;<a class="el" href="classap_1_1argument.html#a03173a73c59da27a72a126d90006d479">ap::argument&lt; ArgT, T &gt;</a></li>
-<li>add_flag()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a33a7c69169cd95b5fd31df696d911408">ap::argument_parser</a></li>
-<li>add_group()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a779de8940fa647a80625f3c99532676b">ap::argument_parser</a></li>
-<li>add_optional_argument()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a0287484c3c7a4d17161705f25eb86582">ap::argument_parser</a></li>
-<li>add_param()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1help__builder.html#a3b844f5d3ab9d42a510ec2b4688697ff">ap::detail::help_builder</a></li>
-<li>add_positional_argument()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#aaf4ad467547ef107c85ce7f09ea74203">ap::argument_parser</a></li>
-<li>add_range_param()&#160;:&#160;<a class="el" href="classap_1_1detail_1_1help__builder.html#a1a0caf125be73d778f5aa16f1701c107">ap::detail::help_builder</a></li>
-<li>add_subparser()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#acb9e5cedf89256c6787efd02068f6a8f">ap::argument_parser</a></li>
-<li>argument()&#160;:&#160;<a class="el" href="classap_1_1argument.html#ac8e51858b2c210735153de46cc3326c6">ap::argument&lt; ArgT, T &gt;</a></li>
-<li>argument_group()&#160;:&#160;<a class="el" href="classap_1_1argument__group.html#ac34010af48fe1542b99c27c2634bae4e">ap::argument_group</a></li>
-<li>argument_name()&#160;:&#160;<a class="el" href="structap_1_1detail_1_1argument__name.html#a950fbadac704f26d3af05bc8fceec0b7">ap::detail::argument_name</a></li>
-<li>argument_name_used()&#160;:&#160;<a class="el" href="structap_1_1invalid__configuration.html#a31c519de8abba22ce6041a7a20c5a554">ap::invalid_configuration</a></li>
-<li>argument_not_found()&#160;:&#160;<a class="el" href="structap_1_1lookup__failure.html#aa2107660da4e9522a2516989ec27bd35">ap::lookup_failure</a></li>
-<li>argument_parser()&#160;:&#160;<a class="el" href="classap_1_1argument__parser.html#a3c08f3d1cd9dbd713971195f8ee16a9f">ap::argument_parser</a></li>
-<li>argument_parser_exception()&#160;:&#160;<a class="el" href="structap_1_1argument__parser__exception.html#ad61a9fae23353fd4d1093001eb1405f9">ap::argument_parser_exception</a></li>
+<li>action() : <a class="el" href="classargon_1_1argument.html#a970a62fd12815d4b2dcec68cedab3051">argon::argument&lt; ArgT, T &gt;</a></li>
+<li>add_flag() : <a class="el" href="classargon_1_1argument__parser.html#a406cdaa4006e8fb76a0854cd85526a6d">argon::argument_parser</a></li>
+<li>add_group() : <a class="el" href="classargon_1_1argument__parser.html#a036ccde9f5346b019bbbb77ac21223e5">argon::argument_parser</a></li>
+<li>add_optional_argument() : <a class="el" href="classargon_1_1argument__parser.html#a59ebbccfb5893fc32cff7c652f38fab3">argon::argument_parser</a></li>
+<li>add_param() : <a class="el" href="classargon_1_1detail_1_1help__builder.html#aeae7034ea8b80dab7c7e67424b06b0db">argon::detail::help_builder</a></li>
+<li>add_positional_argument() : <a class="el" href="classargon_1_1argument__parser.html#ad931f436e3e0144d5d93e070910940b9">argon::argument_parser</a></li>
+<li>add_range_param() : <a class="el" href="classargon_1_1detail_1_1help__builder.html#a215ceb7facb7bae7346fc28714d6fd5c">argon::detail::help_builder</a></li>
+<li>add_subparser() : <a class="el" href="classargon_1_1argument__parser.html#a82c7d2fef8a548a1da5491d07886c801">argon::argument_parser</a></li>
+<li>argument() : <a class="el" href="classargon_1_1argument.html#a894b6b454399d6c43b533d6abd290b74">argon::argument&lt; ArgT, T &gt;</a></li>
+<li>argument_group() : <a class="el" href="classargon_1_1argument__group.html#a4b790ef4a6bf762a4f0abcce58c5ca78">argon::argument_group</a></li>
+<li>argument_name() : <a class="el" href="structargon_1_1detail_1_1argument__name.html#ae6f61b1a6352b85e29d125cf734f002b">argon::detail::argument_name</a></li>
+<li>argument_name_used() : <a class="el" href="structargon_1_1invalid__configuration.html#ac714a0d52a599b6b0b288d8c09f69ecc">argon::invalid_configuration</a></li>
+<li>argument_not_found() : <a class="el" href="structargon_1_1lookup__failure.html#a79821199ffaab10bd8499500963ae3c8">argon::lookup_failure</a></li>
+<li>argument_parser() : <a class="el" href="classargon_1_1argument__parser.html#ad7f33cef1210ccd6a99fc1c3b1756e2a">argon::argument_parser</a></li>
+<li>argument_parser_exception() : <a class="el" href="structargon_1_1argument__parser__exception.html#a60ed9fa2b68d8a156506d75f6f271f08">argon::argument_parser_exception</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated on Wed Dec 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
-  </ul>
+<div class="navpath" id="nav-path"><!-- id is needed for treeview function! -->
+<ul>
+<li class="footer">Generated on Thu Jan 1 2026 for CPP-ARGON by <a href="https://www.doxygen.org/index.html"><img alt="doxygen" class="footer" height="31" src="doxygen.svg" width="104"/></a> 1.9.8 </li>
+</ul>
 </div>
 </body>
 </html>

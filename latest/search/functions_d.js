@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['parse_5fargs_0',['parse_args',['../classap_1_1argument__parser.html#af1ba2d20583be8bfa9cfb61eac4b602a',1,'ap::argument_parser::parse_args(int argc, char *argv[])'],['../classap_1_1argument__parser.html#ae95bda303eb13af4b8186fcfe71f7d4e',1,'ap::argument_parser::parse_args(const AR &amp;argv_rng)']]],
-  ['parse_5fknown_5fargs_1',['parse_known_args',['../classap_1_1argument__parser.html#a9edb3d7b83eb8a8a4934d72df896eade',1,'ap::argument_parser::parse_known_args(int argc, char *argv[])'],['../classap_1_1argument__parser.html#a8c18f6d48274024faac331ccf8dc85c7',1,'ap::argument_parser::parse_known_args(const AR &amp;argv_rng)']]],
-  ['parsing_5ffailure_2',['parsing_failure',['../structap_1_1parsing__failure.html#ad5dca1d03f3a11eb3a913bf013dcd36f',1,'ap::parsing_failure']]],
-  ['parsing_5fstate_3',['parsing_state',['../structap_1_1argument__parser_1_1parsing__state.html#a058e1f36ed82b147003b519a7223da24',1,'ap::argument_parser::parsing_state']]],
-  ['print_5fhelp_4',['print_help',['../classap_1_1argument__parser.html#a2e24e7e0b18fd4672ecc26d0eaba8ff2',1,'ap::argument_parser::print_help()'],['../namespaceap_1_1action.html#a34ab44ba899e3bc6ebf51b1206470dd1',1,'ap::action::print_help()']]],
-  ['print_5fversion_5',['print_version',['../classap_1_1argument__parser.html#ab90c6edadd9fa28614f3350f609d0edb',1,'ap::argument_parser']]],
-  ['program_5fdescription_6',['program_description',['../classap_1_1argument__parser.html#a5935ee955cca241d6d4450326f9a92be',1,'ap::argument_parser']]],
-  ['program_5fname_7',['program_name',['../classap_1_1argument__parser.html#a15c1cd1f25fad4c3e30e859e40b841e8',1,'ap::argument_parser']]],
-  ['program_5fversion_8',['program_version',['../classap_1_1argument__parser.html#a015a7f73f193c7e3242434130017e99b',1,'ap::argument_parser::program_version(const version &amp;version) noexcept'],['../classap_1_1argument__parser.html#a268cfc1efe09613415fbab5fa1ea345b',1,'ap::argument_parser::program_version(std::string_view version)']]]
+  ['parse_5fargs_0',['parse_args',['../classargon_1_1argument__parser.html#a43e99f316aaab1f09b6b6d67422d4718',1,'argon::argument_parser::parse_args(int argc, char *argv[])'],['../classargon_1_1argument__parser.html#a48d2bc3804047720c08f7276d6f144a3',1,'argon::argument_parser::parse_args(const AR &amp;argv_rng)']]],
+  ['parse_5fknown_5fargs_1',['parse_known_args',['../classargon_1_1argument__parser.html#a4a22f3561a191902a1571ebf2b21f595',1,'argon::argument_parser::parse_known_args(int argc, char *argv[])'],['../classargon_1_1argument__parser.html#aec38284a9bd9a8ca71531b98f4b682f6',1,'argon::argument_parser::parse_known_args(const AR &amp;argv_rng)']]],
+  ['parsing_5ffailure_2',['parsing_failure',['../structargon_1_1parsing__failure.html#a34573ae7a91d667b26feaa5f76c33bef',1,'argon::parsing_failure']]],
+  ['parsing_5fstate_3',['parsing_state',['../structargon_1_1argument__parser_1_1parsing__state.html#a85e55e0c78de2025eea92ee9b145b762',1,'argon::argument_parser::parsing_state']]],
+  ['print_5fhelp_4',['print_help',['../classargon_1_1argument__parser.html#a033d6fcc07b8f7f83240d8184fada3ec',1,'argon::argument_parser::print_help()'],['../namespaceargon_1_1action.html#a44ea15f3783549970dfb073ee1a1a950',1,'argon::action::print_help()']]],
+  ['print_5fversion_5',['print_version',['../classargon_1_1argument__parser.html#a04d31e913201a29a5b7586c2bfdab75d',1,'argon::argument_parser']]],
+  ['program_5fdescription_6',['program_description',['../classargon_1_1argument__parser.html#a39a8e3baa428eab82f4f54390a08d511',1,'argon::argument_parser']]],
+  ['program_5fname_7',['program_name',['../classargon_1_1argument__parser.html#a15b0451cd93525bfd6bc66db4446f8c0',1,'argon::argument_parser']]],
+  ['program_5fversion_8',['program_version',['../classargon_1_1argument__parser.html#aae6754b1534a9f94e267651c24768e11',1,'argon::argument_parser::program_version(const version &amp;version) noexcept'],['../classargon_1_1argument__parser.html#aeac3047ad5f3fc34c999db6cae268306',1,'argon::argument_parser::program_version(std::string_view version)']]]
 ];

@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "CPP-AP", "index.html", [
+  [ "CPP-ARGON", "index.html", [
     [ "MIT License", "md_LICENSE.html", null ],
     [ "Dev Notes", "md_docs_2dev__notes.html", [
       [ "Overview", "index.html#overview", null ],
@@ -42,7 +42,7 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Tutorial", "md_docs_2tutorial.html", [
-      [ "Setting Up CPP-AP", "md_docs_2tutorial.html#setting-up-cpp-ap", [
+      [ "Setting Up CPP-ARGON", "md_docs_2tutorial.html#setting-up-cpp-argon", [
         [ "CMake Integration", "md_docs_2tutorial.html#cmake-integration", null ],
         [ "Bazel Build System", "md_docs_2tutorial.html#bazel-build-system", null ],
         [ "Downloading the Library", "md_docs_2tutorial.html#downloading-the-library", null ]
@@ -139,9 +139,9 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_2home_2runner_2work_2cpp-ap_2cpp-ap_2include_2ap_2argument_parser_8hpp-example.html",
-"classap_1_1argument__parser.html#a13b07a0743939b405c41a13cb90b9ede",
-"classap_1_1detail_1_1help__builder.html#a8188afef1669fcb0c9981f78e25dc2ac",
+"_2home_2runner_2work_2cpp-argon_2cpp-argon_2include_2argon_2argument_parser_8hpp-example.html",
+"classargon_1_1argument__parser.html#a0e6f2e1f2d0ef7ba6d442b397851d18e",
+"classargon_1_1detail_1_1help__builder.html#a9c4fc344746db41fe2b9949b528e0151",
 "namespacemembers_enum.html"
 ];
 

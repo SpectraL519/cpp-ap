@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['major_0',['major',['../structap_1_1version.html#a912f2bd1464859dfe16cc65c1351903a',1,'ap::version']]],
-  ['max_5fbound_1',['max_bound',['../namespaceap_1_1nargs.html#ad4747cf38240752e92c1bd53f5f13a56',1,'ap::nargs']]],
-  ['min_5fbound_2',['min_bound',['../namespaceap_1_1nargs.html#a00f11458a3bb2b3dab88c25afb79c389',1,'ap::nargs']]],
-  ['minor_3',['minor',['../structap_1_1version.html#a91a2d18ea45abe8b1d2b7fe6f86c5911',1,'ap::version']]]
+  ['major_0',['major',['../structargon_1_1version.html#a67b5bf616df6492da9242602802b7052',1,'argon::version']]],
+  ['max_5fbound_1',['max_bound',['../namespaceargon_1_1nargs.html#a83b97836b7d1bb8dffe969eee07e7f63',1,'argon::nargs']]],
+  ['min_5fbound_2',['min_bound',['../namespaceargon_1_1nargs.html#a752fe3aeb6623fcff7994d95f0484222',1,'argon::nargs']]],
+  ['minor_3',['minor',['../structargon_1_1version.html#a0bd0b5ce71ca75764c271f159242fef9',1,'argon::version']]]
 ];

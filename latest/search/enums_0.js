@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['argument_5fname_5fdiscriminator_0',['argument_name_discriminator',['../namespaceap_1_1detail.html#aca3840ec8dde0f0e0dcf2dc4f42bf218',1,'ap::detail']]],
-  ['argument_5ftype_1',['argument_type',['../namespaceap.html#a16de02c8b84e347a6f25936a73c9f296',1,'ap']]]
+  ['argument_5fname_5fdiscriminator_0',['argument_name_discriminator',['../namespaceargon_1_1detail.html#aed57495e22a26096a60668500c8881ab',1,'argon::detail']]],
+  ['argument_5ftype_1',['argument_type',['../namespaceargon.html#a4b32eb6291a15bebf85d8ebbd3147845',1,'argon']]]
 ];

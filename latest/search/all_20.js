@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['warn_0',['warn',['../namespaceap.html#aa6605fc7a014ef0026216c4165063cf0a1ea4c3ab05ee0c6d4de30740443769cb',1,'ap']]],
+  ['warn_0',['warn',['../namespaceargon.html#ab8f65b0dfa4b37b711459d07c5aed420a1ea4c3ab05ee0c6d4de30740443769cb',1,'argon']]],
   ['when_20printing_20the_20parser_20class_20instance_1',['1. &lt;tt&gt;help&lt;/tt&gt; - The argument&apos;s description which will be printed when printing the parser class instance.',['../md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance',1,'']]],
   ['which_20will_20be_20printed_20when_20printing_20the_20parser_20class_20instance_2',['1. &lt;tt&gt;help&lt;/tt&gt; - The argument&apos;s description which will be printed when printing the parser class instance.',['../md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance',1,'']]],
   ['which_20will_20be_20set_20for_20an_20argument_20if_20only_20its_20flag_20but_20no_20values_20are_20parsed_20from_20the_20command_20line_3',['2. &lt;tt&gt;implicit_values&lt;/tt&gt; - A list of values which will be set for an argument if only its flag but no values are parsed from the command-line.',['../md_docs_2tutorial.html#autotoc_md2-implicit_values---a-list-of-values-which-will-be-set-for-an-argument-if-only-its-flag-but-no-values-are-parsed-from-the-command-line',1,'']]],
@@ -13,5 +13,5 @@ var searchData=
   ['will_20not_20be_20included_20in_20the_20program_20description_10',['2. &lt;tt&gt;hidden&lt;/tt&gt; - If this option is set for an argument, then it will not be included in the program description.',['../md_docs_2tutorial.html#autotoc_md2-hidden---if-this-option-is-set-for-an-argument-then-it-will-not-be-included-in-the-program-description',1,'']]],
   ['with_20a_20flag_11',['1. Optional arguments are parsed only with a flag',['../md_docs_2tutorial.html#autotoc_md1-optional-arguments-are-parsed-only-with-a-flag',1,'']]],
   ['with_20subparsers_12',['Parsing Arguments with Subparsers',['../md_docs_2tutorial.html#parsing-arguments-with-subparsers',1,'']]],
-  ['within_13',['within',['../namespaceap_1_1action.html#a7065276e3cc3b2e634657ca1626b506b',1,'ap::action']]]
+  ['within_13',['within',['../namespaceargon_1_1action.html#aadc7bb02a8178251f0ebfd302892bcfe',1,'argon::action']]]
 ];

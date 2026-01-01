@@ -1,38 +1,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=11"/>
-<meta name="generator" content="Doxygen 1.9.8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CPP-AP: include/ap/action/types.hpp Source File</title>
+<meta content="text/xhtml;charset=utf-8" http-equiv="Content-Type"/>
+<meta content="IE=11" http-equiv="X-UA-Compatible"/>
+<meta content="Doxygen 1.9.8" name="generator"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>CPP-ARGON: include/argon/action/types.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="dynsections.js"></script>
+<script src="jquery.js" type="text/javascript"></script>
+<script src="dynsections.js" type="text/javascript"></script>
 <link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
+<script src="resize.js" type="text/javascript"></script>
+<script src="navtreedata.js" type="text/javascript"></script>
+<script src="navtree.js" type="text/javascript"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="search/searchdata.js"></script>
-<script type="text/javascript" src="search/search.js"></script>
-<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<script src="search/searchdata.js" type="text/javascript"></script>
+<script src="search/search.js" type="text/javascript"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-ext-stylesheet.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr id="projectrow">
-  <td id="projectalign">
-   <div id="projectname">CPP-AP<span id="projectnumber">&#160;3.1.0</span>
-   </div>
-   <div id="projectbrief">Command-line argument parser for C++20</div>
-  </td>
- </tr>
- </tbody>
+<table cellpadding="0" cellspacing="0">
+<tbody>
+<tr id="projectrow">
+<td id="projectlogo"><img alt="Logo" src="cpp-argon-hex.png"/></td>
+<td id="projectalign">
+<div id="projectname">CPP-ARGON<span id="projectnumber"> 4.0.0</span>
+</div>
+<div id="projectbrief">Command-Line Argument Parser for C++20</div>
+</td>
+</tr>
+</tbody>
 </table>
 </div>
 <!-- end header part -->
@@ -42,8 +44,8 @@
 var searchBox = new SearchBox("searchBox", "search/",'.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
+<script src="menudata.js" type="text/javascript"></script>
+<script src="menu.js" type="text/javascript"></script>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
 $(function() {
@@ -59,15 +61,14 @@ $(document).ready(function() { init_codefold(0); });
 /* @license-end */
 </script>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
+<div class="ui-resizable side-nav-resizable" id="side-nav">
+<div id="nav-tree">
+<div id="nav-tree-contents">
+<div class="sync" id="nav-sync"></div>
+</div>
+</div>
+<div class="ui-resizable-handle" id="splitbar" style="-moz-user-select:none;">
+</div>
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
@@ -76,12 +77,8 @@ $(document).ready(function(){initNavTree('action_2types_8hpp_source.html',''); i
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
-<div id="MSearchSelectWindow"
-     onmouseover="return searchBox.OnSearchSelectShow()"
-     onmouseout="return searchBox.OnSearchSelectHide()"
-     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<div id="MSearchSelectWindow" onkeydown="return searchBox.OnSearchSelectKey(event)" onmouseout="return searchBox.OnSearchSelectHide()" onmouseover="return searchBox.OnSearchSelectShow()">
 </div>
-
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
 <div id="MSearchResults">
@@ -95,71 +92,70 @@ $(document).ready(function(){initNavTree('action_2types_8hpp_source.html',''); i
 </div>
 </div>
 </div>
-
 <div class="header">
-  <div class="headertitle"><div class="title">types.hpp</div></div>
+<div class="headertitle"><div class="title">types.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="action_2types_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Copyright (c) 2023-2025 Jakub Musiał</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).</span></div>
+<a href="action_2types_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Copyright (c) 2023-2026 Jakub Musiał</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Licensed under the MIT License. See the LICENSE file in the project root for full license information.</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="util_2concepts_8hpp.html">ap/util/concepts.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include "<a class="code" href="util_2concepts_8hpp.html">argon/util/concepts.hpp</a>"</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="foldopen" id="foldopen00016" data-start="{" data-end="}">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespaceap_1_1action__type.html">   16</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceap_1_1action__type.html">ap::action_type</a> {</div>
+<div class="foldopen" data-end="}" data-start="{" id="foldopen00016">
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespaceargon_1_1action__type.html">   16</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceargon_1_1action__type.html">argon::action_type</a> {</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1observe.html">   24</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structap_1_1action__type_1_1observe.html">observe</a> {</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keyword">template</span> &lt;ap::util::c_argument_value_type T&gt;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1observe.html#af1581b2e4f8018b60ddf38b01a980c65">   26</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="structap_1_1action__type_1_1observe.html#af1581b2e4f8018b60ddf38b01a980c65">type</a> = std::function&lt;void(<span class="keyword">const</span> T&amp;)&gt;;</div>
+<div class="foldopen" data-end="};" data-start="{" id="foldopen00024">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1observe.html">   24</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structargon_1_1action__type_1_1observe.html">observe</a> {</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> <span class="keyword">template</span> &lt;argon::util::c_argument_value_type T&gt;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1observe.html#aa3ae0e6f8b29ba4e3dfba68a3dffe73b">   26</a></span> <span class="keyword">using </span><a class="code hl_typedef" href="structargon_1_1action__type_1_1observe.html#aa3ae0e6f8b29ba4e3dfba68a3dffe73b">type</a> = std::function&lt;void(<span class="keyword">const</span> T&amp;)&gt;;</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>};</div>
 </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1transform.html">   35</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structap_1_1action__type_1_1transform.html">transform</a> {</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keyword">template</span> &lt;ap::util::c_argument_value_type T&gt;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1transform.html#ac0976a3a3846a2239399f71442f3cf88">   37</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="structap_1_1action__type_1_1transform.html#ac0976a3a3846a2239399f71442f3cf88">type</a> = std::function&lt;T(<span class="keyword">const</span> T&amp;)&gt;;</div>
+<div class="foldopen" data-end="};" data-start="{" id="foldopen00035">
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1transform.html">   35</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structargon_1_1action__type_1_1transform.html">transform</a> {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> <span class="keyword">template</span> &lt;argon::util::c_argument_value_type T&gt;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1transform.html#a1c57874308a22bb0a3abeb260b2b6c54">   37</a></span> <span class="keyword">using </span><a class="code hl_typedef" href="structargon_1_1action__type_1_1transform.html#a1c57874308a22bb0a3abeb260b2b6c54">type</a> = std::function&lt;T(<span class="keyword">const</span> T&amp;)&gt;;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
 </div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="foldopen" id="foldopen00046" data-start="{" data-end="};">
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1modify.html">   46</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structap_1_1action__type_1_1modify.html">modify</a> {</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">template</span> &lt;ap::util::c_argument_value_type T&gt;</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1modify.html#a7b1e09d2a063c5ec1b9847a588963c0c">   48</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="structap_1_1action__type_1_1modify.html#a7b1e09d2a063c5ec1b9847a588963c0c">type</a> = std::function&lt;void(T&amp;)&gt;;</div>
+<div class="foldopen" data-end="};" data-start="{" id="foldopen00046">
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1modify.html">   46</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structargon_1_1action__type_1_1modify.html">modify</a> {</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> <span class="keyword">template</span> &lt;argon::util::c_argument_value_type T&gt;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1modify.html#a32bfa94c02fa0379fd005c72682ac2ea">   48</a></span> <span class="keyword">using </span><a class="code hl_typedef" href="structargon_1_1action__type_1_1modify.html#a32bfa94c02fa0379fd005c72682ac2ea">type</a> = std::function&lt;void(T&amp;)&gt;;</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>};</div>
 </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="foldopen" id="foldopen00059" data-start="{" data-end="};">
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1on__flag.html">   59</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structap_1_1action__type_1_1on__flag.html">on_flag</a> {</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structap_1_1action__type_1_1on__flag.html#a489cb8ca0945f8fa0cf7ad805fa0b93c">   60</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="structap_1_1action__type_1_1on__flag.html#a489cb8ca0945f8fa0cf7ad805fa0b93c">type</a> = std::function&lt;void()&gt;;</div>
+<div class="foldopen" data-end="};" data-start="{" id="foldopen00059">
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1on__flag.html">   59</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structargon_1_1action__type_1_1on__flag.html">on_flag</a> {</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structargon_1_1action__type_1_1on__flag.html#ad4125731632579dcb8c04cb872580c4d">   60</a></span> <span class="keyword">using </span><a class="code hl_typedef" href="structargon_1_1action__type_1_1on__flag.html#ad4125731632579dcb8c04cb872580c4d">type</a> = std::function&lt;void()&gt;;</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>};</div>
 </div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>} <span class="comment">// namespace ap::action_type</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>} <span class="comment">// namespace argon::action_type</span></div>
 </div>
-<div class="ttc" id="anamespaceap_1_1action__type_html"><div class="ttname"><a href="namespaceap_1_1action__type.html">ap::action_type</a></div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00016">types.hpp:16</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1modify_html"><div class="ttname"><a href="structap_1_1action__type_1_1modify.html">ap::action_type::modify</a></div><div class="ttdoc">A modifying value action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00046">types.hpp:46</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1modify_html_a7b1e09d2a063c5ec1b9847a588963c0c"><div class="ttname"><a href="structap_1_1action__type_1_1modify.html#a7b1e09d2a063c5ec1b9847a588963c0c">ap::action_type::modify::type</a></div><div class="ttdeci">std::function&lt; void(T &amp;)&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00048">types.hpp:48</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1observe_html"><div class="ttname"><a href="structap_1_1action__type_1_1observe.html">ap::action_type::observe</a></div><div class="ttdoc">An observing value action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00024">types.hpp:24</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1observe_html_af1581b2e4f8018b60ddf38b01a980c65"><div class="ttname"><a href="structap_1_1action__type_1_1observe.html#af1581b2e4f8018b60ddf38b01a980c65">ap::action_type::observe::type</a></div><div class="ttdeci">std::function&lt; void(const T &amp;)&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00026">types.hpp:26</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1on__flag_html"><div class="ttname"><a href="structap_1_1action__type_1_1on__flag.html">ap::action_type::on_flag</a></div><div class="ttdoc">An on-flag action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00059">types.hpp:59</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1on__flag_html_a489cb8ca0945f8fa0cf7ad805fa0b93c"><div class="ttname"><a href="structap_1_1action__type_1_1on__flag.html#a489cb8ca0945f8fa0cf7ad805fa0b93c">ap::action_type::on_flag::type</a></div><div class="ttdeci">std::function&lt; void()&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00060">types.hpp:60</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1transform_html"><div class="ttname"><a href="structap_1_1action__type_1_1transform.html">ap::action_type::transform</a></div><div class="ttdoc">A transformating value action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00035">types.hpp:35</a></div></div>
-<div class="ttc" id="astructap_1_1action__type_1_1transform_html_ac0976a3a3846a2239399f71442f3cf88"><div class="ttname"><a href="structap_1_1action__type_1_1transform.html#ac0976a3a3846a2239399f71442f3cf88">ap::action_type::transform::type</a></div><div class="ttdeci">std::function&lt; T(const T &amp;)&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00037">types.hpp:37</a></div></div>
+<div class="ttc" id="anamespaceargon_1_1action__type_html"><div class="ttname"><a href="namespaceargon_1_1action__type.html">argon::action_type</a></div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00016">types.hpp:16</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1modify_html"><div class="ttname"><a href="structargon_1_1action__type_1_1modify.html">argon::action_type::modify</a></div><div class="ttdoc">A modifying value action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00046">types.hpp:46</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1modify_html_a32bfa94c02fa0379fd005c72682ac2ea"><div class="ttname"><a href="structargon_1_1action__type_1_1modify.html#a32bfa94c02fa0379fd005c72682ac2ea">argon::action_type::modify::type</a></div><div class="ttdeci">std::function&lt; void(T &amp;)&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00048">types.hpp:48</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1observe_html"><div class="ttname"><a href="structargon_1_1action__type_1_1observe.html">argon::action_type::observe</a></div><div class="ttdoc">An observing value action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00024">types.hpp:24</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1observe_html_aa3ae0e6f8b29ba4e3dfba68a3dffe73b"><div class="ttname"><a href="structargon_1_1action__type_1_1observe.html#aa3ae0e6f8b29ba4e3dfba68a3dffe73b">argon::action_type::observe::type</a></div><div class="ttdeci">std::function&lt; void(const T &amp;)&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00026">types.hpp:26</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1on__flag_html"><div class="ttname"><a href="structargon_1_1action__type_1_1on__flag.html">argon::action_type::on_flag</a></div><div class="ttdoc">An on-flag action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00059">types.hpp:59</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1on__flag_html_ad4125731632579dcb8c04cb872580c4d"><div class="ttname"><a href="structargon_1_1action__type_1_1on__flag.html#ad4125731632579dcb8c04cb872580c4d">argon::action_type::on_flag::type</a></div><div class="ttdeci">std::function&lt; void()&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00060">types.hpp:60</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1transform_html"><div class="ttname"><a href="structargon_1_1action__type_1_1transform.html">argon::action_type::transform</a></div><div class="ttdoc">A transformating value action specifier.</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00035">types.hpp:35</a></div></div>
+<div class="ttc" id="astructargon_1_1action__type_1_1transform_html_a1c57874308a22bb0a3abeb260b2b6c54"><div class="ttname"><a href="structargon_1_1action__type_1_1transform.html#a1c57874308a22bb0a3abeb260b2b6c54">argon::action_type::transform::type</a></div><div class="ttdeci">std::function&lt; T(const T &amp;)&gt; type</div><div class="ttdef"><b>Definition</b> <a href="action_2types_8hpp_source.html#l00037">types.hpp:37</a></div></div>
 <div class="ttc" id="autil_2concepts_8hpp_html"><div class="ttname"><a href="util_2concepts_8hpp.html">concepts.hpp</a></div><div class="ttdoc">Provides the general concept definitions.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_883e42a949afd9b16c9901393356ea2e.html">ap</a></li><li class="navelem"><a class="el" href="dir_c384567dcfc7d6f17bdacb552564b4b2.html">action</a></li><li class="navelem"><a class="el" href="action_2types_8hpp.html">types.hpp</a></li>
-    <li class="footer">Generated on Wed Dec 31 2025 for CPP-AP by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
-  </ul>
+<div class="navpath" id="nav-path"><!-- id is needed for treeview function! -->
+<ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_55bc6843ac02ee57a5c85e0d6affd9dd.html">argon</a></li><li class="navelem"><a class="el" href="dir_93d0d4588be571cb3f4ae2e4f6c1adb6.html">action</a></li><li class="navelem"><a class="el" href="action_2types_8hpp.html">types.hpp</a></li>
+<li class="footer">Generated on Thu Jan 1 2026 for CPP-ARGON by <a href="https://www.doxygen.org/index.html"><img alt="doxygen" class="footer" height="31" src="doxygen.svg" width="104"/></a> 1.9.8 </li>
+</ul>
 </div>
 </body>
 </html>

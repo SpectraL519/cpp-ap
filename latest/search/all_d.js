@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['callable_5ftype_0',['callable_type',['../group__util.html#gabbe48ae9c9dbd3c12128353d76a3468f',1,'ap::action::util']]],
+  ['callable_5ftype_0',['callable_type',['../group__util.html#gaaff949a6c33139e76654e2d68a81c34e',1,'argon::action::util']]],
   ['called_20after_20parsing_20an_20argument_20s_20value_1',['8. value actions - Functions that are called after parsing an argument&apos;s value.',['../md_docs_2tutorial.html#autotoc_md8-value-actions---functions-that-are-called-after-parsing-an-arguments-value',1,'']]],
   ['called_20immediately_20after_20parsing_20an_20argument_20s_20flag_2',['1. on-flag actions - Functions that are called immediately after parsing an argument&apos;s flag.',['../md_docs_2tutorial.html#autotoc_md1-on-flag-actions---functions-that-are-called-immediately-after-parsing-an-arguments-flag',1,'']]],
-  ['check_5ffile_5fexists_3',['check_file_exists',['../namespaceap_1_1action.html#a9d283d38ff65170085d0f95ad97a23cd',1,'ap::action']]],
+  ['check_5ffile_5fexists_3',['check_file_exists',['../namespaceargon_1_1action.html#a702926ab34e1578b97eca800f0cb0d6d',1,'argon::action']]],
   ['checks_4',['Suppressing Argument Group Checks',['../md_docs_2tutorial.html#suppressing-argument-group-checks',1,'']]],
   ['checks_20for_20other_20arguments_5',['4. &lt;tt&gt;suppress_arg_checks&lt;/tt&gt; - Using a suppressing argument results in suppressing requirement checks for other arguments.',['../md_docs_2tutorial.html#autotoc_md4-suppress_arg_checks---using-a-suppressing-argument-results-in-suppressing-requirement-checks-for-other-arguments',1,'']]],
-  ['choices_6',['choices',['../classap_1_1argument.html#afddc2df8da7a693c30a46c4ca04e4433',1,'ap::argument::choices(const CR &amp;choices) noexcept'],['../classap_1_1argument.html#a9acd7f149c28df990606e8bb6685737a',1,'ap::argument::choices(std::initializer_list&lt; value_type &gt; choices) noexcept'],['../classap_1_1argument.html#a8ef6ceb9ae95c8c1454b8607b463c721',1,'ap::argument::choices(const std::convertible_to&lt; value_type &gt; auto &amp;... choices) noexcept']]],
+  ['choices_6',['choices',['../classargon_1_1argument.html#afe77788f38d77a6eee7a0c1808027468',1,'argon::argument::choices(const CR &amp;choices) noexcept'],['../classargon_1_1argument.html#a7bc0d608998b720a9b126c8449ce9dfa',1,'argon::argument::choices(std::initializer_list&lt; value_type &gt; choices) noexcept'],['../classargon_1_1argument.html#af1380264290c4b894c58e589ac3add60',1,'argon::argument::choices(const std::convertible_to&lt; value_type &gt; auto &amp;... choices) noexcept']]],
   ['choices_20tt_20a_20list_20of_20valid_20argument_20values_7',['7. &lt;tt&gt;choices&lt;/tt&gt; - A list of valid argument values.',['../md_docs_2tutorial.html#autotoc_md7-choices---a-list-of-valid-argument-values',1,'']]],
   ['class_8',['The Parser Class',['../md_docs_2tutorial.html#the-parser-class',1,'']]],
   ['class_20instance_9',['1. &lt;tt&gt;help&lt;/tt&gt; - The argument&apos;s description which will be printed when printing the parser class instance.',['../md_docs_2tutorial.html#autotoc_md1-help---the-arguments-description-which-will-be-printed-when-printing-the-parser-class-instance',1,'']]],
@@ -23,14 +23,14 @@ var searchData=
   ['concepts_2ehpp_20',['concepts.hpp',['../util_2concepts_8hpp.html',1,'(Global Namespace)'],['../action_2util_2concepts_8hpp.html',1,'(Global Namespace)']]],
   ['consume_20all_20command_20line_20values_20until_20it_20s_20upper_20nargs_20bound_20is_20reached_21',['6. &lt;tt&gt;greedy&lt;/tt&gt; - If this option is set, the argument will consume ALL command-line values until it&apos;s upper nargs bound is reached.',['../md_docs_2tutorial.html#autotoc_md6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached',1,'']]],
   ['consume_20free_20values_22',['3. Positional arguments consume free values',['../md_docs_2tutorial.html#autotoc_md3-positional-arguments-consume-free-values',1,'']]],
-  ['contains_5fwhitespaces_23',['contains_whitespaces',['../namespaceap_1_1util.html#a48bda5bed5591c247fa530e7a8d04947',1,'ap::util']]],
-  ['convertible_24',['convertible',['../group__util.html#gga34f903792191e4dfd4b5749153f50fbaae0a23947029316880c29e8533d8662a3',1,'ap::util']]],
-  ['count_25',['count',['../classap_1_1argument.html#aa62c74618fbed6450a50fa83ae48e7a5',1,'ap::argument::count()'],['../classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325',1,'ap::argument_parser::count()'],['../classap_1_1detail_1_1argument__base.html#a43fff665c9ed0098adf83cb6b3074b75',1,'ap::detail::argument_base::count()']]],
-  ['count_5ftype_26',['count_type',['../namespaceap_1_1nargs.html#ac76e699bbd08ac059614baede9203a54',1,'ap::nargs::count_type'],['../classap_1_1argument.html#a6d81e9e08f3a2d69312eb371448bd397',1,'ap::argument::count_type']]],
-  ['cpp_20ap_27',['cpp ap',['../index.html',1,'CPP-AP'],['../md_docs_2tutorial.html#setting-up-cpp-ap',1,'Setting Up CPP-AP']]],
-  ['create_28',['create',['../classap_1_1argument__group.html#a91780f8f6a88935306ccbbcfb31098f2',1,'ap::argument_group']]],
+  ['contains_5fwhitespaces_23',['contains_whitespaces',['../namespaceargon_1_1util.html#aba846525fe3d0d1b7f9e4720676a7f32',1,'argon::util']]],
+  ['convertible_24',['convertible',['../group__util.html#gga3e4aa0f151992688a7a5e48dcc491340ae0a23947029316880c29e8533d8662a3',1,'argon::util']]],
+  ['count_25',['count',['../classargon_1_1argument.html#a943c705b8e4fd22d4a790ed7bc089954',1,'argon::argument::count()'],['../classargon_1_1argument__parser.html#acf08a506d937f8c5ac7b8bcb721d2596',1,'argon::argument_parser::count()'],['../classargon_1_1detail_1_1argument__base.html#ac267c8cab20d3ebffbd8446fddaf3978',1,'argon::detail::argument_base::count()']]],
+  ['count_5ftype_26',['count_type',['../namespaceargon_1_1nargs.html#ab775fbb2851d477537b40f4441265265',1,'argon::nargs::count_type'],['../classargon_1_1argument.html#a5c2b2b3ab6c0df23f9880edb63c0dc96',1,'argon::argument::count_type']]],
+  ['cpp_20argon_27',['cpp argon',['../index.html',1,'CPP-ARGON'],['../md_docs_2tutorial.html#setting-up-cpp-argon',1,'Setting Up CPP-ARGON']]],
+  ['create_28',['create',['../classargon_1_1argument__group.html#aab8ce06b64824fbf98ec0190026a6462',1,'argon::argument_group']]],
   ['creating_20new_20groups_29',['Creating New Groups',['../md_docs_2tutorial.html#creating-new-groups',1,'']]],
   ['creating_20subparsers_30',['Creating Subparsers',['../md_docs_2tutorial.html#creating-subparsers',1,'']]],
-  ['curr_5farg_31',['curr_arg',['../structap_1_1argument__parser_1_1parsing__state.html#aa3adc7134915ce4c0f4220502bd7ace9',1,'ap::argument_parser::parsing_state']]],
-  ['curr_5fpos_5farg_5fit_32',['curr_pos_arg_it',['../structap_1_1argument__parser_1_1parsing__state.html#a96a2bb1f4a3f103b546ef7383d86f134',1,'ap::argument_parser::parsing_state']]]
+  ['curr_5farg_31',['curr_arg',['../structargon_1_1argument__parser_1_1parsing__state.html#a05ad36855bb055024b13e0e856caa5fa',1,'argon::argument_parser::parsing_state']]],
+  ['curr_5fpos_5farg_5fit_32',['curr_pos_arg_it',['../structargon_1_1argument__parser_1_1parsing__state.html#aa5e0c3e9555b2d59b3b0ffeecd2032a7',1,'argon::argument_parser::parsing_state']]]
 ];

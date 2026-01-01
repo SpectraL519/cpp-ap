@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['check_5ffile_5fexists_0',['check_file_exists',['../namespaceap_1_1action.html#a9d283d38ff65170085d0f95ad97a23cd',1,'ap::action']]],
-  ['choices_1',['choices',['../classap_1_1argument.html#afddc2df8da7a693c30a46c4ca04e4433',1,'ap::argument::choices(const CR &amp;choices) noexcept'],['../classap_1_1argument.html#a9acd7f149c28df990606e8bb6685737a',1,'ap::argument::choices(std::initializer_list&lt; value_type &gt; choices) noexcept'],['../classap_1_1argument.html#a8ef6ceb9ae95c8c1454b8607b463c721',1,'ap::argument::choices(const std::convertible_to&lt; value_type &gt; auto &amp;... choices) noexcept']]],
-  ['contains_5fwhitespaces_2',['contains_whitespaces',['../namespaceap_1_1util.html#a48bda5bed5591c247fa530e7a8d04947',1,'ap::util']]],
-  ['count_3',['count',['../classap_1_1argument.html#aa62c74618fbed6450a50fa83ae48e7a5',1,'ap::argument::count()'],['../classap_1_1argument__parser.html#ae42161f9323643d6b6e63d361f974325',1,'ap::argument_parser::count()'],['../classap_1_1detail_1_1argument__base.html#a43fff665c9ed0098adf83cb6b3074b75',1,'ap::detail::argument_base::count()']]],
-  ['create_4',['create',['../classap_1_1argument__group.html#a91780f8f6a88935306ccbbcfb31098f2',1,'ap::argument_group']]]
+  ['check_5ffile_5fexists_0',['check_file_exists',['../namespaceargon_1_1action.html#a702926ab34e1578b97eca800f0cb0d6d',1,'argon::action']]],
+  ['choices_1',['choices',['../classargon_1_1argument.html#afe77788f38d77a6eee7a0c1808027468',1,'argon::argument::choices(const CR &amp;choices) noexcept'],['../classargon_1_1argument.html#a7bc0d608998b720a9b126c8449ce9dfa',1,'argon::argument::choices(std::initializer_list&lt; value_type &gt; choices) noexcept'],['../classargon_1_1argument.html#af1380264290c4b894c58e589ac3add60',1,'argon::argument::choices(const std::convertible_to&lt; value_type &gt; auto &amp;... choices) noexcept']]],
+  ['contains_5fwhitespaces_2',['contains_whitespaces',['../namespaceargon_1_1util.html#aba846525fe3d0d1b7f9e4720676a7f32',1,'argon::util']]],
+  ['count_3',['count',['../classargon_1_1argument.html#a943c705b8e4fd22d4a790ed7bc089954',1,'argon::argument::count()'],['../classargon_1_1argument__parser.html#acf08a506d937f8c5ac7b8bcb721d2596',1,'argon::argument_parser::count()'],['../classargon_1_1detail_1_1argument__base.html#ac267c8cab20d3ebffbd8446fddaf3978',1,'argon::detail::argument_base::count()']]],
+  ['create_4',['create',['../classargon_1_1argument__group.html#aab8ce06b64824fbf98ec0190026a6462',1,'argon::argument_group']]]
 ];
