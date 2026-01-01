@@ -91,8 +91,8 @@
 
 | Compiler | Min Version |
 | :-: | :-: |
-| GNU G++ | 14 |
-| Clang | 18 |
+| GNU G++ | 13 |
+| Clang | 17 |
 | MSVC | 19.44 (Visual Studio 2022) |
 
 <br />

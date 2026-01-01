@@ -662,7 +662,8 @@ private:
     [[nodiscard]] bool _is_valid_choice(const value_type& value) const noexcept
     requires(not util::c_is_none<value_type>)
     {
-        return this->_choices.empty() or std::ranges::contains(this->_choices, value);
+        return this->_choices.empty()
+            or std::ranges::find(this->_choices, value) != std::ranges::end(this->_choices);
     }
 
     /**

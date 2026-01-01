@@ -37,7 +37,7 @@ endforeach()
 add_executable(run_uts ${SOURCES})
 set_target_properties(run_uts PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_DIR}"
-    CXX_STANDARD 23
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
 )

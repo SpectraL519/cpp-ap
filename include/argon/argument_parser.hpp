@@ -826,6 +826,7 @@ public:
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
      * @throws argon::lookup_failure, argon::type_error
+     * @todo Use std::ranges::to after transition to C++23 for range casting
      */
     template <util::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
@@ -834,7 +835,11 @@ public:
             throw lookup_failure::argument_not_found(arg_name);
 
         try {
-            return util::any_range_cast_view<T>(arg->values()) | std::ranges::to<std::vector<T>>();
+            std::vector<T> values;
+            std::ranges::copy(
+                util::any_range_cast_view<T>(arg->values()), std::back_inserter(values)
+            );
+            return values;
         }
         catch (const std::bad_any_cast&) {
             throw type_error::invalid_value_type<T>(arg->name());
