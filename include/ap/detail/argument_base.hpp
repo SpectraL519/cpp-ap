@@ -16,7 +16,7 @@
 #include <iostream>
 #include <vector>
 
-namespace ap {
+namespace argon {
 
 class argument_parser;
 
@@ -54,7 +54,7 @@ public:
     /// @return `true` if the argument is greedy, `false` otherwise.
     virtual bool is_greedy() const noexcept = 0;
 
-    friend class ::ap::argument_parser;
+    friend class ::argon::argument_parser;
 
 protected:
     /// @param verbose The verbosity mode value. If `true` all non-default parameters will be included in the output.
@@ -96,4 +96,4 @@ protected:
 };
 
 } // namespace detail
-} // namespace ap
+} // namespace argon

@@ -6,7 +6,7 @@
 #include <format>
 #include <vector>
 
-using namespace ap::util;
+using namespace argon::util;
 
 TEST_SUITE_BEGIN("test_string_utility");
 

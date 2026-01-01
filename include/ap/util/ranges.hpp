@@ -14,7 +14,7 @@
 #include <any>
 #include <ranges>
 
-namespace ap::util {
+namespace argon::util {
 
 /**
  * @brief Casts a range of `std::any` to a range of type `T`.
@@ -31,4 +31,4 @@ auto any_range_cast_view(const c_range_of<std::any> auto& range) {
            });
 }
 
-} // namespace ap::util
+} // namespace argon::util

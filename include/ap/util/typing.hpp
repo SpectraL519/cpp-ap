@@ -15,7 +15,7 @@
 #include <source_location>
 #include <string_view>
 
-namespace ap::util {
+namespace argon::util {
 
 /**
  * @brief Retrieves the demangled name of a type `T`.
@@ -48,4 +48,4 @@ constexpr std::string_view get_demangled_type_name() {
 #endif
 }
 
-} // namespace ap::util
+} // namespace argon::util

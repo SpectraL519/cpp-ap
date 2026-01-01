@@ -12,7 +12,7 @@
 #include <filesystem>
 #include <ostream>
 
-namespace ap {
+namespace argon {
 
 class argument_parser;
 std::ostream& operator<<(std::ostream& os, const argument_parser&) noexcept;
@@ -25,7 +25,7 @@ namespace action {
  * @param exit_code The exit code with which `std::exit` will be called (if not `std::nullopt`).
  * @param os The output stream to which the help message will be printed.
  */
-inline typename ap::action_type::on_flag::type print_help(
+inline typename argon::action_type::on_flag::type print_help(
     const argument_parser& parser,
     const std::optional<int> exit_code = std::nullopt,
     std::ostream& os = std::cout
@@ -38,7 +38,7 @@ inline typename ap::action_type::on_flag::type print_help(
 }
 
 /// @brief Returns an *observe* action which checks whether lower_bound file with the given name exists.
-inline util::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept {
+inline util::callable_type<argon::action_type::observe, std::string> check_file_exists() noexcept {
     return [](const std::string& file_path) {
         if (not std::filesystem::exists(file_path))
             throw std::filesystem::filesystem_error(
@@ -54,8 +54,8 @@ inline util::callable_type<ap::action_type::observe, std::string> check_file_exi
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive lower bound to validate against.
  */
-template <ap::util::c_arithmetic T>
-util::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept {
+template <argon::util::c_arithmetic T>
+util::callable_type<argon::action_type::observe, T> gt(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (not (value > lower_bound))
             throw std::out_of_range(
@@ -69,8 +69,8 @@ util::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcep
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive lower bound to validate against.
  */
-template <ap::util::c_arithmetic T>
-util::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept {
+template <argon::util::c_arithmetic T>
+util::callable_type<argon::action_type::observe, T> geq(const T lower_bound) noexcept {
     return [lower_bound](const T& value) {
         if (! (value >= lower_bound))
             throw std::out_of_range(
@@ -84,8 +84,8 @@ util::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexce
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The exclusive upper bound to validate against.
  */
-template <ap::util::c_arithmetic T>
-util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept {
+template <argon::util::c_arithmetic T>
+util::callable_type<argon::action_type::observe, T> lt(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value < upper_bound))
             throw std::out_of_range(
@@ -99,8 +99,8 @@ util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcep
  * @tparam T The *arithmetic* value type.
  * @param lower_bound The inclusive upper bound to validate against.
  */
-template <ap::util::c_arithmetic T>
-util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept {
+template <argon::util::c_arithmetic T>
+util::callable_type<argon::action_type::observe, T> leq(const T upper_bound) noexcept {
     return [upper_bound](const T& value) {
         if (! (value <= upper_bound))
             throw std::out_of_range(
@@ -120,8 +120,8 @@ util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexce
  * @param lower_bound The lower bound of the interval.
  * @param upper_bound The upper bound of the interval.
  */
-template <ap::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
-util::callable_type<ap::action_type::observe, T> within(
+template <argon::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
+util::callable_type<argon::action_type::observe, T> within(
     const T lower_bound, const T upper_bound
 ) noexcept {
     return [lower_bound, upper_bound](const T& value) {
@@ -145,4 +145,4 @@ util::callable_type<ap::action_type::observe, T> within(
 }
 
 } // namespace action
-} // namespace ap
+} // namespace argon

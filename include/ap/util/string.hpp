@@ -15,11 +15,11 @@
 #include <sstream>
 #include <string_view>
 
-namespace ap::util {
+namespace argon::util {
 
 /**
  * @brief Converts a value to `std::string`.
- * @tparam T The value type (must satisfy the @ref ap::util::c_writable concept).
+ * @tparam T The value type (must satisfy the @ref argon::util::c_writable concept).
  * @param value The value to convert.
  * @ingroup util
  */
@@ -61,4 +61,4 @@ requires(c_writable<std::ranges::range_value_t<R>>)
     return oss.str();
 }
 
-} // namespace ap::util
+} // namespace argon::util

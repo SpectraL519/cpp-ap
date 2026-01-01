@@ -2,11 +2,11 @@
 #include "doctest.h"
 #include "utility.hpp"
 
-using namespace ap_testing;
-using namespace ap::nargs;
-using ap::invalid_configuration;
-using ap::parsing_failure;
-using ap::unknown_policy;
+using namespace argon_testing;
+using namespace argon::nargs;
+using argon::invalid_configuration;
+using argon::parsing_failure;
+using argon::unknown_policy;
 
 TEST_SUITE_BEGIN("test_argument_parser_parse_args");
 
@@ -210,7 +210,9 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_WITH_AS(
         sut.parse_args(argc, argv),
-        std::format("Failed to deduce the argument for values [{}]", ap::util::join(unknown_args))
+        std::format(
+            "Failed to deduce the argument for values [{}]", argon::util::join(unknown_args)
+        )
             .c_str(),
         parsing_failure
     );
@@ -640,7 +642,7 @@ TEST_CASE_FIXTURE(
     // prepare sut
     sut.add_positional_argument(positional_name);
     sut.add_optional_argument(optional_primary_name, optional_secondary_name)
-        .nargs(ap::nargs::any());
+        .nargs(argon::nargs::any());
 
     // expected values
     const std::size_t positional_count = 1ull;
@@ -678,7 +680,7 @@ TEST_CASE_FIXTURE(
     "value() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), ap::lookup_failure);
+    CHECK_THROWS_AS(discard_result(sut.value(invalid_arg_name)), argon::lookup_failure);
 }
 
 TEST_CASE_FIXTURE(
@@ -714,7 +716,8 @@ TEST_CASE_FIXTURE(
 
         REQUIRE(sut.has_value(arg_name.primary.value()));
         CHECK_THROWS_AS(
-            discard_result(sut.value<invalid_value_type>(arg_name.primary.value())), ap::type_error
+            discard_result(sut.value<invalid_value_type>(arg_name.primary.value())),
+            argon::type_error
         );
     }
 
@@ -781,7 +784,9 @@ TEST_CASE_FIXTURE(
     "value_or() should throw if there is no argument with given name present"
 ) {
     add_arguments(n_positional_args, n_optional_args);
-    CHECK_THROWS_AS(discard_result(sut.value_or(invalid_arg_name, empty_str)), ap::lookup_failure);
+    CHECK_THROWS_AS(
+        discard_result(sut.value_or(invalid_arg_name, empty_str)), argon::lookup_failure
+    );
 }
 
 TEST_CASE_FIXTURE(
@@ -805,7 +810,7 @@ TEST_CASE_FIXTURE(
             discard_result(
                 sut.value_or<invalid_value_type>(arg_name.primary.value(), invalid_value_type{})
             ),
-            ap::type_error
+            argon::type_error
         );
     }
 
@@ -942,7 +947,7 @@ TEST_CASE_FIXTURE(
     sut.parse_args(argc, argv);
 
     CHECK_THROWS_AS(
-        discard_result(sut.values<invalid_argument_value_type>(positional_name)), ap::type_error
+        discard_result(sut.values<invalid_argument_value_type>(positional_name)), argon::type_error
     );
 
     free_argv(argc, argv);
@@ -1036,11 +1041,11 @@ TEST_CASE_FIXTURE(
 
     CHECK_THROWS_AS(
         discard_result(sut.values<invalid_argument_value_type>(optional_primary_name)),
-        ap::type_error
+        argon::type_error
     );
     CHECK_THROWS_AS(
         discard_result(sut.values<invalid_argument_value_type>(optional_secondary_name)),
-        ap::type_error
+        argon::type_error
     );
 
     free_argv(argc, argv);
@@ -1322,7 +1327,7 @@ TEST_CASE_FIXTURE(
 
     CHECK_EQ(
         tmp_buffer.str(),
-        std::format("[ap::warning] Unknown argument '{}' will be ignored.\n", unknown_arg_flag)
+        std::format("[argon::warning] Unknown argument '{}' will be ignored.\n", unknown_arg_flag)
     );
 
     free_argv(argc, argv);

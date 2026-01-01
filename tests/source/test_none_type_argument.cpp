@@ -1,13 +1,13 @@
 #include "argument_test_fixture.hpp"
 #include "doctest.h"
 
-using namespace ap_testing;
+using namespace argon_testing;
 
 TEST_SUITE_BEGIN("test_none_type_argument");
 
-using ap::optional_argument;
-using ap::parsing_failure;
-using ap::detail::argument_name;
+using argon::optional_argument;
+using argon::parsing_failure;
+using argon::detail::argument_name;
 
 namespace {
 
@@ -19,7 +19,7 @@ const auto secondary_name_opt = std::make_optional<std::string>(secondary_name);
 
 const argument_name arg_name(primary_name_opt, secondary_name_opt);
 
-using sut_value_type = ap::none_type;
+using sut_value_type = argon::none_type;
 using sut_type = optional_argument<sut_value_type>;
 
 const std::string some_value = "some-value";

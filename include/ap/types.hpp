@@ -10,7 +10,7 @@
 #include <format>
 #include <iostream>
 
-namespace ap {
+namespace argon {
 
 /**
  * @brief A type representing the absence of a value.
@@ -37,4 +37,4 @@ struct version {
     }
 };
 
-} // namespace ap
+} // namespace argon

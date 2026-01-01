@@ -4,7 +4,7 @@
 
 #include <limits>
 
-using namespace ap::nargs;
+using namespace argon::nargs;
 
 TEST_SUITE_BEGIN("test_nargs_range");
 

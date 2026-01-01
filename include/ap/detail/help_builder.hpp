@@ -20,7 +20,7 @@
 #include <sstream>
 #include <vector>
 
-namespace ap::detail {
+namespace argon::detail {
 
 /// @brief A structure used to represent an argument's parameter description.
 struct parameter_descriptor {
@@ -49,7 +49,7 @@ public:
 
     /**
      * @brief Adds a parameter descriptor with the given value.
-     * @tparam T The type of the parameter; must satisfy the @ref ap::util::c_writable concept.
+     * @tparam T The type of the parameter; must satisfy the @ref argon::util::c_writable concept.
      * @param param_name The parameter's name.
      * @param value The parameter's value.
      */
@@ -62,7 +62,7 @@ public:
 
     /**
      * @brief Adds a range parameter descriptor with the given value.
-     * @tparam R The type of the parameter range. The value type of R must satisfy the @ref ap::util::c_writable concept.
+     * @tparam R The type of the parameter range. The value type of R must satisfy the @ref argon::util::c_writable concept.
      * @param param_name The parameter's name.
      * @param range The parameter value range.
      * @param delimiter The delimiter used to separate the range values.
@@ -189,4 +189,4 @@ private:
     static constexpr std::string_view default_delimiter = ", ";
 };
 
-} // namespace ap::detail
+} // namespace argon::detail

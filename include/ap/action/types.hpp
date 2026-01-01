@@ -13,7 +13,7 @@
 
 #include <functional>
 
-namespace ap::action_type {
+namespace argon::action_type {
 
 /**
  * @brief An observing *value* action specifier.
@@ -22,7 +22,7 @@ namespace ap::action_type {
  * performs some logic on it without modifying it.
  */
 struct observe {
-    template <ap::util::c_argument_value_type T>
+    template <argon::util::c_argument_value_type T>
     using type = std::function<void(const T&)>;
 };
 
@@ -33,7 +33,7 @@ struct observe {
  * returns a new value with which the argument will be initialized.
  */
 struct transform {
-    template <ap::util::c_argument_value_type T>
+    template <argon::util::c_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
@@ -44,7 +44,7 @@ struct transform {
  * already initialized argument.
  */
 struct modify {
-    template <ap::util::c_argument_value_type T>
+    template <argon::util::c_argument_value_type T>
     using type = std::function<void(T&)>;
 };
 
@@ -60,4 +60,4 @@ struct on_flag {
     using type = std::function<void()>;
 };
 
-} // namespace ap::action_type
+} // namespace argon::action_type

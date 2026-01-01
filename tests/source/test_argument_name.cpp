@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-using namespace ap::detail;
+using namespace argon::detail;
 
 TEST_SUITE_BEGIN("test_argument_name");
 

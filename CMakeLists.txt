@@ -63,7 +63,7 @@ install(FILES
 
 install(EXPORT cpp-ap-targets
     FILE cpp-ap-targets.cmake
-    NAMESPACE cpp-ap::
+    NAMESPACE cpp-argon::
     DESTINATION ${INSTALL_DIR}
 )
 
@@ -75,7 +75,7 @@ endif()
 # Exporting from the build tree
 export(EXPORT cpp-ap-targets
     FILE ${CMAKE_CURRENT_BINARY_DIR}/cpp-ap-targets.cmake
-    NAMESPACE cpp-ap::
+    NAMESPACE cpp-argon::
 )
 
 export(PACKAGE cpp-ap)

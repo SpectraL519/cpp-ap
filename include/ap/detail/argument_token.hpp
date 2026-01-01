@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-namespace ap::detail {
+namespace argon::detail {
 
 /// @brief Structure representing a single command-line argument token.
 struct argument_token {
@@ -77,4 +77,4 @@ struct argument_token {
     arg_ptr_vec_t args = {}; ///< The corresponding argument
 };
 
-} // namespace ap::detail
+} // namespace argon::detail

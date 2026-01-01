@@ -17,15 +17,15 @@
 
 #ifdef AP_TESTING
 
-namespace ap_testing {
+namespace argon_testing {
 struct argument_test_fixture;
-} // namespace ap_testing
+} // namespace argon_testing
 
 #endif
 
-namespace ap {
+namespace argon {
 
-/// @brief A discriminator type used to specify the type of an argument within the @ref ap::argument class.
+/// @brief A discriminator type used to specify the type of an argument within the @ref argon::argument class.
 enum class argument_type : bool { positional, optional };
 
 /**
@@ -38,12 +38,12 @@ enum class argument_type : bool { positional, optional };
  * @note - `add_positional_argument`
  * @note - `add_optional_argument`
  * @note - `add_flag`
- * @note methods of @ref ap::argument_parser.
+ * @note methods of @ref argon::argument_parser.
  * @attention Some member functions are conditionally enabled/disabled depending on the argument type and value type.
  *
  * Example usage:
  * @code{.cpp}
- * ap::argument_parser parser;
+ * argon::argument_parser parser;
  * parser.add_positional_argument("input", "i")
  *       .help("An input file path");
  * parser.add_optional_argument("output", "o")
@@ -51,7 +51,7 @@ enum class argument_type : bool { positional, optional };
  *       .help("An output file path");
  * @endcode
  *
- * @tparam ArgT The argument type, either @ref ap::argument_type::positional or @ref ap::argument_type::optional.
+ * @tparam ArgT The argument type, either @ref argon::argument_type::positional or @ref argon::argument_type::optional.
  * @tparam T The value type accepted by the argument (defaults to std::string).
  */
 template <argument_type ArgT, util::c_argument_value_type T = std::string>
@@ -98,7 +98,7 @@ public:
     }
 
     /// @return Reference the name of the positional argument.
-    [[nodiscard]] const ap::detail::argument_name& name() const noexcept override {
+    [[nodiscard]] const argon::detail::argument_name& name() const noexcept override {
         return this->_name;
     }
 
@@ -158,7 +158,7 @@ public:
      * @brief Set the `required` attribute of the argument
      * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @throws ap::invalid_configuration if the argument is configured to suppress argument/group checks.
+     * @throws argon::invalid_configuration if the argument is configured to suppress argument/group checks.
      */
     argument& required(const bool value = true) {
         if (value and (this->_suppress_arg_checks or this->_suppress_group_checks))
@@ -174,7 +174,7 @@ public:
      * @brief Enable/disable suppressing argument checks for other arguments.
      * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @throws ap::invalid_configuration if the argument is configured to be required.
+     * @throws argon::invalid_configuration if the argument is configured to be required.
      */
     argument& suppress_arg_checks(const bool value = true) {
         if (value and this->_required)
@@ -190,7 +190,7 @@ public:
      * @brief Enable/disable suppressing argument group checks.
      * @param value The attribute value (default: `true`).
      * @return Reference to the argument instance.
-     * @throws ap::invalid_configuration if the argument is configured to be required.
+     * @throws argon::invalid_configuration if the argument is configured to be required.
      */
     argument& suppress_group_checks(const bool value = true) {
         if (value and this->_required)
@@ -419,7 +419,7 @@ public:
     }
 
 #ifdef AP_TESTING
-    friend struct ::ap_testing::argument_test_fixture;
+    friend struct ::argon_testing::argument_test_fixture;
 #endif
 
 private:
@@ -522,7 +522,7 @@ private:
      * @brief Set the value for the optional argument.
      * @param str_value The string value to use.
      * @return `true` if the argument accepts further values, `false` otherwise.
-     * @throws ap::parsing_failure
+     * @throws argon::parsing_failure
      */
     bool set_value(const std::string& str_value) override {
         return this->_set_value_impl(str_value);
@@ -670,7 +670,7 @@ private:
     /**
      * @brief The implementation of the `set_value` method for none-type arguments.
      * @param str_value The string value to set.
-     * @throws ap::parsing_failure
+     * @throws argon::parsing_failure
      * @attention Always throws! (`set_value` should never be called for a none-type argument).
      */
     bool _set_value_impl(const std::string& str_value)
@@ -687,7 +687,7 @@ private:
      * @brief The implementation of the `set_value` method for non-none-type arguments.
      * @return `true` if the argument accepts further values, `false` otherwise.
      * @param str_value The string value to set.
-     * @throws ap::parsing_failure if:
+     * @throws argon::parsing_failure if:
      * @throws - the argument does not accept further values (nargs limit exceeded).
      * @throws - the value cannot be parsed to the argument's `value_type`.
      * @throws - the value is not a valid choice for the argument (if choices are defined).
@@ -724,7 +724,7 @@ private:
     }
 
     // attributes
-    const ap::detail::argument_name _name; ///< The argument's name.
+    const argon::detail::argument_name _name; ///< The argument's name.
     std::optional<std::string> _help_msg; ///< The argument's help message.
     nargs::range _nargs_range; ///< The argument's nargs range attribute value.
     [[no_unique_address]] value_arg_specific_type<std::vector<std::any>>
@@ -762,7 +762,7 @@ private:
 /**
  * @brief Positional argument alias.
  * @tparam T The value type accepted by the argument (defaults to std::string).
- * @see ap::argument
+ * @see argon::argument
  */
 template <util::c_argument_value_type T = std::string>
 using positional_argument = argument<argument_type::positional, T>;
@@ -770,9 +770,9 @@ using positional_argument = argument<argument_type::positional, T>;
 /**
  * @brief Optional argument alias.
  * @tparam T The value type accepted by the argument (defaults to std::string).
- * @see ap::argument
+ * @see argon::argument
  */
 template <util::c_argument_value_type T = std::string>
 using optional_argument = argument<argument_type::optional, T>;
 
-} // namespace ap
+} // namespace argon

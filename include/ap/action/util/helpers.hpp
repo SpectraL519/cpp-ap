@@ -14,15 +14,15 @@
 #include <utility>
 #include <variant>
 
-namespace ap::action::util {
+namespace argon::action::util {
 
 /// @brief Template argument action callable type alias.
 /// @ingroup util
-template <c_value_action_specifier AS, ap::util::c_argument_value_type T>
+template <c_value_action_specifier AS, argon::util::c_argument_value_type T>
 using callable_type = typename AS::template type<T>;
 
 /// @brief Template argument action callabla variant type alias.
-template <ap::util::c_argument_value_type T>
+template <argon::util::c_argument_value_type T>
 using value_action_variant_type = std::variant<
     callable_type<action_type::observe, T>,
     callable_type<action_type::transform, T>,
@@ -33,7 +33,7 @@ using value_action_variant_type = std::variant<
  * @tparam T The argument's value type
  * @ingroup util
  */
-template <ap::util::c_argument_value_type T>
+template <argon::util::c_argument_value_type T>
 struct apply_visitor {
     using value_type = T;
 
@@ -64,4 +64,4 @@ struct apply_visitor {
     value_type& value; ///< A reference to the argument's value for which the action will be applied.
 };
 
-} // namespace ap::action::util
+} // namespace argon::action::util

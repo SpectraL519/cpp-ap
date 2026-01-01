@@ -3,11 +3,11 @@
 #include <ap/argument.hpp>
 #include <ap/detail/argument_token.hpp>
 
-using sut_type = ap::detail::argument_token;
+using sut_type = argon::detail::argument_token;
 using enum sut_type::token_type;
-using ap::optional_argument;
-using ap::detail::argument_base;
-using ap::detail::argument_name;
+using argon::optional_argument;
+using argon::detail::argument_base;
+using argon::detail::argument_name;
 
 TEST_SUITE_BEGIN("test_argument_token");
 

@@ -6,7 +6,7 @@
 
 TEST_SUITE_BEGIN("test_help_builder");
 
-using sut_type = ap::detail::help_builder;
+using sut_type = argon::detail::help_builder;
 
 namespace {
 

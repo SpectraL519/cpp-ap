@@ -13,7 +13,7 @@
 #include <limits>
 #include <ostream>
 
-namespace ap::nargs {
+namespace argon::nargs {
 
 using count_type = std::size_t;
 
@@ -164,4 +164,4 @@ private:
     return range(min_bound, max_bound);
 }
 
-} // namespace ap::nargs
+} // namespace argon::nargs

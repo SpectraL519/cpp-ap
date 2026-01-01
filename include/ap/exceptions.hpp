@@ -12,7 +12,7 @@
 
 #include <format>
 
-namespace ap {
+namespace argon {
 
 /// @brief Base type for the argument parser functionality errors/exceptions.
 struct argument_parser_exception : public std::runtime_error {
@@ -99,4 +99,4 @@ struct lookup_failure : public argument_parser_exception {
     }
 };
 
-} // namespace ap
+} // namespace argon
