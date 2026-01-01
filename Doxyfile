@@ -61,13 +61,13 @@ PROJECT_BRIEF          = "Command-line argument parser for C++20"
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = "docs/logo/cpp-argon-hex-3-sq.png"
+PROJECT_LOGO           = "docs/img/cpp-argon-hex-3-sq.png"
 
 # With the PROJECT_ICON tag one can specify an icon that is included in the tabs
 # when the HTML document is shown. Doxygen will copy the logo to the output
 # directory.
 
-PROJECT_ICON           =
+PROJECT_ICON           = "docs/img/cpp-argon-hex-3-sq.png"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is

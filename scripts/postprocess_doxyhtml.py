@@ -4,6 +4,14 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 
+IMAGE_STYLE_RULES = [
+    {
+        "alt": "CPP-ARGON",
+        "style": "display: block; margin: 1.5em auto;"
+    }
+]
+
+
 def encode_md_link(path_str: str) -> str:
     """
     Encode a Markdown filepath according to Doxygen's rules:
@@ -87,12 +95,36 @@ def remove_mainpage_title(content: str, filename: str) -> str:
     return str(soup)
 
 
+def process_images(content: str, html_path: Path) -> str:
+    soup = BeautifulSoup(content, 'html.parser')
+
+    for img in soup.find_all('img'):
+        src = img.get('src')
+        if not src:
+            continue
+
+        if src.startswith(('http://', 'https://', 'data:')):
+            continue
+
+        filename = Path(src).name
+        if (html_path.parent / filename).exists():
+            img['src'] = filename  # Align the file path
+
+            alt = img.get('alt', '')
+            for rule in IMAGE_STYLE_RULES: # Apply image style rules
+                if ("filaneme" in rule and filename == rule["filename"]) or ("alt" in rule and alt == rule["alt"]):
+                    img['style'] = f"{img.get('style', '')}; {rule.get('style', '')}".strip('; ')
+
+    return str(soup)
+
+
 def process_file(f: Path):
     content = f.read_text(encoding='utf-8')
     content = process_md_refs(content)
     content = process_gfm(content)
     content = process_heading_code_blocks(content)
     content = remove_mainpage_title(content, f.name)
+    content = process_images(content, f)
     f.write_text(content, encoding='utf-8')
 
 
