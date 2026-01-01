@@ -1,11 +1,21 @@
-<h1>
+<!--<h1>
   CPP-ARGON
   <a href="https://github.com/SpectraL519/cpp-argon" target="_blank">
     <i class="fa fa-github" style="font-size: 1.3em; margin-left: 6px; position: relative; top: -0.08em;"></i>
   </a>
-</h1>
+</h1>-->
 
-Command-line argument parser for C++20
+<!--<p align="center">
+  <img src="docs/logo/cpp-argon-rect-3-169.png" alt="argon logo" width="360">
+</p>-->
+
+<p align="center">
+  <a href="https://github.com/SpectraL519/cpp-ap">
+    <img src="docs/logo/cpp-argon-rect-3-169.png" alt="CPP-ARGON" width="360">
+  </a>
+</p>
+
+<!--Command-line argument parser for C++20-->
 
 <br />
 
