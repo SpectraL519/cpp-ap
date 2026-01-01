@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/SpectraL519/cpp-argon">
-    <img src="docs/img/cpp-argon-rect-3-169.png" alt="CPP-ARGON" width="500" />
+    <img src="docs/img/cpp-argon-hex.png" alt="CPP-ARGON" width="360" />
   </a>
 </p>
 

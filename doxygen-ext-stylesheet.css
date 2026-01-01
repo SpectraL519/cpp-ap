@@ -1,4 +1,4 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 .fa {
   vertical-align: middle;
@@ -6,4 +6,37 @@
 }
 .fa:hover {
   transform: scale(1.2);
+}
+
+/* Reduce padding around the title area */
+#titlearea {
+  padding: 0.2em 0 !important;
+}
+#titlearea table {
+  margin: 0 !important;
+}
+
+/* Reduce projectrow cell padding */
+#projectrow td {
+  padding: 0.2em 0.6em !important;
+  vertical-align: middle !important;
+}
+
+/* Constrain logo height */
+#projectlogo img {
+  max-height: 90px;
+  width: auto;
+  display: block;
+}
+
+/* Tighten project name & brief spacing */
+#projectname {
+  font-size: 1.6em;
+  line-height: 1.1em;
+  margin: 0 !important;
+}
+#projectbrief {
+  font-size: 0.9em;
+  line-height: 1.1em;
+  margin: 0 !important;
 }
