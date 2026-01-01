@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Project
-project(cpp-ap-test)
+project(cpp-argon-test)
 
 # Set compile options
 if (MSVC)
@@ -43,4 +43,4 @@ set_target_properties(run_uts PROPERTIES
 )
 target_include_directories(run_uts PRIVATE ${INCLUDE_DIRS})
 target_compile_definitions(run_uts PRIVATE "AP_TESTING")
-target_link_libraries(run_uts PRIVATE cpp-ap)
+target_link_libraries(run_uts PRIVATE cpp-argon)

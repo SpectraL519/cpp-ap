@@ -65,11 +65,11 @@ python scripts/format.py --help
 
 > [!NOTE]
 >
-> You can view the online documentation for the latest version [here](https://spectral519.github.io/cpp-ap/latest/).
+> You can view the online documentation for the latest version [here](https://spectral519.github.io/cpp-argon/latest/).
 >
 > To view the documentation for the previous versions use the following URL pattern:
 > ```
-> https://spectral519.github.io/cpp-ap/<version>
+> https://spectral519.github.io/cpp-argon/<version>
 > ```
 
 The documentation for this project can be generated using Doxygen, styled with a custom [fork](https://github.com/SpectraL519/doxygen-awesome-css/tree/theme-alignment) of the [doxygen-awesome-css](https://github.com/jothepro/doxygen-awesome-css) theme.

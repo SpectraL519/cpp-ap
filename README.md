@@ -1,6 +1,6 @@
 <h1>
-  CPP-AP
-  <a href="https://github.com/SpectraL519/cpp-ap" target="_blank">
+  CPP-ARGON
+  <a href="https://github.com/SpectraL519/cpp-argon" target="_blank">
     <i class="fa fa-github" style="font-size: 1.3em; margin-left: 6px; position: relative; top: -0.08em;"></i>
   </a>
 </h1>
@@ -11,18 +11,18 @@ Command-line argument parser for C++20
 
 <div align="center">
 
-[![GCC](https://github.com/SpectraL519/cpp-ap/actions/workflows/gcc.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/gcc)
-[![Clang](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/clang)
-[![MSVC](https://github.com/SpectraL519/cpp-ap/actions/workflows/msvc.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/msvc)
+[![GCC](https://github.com/SpectraL519/cpp-argon/actions/workflows/gcc.yaml/badge.svg)](https://github.com/SpectraL519/cpp-argon/actions/workflows/gcc)
+[![Clang](https://github.com/SpectraL519/cpp-argon/actions/workflows/clang.yaml/badge.svg)](https://github.com/SpectraL519/cpp-argon/actions/workflows/clang)
+[![MSVC](https://github.com/SpectraL519/cpp-argon/actions/workflows/msvc.yaml/badge.svg)](https://github.com/SpectraL519/cpp-argon/actions/workflows/msvc)
 
 </div>
 
 <div align="center">
 
-[![format](https://github.com/SpectraL519/cpp-ap/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/format)
-[![demo](https://github.com/SpectraL519/cpp-ap/actions/workflows/demo.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/demo)
-[![documentation](https://github.com/SpectraL519/cpp-ap/actions/workflows/documentation.yaml/badge.svg)](https://github.com/SpectraL519/cpp-ap/actions/workflows/documentation)
-[![changelog](https://img.shields.io/badge/changelog-blue.svg?logo=github)](https://github.com/SpectraL519/cpp-ap/releases)
+[![format](https://github.com/SpectraL519/cpp-argon/actions/workflows/format.yaml/badge.svg)](https://github.com/SpectraL519/cpp-argon/actions/workflows/format)
+[![demo](https://github.com/SpectraL519/cpp-argon/actions/workflows/demo.yaml/badge.svg)](https://github.com/SpectraL519/cpp-argon/actions/workflows/demo)
+[![documentation](https://github.com/SpectraL519/cpp-argon/actions/workflows/documentation.yaml/badge.svg)](https://github.com/SpectraL519/cpp-argon/actions/workflows/documentation)
+[![changelog](https://img.shields.io/badge/changelog-blue.svg?logo=github)](https://github.com/SpectraL519/cpp-argon/releases)
 
 </div>
 
@@ -30,11 +30,11 @@ Command-line argument parser for C++20
 
 ## Overview
 
-`CPP-AP` is a lightweight and feature-rich command-line argument parsing library for the C++20 and newer standards, designed as an alternative to `boost::program_options`. It offers a modern and intuitive interface allowing for straightforward argument configuration and parsing.
+`CPP-ARGON` is a lightweight and feature-rich command-line argument parsing library for the C++20 and newer standards, designed as an alternative to `boost::program_options`. It offers a modern and intuitive interface allowing for straightforward argument configuration and parsing.
 
 > [!NOTE]
 >
-> [v1.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v1.0) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
+> [v1.0](https://github.com/SpectraL519/cpp-argon/releases/tag/v1.0) of the library has been developed for the *Team Programming* course at the *Wrocław University of Science and Technology*.
 >
 > Faculty: *W04N - Faculty of Information and Communication Technology*
 >
@@ -47,7 +47,7 @@ Command-line argument parser for C++20
 ## Related Pages
 
 - [Tutorial](/docs/tutorial.md#tutorial)
-  - [Setting Up CPP-AP](/docs/tutorial.md#setting-up-cpp-ap)
+  - [Setting Up CPP-ARGON](/docs/tutorial.md#setting-up-cpp-argon)
     - [CMake Integration](/docs/tutorial.md#cmake-integration)
     - [Bazel Build System](/docs/tutorial.md#bazel-build-system)
     - [Downloading the Library](/docs/tutorial.md#downloading-the-library)
@@ -99,4 +99,4 @@ Command-line argument parser for C++20
 
 ## License
 
-The `CPP-AP` project uses the [MIT License](https://mit-license.org/) which can be found in the [LICENSE](/LICENSE.md#mit-license) file
+The `CPP-ARGON` project uses the [MIT License](https://mit-license.org/) which can be found in the [LICENSE](/LICENSE.md#mit-license) file

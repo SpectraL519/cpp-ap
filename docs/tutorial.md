@@ -1,6 +1,6 @@
 # Tutorial
 
-- [Setting Up CPP-AP](#setting-up-cpp-ap)
+- [Setting Up CPP-ARGON](#setting-up-cpp-argon)
   - [CMake Integration](#cmake-integration)
   - [Bazel Build System](#bazel-build-system)
   - [Downloading the Library](#downloading-the-library)
@@ -55,7 +55,7 @@
 
 <br/>
 
-## Setting Up CPP-AP
+## Setting Up CPP-ARGON
 
 ### CMake Integration
 
@@ -69,14 +69,14 @@ project(my_project LANGUAGES CXX)
 # Include FetchContent module
 include(FetchContent)
 
-# Fetch CPP-AP library
+# Fetch CPP-ARGON library
 FetchContent_Declare(
-    cpp-ap
-    GIT_REPOSITORY https://github.com/SpectraL519/cpp-ap.git
+    cpp-argon
+    GIT_REPOSITORY https://github.com/SpectraL519/cpp-argon.git
     GIT_TAG master # here you can specify the desired tag or branch name
 )
 
-FetchContent_MakeAvailable(cpp-ap)
+FetchContent_MakeAvailable(cpp-argon)
 
 # Define the executable for the project
 add_executable(my_project main.cpp)
@@ -86,28 +86,28 @@ set_target_properties(my_project PROPERTIES
     CXX_STANDARD_REQUIRED YES
 )
 
-# Link against the cpp-ap library
-target_link_libraries(my_project PRIVATE cpp-ap)
+# Link against the cpp-argon library
+target_link_libraries(my_project PRIVATE cpp-argon)
 ```
 
 ### Bazel Build System
 
-To use the `CPP-AP` in a [Bazel](https://bazel.build/) project add the following in the `MODULE.bazel` (or `WORKSPACE.bazel`) file:
+To use the `CPP-ARGON` in a [Bazel](https://bazel.build/) project add the following in the `MODULE.bazel` (or `WORKSPACE.bazel`) file:
 
 ```bazel
 git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
-    name = "cpp-ap",
-    remote = "https://github.com/SpectraL519/cpp-ap.git",
-    tag = "<version-name>" # here you can declare the desired CPP-AP version
+    name = "cpp-argon",
+    remote = "https://github.com/SpectraL519/cpp-argon.git",
+    tag = "<version-name>" # here you can declare the desired CPP-ARGON version
 )
 ```
 
 > [!IMPORTANT]
-> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) do not support building with Bazel.
+> CPP-ARGON versions older than [2.5.0](https://github.com/SpectraL519/cpp-argon/releases/tag/v2.5.0) do not support building with Bazel.
 
-And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
+And then add the `"@cpp-argon//:cpp-argon"` dependency for the target you want to use `CPP-ARGON` for by adding it to the `deps` list. For instance:
 
 ```bazel
 # BUILD.bazel
@@ -115,7 +115,7 @@ cc_binary(
     name = "my_app",
     srcs = ["application.cpp"],
     includes = ["include"],
-    deps = ["@cpp-ap//:cpp-ap"],
+    deps = ["@cpp-argon//:cpp-argon"],
     cxxopts = ["-std=c++20"],
     visibility = ["//visibility:public"],
 )
@@ -123,7 +123,7 @@ cc_binary(
 
 ### Downloading the Library
 
-If you do not use CMake, you can download the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
+If you do not use CMake, you can download the desired [library release](https://github.com/SpectraL519/cpp-argon/releases), extract it in a desired directory and simply add `<cpp-argon-dir>/include` to the include directories of your project.
 
 <br/>
 <br/>
@@ -759,7 +759,7 @@ Command                       Result
 
 ## Default Arguments
 
-The `CPP-AP` library defines several default arguments, which can be added to the parser's configuration as follows.
+The `CPP-ARGON` library defines several default arguments, which can be added to the parser's configuration as follows.
 
 ```cpp
 parser.default_arguments(<args>);
@@ -1454,7 +1454,7 @@ For example:
 // top-level parser
 argon::argument_parser git("ap-git");
 git.program_version({.major = 2u, .minor = 43u, .patch = 0u})
-   .program_description("A version control system built with CPP-AP")
+   .program_description("A version control system built with CPP-ARGON")
    .default_arguments(argon::default_argument::o_help, argon::default_argument::o_version);
 
 // subcommand: status
@@ -1494,7 +1494,7 @@ All defined subparsers will be included in the parent parser's help message:
 > ap-git --help
 Program: ap-git (v2.43.0)
 
-  A version control system built with CPP-AP
+  A version control system built with CPP-ARGON
 
 Commands:
 
@@ -1589,26 +1589,26 @@ Resolved parser : init (ap-git submodule init)
 
 ## Examples
 
-The library usage examples and demo projects are included in the `cpp-ap-demo` submodule.
+The library usage examples and demo projects are included in the `cpp-argon-demo` submodule.
 To fetch the submodule content after cloning the main repository, run:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-For more detailed information about the demo projects, see the [cpp-ap-demo](https://github.com/SpectraL519/cpp-ap-demo) README.
+For more detailed information about the demo projects, see the [cpp-argon-demo](https://github.com/SpectraL519/cpp-argon-demo) README.
 
-The following table lists the projects provided in the `cpp-ap-demo` submodule:
+The following table lists the projects provided in the `cpp-argon-demo` submodule:
 
 | Project | Description |
 | :- | :- |
-| [Power Calculator](https://github.com/SpectraL519/cpp-ap-demo/tree/master/power_calculator/) | Calculates the value of a $b^e$ expression for the given base and exponents.<br/>**Demonstrates:** The basic usage of positional and optional arguments. |
-| [File Merger](https://github.com/SpectraL519/cpp-ap-demo/tree/master/file_merger/) | Merges multiple text files into a single output file.<br/>**Demonstrates:** The usage of default arguments. |
-| [Numbers Converter](https://github.com/SpectraL519/cpp-ap-demo/tree/master/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
-| [Verbosity](https://github.com/SpectraL519/cpp-ap-demo/tree/master/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
-| [Logging Mode](https://github.com/SpectraL519/cpp-ap-demo/tree/master/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
-| [Message Logger](https://github.com/SpectraL519/cpp-ap-demo/arg_parsertree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
-| [AP-GIT](https://github.com/SpectraL519/cpp-ap-demo/tree/master/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
+| [Power Calculator](https://github.com/SpectraL519/cpp-argon-demo/tree/master/power_calculator/) | Calculates the value of a $b^e$ expression for the given base and exponents.<br/>**Demonstrates:** The basic usage of positional and optional arguments. |
+| [File Merger](https://github.com/SpectraL519/cpp-argon-demo/tree/master/file_merger/) | Merges multiple text files into a single output file.<br/>**Demonstrates:** The usage of default arguments. |
+| [Numbers Converter](https://github.com/SpectraL519/cpp-argon-demo/tree/master/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
+| [Verbosity](https://github.com/SpectraL519/cpp-argon-demo/tree/master/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
+| [Logging Mode](https://github.com/SpectraL519/cpp-argon-demo/tree/master/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
+| [Message Logger](https://github.com/SpectraL519/cpp-argon-demo/arg_parsertree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
+| [AP-GIT](https://github.com/SpectraL519/cpp-argon-demo/tree/master/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
 
 <br/>
 <br/>
@@ -1616,4 +1616,4 @@ The following table lists the projects provided in the `cpp-ap-demo` submodule:
 
 ## Common Utility
 
-The CPP-AP library provides additional utilities, described on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).
+The CPP-ARGON library provides additional utilities, described on the [Utility topic page](https://spectral519.github.io/cpp-argon/latest/group__util.html).
