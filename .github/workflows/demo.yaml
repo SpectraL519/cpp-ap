@@ -6,7 +6,7 @@ on:
     paths:
       - .github/workflows/demo.yaml
       - .gitmodules
-      - cpp-ap-demo
+      - cpp-argon-demo
       - include/**
       - CMakeLists.txt
       - MODULE.bazel
@@ -17,7 +17,7 @@ on:
 
 jobs:
   build-demo-linux:
-    name: Build cpp-ap-demo (Linux)
+    name: Build cpp-argon-demo (Linux)
     runs-on: ubuntu-24.04
 
     steps:
@@ -42,10 +42,10 @@ jobs:
             echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build cpp-ap-demo (CMake)
+      - name: Build cpp-argon-demo (CMake)
         run: |
-          cd cpp-ap-demo
-          cmake -B build_cmake -DAP_TAG=${{ steps.branch-name.outputs.branch }}
+          cd cpp-argon-demo
+          cmake -B build_cmake -DARGON_TAG=${{ steps.branch-name.outputs.branch }}
           cmake --build build_cmake/ -j 4
 
       - name: Setup Bazel
@@ -55,15 +55,15 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
 
-      - name: Build cpp-ap-demo (Bazel)
+      - name: Build cpp-argon-demo (Bazel)
         run: |
-          cd cpp-ap-demo
+          cd cpp-argon-demo
           BRANCH="${{ steps.branch-name.outputs.branch }}"
           sed -i "s/branch = \".*\"/branch = \"$BRANCH\"/" MODULE.bazel
           bazel build //:all_demos
 
   build-demo-windows:
-    name: Build cpp-ap-demo (Windows)
+    name: Build cpp-argon-demo (Windows)
     runs-on: windows-2022
 
     steps:
@@ -91,10 +91,10 @@ jobs:
             "branch=$branch" >> $env:GITHUB_OUTPUT
           }
 
-      - name: Build cpp-ap-demo (CMake)
+      - name: Build cpp-argon-demo (CMake)
         run: |
-          cd cpp-ap-demo
-          cmake -B build_cmake -DAP_TAG=${{ steps.branch-name.outputs.branch }}
+          cd cpp-argon-demo
+          cmake -B build_cmake -DARGON_TAG=${{ steps.branch-name.outputs.branch }}
           cmake --build build_cmake/ --config Release -j 4
 
       - name: Setup Bazel
@@ -104,9 +104,9 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
 
-      - name: Build cpp-ap-demo (Bazel)
+      - name: Build cpp-argon-demo (Bazel)
         run: |
-          cd cpp-ap-demo
+          cd cpp-argon-demo
           $BRANCH="${{ steps.branch-name.outputs.branch }}"
           (Get-Content MODULE.bazel) -replace 'branch = ".*"', "branch = `"$BRANCH`"" | Set-Content MODULE.bazel
           bazel build //:all_demos
