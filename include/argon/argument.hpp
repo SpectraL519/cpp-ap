@@ -659,12 +659,10 @@ private:
     }
 
     /// @return `true` if the given value is a valid choice for the argument, `false` otherwise.
-    /// @todo Use std::ranges::contains after the switch to C++23
     [[nodiscard]] bool _is_valid_choice(const value_type& value) const noexcept
     requires(not util::c_is_none<value_type>)
     {
-        return this->_choices.empty()
-            or std::ranges::find(this->_choices, value) != this->_choices.end();
+        return this->_choices.empty() or std::ranges::contains(this->_choices, value);
     }
 
     /**

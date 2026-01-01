@@ -25,7 +25,7 @@ target_include_directories(cpp-argon INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 set_target_properties(cpp-argon PROPERTIES
-    CXX_STANDARD 20
+    CXX_STANDARD 23
     CXX_STANDARD_REQUIRED YES
 )
 

@@ -13,6 +13,7 @@
 #include "argon/argument_group.hpp"
 #include "argon/detail/argument_token.hpp"
 #include "argon/types.hpp"
+#include "argon/util/ranges.hpp"
 
 #include <algorithm>
 #include <format>
@@ -833,12 +834,7 @@ public:
             throw lookup_failure::argument_not_found(arg_name);
 
         try {
-            std::vector<T> values;
-            // TODO: use std::ranges::to after transition to C++23
-            std::ranges::copy(
-                util::any_range_cast_view<T>(arg->values()), std::back_inserter(values)
-            );
-            return values;
+            return util::any_range_cast_view<T>(arg->values()) | std::ranges::to<std::vector<T>>();
         }
         catch (const std::bad_any_cast&) {
             throw type_error::invalid_value_type<T>(arg->name());
@@ -1384,7 +1380,7 @@ private:
             }
         };
 
-        // TODO: use std::views::join after the transition to C++23
+        // TODO: use std::views::concat after the transition to C++26
         std::ranges::for_each(this->_positional_args, check_arg);
         std::ranges::for_each(this->_optional_args, check_arg);
         return {suppress_group_checks, suppress_arg_checks};

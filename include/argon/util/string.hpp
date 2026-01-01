@@ -41,7 +41,6 @@ template <c_writable T>
  * @param range The input range to join.
  * @param delimiter The separator string to insert between elements.
  * @return A single string with all elements joined by the delimiter.
- * \todo Replace with std::views::join after transition to C++23.
  * @ingroup util
  */
 template <std::ranges::range R>

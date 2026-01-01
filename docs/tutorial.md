@@ -73,7 +73,7 @@ include(FetchContent)
 FetchContent_Declare(
     cpp-argon
     GIT_REPOSITORY https://github.com/SpectraL519/cpp-argon.git
-    GIT_TAG master # here you can specify the desired tag or branch name
+    GIT_TAG master # here you can specify the desired tag or branch name (use `master` for the latest version)
 )
 
 FetchContent_MakeAvailable(cpp-argon)

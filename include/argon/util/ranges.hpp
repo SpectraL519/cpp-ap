@@ -25,7 +25,7 @@ namespace argon::util {
  * @ingroup util
  */
 template <typename T>
-auto any_range_cast_view(const c_range_of<std::any> auto& range) {
+constexpr auto any_range_cast_view(const c_range_of<std::any> auto& range) {
     return range | std::views::transform([](const std::any& value) -> T {
                return std::any_cast<T>(value);
            });
