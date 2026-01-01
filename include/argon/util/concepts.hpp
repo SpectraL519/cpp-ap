@@ -1,23 +1,23 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/util/concepts.hpp
+ * @file argon/util/concepts.hpp
  * @brief Provides the general concept definitions.
  */
 
 #pragma once
 
-#include "ap/types.hpp"
+#include "argon/types.hpp"
 
 #include <iostream>
 #include <ranges>
 
-namespace ap::util {
+namespace argon::util {
 
 /**
- * @brief The concept is satisfied when `T` is @ref ap::none_type.
+ * @brief The concept is satisfied when `T` is @ref argon::none_type.
  * @tparam T Type to check.
  * @ingroup util
  */
@@ -63,7 +63,7 @@ concept c_arithmetic = std::is_arithmetic_v<T>;
  */
 template <typename T>
 concept c_argument_value_type =
-    std::same_as<T, ap::none_type>
+    std::same_as<T, argon::none_type>
     or (std::semiregular<T> and (c_trivially_readable<T> or c_readable<T>));
 
 /**
@@ -162,4 +162,4 @@ template <typename It, typename V, type_validator TV = type_validator::same>
 concept c_forward_iterator_of =
     std::input_iterator<It> and c_valid_type<std::iter_value_t<It>, V, TV>;
 
-} // namespace ap::util
+} // namespace argon::util

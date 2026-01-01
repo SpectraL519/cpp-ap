@@ -1,16 +1,16 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/argument_group.hpp
+/// @file argon/argument_group.hpp
 
 #pragma once
 
-#include "ap/detail/argument_base.hpp"
+#include "argon/detail/argument_base.hpp"
 
 #include <memory>
 
-namespace ap {
+namespace argon {
 
 /**
  * @brief Represents a group of arguments.
@@ -21,19 +21,19 @@ namespace ap {
  * - required: **at least one** argument from the group must be used in the command-line
  * - mutually exclusive: **at most one** argument from the group can be used in the command-line
  *
- * @note - This class is not intended to be constructed directly, but rather through the `add_group` method of @ref ap::argument_parser.
+ * @note - This class is not intended to be constructed directly, but rather through the `add_group` method of @ref argon::argument_parser.
  * @note - User defined groups may contain only optional arguments (and flags).
  *
  * Example usage:
  * @code{.cpp}
- * ap::argument_parser parser("myprog");
+ * argon::argument_parser parser("myprog");
  * auto& out_opts = parser.add_group("Output Options").mutually_exclusive();
  *
  * group.add_optional_argument(out_opts, "output", "o")
  *      .nargs(1)
  *      .help("Print output to the given file");
  *
- * group.add_optional_argument<ap::none_type>(out_opts, "print", "p")
+ * group.add_optional_argument<argon::none_type>(out_opts, "print", "p")
  *      .help("Print output to the console");
  * @endcode
  * Here `out_opts` is a mutually exclusive group, so using both arguments at the same time would cause an error.
@@ -120,4 +120,4 @@ private:
         false; ///< The mutually exclusive attribute value (default: false).
 };
 
-} // namespace ap
+} // namespace argon

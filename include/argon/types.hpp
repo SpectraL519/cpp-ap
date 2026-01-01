@@ -1,8 +1,8 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/types.hpp
+/// @file argon/types.hpp
 
 #pragma once
 
@@ -10,7 +10,7 @@
 #include <format>
 #include <iostream>
 
-namespace ap {
+namespace argon {
 
 /**
  * @brief A type representing the absence of a value.
@@ -37,4 +37,4 @@ struct version {
     }
 };
 
-} // namespace ap
+} // namespace argon

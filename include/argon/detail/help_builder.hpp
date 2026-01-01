@@ -1,17 +1,17 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/detail/help_builder.hpp
+ * @file argon/detail/help_builder.hpp
  * @brief Defines structures for creating and formatting help messages.
  */
 
 #pragma once
 
-#include "ap/detail/argument_name.hpp"
-#include "ap/util/concepts.hpp"
-#include "ap/util/string.hpp"
+#include "argon/detail/argument_name.hpp"
+#include "argon/util/concepts.hpp"
+#include "argon/util/string.hpp"
 
 #include <cstdint>
 #include <format>
@@ -20,7 +20,7 @@
 #include <sstream>
 #include <vector>
 
-namespace ap::detail {
+namespace argon::detail {
 
 /// @brief A structure used to represent an argument's parameter description.
 struct parameter_descriptor {
@@ -49,7 +49,7 @@ public:
 
     /**
      * @brief Adds a parameter descriptor with the given value.
-     * @tparam T The type of the parameter; must satisfy the @ref ap::util::c_writable concept.
+     * @tparam T The type of the parameter; must satisfy the @ref argon::util::c_writable concept.
      * @param param_name The parameter's name.
      * @param value The parameter's value.
      */
@@ -62,7 +62,7 @@ public:
 
     /**
      * @brief Adds a range parameter descriptor with the given value.
-     * @tparam R The type of the parameter range. The value type of R must satisfy the @ref ap::util::c_writable concept.
+     * @tparam R The type of the parameter range. The value type of R must satisfy the @ref argon::util::c_writable concept.
      * @param param_name The parameter's name.
      * @param range The parameter value range.
      * @param delimiter The delimiter used to separate the range values.
@@ -189,4 +189,4 @@ private:
     static constexpr std::string_view default_delimiter = ", ";
 };
 
-} // namespace ap::detail
+} // namespace argon::detail

@@ -1,4 +1,4 @@
 module(
-    name = "cpp-ap",
-    version = "3.1.0",
+    name = "cpp-argon",
+    version = "4.0.0",
 )

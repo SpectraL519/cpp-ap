@@ -1,7 +1,7 @@
 #### MIT License
 
-Copyright (c) 2023-2025 Jakub Musiał and other contributors
-https://github.com/SpectraL519/cpp-ap
+Copyright (c) 2023-2026 Jakub Musiał and other contributors
+https://github.com/SpectraL519/cpp-argon
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

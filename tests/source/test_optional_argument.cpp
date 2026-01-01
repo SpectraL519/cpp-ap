@@ -1,15 +1,15 @@
 #include "argument_test_fixture.hpp"
 #include "doctest.h"
 
-#include <ap/util/string.hpp>
+#include <argon/util/string.hpp>
 
-using namespace ap_testing;
-using namespace ap::nargs;
+using namespace argon_testing;
+using namespace argon::nargs;
 
-using ap::optional_argument;
-using ap::parsing_failure;
-using ap::detail::argument_name;
-using ap::detail::parameter_descriptor;
+using argon::optional_argument;
+using argon::parsing_failure;
+using argon::detail::argument_name;
+using argon::detail::parameter_descriptor;
 
 TEST_SUITE_BEGIN("test_optional_argument");
 
@@ -154,11 +154,11 @@ TEST_CASE_FIXTURE(
 
     const auto nargs_it = std::ranges::find(bld.params, "nargs", &parameter_descriptor::name);
     REQUIRE_NE(nargs_it, bld.params.end());
-    CHECK_EQ(nargs_it->value, ap::util::as_string(non_default_range));
+    CHECK_EQ(nargs_it->value, argon::util::as_string(non_default_range));
 
     const auto choices_it = std::ranges::find(bld.params, "choices", &parameter_descriptor::name);
     REQUIRE_NE(choices_it, bld.params.end());
-    CHECK_EQ(choices_it->value, ap::util::join(choices, ", "));
+    CHECK_EQ(choices_it->value, argon::util::join(choices, ", "));
 
     const auto default_value_it =
         std::ranges::find(bld.params, "default value(s)", &parameter_descriptor::name);
@@ -222,7 +222,7 @@ TEST_CASE_FIXTURE(
     CHECK_THROWS_WITH_AS(
         sut.required(true),
         std::format("A suppressing argument [{}] cannot be required!", arg_name.str()).c_str(),
-        ap::invalid_configuration
+        argon::invalid_configuration
     );
 }
 
@@ -238,7 +238,7 @@ TEST_CASE_FIXTURE(
         sut.suppress_arg_checks(true),
         std::format("A required argument [{}] cannot suppress argument checks!", arg_name.str())
             .c_str(),
-        ap::invalid_configuration
+        argon::invalid_configuration
     );
 
     sut.required(false);
@@ -264,7 +264,7 @@ TEST_CASE_FIXTURE(
             "A required argument [{}] cannot suppress argument group checks!", arg_name.str()
         )
             .c_str(),
-        ap::invalid_configuration
+        argon::invalid_configuration
     );
 
     sut.required(false);
@@ -314,7 +314,7 @@ TEST_CASE_FIXTURE(argument_test_fixture, "argument flag usage should trigger the
     auto sut = sut_type(arg_name_primary);
 
     const auto throw_action = []() { throw std::runtime_error("no reason"); };
-    sut.action<ap::action_type::on_flag>(throw_action);
+    sut.action<argon::action_type::on_flag>(throw_action);
 
     CHECK_THROWS_AS(mark_used(sut), std::runtime_error);
 }
@@ -568,7 +568,7 @@ TEST_CASE_FIXTURE(
             }
         };
 
-        sut.action<ap::action_type::observe>(is_power_of_two);
+        sut.action<argon::action_type::observe>(is_power_of_two);
 
         CHECK_THROWS_AS(set_value(sut, 3), std::runtime_error);
 
@@ -579,7 +579,7 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("transform action") {
         const auto double_action = [](const sut_value_type& value) { return 2 * value; };
-        sut.action<ap::action_type::transform>(double_action);
+        sut.action<argon::action_type::transform>(double_action);
 
         set_value(sut, arbitrary_value);
 
@@ -588,7 +588,7 @@ TEST_CASE_FIXTURE(
 
     SUBCASE("modify action") {
         const auto double_action = [](sut_value_type& value) { value *= 2; };
-        sut.action<ap::action_type::modify>(double_action);
+        sut.action<argon::action_type::modify>(double_action);
 
         auto test_value = arbitrary_value;
 

@@ -1,18 +1,18 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/exceptions.hpp
+/// @file argon/exceptions.hpp
 
 #pragma once
 
-#include "ap/detail/argument_name.hpp"
-#include "ap/util/string.hpp"
-#include "ap/util/typing.hpp"
+#include "argon/detail/argument_name.hpp"
+#include "argon/util/string.hpp"
+#include "argon/util/typing.hpp"
 
 #include <format>
 
-namespace ap {
+namespace argon {
 
 /// @brief Base type for the argument parser functionality errors/exceptions.
 struct argument_parser_exception : public std::runtime_error {
@@ -99,4 +99,4 @@ struct lookup_failure : public argument_parser_exception {
     }
 };
 
-} // namespace ap
+} // namespace argon

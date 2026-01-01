@@ -1,18 +1,19 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/argument_parser.hpp
+ * @file argon/argument_parser.hpp
  * @brief Main library header file. Defines the `argument_parser` class.
  */
 
 #pragma once
 
-#include "ap/argument.hpp"
-#include "ap/argument_group.hpp"
-#include "ap/detail/argument_token.hpp"
-#include "ap/types.hpp"
+#include "argon/argument.hpp"
+#include "argon/argument_group.hpp"
+#include "argon/detail/argument_token.hpp"
+#include "argon/types.hpp"
+#include "argon/util/ranges.hpp"
 
 #include <algorithm>
 #include <format>
@@ -22,13 +23,13 @@
 
 #ifdef AP_TESTING
 
-namespace ap_testing {
+namespace argon_testing {
 struct argument_parser_test_fixture;
-} // namespace ap_testing
+} // namespace argon_testing
 
 #endif
 
-namespace ap {
+namespace argon {
 
 class argument_parser;
 
@@ -39,7 +40,7 @@ enum class default_argument : std::uint8_t {
      * Equivalent to:
      * @code{.cpp}
      * parser.add_positional_argument("input")
-     *       .action<ap::action_type::observe>(ap::action::check_file_exists())
+     *       .action<argon::action_type::observe>(argon::action::check_file_exists())
      *       .help("Input file path");
      * @endcode
      */
@@ -59,8 +60,8 @@ enum class default_argument : std::uint8_t {
      * @brief An optional argument representing the program's help flag.
      * Equivalent to:
      * @code{.cpp}
-     * parser.add_optional_argument<ap::none_type>("help")
-     *       .action<ap::action_type::on_flag>(ap::action::print_help(parser, EXIT_SUCCESS))
+     * parser.add_optional_argument<argon::none_type>("help")
+     *       .action<argon::action_type::on_flag>(argon::action::print_help(parser, EXIT_SUCCESS))
      *       .help("Display the help message");
      * @endcode
      */
@@ -86,7 +87,7 @@ enum class default_argument : std::uint8_t {
      * @code{.cpp}
      * parser.add_positional_argument("input", "i")
      *       .nargs(1ull)
-     *       .action<ap::action_type::observe>(ap::action::check_file_exists())
+     *       .action<argon::action_type::observe>(argon::action::check_file_exists())
      *       .help("Input file path");
      * @endcode
      */
@@ -108,8 +109,8 @@ enum class default_argument : std::uint8_t {
      * Equivalent to:
      * @code{.cpp}
      * parser.add_positional_argument("input", "i")
-     *       .nargs(ap::nargs::at_least(1ull))
-     *       .action<ap::action_type::observe>(ap::action::check_file_exists())
+     *       .nargs(argon::nargs::at_least(1ull))
+     *       .action<argon::action_type::observe>(argon::action::check_file_exists())
      *       .help("Input file path");
      * @endcode
      */
@@ -120,7 +121,7 @@ enum class default_argument : std::uint8_t {
      * Equivalent to:
      * @code{.cpp}
      * parser.add_positional_argument("output", "o")
-     *       .nargs(ap::nargs::at_least(1ull))
+     *       .nargs(argon::nargs::at_least(1ull))
      *       .help("Output file path");
      * @endcode
      */
@@ -149,20 +150,20 @@ void add_default_argument(const default_argument, argument_parser&) noexcept;
  *
  * Example usage:
  * @code{.cpp}
- * #include <ap/argument_parser.hpp>
+ * #include <argon/argument_parser.hpp>
  *
  * int main(int argc, char* argv[]) {
  *     // Create the argument parser instance
- *     ap::argument_parser parser("fcopy");
+ *     argon::argument_parser parser("fcopy");
  *     parser.program_version({ .major = 1, .minor = 0, .patch = 0 })
  *           .program_description("A simple file copy utility.")
  *           .default_arguments(
- *               ap::default_argument::o_help,
- *               ap::default_argument::o_input,
- *               ap::default_argument::o_output
+ *               argon::default_argument::o_help,
+ *               argon::default_argument::o_input,
+ *               argon::default_argument::o_output
  *           )
  *           .verbose()
- *           .unknown_arguments_policy(ap::unknown_policy::ignore)
+ *           .unknown_arguments_policy(argon::unknown_policy::ignore)
  *           .try_parse_args(argc, argv);
  *
  *     // Access parsed argument values
@@ -237,7 +238,7 @@ public:
      * @brief Set the unknown argument flags handling policy.
      * @param policy The unknown arguments policy value.
      * @return Reference to the argument parser.
-     * @note The default unknown arguments policy value is `ap::unknown_policy::fail`.
+     * @note The default unknown arguments policy value is `argon::unknown_policy::fail`.
      */
     argument_parser& unknown_arguments_policy(const unknown_policy policy) noexcept {
         this->_unknown_policy = policy;
@@ -248,7 +249,7 @@ public:
      * @brief Add default arguments to the argument parser.
      * @tparam AR Type of the positional argument discriminator range.
      * @param arg_discriminators A range of default positional argument discriminators.
-     * @note `arg_discriminators` must be a `std::ranges::range` with the `ap::default_argument` value type.
+     * @note `arg_discriminators` must be a `std::ranges::range` with the `argon::default_argument` value type.
      * @return Reference to the argument parser.
      */
     template <util::c_range_of<default_argument> AR>
@@ -286,7 +287,7 @@ public:
      * @tparam T Type of the argument value.
      * @param name The name of the argument.
      * @return Reference to the added positional argument.
-     * @throws ap::invalid_configuration
+     * @throws argon::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     positional_argument<T>& add_positional_argument(const std::string_view name) {
@@ -298,7 +299,7 @@ public:
      * @tparam T Type of the argument value.
      * @param primary_name The name of the argument.
      * @return Reference to the added positional argument.
-     * @throws ap::invalid_configuration
+     * @throws argon::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     positional_argument<T>& add_positional_argument(
@@ -323,7 +324,7 @@ public:
      * @param name The name of the argument.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added optional argument.
-     * @throws ap::invalid_configuration
+     * @throws argon::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
@@ -339,7 +340,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::invalid_configuration
+     * @throws argon::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
@@ -357,7 +358,7 @@ public:
      * @param name The name of the argument.
      * @param name_discr The discriminator value specifying whether the given name should be treated as primary or secondary.
      * @return Reference to the added optional argument.
-     * @throws std::logic_error, ap::invalid_configuration
+     * @throws std::logic_error, argon::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
@@ -392,7 +393,7 @@ public:
      * @param primary_name The primary name of the argument.
      * @param secondary_name The secondary name of the argument.
      * @return Reference to the added optional argument.
-     * @throws ap::invalid_configuration
+     * @throws argon::invalid_configuration
      */
     template <util::c_argument_value_type T = std::string>
     optional_argument<T>& add_optional_argument(
@@ -537,7 +538,7 @@ public:
      *
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument values.
-     * @throws ap::invalid_configuration, ap::parsing_failure
+     * @throws argon::invalid_configuration, argon::parsing_failure
      * @attention The first argument (the program name) is ignored.
      */
     void parse_args(int argc, char* argv[]) {
@@ -549,7 +550,7 @@ public:
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
      * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
-     * @throws ap::invalid_configuration, ap::parsing_failure
+     * @throws argon::invalid_configuration, argon::parsing_failure
      * @attention This overload of the `parse_args` function assumes that the program name argument has already been discarded.
      */
     template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
@@ -596,8 +597,8 @@ public:
         try {
             this->parse_args(argv_rng);
         }
-        catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ap::error] " << err.what() << std::endl
+        catch (const argon::argument_parser_exception& err) {
+            std::cerr << "[argon::error] " << err.what() << std::endl
                       << this->resolved_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
@@ -618,7 +619,7 @@ public:
      *
      * @param argc Number of command-line arguments.
      * @param argv Array of command-line argument values.
-     * @throws ap::invalid_configuration, ap::parsing_failure
+     * @throws argon::invalid_configuration, argon::parsing_failure
      * @attention The first argument (the program name) is ignored.
      */
     std::vector<std::string> parse_known_args(int argc, char* argv[]) {
@@ -636,7 +637,7 @@ public:
      * @tparam AR The argument range type.
      * @param argv_rng A range of command-line argument values.
      * @note `argv_rng` must be a `std::ranges::forward_range` with a value type convertible to `std::string`.
-     * @throws ap::invalid_configuration, ap::parsing_failure
+     * @throws argon::invalid_configuration, argon::parsing_failure
      * @attention This overload of the `parse_known_args` function assumes that the program name argument already been discarded.
      */
     template <util::c_forward_range_of<std::string, util::type_validator::convertible> AR>
@@ -681,8 +682,8 @@ public:
         try {
             return this->parse_known_args(argv_rng);
         }
-        catch (const ap::argument_parser_exception& err) {
-            std::cerr << "[ap::error] " << err.what() << std::endl
+        catch (const argon::argument_parser_exception& err) {
+            std::cerr << "[argon::error] " << err.what() << std::endl
                       << this->resolved_parser() << std::endl;
             std::exit(EXIT_FAILURE);
         }
@@ -773,7 +774,7 @@ public:
      * @tparam T Type of the argument value.
      * @param arg_name The name of the argument.
      * @return The value of the argument.
-     * @throws ap::lookup_failure, ap::type_error
+     * @throws argon::lookup_failure, argon::type_error
      */
     template <util::c_argument_value_type T = std::string>
     [[nodiscard]] T value(std::string_view arg_name) const {
@@ -797,7 +798,7 @@ public:
      * @param arg_name The name of the argument.
      * @param fallback_value The fallback value.
      * @return The value of the argument.
-     * @throws ap::lookup_failure, ap::type_error
+     * @throws argon::lookup_failure, argon::type_error
      */
     template <util::c_argument_value_type T = std::string, std::convertible_to<T> U>
     [[nodiscard]] T value_or(std::string_view arg_name, U&& fallback_value) const {
@@ -824,7 +825,8 @@ public:
      * @tparam T Type of the argument values.
      * @param arg_name The name of the argument.
      * @return The values of the argument as a vector.
-     * @throws ap::lookup_failure, ap::type_error
+     * @throws argon::lookup_failure, argon::type_error
+     * @todo Use std::ranges::to after transition to C++23 for range casting
      */
     template <util::c_argument_value_type T = std::string>
     [[nodiscard]] std::vector<T> values(std::string_view arg_name) const {
@@ -834,7 +836,6 @@ public:
 
         try {
             std::vector<T> values;
-            // TODO: use std::ranges::to after transition to C++23
             std::ranges::copy(
                 util::any_range_cast_view<T>(arg->values()), std::back_inserter(values)
             );
@@ -895,7 +896,7 @@ public:
 
 #ifdef AP_TESTING
     /// @brief Friend struct for testing purposes.
-    friend struct ::ap_testing::argument_parser_test_fixture;
+    friend struct ::argon_testing::argument_parser_test_fixture;
 #endif
 
 private:
@@ -950,7 +951,7 @@ private:
 
     /**
      * @brief Verifies the pattern of an argument name and if it's invalid, an error is thrown
-     * @throws ap::invalid_configuration
+     * @throws argon::invalid_configuration
      */
     void _verify_arg_name_pattern(const std::string_view arg_name) const {
         if (arg_name.empty())
@@ -1046,7 +1047,7 @@ private:
      * @param args_begin The begin iterator for the command-line argument value range.
      * @param args_end The end iterator for the command-line argument value range.
      * @param state The current parsing state.
-     * @throws ap::invalid_configuration, ap::parsing_failure
+     * @throws argon::invalid_configuration, argon::parsing_failure
      */
     template <util::c_forward_iterator_of<std::string, util::type_validator::convertible> AIt>
     void _parse_args_impl(AIt args_begin, const AIt args_end, parsing_state& state) {
@@ -1149,7 +1150,7 @@ private:
         case unknown_policy::fail:
             throw parsing_failure::unknown_argument(tok.value);
         case unknown_policy::warn:
-            std::cerr << "[ap::warning] Unknown argument '" << tok.value << "' will be ignored."
+            std::cerr << "[argon::warning] Unknown argument '" << tok.value << "' will be ignored."
                       << std::endl;
             [[fallthrough]];
         case unknown_policy::ignore:
@@ -1277,7 +1278,7 @@ private:
      * @brief Parse a single command-line argument token.
      * @param tok The token to be parsed.
      * @param state The current parsing state.
-     * @throws ap::parsing_failure
+     * @throws argon::parsing_failure
      */
     void _parse_token(const detail::argument_token& tok, parsing_state& state) {
         if (state.curr_arg and state.curr_arg->is_greedy()) {
@@ -1295,7 +1296,7 @@ private:
      * @brief Parse a single command-line argument *flag* token.
      * @param tok The token to be parsed.
      * @param state The current parsing state.
-     * @throws ap::parsing_failure
+     * @throws argon::parsing_failure
      */
     void _parse_flag_token(const detail::argument_token& tok, parsing_state& state) {
         if (not tok.is_valid_flag_token()) {
@@ -1322,7 +1323,7 @@ private:
      * @brief Parse a single command-line argument *value* token.
      * @param tok The token to be parsed.
      * @param state The current parsing state.
-     * @throws ap::parsing_failure
+     * @throws argon::parsing_failure
      */
     void _parse_value_token(const detail::argument_token& tok, parsing_state& state) {
         if (not state.curr_arg) {
@@ -1357,7 +1358,7 @@ private:
 
     /**
      * @brief Verifies the correctness of the parsed command-line arguments.
-     * @throws ap::parsing_failure if the state of the parsed arguments is invalid.
+     * @throws argon::parsing_failure if the state of the parsed arguments is invalid.
      */
     void _verify_final_state() const {
         const auto [supress_group_checks, suppress_arg_checks] = this->_are_checks_suppressed();
@@ -1384,7 +1385,7 @@ private:
             }
         };
 
-        // TODO: use std::views::join after the transition to C++23
+        // TODO: use std::views::concat after the transition to C++26
         std::ranges::for_each(this->_positional_args, check_arg);
         std::ranges::for_each(this->_optional_args, check_arg);
         return {suppress_group_checks, suppress_arg_checks};
@@ -1394,7 +1395,7 @@ private:
      * @brief Verifies whether the requirements of the given argument group are satisfied.
      * @param group The argument group to verify.
      * @param suppress_arg_checks A flag indicating whether argument checks are suppressed.
-     * @throws ap::parsing_failure if the requirements are not satistied.
+     * @throws argon::parsing_failure if the requirements are not satistied.
      */
     void _verify_group_requirements(
         const argument_group& group,
@@ -1442,7 +1443,7 @@ private:
      * @brief Verifies whether the requirements of the given argument are satisfied.
      * @param arg The argument to verify.
      * @param suppress_arg_checks A flag indicating whether argument checks are suppressed.
-     * @throws ap::parsing_failure if the requirements are not satistied.
+     * @throws argon::parsing_failure if the requirements are not satistied.
      */
     void _verify_argument_requirements(const arg_ptr_t& arg, const bool suppress_arg_checks) const {
         if (suppress_arg_checks)
@@ -1626,14 +1627,14 @@ inline void add_default_argument(
 
     case default_argument::o_multi_input:
         arg_parser.add_optional_argument("input", "i")
-            .nargs(ap::nargs::at_least(1ull))
+            .nargs(argon::nargs::at_least(1ull))
             .action<action_type::observe>(action::check_file_exists())
             .help("Input files paths");
         break;
 
     case default_argument::o_multi_output:
         arg_parser.add_optional_argument("output", "o")
-            .nargs(ap::nargs::at_least(1ull))
+            .nargs(argon::nargs::at_least(1ull))
             .help("Output files paths");
         break;
     }
@@ -1641,4 +1642,4 @@ inline void add_default_argument(
 
 } // namespace detail
 
-} // namespace ap
+} // namespace argon

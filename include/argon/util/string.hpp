@@ -1,25 +1,25 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/util/string.hpp
+ * @file argon/util/string.hpp
  * @brief Provides common string utility functions.
  */
 
 #pragma once
 
-#include "ap/util/concepts.hpp"
+#include "argon/util/concepts.hpp"
 
 #include <algorithm>
 #include <sstream>
 #include <string_view>
 
-namespace ap::util {
+namespace argon::util {
 
 /**
  * @brief Converts a value to `std::string`.
- * @tparam T The value type (must satisfy the @ref ap::util::c_writable concept).
+ * @tparam T The value type (must satisfy the @ref argon::util::c_writable concept).
  * @param value The value to convert.
  * @ingroup util
  */
@@ -41,7 +41,6 @@ template <c_writable T>
  * @param range The input range to join.
  * @param delimiter The separator string to insert between elements.
  * @return A single string with all elements joined by the delimiter.
- * \todo Replace with std::views::join after transition to C++23.
  * @ingroup util
  */
 template <std::ranges::range R>
@@ -61,4 +60,4 @@ requires(c_writable<std::ranges::range_value_t<R>>)
     return oss.str();
 }
 
-} // namespace ap::util
+} // namespace argon::util

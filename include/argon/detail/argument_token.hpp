@@ -1,19 +1,19 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/detail/argument_token.hpp
+/// @file argon/detail/argument_token.hpp
 
 #pragma once
 
-#include "ap/detail/argument_base.hpp"
+#include "argon/detail/argument_base.hpp"
 
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace ap::detail {
+namespace argon::detail {
 
 /// @brief Structure representing a single command-line argument token.
 struct argument_token {
@@ -77,4 +77,4 @@ struct argument_token {
     arg_ptr_vec_t args = {}; ///< The corresponding argument
 };
 
-} // namespace ap::detail
+} // namespace argon::detail

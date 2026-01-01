@@ -1,22 +1,22 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/detail/argument_base.hpp
+ * @file argon/detail/argument_base.hpp
  * @brief Defines the base argument class and common utility.
  */
 
 #pragma once
 
-#include "ap/detail/argument_name.hpp"
-#include "ap/detail/help_builder.hpp"
+#include "argon/detail/argument_name.hpp"
+#include "argon/detail/help_builder.hpp"
 
 #include <any>
 #include <iostream>
 #include <vector>
 
-namespace ap {
+namespace argon {
 
 class argument_parser;
 
@@ -54,7 +54,7 @@ public:
     /// @return `true` if the argument is greedy, `false` otherwise.
     virtual bool is_greedy() const noexcept = 0;
 
-    friend class ::ap::argument_parser;
+    friend class ::argon::argument_parser;
 
 protected:
     /// @param verbose The verbosity mode value. If `true` all non-default parameters will be included in the output.
@@ -96,4 +96,4 @@ protected:
 };
 
 } // namespace detail
-} // namespace ap
+} // namespace argon

@@ -1,10 +1,10 @@
 #include "doctest.h"
 
-#include <ap/nargs/range.hpp>
+#include <argon/nargs/range.hpp>
 
 #include <limits>
 
-using namespace ap::nargs;
+using namespace argon::nargs;
 
 TEST_SUITE_BEGIN("test_nargs_range");
 

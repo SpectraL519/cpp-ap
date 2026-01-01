@@ -3,11 +3,11 @@
 #include "doctest.h"
 #include "utility.hpp"
 
-using namespace ap_testing;
-using ap::argument;
-using ap::argument_parser;
-using ap::default_argument;
-using ap::invalid_configuration;
+using namespace argon_testing;
+using argon::argument;
+using argon::argument_parser;
+using argon::default_argument;
+using argon::invalid_configuration;
 
 TEST_SUITE_BEGIN("test_argument_parser_add_elements");
 
@@ -314,7 +314,7 @@ TEST_CASE_FIXTURE(
 
     const auto help_arg = get_argument(help_flag);
     REQUIRE(help_arg);
-    CHECK(is_optional<ap::none_type>(*help_arg));
+    CHECK(is_optional<argon::none_type>(*help_arg));
 
     const auto input_arg = get_argument(input_flag);
     REQUIRE(input_arg);
@@ -347,7 +347,7 @@ TEST_CASE_FIXTURE(
     );
 
     CHECK_THROWS_WITH_AS(
-        sut.add_optional_argument(group, secondary_name_1, ap::n_secondary),
+        sut.add_optional_argument(group, secondary_name_1, argon::n_secondary),
         expected_err_msg.c_str(),
         std::logic_error
     );
@@ -363,7 +363,7 @@ TEST_CASE_FIXTURE(
     );
 
     CHECK_THROWS_WITH_AS(
-        sut.add_flag(group, secondary_name_1, ap::n_secondary),
+        sut.add_flag(group, secondary_name_1, argon::n_secondary),
         expected_err_msg.c_str(),
         std::logic_error
     );

@@ -1,5 +1,5 @@
 cc_library(
-    name = "cpp-ap",
+    name = "cpp-argon",
     hdrs = glob(["include/**/*.hpp"]),
     includes = ["include"],
     cxxopts = ["-std=c++20"],

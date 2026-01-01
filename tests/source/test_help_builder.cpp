@@ -1,12 +1,12 @@
 #include "doctest.h"
 
-#include <ap/detail/help_builder.hpp>
+#include <argon/detail/help_builder.hpp>
 
 #include <cstdint>
 
 TEST_SUITE_BEGIN("test_help_builder");
 
-using sut_type = ap::detail::help_builder;
+using sut_type = argon::detail::help_builder;
 
 namespace {
 

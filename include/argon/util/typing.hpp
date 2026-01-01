@@ -1,9 +1,9 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/util/typing.hpp
+ * @file argon/util/typing.hpp
  * @brief Provides common typing utility functions.
  */
 
@@ -15,7 +15,7 @@
 #include <source_location>
 #include <string_view>
 
-namespace ap::util {
+namespace argon::util {
 
 /**
  * @brief Retrieves the demangled name of a type `T`.
@@ -48,4 +48,4 @@ constexpr std::string_view get_demangled_type_name() {
 #endif
 }
 
-} // namespace ap::util
+} // namespace argon::util

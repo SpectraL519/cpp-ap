@@ -1,6 +1,6 @@
 # Tutorial
 
-- [Setting Up CPP-AP](#setting-up-cpp-ap)
+- [Setting Up CPP-ARGON](#setting-up-cpp-argon)
   - [CMake Integration](#cmake-integration)
   - [Bazel Build System](#bazel-build-system)
   - [Downloading the Library](#downloading-the-library)
@@ -55,7 +55,7 @@
 
 <br/>
 
-## Setting Up CPP-AP
+## Setting Up CPP-ARGON
 
 ### CMake Integration
 
@@ -69,14 +69,14 @@ project(my_project LANGUAGES CXX)
 # Include FetchContent module
 include(FetchContent)
 
-# Fetch CPP-AP library
+# Fetch CPP-ARGON library
 FetchContent_Declare(
-    cpp-ap
-    GIT_REPOSITORY https://github.com/SpectraL519/cpp-ap.git
-    GIT_TAG master # here you can specify the desired tag or branch name
+    cpp-argon
+    GIT_REPOSITORY https://github.com/SpectraL519/cpp-argon.git
+    GIT_TAG master # here you can specify the desired tag or branch name (use `master` for the latest version)
 )
 
-FetchContent_MakeAvailable(cpp-ap)
+FetchContent_MakeAvailable(cpp-argon)
 
 # Define the executable for the project
 add_executable(my_project main.cpp)
@@ -86,28 +86,28 @@ set_target_properties(my_project PROPERTIES
     CXX_STANDARD_REQUIRED YES
 )
 
-# Link against the cpp-ap library
-target_link_libraries(my_project PRIVATE cpp-ap)
+# Link against the cpp-argon library
+target_link_libraries(my_project PRIVATE cpp-argon)
 ```
 
 ### Bazel Build System
 
-To use the `CPP-AP` in a [Bazel](https://bazel.build/) project add the following in the `MODULE.bazel` (or `WORKSPACE.bazel`) file:
+To use the `CPP-ARGON` in a [Bazel](https://bazel.build/) project add the following in the `MODULE.bazel` (or `WORKSPACE.bazel`) file:
 
 ```bazel
 git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
-    name = "cpp-ap",
-    remote = "https://github.com/SpectraL519/cpp-ap.git",
-    tag = "<version-name>" # here you can declare the desired CPP-AP version
+    name = "cpp-argon",
+    remote = "https://github.com/SpectraL519/cpp-argon.git",
+    tag = "<version-name>" # here you can declare the desired CPP-ARGON version
 )
 ```
 
 > [!IMPORTANT]
-> CPP-AP versions older than [2.5.0](https://github.com/SpectraL519/cpp-ap/releases/tag/v2.5.0) do not support building with Bazel.
+> CPP-ARGON (CPP-AP) versions older than [2.5.0](https://github.com/SpectraL519/cpp-argon/releases/tag/v2.5.0) do not support building with Bazel.
 
-And then add the `"@cpp-ap//:cpp-ap"` dependency for the target you want to use `CPP-AP` for by adding it to the `deps` list. For instance:
+And then add the `"@cpp-argon//:cpp-argon"` dependency for the target you want to use `CPP-ARGON` for by adding it to the `deps` list. For instance:
 
 ```bazel
 # BUILD.bazel
@@ -115,7 +115,7 @@ cc_binary(
     name = "my_app",
     srcs = ["application.cpp"],
     includes = ["include"],
-    deps = ["@cpp-ap//:cpp-ap"],
+    deps = ["@cpp-argon//:cpp-argon"],
     cxxopts = ["-std=c++20"],
     visibility = ["//visibility:public"],
 )
@@ -123,7 +123,7 @@ cc_binary(
 
 ### Downloading the Library
 
-If you do not use CMake, you can download the desired [library release](https://github.com/SpectraL519/cpp-ap/releases), extract it in a desired directory and simply add `<cpp-ap-dir>/include` to the include directories of your project.
+If you do not use CMake, you can download the desired [library release](https://github.com/SpectraL519/cpp-argon/releases), extract it in a desired directory and simply add `<cpp-argon-dir>/include` to the include directories of your project.
 
 <br/>
 <br/>
@@ -131,10 +131,10 @@ If you do not use CMake, you can download the desired [library release](https://
 
 ## The Parser Class
 
-To use the argument parser in your code you need to use the `ap::argument_parser` class.
+To use the argument parser in your code you need to use the `argon::argument_parser` class.
 
 ```cpp
-ap::argument_parser parser("program");
+argon::argument_parser parser("program");
 parser.program_version("alpha")
       .program_description("Description of the program")
       .verbose();
@@ -155,16 +155,16 @@ parser.program_version("alpha")
 
 > [!TIP]
 >
-> You can specify the program version using a string (like in the example above) or using the `ap::version` structure:
+> You can specify the program version using a string (like in the example above) or using the `argon::version` structure:
 >
 > ```cpp
 > parser.program_version({0u, 0u, 0u})
 > parser.program_version({ .major = 1u, .minor = 1u, .patch = 1u });
-> ap::version ver{2u, 2u, 2u};
+> argon::version ver{2u, 2u, 2u};
 > parser.program_version(ver);
 > ```
 >
-> **NOTE:** The `ap::version` struct
+> **NOTE:** The `argon::version` struct
 > - contains the three members - `major`, `minor`, `patch` - all of which are of type `std::uint32_t`,
 > - defines a `std::string str() const` method which returns a `v{major}.{minor}.{path}` version string,
 > - defines the `std::ostream& operator<<` for stream insertion.
@@ -199,7 +199,7 @@ parser.add_optional_argument<value_type>("name", "n")
 or use only the secondary name:
 
 ```cpp
-parser.add_optional_argument("n", ap::n_secondary);
+parser.add_optional_argument("n", argon::n_secondary);
 ```
 
 ### Names
@@ -213,7 +213,7 @@ parser.add_optional_argument("n", ap::n_secondary);
 ### Value Types
 
 > [!IMPORTANT]
-> An argument's value type must be `ap::none_type` **or** satisfy all of the following requirements:
+> An argument's value type must be `argon::none_type` **or** satisfy all of the following requirements:
 >
 > - [Constructible from](https://en.cppreference.com/w/cpp/concepts/constructible_from) `const std::string&` or overload `std::istream& operator>>`.
 >   - The parser will always try direct initialization from std::string first, and only fall back to the extraction operator if direct initialization fails.
@@ -222,7 +222,7 @@ parser.add_optional_argument("n", ap::n_secondary);
 > [!NOTE]
 >
 > - The default value type of any argument is `std::string`.
-> - If the argument's value type is `ap::none_type`, the argument will not accept any values and therefore no value-related parameters can be set for such argument. This includes:
+> - If the argument's value type is `argon::none_type`, the argument will not accept any values and therefore no value-related parameters can be set for such argument. This includes:
 >   - [nargs](#5-nargs---sets-the-allowed-number-of-values-to-be-parsed-for-an-argument)
 >   - [greedy](#6-greedy---if-this-option-is-set-the-argument-will-consume-all-command-line-values-until-its-upper-nargs-bound-is-reached)
 >   - [choices](#7-choices---a-list-of-valid-argument-values)
@@ -283,9 +283,9 @@ parser.add_positional_argument<std::size_t>("number", "n")
 By default all arguments are visible, but this can be modified using the `hidden(bool)` setter as follows:
 
 ```cpp
-ap::argument_parser("hidden-test")
+argon::argument_parser("hidden-test")
 parser.program_description("A simple test program for argument hiding")
-      .default_arguments(ap::default_argument::o_help);
+      .default_arguments(argon::default_argument::o_help);
 
 parser.add_optional_argument("hidden")
       .hidden()
@@ -405,11 +405,11 @@ if (parser.count("version")) {
     std::exit(EXIT_SUCCESS);
 }
 
-// may result in an `ap::argument_parser_exception`:
+// may result in an `argon::argument_parser_exception`:
 // `input` is not guaranteed to have a value at this point
 const auto data = read_data(parser.value("input"));
 
-// may result in an `ap::argument_parser_exception`:
+// may result in an `argon::argument_parser_exception`:
 // `output` is not guaranteed to have a value at this point
 std::ofstream os(parser.value("output"));
 os << data << std::endl;
@@ -436,25 +436,25 @@ The `nargs` parameter can be set as:
 - Partially bound range:
 
   ```cpp
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::at_least(1));  // n >= 1
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::more_than(1)); // n > 1
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::less_than(5)); // n < 5
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::up_to(5));     // n <= 5
+  parser.add_optional_argument("input", "i").nargs(argon::nargs::at_least(1));  // n >= 1
+  parser.add_optional_argument("input", "i").nargs(argon::nargs::more_than(1)); // n > 1
+  parser.add_optional_argument("input", "i").nargs(argon::nargs::less_than(5)); // n < 5
+  parser.add_optional_argument("input", "i").nargs(argon::nargs::up_to(5));     // n <= 5
   ```
 
 - Unbound range:
 
   ```cpp
-  parser.add_optional_argument("input", "i").nargs(ap::nargs::any());
+  parser.add_optional_argument("input", "i").nargs(argon::nargs::any());
   ```
 
 > [!IMPORTANT]
 >
 > The default `nargs` parameter value is:
 >
-> - `ap::nargs::range(1ull)` for positional arguments
+> - `argon::nargs::range(1ull)` for positional arguments
 >
-> - `ap::nargs::any()` for optional arguments
+> - `argon::nargs::any()` for optional arguments
 
 <br />
 
@@ -473,8 +473,8 @@ The `nargs` parameter can be set as:
 Consider a simple example:
 
 ```cpp
-ap::argument_parser parser("run-script");
-parser.default_arguments(ap::default_argument::o_help);
+argon::argument_parser parser("run-script");
+parser.default_arguments(argon::default_argument::o_help);
 
 parser.add_positional_argument("script")
       .help("The name of the script to run");
@@ -485,7 +485,7 @@ parser.add_optional_argument("args")
 parser.try_parse_args(argc, argv);
 
 // Application logic here
-std::cout << "Executing: " << parser.value("script") << " " << ap::util::join(parser.values("args")) << std::endl;
+std::cout << "Executing: " << parser.value("script") << " " << argon::util::join(parser.values("args")) << std::endl;
 ```
 
 Here the program execution should look something like this:
@@ -528,7 +528,7 @@ Actions are represented as functions, which take the argument's value as an argu
   }
 
   parser.add_optional_argument<std::string>("user", "u")
-        .action<ap::action_type::observe>(is_valid_user_tag);
+        .action<argon::action_type::observe>(is_valid_user_tag);
   ```
 
 - `transform` actions | `value_type(const value_type&)` - applied to the parsed value. The returned value will be used to initialize the argument's value.
@@ -541,7 +541,7 @@ Actions are represented as functions, which take the argument's value as an argu
   }
 
   parser.add_optional_argument<std::string>("key", "k")
-        .action<ap::action_type::transform>(to_lower);
+        .action<argon::action_type::transform>(to_lower);
   ```
 
 - `modify` actions | `void(value_type&)` - applied to the initialized value of an argument.
@@ -552,7 +552,7 @@ Actions are represented as functions, which take the argument's value as an argu
   }
 
   parser.add_optional_argument<std::string>("name", "n")
-        .action<ap::action_type::modify>(capitalize);
+        .action<argon::action_type::modify>(capitalize);
   ```
 
 > [!TIP]
@@ -637,7 +637,7 @@ void print_debug_info() noexcept {
 };
 
 parser.add_optional_argument("debug-info")
-      .action<ap::action_type::on_flag>(print_debug_info);
+      .action<argon::action_type::on_flag>(print_debug_info);
 ```
 
 Here the `print_debug_info` function will be called right after parsing the `--debug-info` flag and the program will exit, even if there are more arguments after this flag.
@@ -691,8 +691,8 @@ Command                       Result
   Prints the parser's help message to the output stream and optionally exits with the given code.
 
   ```cpp
-  typename ap::action_type::on_flag::type print_help(
-      const ap::argument_parser& parser,
+  typename argon::action_type::on_flag::type print_help(
+      const argon::argument_parser& parser,
       const std::optional<int> exit_code = std::nullopt,
       std::ostream& os = std::cout
   ) noexcept;
@@ -703,7 +703,7 @@ Command                       Result
   Throws if the provided file path does not exist.
 
   ```cpp
-  ap::action::util::callable_type<ap::action_type::observe, std::string> check_file_exists() noexcept;
+  argon::action::util::callable_type<argon::action_type::observe, std::string> check_file_exists() noexcept;
   ```
 
 - `gt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -711,8 +711,8 @@ Command                       Result
   Validates that the value is strictly greater than `lower_bound`.
 
   ```cpp
-  template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> gt(const T lower_bound) noexcept;
+  template <argon::util::c_arithmetic T>
+  argon::action::util::callable_type<argon::action_type::observe, T> gt(const T lower_bound) noexcept;
   ```
 
 - `geq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -720,8 +720,8 @@ Command                       Result
   Validates that the value is greater than or equal to `lower_bound`.
 
   ```cpp
-  template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> geq(const T lower_bound) noexcept;
+  template <argon::util::c_arithmetic T>
+  argon::action::util::callable_type<argon::action_type::observe, T> geq(const T lower_bound) noexcept;
   ```
 
 - `lt` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -729,8 +729,8 @@ Command                       Result
   Validates that the value is strictly less than `upper_bound`.
 
   ```cpp
-  template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> lt(const T upper_bound) noexcept;
+  template <argon::util::c_arithmetic T>
+  argon::action::util::callable_type<argon::action_type::observe, T> lt(const T upper_bound) noexcept;
   ```
 
 - `leq` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -738,8 +738,8 @@ Command                       Result
   Validates that the value is less than or equal to `upper_bound`.
 
   ```cpp
-  template <ap::util::c_arithmetic T>
-  ap::action::util::callable_type<ap::action_type::observe, T> leq(const T upper_bound) noexcept;
+  template <argon::util::c_arithmetic T>
+  argon::action::util::callable_type<argon::action_type::observe, T> leq(const T upper_bound) noexcept;
   ```
 
 - `within` | observe (value type: [arithmetic](https://en.cppreference.com/w/cpp/types/is_arithmetic))
@@ -747,8 +747,8 @@ Command                       Result
   Checks if the value is within the given interval. Bound inclusivity is customizable using template parameters.
 
   ```cpp
-  template <ap::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
-  ap::action::util::callable_type<ap::action_type::observe, T> within(
+  template <argon::util::c_arithmetic T, bool LeftInclusive = true, bool RightInclusive = true>
+  argon::action::util::callable_type<argon::action_type::observe, T> within(
       const T lower_bound, const T upper_bound
   ) noexcept;
   ```
@@ -759,7 +759,7 @@ Command                       Result
 
 ## Default Arguments
 
-The `CPP-AP` library defines several default arguments, which can be added to the parser's configuration as follows.
+The `CPP-ARGON` library defines several default arguments, which can be added to the parser's configuration as follows.
 
 ```cpp
 parser.default_arguments(<args>);
@@ -768,15 +768,15 @@ parser.default_arguments(<args>);
 > [!NOTE]
 >
 > The `default_arguments` function can be called with:
-> - A variadic number of `ap::default_argument` values
-> - An arbitrary [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) type with the `ap::default_argument` value type
+> - A variadic number of `argon::default_argument` values
+> - An arbitrary [`std::ranges::range`](https://en.cppreference.com/w/cpp/ranges/range.html) type with the `argon::default_argument` value type
 
 - `p_input`:
 
   ```cpp
   // equivalent to:
   parser.add_positional_argument<std::string>("input")
-        .action<ap::action_type::modify>(ap::action::check_file_exists())
+        .action<argon::action_type::modify>(argon::action::check_file_exists())
         .help("Input file path");
   ```
 
@@ -791,8 +791,8 @@ parser.default_arguments(<args>);
 
   ```cpp
   // equivalent to:
-  parser.add_optional_argument<ap::none_type>("help", "h")
-        .action<action_type::on_flag>(ap::action::print_help(parser, EXIT_SUCCESS))
+  parser.add_optional_argument<argon::none_type>("help", "h")
+        .action<action_type::on_flag>(argon::action::print_help(parser, EXIT_SUCCESS))
         .help("Display the help message");
   ```
 
@@ -815,14 +815,14 @@ parser.default_arguments(<args>);
   parser.add_optional_argument("input", "i")
         .required()
         .nargs(1)
-        .action<ap::action_type::observe>(ap::action::check_file_exists())
+        .action<argon::action_type::observe>(argon::action::check_file_exists())
         .help("Input file path");
 
   // multi_input - equivalent to:
   parser.add_optional_argument("input", "i")
         .required()
-        .nargs(ap::nargs::at_least(1))
-        .action<ap::action_type::observe>(ap::action::check_file_exists())
+        .nargs(argon::nargs::at_least(1))
+        .action<argon::action_type::observe>(argon::action::check_file_exists())
         .help("Input files paths");
   ```
 
@@ -838,7 +838,7 @@ parser.default_arguments(<args>);
   // multi_output - equivalent to:
   parser.add_optional_argument("output", "o")
         .required()
-        .nargs(ap::nargs::at_least(1))
+        .nargs(argon::nargs::at_least(1))
         .help("Output files paths");
   ```
 
@@ -864,7 +864,7 @@ By default, every parser comes with two predefined groups:
 A new group can be created by calling the `add_group` method of an argument parser:
 
 ```cpp
-ap::argument_parser parser("myprog");
+argon::argument_parser parser("myprog");
 auto& out_opts = parser.add_group("Output Options");
 ```
 
@@ -922,11 +922,11 @@ In the example above, neither the `Hidden Options` group nor the `visible` arg w
 Below is a small program that demonstrates how to use a mutually exclusive group of required arguments:
 
 ```cpp
-#include <ap/argument_parser.hpp>
+#include <argon/argument_parser.hpp>
 
 int main(int argc, char* argv[]) {
-    ap::argument_parser parser("myprog");
-    parser.default_arguments(ap::default_argument::o_help);
+    argon::argument_parser parser("myprog");
+    parser.default_arguments(argon::default_argument::o_help);
 
     // create the argument group
     auto& out_opts = parser.add_group("Output Options")
@@ -998,7 +998,7 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 
 > [!TIP]
 >
-> The `parse_args` function may throw an `ap::argument_parser_exception` if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` method which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see [Subparsers](#subparsers)), and exit with a failure status.
+> The `parse_args` function may throw an `argon::argument_parser_exception` if the configuration of the defined arguments is invalid or the parsed command-line arguments do not match the expected configuration. To simplify error handling, the `argument_parser` class provides a `try_parse_args` method which will automatically catch these exceptions, print the error message as well as the help message of the deepest used parser (see [Subparsers](#subparsers)), and exit with a failure status.
 >
 > Internally, This is equivalent to:
 >
@@ -1006,8 +1006,8 @@ The `argument_parser` class also defines the `void parse_args(int argc, char* ar
 > try {
 >     parser.parse_args(...);
 > }
-> catch (const ap::argument_parser_exception& err) {
->     std::cerr << "[ap::error] " << err.what() << std::endl << parser.resolved_parser() << std::endl;
+> catch (const argon::argument_parser_exception& err) {
+>     std::cerr << "[argon::error] " << err.what() << std::endl << parser.resolved_parser() << std::endl;
 >     std::exit(EXIT_FAILURE);
 > }
 > ```
@@ -1016,16 +1016,16 @@ The simple example below demonstrates how (in terms of the program's structure) 
 
 ```cpp
 // include the main library header
-#include <ap/argument_parser.hpp>
+#include <argon/argument_parser.hpp>
 
 int main(int argc, char* argv[]) {
     // create the parser class instance
-    ap::argument_parser parser("some-program");
+    argon::argument_parser parser("some-program");
 
     // define the parser's attributes and default arguments
     parser.program_version({0u, 0u, 0u})
           .program_description("The program does something with command-line arguments")
-          .default_arguments(ap::default_argument::o_help);
+          .default_arguments(argon::default_argument::o_help);
 
     // define the program arguments
     parser.add_positional_argument("positional").help("A positional argument");
@@ -1037,7 +1037,7 @@ int main(int argc, char* argv[]) {
 
     // use the program's arguments
     std::cout << "positional: " << parser.value("positional") << std::endl
-              << "optional: " << ap::util::join(parser.values("optional")) << std::endl
+              << "optional: " << argon::util::join(parser.values("optional")) << std::endl
               << "flag: " << std::boolalpha << parser.value<bool>("flag") << std::endl;
 
     return 0;
@@ -1069,8 +1069,8 @@ Here, the argument is parsed only if either `--optional` (primary flag) or `-o` 
 >
 > parser.try_parse_args(argc, argv);
 >
-> std::cout << "first: " << ap::util::join(parser.values("first")) << std::endl
->           << "second: " << ap::util::join(parser.values("second")) << std::endl;
+> std::cout << "first: " << argon::util::join(parser.values("first")) << std::endl
+>           << "second: " << argon::util::join(parser.values("second")) << std::endl;
 >
 > /* Example execution:
 > > ./program --first value1 value2 --second value3 value4
@@ -1084,7 +1084,7 @@ Here, the argument is parsed only if either `--optional` (primary flag) or `-o` 
 >
 > ```cpp
 > parser.add_optional_argument<int>("numbers", "n")
->       .nargs(ap::nargs::up_to(3))
+>       .nargs(argon::nargs::up_to(3))
 >       .help("A list of numbers");
 > ```
 > ```txt
@@ -1180,33 +1180,33 @@ This behavior can be modified using the `unknown_arguments_policy` method of the
 **Example:**
 
 ```cpp
-#include <ap/argument_parser.hpp>
+#include <argon/argument_parser.hpp>
 
 int main(int argc, char* argv[]) {
-    ap::argument_parser parser("unknown-policy-test");
+    argon::argument_parser parser("unknown-policy-test");
 
     parser.program_description("A simple test program for unknwon argument handling policies")
-          .default_arguments(ap::default_argument::o_help)
+          .default_arguments(argon::default_argument::o_help)
           // set the unknown argument flags handling policy
-          .unknown_arguments_policy(ap::unknown_policy::<policy>);
+          .unknown_arguments_policy(argon::unknown_policy::<policy>);
 
     parser.add_optional_argument("known", "k")
           .help("A known optional argument");
 
     parser.try_parse_args(argc, argv);
 
-    std::cout << "known = " << ap::util::join(parser.values("known")) << std::endl;
+    std::cout << "known = " << argon::util::join(parser.values("known")) << std::endl;
 
     return 0;
 }
 ```
 
 The available policies are:
-- `ap::unknown_policy::fail` (default) - throws an exception if an unknown argument flag is encountered:
+- `argon::unknown_policy::fail` (default) - throws an exception if an unknown argument flag is encountered:
 
     ```txt
     > ./unknown-policy-test --known --unknown
-    [ap::error] Unknown argument [--unknown].
+    [argon::error] Unknown argument [--unknown].
     Program: unknown-policy-test
 
       A simple test program for unknwon argument handling policies
@@ -1217,22 +1217,22 @@ The available policies are:
       --known, -k : A known optional argument
     ```
 
-- `ap::unknown_policy::warn` - prints a warning message to the standard error stream and continues parsing the remaining arguments:
+- `argon::unknown_policy::warn` - prints a warning message to the standard error stream and continues parsing the remaining arguments:
 
     ```txt
     > ./unknown-policy-test --known --unknown
-    [ap::warning] Unknown argument '--unknown' will be ignored.
+    [argon::warning] Unknown argument '--unknown' will be ignored.
     known =
     ```
 
-- `ap::unknown_policy::ignore` - ignores unknown argument flags and continues parsing the remaining arguments:
+- `argon::unknown_policy::ignore` - ignores unknown argument flags and continues parsing the remaining arguments:
 
     ```txt
     ./unknown-policy-test --known --unknown
     known =
     ```
 
-- `ap::unknown_policy::as_values` - treats unknown argument flags as values:
+- `argon::unknown_policy::as_values` - treats unknown argument flags as values:
 
     ```txt
     > ./unknown-policy-test --known --unknown
@@ -1247,8 +1247,8 @@ The available policies are:
 > Consider a similar example as above with only the argument parsing function changed:
 > ```cpp
 > const auto unknown_args = parser.try_parse_known_args(argc, argv);
-> std::cout << "known = " << ap::util::join(parser.values("known")) << std::endl
->           << "unknown = " << ap::util::join(unknown_args) << std::endl;
+> std::cout << "known = " << argon::util::join(parser.values("known")) << std::endl
+>           << "unknown = " << argon::util::join(unknown_args) << std::endl;
 > ```
 > This would produce the following output regardless of the specified unknown arguments policy.
 > ```shell
@@ -1281,7 +1281,7 @@ parser.try_parse_args(argc, argv);
 
 std::cout << "Verbosity level: " << parser.count("verbose")
           << "\nOption used: " << std::boolalpha << parser.value<bool>("use-option")
-          << "\nNumbers: " << ap::util::join(parser.values<int>("numbers"), ", ")
+          << "\nNumbers: " << argon::util::join(parser.values<int>("numbers"), ", ")
           << std::endl;
 
 /*
@@ -1308,29 +1308,29 @@ Consider a simple example:
 
 ```cpp
 parser.add_optional_argument("recognized", "r")
-      .nargs(ap::nargs::up_to(2))
+      .nargs(argon::nargs::up_to(2))
       .help("A recognized optional argument");
 
 parser.parse_args(argc, argv);
 
-std::cout << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl;
+std::cout << "recognized = " << argon::util::join(parser.values("recognized")) << std::endl;
 
 /* Example executions:
 > ./program --recognized value1 value2
 recognized = value1, value2
 
 > ./program --recognized value1 value2 value3
-terminate called after throwing an instance of 'ap::parsing_failure'
+terminate called after throwing an instance of 'argon::parsing_failure'
   what():  Failed to deduce the argument for values [value3]
 Aborted (core dumped)
 
 > ./program value0 --recognized value1 value2
-terminate called after throwing an instance of 'ap::parsing_failure'
+terminate called after throwing an instance of 'argon::parsing_failure'
   what():  Failed to deduce the argument for values [value0]
 Aborted (core dumped)
 
 > ./program --recognized value1 value2 --unrecognized value
-terminate called after throwing an instance of 'ap::parsing_failure'
+terminate called after throwing an instance of 'argon::parsing_failure'
   what():  Unknown argument [--unrecognized].
 Aborted (core dumped)
 >
@@ -1340,13 +1340,13 @@ Here the parser throws exceptions for arguments it doesn't recognize. Now consid
 
 ```cpp
 parser.add_optional_argument("recognized", "r")
-      .nargs(ap::nargs::up_to(2))
+      .nargs(argon::nargs::up_to(2))
       .help("A recognized optional argument");
 
 const auto unknown_args = parser.parse_known_args(argc, argv);
 
-std::cout << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
-          << "unknown = " << ap::util::join(unknown_args) << std::endl;
+std::cout << "recognized = " << argon::util::join(parser.values("recognized")) << std::endl
+          << "unknown = " << argon::util::join(unknown_args) << std::endl;
 
 /* Example execution:
 > ./program value0 --recognized value1 value2 value3 --unrecognized value
@@ -1364,14 +1364,14 @@ Now all the values, that caused an exception for the `parse_args` example, are c
 > parser.add_positional_argument("positional")
 >       .help("A positional argument");
 > parser.add_optional_argument("recognized", "r")
->       .nargs(ap::nargs::any())
+>       .nargs(argon::nargs::any())
 >       .help("A recognized optional argument");
 >
 > const auto unknown_args = parser.parse_known_args(argc, argv);
 >
 > std::cout << "positional = " << parser.value("positional") << std::endl
->           << "recognized = " << ap::util::join(parser.values("recognized")) << std::endl
->           << "unknown = " << ap::util::join(unknown_args) << std::endl;
+>           << "recognized = " << argon::util::join(parser.values("recognized")) << std::endl
+>           << "unknown = " << argon::util::join(unknown_args) << std::endl;
 >
 > /* Example execution:
 > > ./program --recognized value1 value2 value3 --unrecognized value4 value5 --recognized value6
@@ -1446,20 +1446,20 @@ Subparsers allow you to build **hierarchical command-line interfaces**, where a 
 auto& subparser = parser.add_subparser("subprogram");
 ```
 
-Each subparser is a separate instance of `ap::argument_parser` and therefore it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.
+Each subparser is a separate instance of `argon::argument_parser` and therefore it can have its own parameters, including a description, arguments, argument groups, subparsers, etc.
 
 For example:
 
 ```cpp
 // top-level parser
-ap::argument_parser git("ap-git");
+argon::argument_parser git("ap-git");
 git.program_version({.major = 2u, .minor = 43u, .patch = 0u})
-   .program_description("A version control system built with CPP-AP")
-   .default_arguments(ap::default_argument::o_help, ap::default_argument::o_version);
+   .program_description("A version control system built with CPP-ARGON")
+   .default_arguments(argon::default_argument::o_help, argon::default_argument::o_version);
 
 // subcommand: status
 auto& status = git.add_subparser("status");
-status.default_arguments(ap::default_argument::o_help)
+status.default_arguments(argon::default_argument::o_help)
       .program_description("Show the working tree status");
 status.add_flag("short", "s")
       .help("Give the output in the short-format");
@@ -1494,7 +1494,7 @@ All defined subparsers will be included in the parent parser's help message:
 > ap-git --help
 Program: ap-git (v2.43.0)
 
-  A version control system built with CPP-AP
+  A version control system built with CPP-ARGON
 
 Commands:
 
@@ -1521,7 +1521,7 @@ When parsing command-line arguments, the parent parser will attempt to match the
 For example:
 
 ```cpp
-ap::argument_parser git("ap-git");
+argon::argument_parser git("ap-git");
 auto& submodule = git.add_subparser("submodule");
 auto& submodule_init = submodule.add_subparser("init");
 ```
@@ -1540,7 +1540,7 @@ Each parser tracks its state during parsing. The methods described below let you
 
   This is distinct from `invoked()`: a parser can be *invoked* but not *finalized* if one of its subparsers handled the arguments instead.
 
-- `resolved_parser() -> ap::argument_parser&` : Returns a reference to the *deepest invoked parser*.
+- `resolved_parser() -> argon::argument_parser&` : Returns a reference to the *deepest invoked parser*.
 
   If no subparser was invoked, this simply returns the current parser.
 
@@ -1550,7 +1550,7 @@ Each parser tracks its state during parsing. The methods described below let you
 
 ```cpp
 // define the parser hierarchy
-ap::argument_parser git("ap-git");
+argon::argument_parser git("ap-git");
 auto& submodule = git.add_subparser("submodule");
 auto& submodule_init = submodule.add_subparser("init");
 
@@ -1589,26 +1589,26 @@ Resolved parser : init (ap-git submodule init)
 
 ## Examples
 
-The library usage examples and demo projects are included in the `cpp-ap-demo` submodule.
+The library usage examples and demo projects are included in the `cpp-argon-demo` submodule.
 To fetch the submodule content after cloning the main repository, run:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-For more detailed information about the demo projects, see the [cpp-ap-demo](https://github.com/SpectraL519/cpp-ap-demo) README.
+For more detailed information about the demo projects, see the [cpp-argon-demo](https://github.com/SpectraL519/cpp-argon-demo) README.
 
-The following table lists the projects provided in the `cpp-ap-demo` submodule:
+The following table lists the projects provided in the `cpp-argon-demo` submodule:
 
 | Project | Description |
 | :- | :- |
-| [Power Calculator](https://github.com/SpectraL519/cpp-ap-demo/tree/master/power_calculator/) | Calculates the value of a $b^e$ expression for the given base and exponents.<br/>**Demonstrates:** The basic usage of positional and optional arguments. |
-| [File Merger](https://github.com/SpectraL519/cpp-ap-demo/tree/master/file_merger/) | Merges multiple text files into a single output file.<br/>**Demonstrates:** The usage of default arguments. |
-| [Numbers Converter](https://github.com/SpectraL519/cpp-ap-demo/tree/master/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
-| [Verbosity](https://github.com/SpectraL519/cpp-ap-demo/tree/master/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
-| [Logging Mode](https://github.com/SpectraL519/cpp-ap-demo/tree/master/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
-| [Message Logger](https://github.com/SpectraL519/cpp-ap-demo/arg_parsertree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
-| [AP-GIT](https://github.com/SpectraL519/cpp-ap-demo/tree/master/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
+| [Power Calculator](https://github.com/SpectraL519/cpp-argon-demo/tree/master/power_calculator/) | Calculates the value of a $b^e$ expression for the given base and exponents.<br/>**Demonstrates:** The basic usage of positional and optional arguments. |
+| [File Merger](https://github.com/SpectraL519/cpp-argon-demo/tree/master/file_merger/) | Merges multiple text files into a single output file.<br/>**Demonstrates:** The usage of default arguments. |
+| [Numbers Converter](https://github.com/SpectraL519/cpp-argon-demo/tree/master/numbers_converter/) | Converts numbers between different bases.<br/>**Demonstrates:** The usage of argument parameters such as *nargs*, *choices*, and *default values*. |
+| [Verbosity](https://github.com/SpectraL519/cpp-argon-demo/tree/master/verbosity/) | Prints messages with varying levels of verbosity.<br/>**Demonstrates:** The usage of `none_type` arguments and compound argument flags. |
+| [Logging Mode](https://github.com/SpectraL519/cpp-argon-demo/tree/master/logging_mode/) | Logs a message depending on the selected logging mode (`quiet`, `normal`, `verbose`).<br/>**Demonstrates:** The usage of custom argument value types (like enums). |
+| [Message Logger](https://github.com/SpectraL519/cpp-argon-demo/arg_parsertree/master/message_logger/) | Outputs a message to a file, console, or not at all.<br/>**Demonstrates:** The usage of argument groups. |
+| [AP-GIT](https://github.com/SpectraL519/cpp-argon-demo/tree/master/ap_git/) | A minimal Git CLI clone with subcommands (`init`, `add`, `commit`, `status`, `push`).<br/>**Demonstrates:** The usage of subparsers for multi-command CLIs and complex argument configurations. |
 
 <br/>
 <br/>
@@ -1616,4 +1616,4 @@ The following table lists the projects provided in the `cpp-ap-demo` submodule:
 
 ## Common Utility
 
-The CPP-AP library provides additional utilities, described on the [Utility topic page](https://spectral519.github.io/cpp-ap/latest/group__util.html).
+The CPP-ARGON library provides additional utilities, described on the [Utility topic page](https://spectral519.github.io/cpp-argon/latest/group__util.html).

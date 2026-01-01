@@ -1,9 +1,9 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/nargs/range.hpp
+ * @file argon/nargs/range.hpp
  * @brief Defines the `nargs::range` class and it's builder functions.
  */
 
@@ -13,7 +13,7 @@
 #include <limits>
 #include <ostream>
 
-namespace ap::nargs {
+namespace argon::nargs {
 
 using count_type = std::size_t;
 
@@ -164,4 +164,4 @@ private:
     return range(min_bound, max_bound);
 }
 
-} // namespace ap::nargs
+} // namespace argon::nargs

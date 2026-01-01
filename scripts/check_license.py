@@ -1,18 +1,17 @@
 import argparse
 import sys
-
 from collections.abc import Iterable
 from enum import IntEnum
 from pathlib import Path
 
 from common import find_files
 
-
 LICENCE_INFO = [
-    "// Copyright (c) 2023-2025 Jakub Musiał",
-    "// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).",
+    "// Copyright (c) 2023-2026 Jakub Musiał",
+    "// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).",
     "// Licensed under the MIT License. See the LICENSE file in the project root for full license information.",
 ]
+
 
 class DefaultParameters:
     search_paths: list[str] = ["include", "source"]
@@ -24,28 +23,31 @@ class DefaultParameters:
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-p", "--search-paths",
+        "-p",
+        "--search-paths",
         type=str,
         default=DefaultParameters.search_paths,
         nargs="*",
         action="extend",
-        help="list of search directory paths"
+        help="list of search directory paths",
     )
     parser.add_argument(
-        "-f", "--file-patterns",
+        "-f",
+        "--file-patterns",
         type=str,
         default=DefaultParameters.file_patterns,
         nargs="*",
         action="extend",
-        help="list of file patterns to include"
+        help="list of file patterns to include",
     )
     parser.add_argument(
-        "-e", "--exclude-paths",
+        "-e",
+        "--exclude-paths",
         type=str,
         default=DefaultParameters.exclude_paths,
         nargs="*",
         action="extend",
-        help="list of directory paths to exclude"
+        help="list of directory paths to exclude",
     )
 
     return vars(parser.parse_args())
@@ -63,6 +65,7 @@ def check_licence(expected_licence: Iterable[str], files: set[Path]) -> int:
     print(f"Files to check: {n_files}")
 
     return_code = None
+
     def _set_return_code(c: ReturnCode):
         nonlocal return_code
         return_code = c if not return_code else return_code
@@ -80,13 +83,14 @@ def check_licence(expected_licence: Iterable[str], files: set[Path]) -> int:
                 print(f"[error] File `{file}` to short")
                 return
 
-            matching_lines = [lines[i] == expected_licence[i] for i in range(n_licence_lines)]
+            matching_lines = [
+                lines[i] == expected_licence[i] for i in range(n_licence_lines)
+            ]
             correct_licence = all(matching_lines)
             if not correct_licence:
-                missing_info = any(matching_lines)
-                if missing_info:
+                if any(matching_lines):
                     _set_return_code(ReturnCode.invalid_licence)
-                    errors.append(f"[error] Incomplete license info in file `{file}`")
+                    errors.append(f"[error] Incorrect license info in file `{file}`")
                 else:
                     _set_return_code(ReturnCode.missing_licence)
                     errors.append(f"[error] Missing license info in file `{file}`")
@@ -108,7 +112,7 @@ def check_licence(expected_licence: Iterable[str], files: set[Path]) -> int:
 def main(
     search_paths: Iterable[str],
     file_patterns: Iterable[str],
-    exclude_paths: Iterable[str]
+    exclude_paths: Iterable[str],
 ):
     files_to_check = find_files(search_paths, file_patterns, exclude_paths)
     sys.exit(check_licence(LICENCE_INFO, files_to_check))

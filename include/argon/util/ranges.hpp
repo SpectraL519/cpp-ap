@@ -1,20 +1,20 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/util/ranges.hpp
+ * @file argon/util/ranges.hpp
  * @brief Provides common ranges utility functions.
  */
 
 #pragma once
 
-#include "ap/util/concepts.hpp"
+#include "argon/util/concepts.hpp"
 
 #include <any>
 #include <ranges>
 
-namespace ap::util {
+namespace argon::util {
 
 /**
  * @brief Casts a range of `std::any` to a range of type `T`.
@@ -25,10 +25,10 @@ namespace ap::util {
  * @ingroup util
  */
 template <typename T>
-auto any_range_cast_view(const c_range_of<std::any> auto& range) {
+constexpr auto any_range_cast_view(const c_range_of<std::any> auto& range) {
     return range | std::views::transform([](const std::any& value) -> T {
                return std::any_cast<T>(value);
            });
 }
 
-} // namespace ap::util
+} // namespace argon::util

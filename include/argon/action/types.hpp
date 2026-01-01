@@ -1,19 +1,19 @@
-// Copyright (c) 2023-2025 Jakub Musiał
-// This file is part of the CPP-AP project (https://github.com/SpectraL519/cpp-ap).
+// Copyright (c) 2023-2026 Jakub Musiał
+// This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/action/types.hpp
+ * @file argon/action/types.hpp
  * @brief Defies the action specifier types.
  */
 
 #pragma once
 
-#include "ap/util/concepts.hpp"
+#include "argon/util/concepts.hpp"
 
 #include <functional>
 
-namespace ap::action_type {
+namespace argon::action_type {
 
 /**
  * @brief An observing *value* action specifier.
@@ -22,7 +22,7 @@ namespace ap::action_type {
  * performs some logic on it without modifying it.
  */
 struct observe {
-    template <ap::util::c_argument_value_type T>
+    template <argon::util::c_argument_value_type T>
     using type = std::function<void(const T&)>;
 };
 
@@ -33,7 +33,7 @@ struct observe {
  * returns a new value with which the argument will be initialized.
  */
 struct transform {
-    template <ap::util::c_argument_value_type T>
+    template <argon::util::c_argument_value_type T>
     using type = std::function<T(const T&)>;
 };
 
@@ -44,7 +44,7 @@ struct transform {
  * already initialized argument.
  */
 struct modify {
-    template <ap::util::c_argument_value_type T>
+    template <argon::util::c_argument_value_type T>
     using type = std::function<void(T&)>;
 };
 
@@ -60,4 +60,4 @@ struct on_flag {
     using type = std::function<void()>;
 };
 
-} // namespace ap::action_type
+} // namespace argon::action_type
