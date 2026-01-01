@@ -2,18 +2,18 @@
 // This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/argument.hpp
+/// @file argon/argument.hpp
 
 #pragma once
 
-#include "ap/action/predefined.hpp"
-#include "ap/action/util/helpers.hpp"
-#include "ap/detail/argument_base.hpp"
-#include "ap/detail/help_builder.hpp"
-#include "ap/nargs/range.hpp"
-#include "ap/types.hpp"
-#include "ap/util/concepts.hpp"
-#include "ap/util/ranges.hpp"
+#include "argon/action/predefined.hpp"
+#include "argon/action/util/helpers.hpp"
+#include "argon/detail/argument_base.hpp"
+#include "argon/detail/help_builder.hpp"
+#include "argon/nargs/range.hpp"
+#include "argon/types.hpp"
+#include "argon/util/concepts.hpp"
+#include "argon/util/ranges.hpp"
 
 #ifdef AP_TESTING
 
@@ -255,7 +255,7 @@ public:
 
     /**
      * @brief Set the *value* action for the argument.
-     * @tparam AS The action specifier type (see @ref ap/action/type.hpp).
+     * @tparam AS The action specifier type (see @ref argon/action/type.hpp).
      * @tparam F The type of the action function.
      * @param action The action callable.
      * @return Reference to the argument instance.
@@ -274,7 +274,7 @@ public:
 
     /**
      * @brief Set the *on-flag* action for the argument.
-     * @tparam AS The action specifier type (see @ref ap/action/types.hpp).
+     * @tparam AS The action specifier type (see @ref argon/action/types.hpp).
      * @tparam F The type of the action function.
      * @param action The action callable.
      * @return Reference to the argument instance.

@@ -3,13 +3,13 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/util/string.hpp
+ * @file argon/util/string.hpp
  * @brief Provides common string utility functions.
  */
 
 #pragma once
 
-#include "ap/util/concepts.hpp"
+#include "argon/util/concepts.hpp"
 
 #include <algorithm>
 #include <sstream>

@@ -2,7 +2,7 @@
 // This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/detail/argument_name.hpp
+/// @file argon/detail/argument_name.hpp
 
 #pragma once
 

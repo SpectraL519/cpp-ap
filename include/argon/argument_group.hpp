@@ -2,11 +2,11 @@
 // This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/argument_group.hpp
+/// @file argon/argument_group.hpp
 
 #pragma once
 
-#include "ap/detail/argument_base.hpp"
+#include "argon/detail/argument_base.hpp"
 
 #include <memory>
 

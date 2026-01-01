@@ -2,13 +2,13 @@
 // This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/exceptions.hpp
+/// @file argon/exceptions.hpp
 
 #pragma once
 
-#include "ap/detail/argument_name.hpp"
-#include "ap/util/string.hpp"
-#include "ap/util/typing.hpp"
+#include "argon/detail/argument_name.hpp"
+#include "argon/util/string.hpp"
+#include "argon/util/typing.hpp"
 
 #include <format>
 

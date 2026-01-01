@@ -2,7 +2,7 @@
 // This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/types.hpp
+/// @file argon/types.hpp
 
 #pragma once
 

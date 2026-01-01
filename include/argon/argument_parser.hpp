@@ -3,16 +3,16 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/argument_parser.hpp
+ * @file argon/argument_parser.hpp
  * @brief Main library header file. Defines the `argument_parser` class.
  */
 
 #pragma once
 
-#include "ap/argument.hpp"
-#include "ap/argument_group.hpp"
-#include "ap/detail/argument_token.hpp"
-#include "ap/types.hpp"
+#include "argon/argument.hpp"
+#include "argon/argument_group.hpp"
+#include "argon/detail/argument_token.hpp"
+#include "argon/types.hpp"
 
 #include <algorithm>
 #include <format>
@@ -149,7 +149,7 @@ void add_default_argument(const default_argument, argument_parser&) noexcept;
  *
  * Example usage:
  * @code{.cpp}
- * #include <ap/argument_parser.hpp>
+ * #include <argon/argument_parser.hpp>
  *
  * int main(int argc, char* argv[]) {
  *     // Create the argument parser instance

@@ -3,15 +3,15 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/detail/help_builder.hpp
+ * @file argon/detail/help_builder.hpp
  * @brief Defines structures for creating and formatting help messages.
  */
 
 #pragma once
 
-#include "ap/detail/argument_name.hpp"
-#include "ap/util/concepts.hpp"
-#include "ap/util/string.hpp"
+#include "argon/detail/argument_name.hpp"
+#include "argon/util/concepts.hpp"
+#include "argon/util/string.hpp"
 
 #include <cstdint>
 #include <format>

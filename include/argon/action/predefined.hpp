@@ -2,12 +2,12 @@
 // This file is part of the CPP-ARGON project (https://github.com/SpectraL519/cpp-argon).
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
-/// @file ap/action/predefined.hpp
+/// @file argon/action/predefined.hpp
 
 #pragma once
 
-#include "ap/action/util/helpers.hpp"
-#include "ap/exceptions.hpp"
+#include "argon/action/util/helpers.hpp"
+#include "argon/exceptions.hpp"
 
 #include <filesystem>
 #include <ostream>

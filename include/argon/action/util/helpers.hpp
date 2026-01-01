@@ -3,13 +3,13 @@
 // Licensed under the MIT License. See the LICENSE file in the project root for full license information.
 
 /**
- * @file ap/action/util/helpers.hpp
+ * @file argon/action/util/helpers.hpp
  * @brief Defines general action-related helper utility.
  */
 
 #pragma once
 
-#include "ap/action/util/concepts.hpp"
+#include "argon/action/util/concepts.hpp"
 
 #include <utility>
 #include <variant>
