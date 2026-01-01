@@ -7,7 +7,7 @@ else()
 endif()
 
 project(cpp-argon
-    VERSION 3.1.0
+    VERSION 4.0.0
     DESCRIPTION "Command-line argument parser for C++20"
     HOMEPAGE_URL "https://github.com/SpectraL519/cpp-argon"
     LANGUAGES CXX
